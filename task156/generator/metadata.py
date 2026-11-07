@@ -1,101 +1,47 @@
-"""Write task156/metadata.json from the built pack: the distractors, the portal's keys, the input gates and every
-shipped file's source, date and licence."""
+"""metadata.json: the task's decision, deliverables, distractors and each file's provenance; never the method."""
 import json
 import os
 
-import docs as DOC
+import docs as D
 import records as R
 
-SOURCES = {
-    R.F_INBOX: "Millrind review platform, daily review inbox export by site, entry day and item type (pulled 8 "
-               "October 2026)",
-    R.F_INBOX_PRE: "Millrind review platform, daily review inbox export for September 2026 as first pulled on 2 "
-                   "October 2026",
-    R.F_OLD: "Millrind community operations, the old review system's monthly queue workbook, 2021 to 2023",
-    R.F_ROSTER: "Millrind review platform, reviewer roster (access spells by reviewer and site)",
-    R.F_FLAGSUM: "Millrind moderator tool, daily flag summary by site",
-    R.F_POSTS: "Millrind posts warehouse, questions by site and month",
-    R.F_PLAN: "Millrind Planning & Analytics, 2027 question plan by site and month",
-    R.F_REGISTER: "Millrind site register",
-    R.F_FLAGS1: "Millrind moderator tool, flag export (flags raised 1 July to 15 August 2026)",
-    R.F_FLAGS2: "Millrind moderator tool, flag export (flags raised 15 August to 30 September 2026)",
-    R.F_REVIEWS: "Millrind moderation quality programme, decision-review log for flag decisions",
-    R.F_WFM: "Millrind WFM system, shift line export, January to September 2026",
-    R.F_ASSIGN: "Millrind HR, assignment history for the paid moderation team",
-    R.F_MOVES: "Millrind moderators' log of questions moved between sites, 2021 to 2023",
-    R.F_PAGEVIEWS: "Millrind web analytics, page views and unique visitors by site and month",
-    DOC.F_CHARTER: "Millrind Moderation Council charter, as amended 12 March 2025",
-    DOC.F_STANDARDS: "Millrind Moderation Council, handle-time standards for 2027 (17 June 2026)",
-    DOC.F_ENVELOPE: "Millrind Finance, 2027 envelope letter for paid moderation (30 September 2026)",
-    DOC.F_FLAGSTD: "Millrind moderation operations, flag service standard (revised 4 February 2026)",
-    DOC.F_SURVEY: "Millrind community research, 2026 member survey on AI assistants (2 June 2026)",
-    DOC.F_HANDBOOK: "Millrind moderation operations handbook (revised 6 October 2026)",
-    DOC.F_COUNTS: "Millrind data platform team, question counts: the reporting basis (8 January 2024)",
+LICENCE = "Constructed for this task; no third-party data; free to use with the task."
+PROV = {
+    R.F_SCADA: "PS03 Riverbank Road SCADA historian export, 15-minute values, 1 January 2024 to 31 October 2026, pulled 3 November 2026",
+    R.F_RAIN: "Kahuwera Regional Council hydrometric archive, climate station Rauwhero at Treatment Plant (KRC 1187), hourly rainfall 2004 to 2025",
+    R.F_RAIN26: "Kahuwera Regional Council telemetry, KRC 1187, 15-minute rainfall for 2026 to 31 October, provisional",
+    R.F_BORE: "Kahuwera Regional Council level export, bore 72_1043 Rauwhero Terrace, daily, 2004 to 31 October 2026",
+    R.F_ASSETS: "Rauwhero District Council asset management system extract: wastewater gravity mains, manholes, pump stations and overflow monitors, 30 October 2026",
+    R.F_MONITOR: "Council SMS gateway log of the engineered overflow monitors' messages, 2024 to 31 October 2026",
+    R.F_OUTAGES: "Lines company outage notices for the council's ICPs, 2024 to 2026",
+    R.F_ICPS: "Council electricity retailer site list, October 2026",
+    R.F_READS: "Council water billing system: meter readings for the PS03 catchment's meters, October 2023 to October 2026",
+    R.F_ACCOUNTS: "Council water billing system: accounts for the PS03 catchment's meters, November 2026",
+    R.F_RATING: "Council rating information database snapshot, 31 October 2026",
+    R.F_BC: "Council building consent register extract, 2023 to 2026",
+    R.F_WWTP: "Rauwhero wastewater treatment plant operator's daily inlet meter readings, 2024 to 2026",
+    R.F_WORKS: "PS03 maintenance work orders, 2024 to 2026",
+    D.F_CONSENT: "Kahuwera Regional Council discharge permit AUTH-2024-0418, granted 18 March 2024",
+    D.F_DATASHEET: "PS03 pump station data sheet, revision 4, 7 November 2023",
+    D.F_COP: "Rauwhero District Council Code of Practice for Land Development and Subdivision, Section 5 Wastewater, July 2022",
+    D.F_SERVICING: "Ngaio Road subdivision RM26-0187 wastewater servicing report, 21 September 2026",
+    D.F_POLICY: "Rauwhero District Council Water Metering and Billing Policy, July 2023",
+    D.F_BRIEF: "PS03 storage augmentation project brief, version 2, 12 August 2026",
 }
-DISTRACTORS = [R.F_PAGEVIEWS, DOC.F_SURVEY]
-TITLE = ("How many paid moderator FTE a developer question-and-answer network's council requests for 2027 across its "
-         "nine topic sites, when community review items reach the paid team only after volunteer reviewers have left "
-         "them for 72 hours")
-
-
-def rows_of(path):
-    if path.endswith(".csv"):
-        with open(path, encoding="utf-8") as fh:
-            return sum(1 for _ in fh) - 1
-    if path.endswith(".xlsx"):
-        import openpyxl
-        wb = openpyxl.load_workbook(path, read_only=True)
-        return sum(max(ws.max_row - 1, 0) for ws in wb.worksheets)
-    return None
+DISTRACTORS = [R.F_WWTP, R.F_WORKS]
 
 
 def write(task_dir, n=None):
-    target = os.path.join(task_dir, "target")
-    out = []
-    for f in sorted(os.listdir(target)):
-        p = os.path.join(target, f)
-        out.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                    "source": "Constructed: " + SOURCES[f], "date": "2026-10-09",
-                    "license": "CC0-1.0 (original work, constructed for this task)"})
-    big = max((x for x in out if x["rows"]), key=lambda x: x["rows"])
-    meta = {
-        "task": "task156",
-        "title": TITLE,
-        "domain": "Product Analytics",
-        "client_domain": "Product Analytics",
-        "house_domain": "product-analytics",
-        "subdomain": "retention-cohort-lifetime-value-modeling (trust and safety at a developer Q&A network: each "
-                     "site's volunteer reviewer pool, closed to new members since review access became invitation-only, "
-                     "carried forward on survival by tenure read from a left-truncated roster, and the reviews a "
-                     "retained reviewer delivers when the inbox outruns the pool, set against the 2027 inbox the "
-                     "question plan implies)",
-        "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "a committed FTE request with each of nine sites' whole-FTE need and the distance from finance's "
-                        "envelope, a stacked monthly chart of paid review hours by site from January 2024 to December "
-                        "2027 with the envelope drawn across, and three tables (each site's share of flags first acted "
-                        "on within 24 hours in July, August and September 2026; each site's paid moderators' hours "
-                        "worked in the first three quarters of 2026; each site's January to September 2026 questions "
-                        "as a percentage of 2022's)",
-        "as_of": "2026-10-09",
-        "deliverables": ["moderation_pool_2027.xlsx", "council_pool_request_2027.pptx"],
-        "distractor_files": DISTRACTORS,
-        "field_terms": [],
-        "stated_inputs": [],
-        "input_gates": {"files": len(out), "formats": sorted({x["format"] for x in out}),
-                        "largest_file": big["path"], "largest_file_rows": big["rows"]},
-        "sources": [{"files": "all files under target/",
-                     "origin": "constructed for this task by task156/generator/build.py (seeded, deterministic) around "
-                               "a fictional Toronto-run developer question-and-answer network of nine topic sites, in "
-                               "the layouts of a review platform's daily inbox export and reviewer roster, an older "
-                               "review system's monthly queue workbook, a moderator tool's flag exports, a posts "
-                               "warehouse, a planning team's question plan, a WFM system's shift lines and an HR "
-                               "assignment history; no real organisation's records or person is depicted.",
-                     "date": "2026-10-09", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-17",
-        "generator": "task156/generator/build.py",
-        "files": out,
-    }
-    with open(os.path.join(task_dir, "metadata.json"), "w") as fh:
-        json.dump(meta, fh, indent=2, ensure_ascii=False)
-        fh.write("\n")
-    return meta
+    files = []
+    for f in sorted(os.listdir(os.path.join(task_dir, "target"))):
+        files.append(dict(file="target/" + f, source=PROV[f], licence=LICENCE, rows=(n or {}).get(f)))
+    meta = dict(
+        task="task156",
+        decision="Whether the Ngaio Road subdivision can connect to the PS03 Riverbank Road pump station in 2027 within "
+                 "the station's consented wet weather overflows, or must wait for the storage upgrade",
+        deliverables=["ps03_ngaio_road_connection_2027.xlsx", "council_report_ngaio_road_2027.docx",
+                      "replay_overflows_2004-2023.png"],
+        domain="physical-environmental-sciences", objective="forecasting",
+        distractor_files=["target/" + f for f in DISTRACTORS],
+        as_of="2026-11-04", files=files)
+    json.dump(meta, open(os.path.join(task_dir, "metadata.json"), "w"), indent=1)

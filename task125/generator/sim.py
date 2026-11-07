@@ -1,170 +1,455 @@
-"""Simulate the HLS: every quarterly intake of addresses, the households behind them, each member's labour market
-status quarter by quarter, the wave-1 visits it takes to find someone at home, the telephone waves 2 to 5 and the
-roster changes between them. The counterfactual six-visit intakes for July to December 2026 are kept for the checks
-(never shipped)."""
+"""task125: the 2026 patrol roster and calls for service (the city and the contracted Township of Elmvale), and the
+paid-duty bookings 2022 to 2027. Drawn after world.py's objects, from the same generator."""
 import datetime as dt
+import math
 
 import numpy as np
 
 import world as W
 
-STATES = np.array(["E", "U", "I"])
+_TZ = None
 
 
-def _rng(*keys):
-    return np.random.default_rng([W.SEED, W.SALT] + list(keys))
+def tz():
+    global _TZ
+    if _TZ is None:
+        import zoneinfo
+        _TZ = zoneinfo.ZoneInfo("America/Toronto")
+    return _TZ
 
 
-def _age_group_idx(age):
-    return np.searchsorted(np.array(W.AGE_EDGES[1:]), age, side="right")
+HOUR = np.array([2.2, 1.8, 1.5, 1.1, 0.8, 0.7, 0.9, 1.6, 2.6, 3.0, 3.2, 3.3, 3.5, 3.6, 3.7, 3.9, 4.2, 4.4, 4.5,
+                 4.4, 4.2, 3.9, 3.4, 2.8])
+HOUR = HOUR / HOUR.sum()
+P1_TYPES = ["ASSAULT IN PROGRESS", "WEAPONS CALL", "ROBBERY IN PROGRESS", "BREAK AND ENTER IN PROGRESS",
+            "DOMESTIC IN PROGRESS", "MVC PERSONAL INJURY", "PERSON IN CRISIS - WEAPON", "ALARM - HOLDUP"]
+OTHER_TYPES = ["NOISE COMPLAINT", "THEFT REPORT", "SUSPICIOUS PERSON", "MVC PROPERTY DAMAGE", "TRESPASS",
+               "UNWANTED PERSON", "CHECK WELFARE", "ALARM - INTRUSION", "MISCHIEF REPORT", "TRAFFIC COMPLAINT",
+               "FRAUD REPORT", "DISTURBANCE", "ANIMAL COMPLAINT", "FOUND PROPERTY", "BYLAW ASSIST"]
+WARD_TRAVEL = {1: 4.7, 2: 5.2, 3: 4.9, 4: 5.6, 5: 5.9, 6: 6.4, 7: 6.1, 8: 6.7}
+ZONE = {w: "ABCDEFGH"[w - 1] for w in range(1, 9)}
+NEIGHBOUR = {1: (2, 3), 2: (1, 6), 3: (1, 4), 4: (3, 8), 5: (6, 7), 6: (5, 2), 7: (5, 8), 8: (7, 4)}
+CITY_UNITS = ["%s%d" % (ZONE[w], k) for w in range(1, 9) for k in (1, 2)]
+ALL_UNITS = CITY_UNITS + ["S1", "S2", "T1", "T2"]
 
 
-def _tables():
-    g = W.AGE_GROUPS
-    return (np.array([W.E_TO_U[x] for x in g]), np.array([W.U_TO_E[x] for x in g]), np.array([W.E_TO_I[x] for x in g]),
-            np.array([W.I_TO_E[x] for x in g]), np.array([W.I_TO_U[x] for x in g]))
+def badges(r):
+    return sorted(int(b) for b in r.choice(np.arange(310, 2980), size=212, replace=False))
 
 
-EU, UE, EI, IE, IU = _tables()
-
-
-def step(status, age, cls_a, q, rng):
-    """One quarter of the status chain (0 employed, 1 unemployed, 2 inactive)."""
-    gi = _age_group_idx(age)
-    m = W.MACRO[q]
-    eu = EU[gi] * m * np.where(cls_a, W.CLASS_EU["A"], W.CLASS_EU["R"])
-    ue = UE[gi] * np.where(cls_a, W.CLASS_UE["A"], W.CLASS_UE["R"])
-    r = rng.random(status.size)
-    out = status.copy()
-    e, u, i = status == 0, status == 1, status == 2
-    out[e & (r < eu)] = 1
-    out[e & (r >= eu) & (r < eu + EI[gi])] = 2
-    out[u & (r < ue)] = 0
-    out[u & (r >= ue) & (r < ue + W.U_TO_I)] = 2
-    out[i & (r < IE[gi])] = 0
-    out[i & (r >= IE[gi]) & (r < IE[gi] + IU[gi])] = 1
+# ----------------------------------------------------------------------------------------------- the patrol roster
+def roster(r, bdg):
+    """The 2026 tours: day tours 07:00 to 19:00 and night tours 19:00 to 07:00, each dated the day it starts, with
+    each unit's crew. Night tours on Fridays and Saturdays are two-officer cars; other nights vary car by car."""
+    out = {}
+    d = dt.date(2025, 12, 31)
+    while d <= dt.date(2026, 12, 31):
+        for shift in ("D", "N"):
+            if d.year == 2025 and shift == "D":
+                continue
+            pool = list(r.permutation(bdg))
+            k = 0
+            for u in ALL_UNITS:
+                if shift == "D":
+                    n = 2 if (u in CITY_UNITS and r.random() < 0.10) else 1
+                else:
+                    if u in ("S1", "S2"):
+                        n = 1
+                    elif d.weekday() in (4, 5):
+                        n = 2 if r.random() < 0.95 else 1
+                    else:
+                        n = 2 if r.random() < 0.56 else 1
+                out[(d, shift, u)] = [int(x) for x in pool[k:k + n]]
+                k += n
+        d += dt.timedelta(1)
     return out
 
 
-def _ages(cls_a, size, rng):
-    """Members' ages at intake: out-by-day households are working-age adults, the rest a mix."""
-    ages, hh = [], []
-    for h, (a, k) in enumerate(zip(cls_a, size)):
-        if a:
-            base = rng.choice([1, 2, 3], p=[0.55, 0.35, 0.10])
-            first = rng.uniform(22, 62)
-            mem = [first] + [float(np.clip(first + rng.normal(0, 4), 19, 66)) for _ in range(1, k)]
-            if k >= 3:
-                mem[-1] = rng.uniform(17, 24)
-            del base
+def tour_of(t_local):
+    """The tour (its date and letter) covering a local time."""
+    h = t_local.hour + t_local.minute / 60.0
+    d = t_local.date()
+    if 7 <= h < 19:
+        return d, "D"
+    if h >= 19:
+        return d, "N"
+    return d - dt.timedelta(1), "N"
+
+
+def tour_end(t):
+    """The end of the tour covering an instant, as an aware datetime (07:00 and 19:00 exist on every date)."""
+    z = tz()
+    d, s = tour_of(t.astimezone(z))
+    if s == "D":
+        return dt.datetime(d.year, d.month, d.day, 19, 0, tzinfo=z)
+    e = d + dt.timedelta(1)
+    return dt.datetime(e.year, e.month, e.day, 7, 0, tzinfo=z)
+
+
+UTC = dt.timezone.utc
+QUIET = (dt.datetime(2026, 3, 9, 0, 0), dt.datetime(2026, 3, 9, 1, 0))
+
+
+def wall(naive):
+    """A real local time from a drawn wall time: a time the March change skips reads an hour later, and a time in
+    the first hour of 9 March is taken an hour later too."""
+    z = tz()
+    t = naive.replace(tzinfo=z)
+    if t.astimezone(UTC).astimezone(z).replace(tzinfo=None) != naive:
+        naive = naive + dt.timedelta(hours=1)
+    if QUIET[0] <= naive < QUIET[1]:
+        naive = naive + dt.timedelta(hours=1)
+    return naive.replace(tzinfo=z)
+
+
+def quiet(t):
+    """An instant in the first hour of 9 March moved an hour on, so every reading of a night tour's date agrees."""
+    z = tz()
+    loc = t.astimezone(z).replace(tzinfo=None)
+    if QUIET[0] <= loc < QUIET[1]:
+        return t + dt.timedelta(hours=1)
+    return t
+
+
+SPRING_NIGHT = dt.date(2026, 3, 8)
+
+
+def carry_crews(rost, events, bdg):
+    """The night tour that starts on the evening of the March change: every unit dispatched after midnight keeps the
+    crew it had the night before. Local midnight on 9 March less a day of elapsed time is 23:00 on 7 March (the change
+    took an hour), so a night tour dated that way names the night of 7 March for those hours, and both nights crew the
+    unit alike. Officer 1 stays; a second officer is the one who rode with the unit the night before, or the first
+    badge free on the tour. No draw is made, so the stream is untouched."""
+    z = tz()
+    lo = dt.datetime(2026, 3, 9, 0, 0, tzinfo=z).astimezone(UTC)
+    hi = dt.datetime(2026, 3, 9, 7, 0, tzinfo=z).astimezone(UTC)
+    units = {u["unit"] for e in events for u in e["units"] if lo <= u["dispatched"].astimezone(UTC) < hi}
+    night, before = (SPRING_NIGHT, "N"), (SPRING_NIGHT - dt.timedelta(1), "N")
+    on = {b for k, crew in rost.items() if k[:2] == night for b in crew}
+    moved = []
+    for u in sorted(units, key=ALL_UNITS.index):
+        now, prev = rost[night + (u,)], rost[before + (u,)]
+        if len(now) > len(prev):
+            on.difference_update(now[len(prev):])
+            rost[night + (u,)] = now[:len(prev)]
+        elif len(now) < len(prev):
+            free = [b for b in prev if b not in on] + [b for b in bdg if b not in on]
+            rost[night + (u,)] = now + free[:len(prev) - len(now)]
+            on.update(free[:len(prev) - len(now)])
         else:
-            kind = rng.choice(["older", "family", "young", "mixed"], p=[0.36, 0.30, 0.14, 0.20])
-            if kind == "older":
-                first = rng.uniform(62, 90)
-                mem = [first] + [float(np.clip(first + rng.normal(0, 4), 55, 95)) for _ in range(1, k)]
-            elif kind == "family":
-                first = rng.uniform(32, 58)
-                mem = [first, float(np.clip(first + rng.normal(0, 3), 25, 64))] + [rng.uniform(15, 24) for _ in range(2, k)]
-                mem = mem[:k]
-            elif kind == "young":
-                mem = [rng.uniform(16, 30) for _ in range(k)]
+            continue
+        moved.append(u)
+    return moved
+
+
+# ----------------------------------------------------------------------------------------------- the calls
+def address(r, s):
+    side = int(r.integers(2))
+    lo, hi = (s["l_from"], s["l_to"]) if side == 0 else (s["r_from"], s["r_to"])
+    return lo + 2 * int(r.integers(0, (hi - lo) // 2 + 1))
+
+
+def cad(r, segs, twp, base, nonp):
+    """The communications centre's 2026 events, the city's and Elmvale's, each with its units' times. No unit is
+    still committed to a call when its tour ends: a unit dispatched in the minutes before a change clears first."""
+    z = tz()
+    city_w = np.array([base[s["id"]] + nonp[s["id"]] + 1.2 for s in segs])
+    city_w = city_w / city_w.sum()
+    events = []
+    seq = 1
+    d = dt.date(2026, 1, 1)
+    while d <= dt.date(2026, 12, 31):
+        for area, n in (("city", int(r.poisson(79))), ("twp", int(r.poisson(8.1)))):
+            for _ in range(n):
+                h = int(r.choice(24, p=HOUR))
+                drawn = dt.datetime(d.year, d.month, d.day, h, int(r.integers(60)), int(r.integers(60)))
+                t_local = wall(drawn)
+                u = r.random()
+                prio = 1 if u < 0.062 else (2 if u < 0.30 else (3 if u < 0.76 else 4))
+                if area == "city":
+                    s = segs[int(r.choice(len(segs), p=city_w))]
+                    seg, district, ward = s["id"], s["ward"], s["ward"]
+                    addr = "%d %s" % (address(r, s), s["street"].upper())
+                else:
+                    t = twp[int(r.integers(len(twp)))]
+                    seg, district, ward = t["id"], t["zone"], None
+                    addr = "%d %s" % (t["n0"] + 2 * int(r.integers(1, 45)), t["street"].upper())
+                v = r.random()
+                if prio == 1:
+                    src = "911" if v < 0.71 else ("PHONE" if v < 0.85 else ("ALARM" if v < 0.92 else "OFFICER"))
+                    ctype = P1_TYPES[int(r.integers(len(P1_TYPES)))]
+                    if ctype == "ALARM - HOLDUP":
+                        src = "ALARM"
+                else:
+                    src = "911" if v < 0.22 else ("PHONE" if v < 0.66 else ("ALARM" if v < 0.75 else
+                                                                          ("OFFICER" if v < 0.97 else "WALK-IN")))
+                    ctype = OTHER_TYPES[int(r.integers(len(OTHER_TYPES)))]
+                ev = {"seq": seq, "received": t_local, "drawn": drawn, "priority": prio, "type": ctype, "source": src,
+                      "address": addr, "segment": seg, "district": district, "ward": ward, "area": area,
+                      "units": []}
+                seq += 1
+                disp = "COMPLETED"
+                if src == "WALK-IN":
+                    disp = "REPORT TAKEN"
+                elif prio >= 3 and r.random() < 0.035:
+                    disp = "MERGED"
+                elif r.random() < (0.02 if prio == 1 else 0.06):
+                    disp = "CANCELLED"
+                ev["disposition"] = disp
+                if disp not in ("MERGED", "REPORT TAKEN"):
+                    _units(r, ev, prio, src, area, ward)
+                events.append(ev)
+        d += dt.timedelta(1)
+    events.sort(key=lambda e: (e["received"].astimezone(UTC), e["seq"]))
+    return events
+
+
+def _units(r, ev, prio, src, area, ward):
+    nunits = (2 + int(r.poisson(0.55))) if prio == 1 else (1 + int(r.random() < 0.45) if prio == 2 else 1)
+    if area == "city":
+        own = ["%s%d" % (ZONE[ward], k) for k in (1, 2)]
+        near = ["%s%d" % (ZONE[w], k) for w in NEIGHBOUR[ward] for k in (1, 2)]
+        cand = [own[int(r.integers(2))]] + list(r.permutation([u for u in own + near]))
+    else:
+        cand = [["T1", "T2"][int(r.integers(2))]] + list(r.permutation(["T1", "T2", "D1", "D2", "C1", "C2"]))
+    if prio == 1 and r.random() < 0.3:
+        cand.insert(1, ["S1", "S2"][int(r.integers(2))])
+    chosen = []
+    for u in cand:
+        if u not in chosen:
+            chosen.append(u)
+        if len(chosen) == nunits:
+            break
+    z = tz()
+    t0 = ev["received"].astimezone(UTC)
+    w0 = ev["drawn"]
+    delay = {1: 0.85, 2: 2.6, 3: 7.5, 4: 18.0}[prio] * math.exp(r.normal(0, 0.45))
+    travel = (WARD_TRAVEL[ward] if area == "city" else 11.6) * (1.0 if prio == 1 else 1.22)
+    first = travel * math.exp(r.normal(0, 0.40))
+    for k, u in enumerate(chosen):
+        # w_* replay the wall-clock times every draw was decided on; the stamps themselves run in UTC
+        if src == "OFFICER" and k == 0:
+            s1, s2 = int(r.integers(5, 40)), int(r.integers(0, 15))
+            w_dsp = w0 + dt.timedelta(seconds=s1)
+            w_ons = w_dsp + dt.timedelta(seconds=s2)
+            dsp = quiet(t0 + dt.timedelta(seconds=s1))
+            ons = dsp + dt.timedelta(seconds=s2)
+        else:
+            lead = delay + 0.6 * k * r.random()
+            tr = first if k == 0 else first * (1.0 + 0.35 * r.random()) + r.uniform(0.5, 4.0)
+            w_dsp = w0 + dt.timedelta(minutes=lead)
+            w_ons = w_dsp + dt.timedelta(minutes=tr)
+            dsp = quiet(t0 + dt.timedelta(minutes=lead))
+            ons = dsp + dt.timedelta(minutes=tr)
+        w_end = _wall_end(w_dsp)
+        end = tour_end(dsp).astimezone(UTC)
+        if w_ons >= w_end - dt.timedelta(minutes=2):
+            s3 = int(r.integers(20, 90))
+            extra = first if k == 0 else first + r.uniform(0.5, 4.0)
+            w_dsp = w_end + dt.timedelta(seconds=s3)
+            w_end = _wall_end(w_dsp)
+            dsp = quiet(end + dt.timedelta(seconds=s3))
+            ons = dsp + dt.timedelta(minutes=extra)
+            end = tour_end(dsp).astimezone(UTC)
+        elif ons >= end - dt.timedelta(minutes=2):
+            dsp = quiet(end + dt.timedelta(seconds=55))
+            ons = dsp + dt.timedelta(minutes=first)
+            end = tour_end(dsp).astimezone(UTC)
+        lag0 = int(r.integers(10, 75))
+        w_enr = w_dsp + dt.timedelta(seconds=lag0)
+        lag = min(lag0, max(0, int((ons - dsp).total_seconds()) // 2))
+        enr = dsp + dt.timedelta(seconds=lag)
+        if ev["disposition"] == "CANCELLED":
+            g = float(r.uniform(1.5, 9.0))
+            w_clr = w_enr + dt.timedelta(minutes=g)
+            ons = None
+            clr = enr + dt.timedelta(minutes=g)
+        else:
+            g = float(r.gamma(2.2, 18.0))
+            w_clr = w_ons + dt.timedelta(minutes=g)
+            clr = ons + dt.timedelta(minutes=g)
+        if w_clr >= w_end - dt.timedelta(minutes=1):
+            clr = end - dt.timedelta(seconds=int(r.integers(40, 200)))
+        elif clr >= end - dt.timedelta(minutes=1):
+            clr = end - dt.timedelta(seconds=90)
+        if ons is not None and clr <= ons:
+            clr = ons + dt.timedelta(seconds=30)
+        if clr <= enr:
+            clr = enr + dt.timedelta(seconds=30)
+        sec = lambda x: None if x is None else x.replace(microsecond=0).astimezone(z)
+        ev["units"].append({"unit": u, "dispatched": sec(dsp), "enroute": sec(enr), "onscene": sec(ons),
+                            "cleared": sec(clr)})
+
+
+def _wall_end(w):
+    """The end of the tour covering a naive wall-clock time, as a naive wall-clock time."""
+    h = w.hour + w.minute / 60.0
+    d = w.date()
+    if 7 <= h < 19:
+        return dt.datetime(d.year, d.month, d.day, 19, 0)
+    if h >= 19:
+        d = d + dt.timedelta(1)
+    return dt.datetime(d.year, d.month, d.day, 7, 0)
+
+
+# ----------------------------------------------------------------------------------------------- paid duty
+CLIENTS = {
+    "TRAFFIC CONTROL": ["CITY OF MOUNTJOY - ROADS", "CITY OF MOUNTJOY - WATER SERVICES", "HYDRO MOUNTJOY",
+                        "ENBRIDGE GAS", "BELL CANADA", "COGECO CONNEXION", "DUFFERIN CONSTRUCTION",
+                        "KAWARTHA PAVING LTD", "TRENT VALLEY ASPHALT", "LAKEHEAD CIVIL INC"],
+    "FILM": ["NORTHFIELD PICTURES INC", "LANTERN FILMS (ONT) LTD"],
+    "ESCORT": ["COMSTOCK FUNERAL HOME", "NELSON-HARRIS FUNERAL HOME", "LAKELAND HEAVY HAUL"],
+    "SECURITY": ["CIBC", "ROYAL BANK", "SHOPPERS DRUG MART", "NORTHGATE MALL MANAGEMENT", "LCBO"],
+    "EVENT": ["MOUNTJOY RIBFEST", "DOWNTOWN MOUNTJOY BIA", "MOUNTJOY ROTARY CLUB", "SANTA CLAUS PARADE COMMITTEE",
+              "MOUNTJOY HALF MARATHON", "CANADA DAY COMMITTEE"],
+    "OTHER": ["MOUNTJOY HOSPITAL", "TRENTWAY BUS LINES", "ST PETER SECONDARY SCHOOL", "CITY OF MOUNTJOY - PARKS"],
+}
+CAT_SHARE = [("TRAFFIC CONTROL", 0.57), ("ESCORT", 0.10), ("SECURITY", 0.10), ("OTHER", 0.10), ("EVENT", 0.09),
+             ("FILM", 0.04)]
+
+
+def hm(x):
+    return "%02d:%02d" % (int(x) // 60 % 24, int(x) % 60)
+
+
+def interior_nodes(segs):
+    """Grid nodes whose four segments are all in one ward, for intersection locations."""
+    bk = W.by_key(segs)
+    out = []
+    for i in range(1, len(W.NS) - 1):
+        for j in range(1, len(W.EW) - 1):
+            ks = [("NS", i, j - 1), ("NS", i, j), ("EW", j, i - 1), ("EW", j, i)]
+            if all(k in bk for k in ks) and len({bk[k]["ward"] for k in ks}) == 1:
+                out.append((i, j, bk[("NS", i, j)]["ward"], bk[("NS", i, j)]["id"]))
+    return out
+
+
+def _category(r):
+    u = r.random()
+    acc = 0.0
+    for c, p in CAT_SHARE:
+        acc += p
+        if u < acc:
+            return c
+    return CAT_SHARE[-1][0]
+
+
+def _minutes(x):
+    h, m = map(int, x.split(":"))
+    return h * 60 + m
+
+
+def bookings(r, segs, ev, bdg):
+    """Every paid-duty booking 2022 to 2027 with its date, booked hours, location, client and officer lines, and
+    each worked line's actual hours. The truth keeps each booking's segment and ward."""
+    bk = W.by_key(segs)
+    nodes = interior_nodes(segs)
+    out = []
+    for (d, venue, kind, client, st, en, offs) in ev:
+        v = W.GARDENS if venue == "G" else W.LAKESHORE
+        s = bk[v["seg"]]
+        out.append({"date": d, "start": st, "end": en, "overnight": False, "category": "EVENT", "client": client,
+                    "loc": "%s, %d %s" % (v["name"], v["number"], v["street"].upper()), "seg": s["id"],
+                    "ward": s["ward"], "officers": offs, "venue": venue})
+    weights = np.array([s["len"] for s in segs])
+    weights = weights / weights.sum()
+    for y in range(2022, 2027):
+        n = int(r.normal(1960, 40))
+        for _ in range(n):
+            cat = _category(r)
+            if cat == "TRAFFIC CONTROL" and r.random() > 0.3:
+                doy = int(r.integers(90, 320))
             else:
-                mem = [rng.uniform(20, 85) for _ in range(k)]
-        for j in range(1, len(mem)):                  # clipped ages never give two members one birth date
-            while any(abs(mem[j] - x) < 0.01 for x in mem[:j]):
-                mem[j] += 0.37
-        ages += mem
-        hh += [h] * k
-    return np.array(ages), np.array(hh)
-
-
-def _initial_status(age, cls_a, rng):
-    gi = _age_group_idx(age)
-    p_inact = np.array([0.42, 0.14, 0.12, 0.13, 0.27, 0.72, 0.93])[gi]
-    p_inact = np.where(cls_a, p_inact * 0.25, p_inact)
-    r = rng.random(age.size)
-    st = np.where(r < p_inact, 2, 0)
-    st[(st == 0) & (rng.random(age.size) < np.where(cls_a, 0.02, 0.06))] = 1
-    return st
-
-
-def qmid(q):
-    return dt.date(q[0], 3 * q[1] - 1, 15)
-
-
-def age_at(dob, q):
-    m = qmid(q)
-    return m.year - dob.year - ((m.month, m.day) < (dob.month, dob.day))
-
-
-def intake(c, cap=None):
-    """One quarterly intake c = (year, q). Returns addresses, persons by wave and the wave-1 call history."""
-    rng = _rng(*c)
-    n = W.ISSUED_PER_INTAKE
-    shares = np.array([r[2] for r in W.REGIONS])
-    region = rng.choice(len(W.REGIONS), n, p=shares / shares.sum())
-    district = np.array([rng.integers(1, W.DISTRICTS[W.RCODES[r]] + 1) for r in region])
-    eligible = rng.random(n) >= W.INELIGIBLE
-    p_a = np.array([r[3] for r in W.REGIONS])[region]
-    cls_a = rng.random(n) < p_a
-    size = np.where(cls_a, rng.choice([1, 2, 3], n, p=[0.42, 0.46, 0.12]), rng.choice([1, 2, 3, 4], n, p=[0.36, 0.40, 0.14, 0.10]))
-    age0, hh = _ages(cls_a, size, rng)
-    pa = cls_a[hh]
-    sex = rng.choice([1, 2], age0.size)
-    # birth dates from the age at the intake quarter's midpoint
-    mid = dt.date(c[0], 3 * c[1] - 1, 15)
-    dob = [mid - dt.timedelta(days=int(a * 365.25)) for a in age0]
-    # burn-in of eight quarters to the intake
-    q0 = W.qnext(c, -8)
-    st = _initial_status(age0 - 2.0, pa, rng)
-    for k in range(8):
-        st = step(st, age0 - 2.0 + 0.25 * k, pa, W.qnext(q0, k), rng)
-    statuses = [st]
-    for k in range(1, W.WAVES):
-        statuses.append(step(statuses[-1], age0 + 0.25 * k, pa, W.qnext(c, k), rng))
-    # roster: a member may leave between waves (never the first)
-    present = [np.ones(age0.size, bool)]
-    first = np.r_[True, hh[1:] != hh[:-1]]
-    for k in range(1, W.WAVES):
-        leave = (~first) & (rng.random(age0.size) < 0.018)
-        present.append(present[-1] & ~leave)
-    # wave 1: visits until someone is found at home
-    home = np.zeros(n, bool)
-    for w0 in (1, 2):
-        sel = statuses[0] == w0
-        at = sel & (rng.random(age0.size) < (W.P_HOME_U if w0 == 1 else W.P_HOME_I))
-        np.logical_or.at(home, hh[at], True)
-    p = np.where(home, W.P_CONTACT_HOME, np.where(cls_a, W.P_CONTACT_AWAY["A"], W.P_CONTACT_AWAY["R"]))
-    need = rng.geometric(p)
-    refuse = rng.random(n) < W.REFUSAL
-    maxv = W.CAP_VISITS if (cap if cap is not None else W.capped(c)) else W.MAX_VISITS
-    contact = eligible & (need <= maxv)
-    resp = [contact & ~refuse]
-    # telephone waves
-    for k in range(1, W.WAVES):
-        hk = np.zeros(n, bool)
-        for w0 in (1, 2):
-            sel = (statuses[k] == w0) & present[k]
-            at = sel & (rng.random(age0.size) < (W.P_HOME_U if w0 == 1 else W.P_HOME_I))
-            np.logical_or.at(hk, hh[at], True)
-        pr = np.where(hk, W.P_TEL_HOME, W.P_TEL_AWAY)
-        resp.append(resp[-1] & (rng.random(n) < pr))
-    # hours actually worked in the reference week, each quarter, for the employed
-    hours = []
-    for k in range(W.WAVES):
-        away = rng.random(age0.size) < 0.065
-        part = rng.random(age0.size) < np.where(pa, 0.15, 0.30)
-        h = np.where(part, rng.normal(19.5, 6.0, age0.size), rng.normal(40.5, 5.5, age0.size))
-        h = np.clip(np.round(h * 4) / 4, 1.0, 72.0)
-        hours.append(np.where(away, 0.0, h))
-    ages_q = [np.array([age_at(b, W.qnext(c, k)) for b in dob]) for k in range(W.WAVES)]
-    return dict(intake=c, ages_q=ages_q, region=region, district=district, eligible=eligible, cls_a=cls_a, size=size, hh=hh, age0=age0,
-                sex=sex, dob=dob, statuses=statuses, present=present, home=home, need=need, refuse=refuse,
-                maxv=maxv, resp=resp, hours=hours)
-
-
-def simulate_all():
-    """Every intake whose waves fall in the person file, and the six-visit counterfactuals of the capped intakes."""
-    intakes = {c: intake(c) for c in W.qrange(W.FIRST_INTAKE, W.LAST_Q)}
-    counterfactual = {c: intake(c, cap=False) for c in intakes if W.capped(c)}
-    return dict(intakes=intakes, counterfactual=counterfactual)
+                doy = int(r.integers(0, 365))
+            d = dt.date(y, 1, 1) + dt.timedelta(doy)
+            if d.year != y:
+                continue
+            night = False
+            if cat == "TRAFFIC CONTROL":
+                night = r.random() < (0.11 if d.month in (1, 2, 3, 12) else 0.13)
+            elif cat == "FILM":
+                night = r.random() < 0.35
+            if night:
+                st = int(r.choice([1260, 1290, 1320, 1350, 1380]))
+                dur = int(r.choice([420, 450, 480, 510, 540, 600]))
+            else:
+                st = int(r.choice([360, 390, 420, 450, 480, 540, 600, 660, 720]))
+                dur = int(r.choice([180, 210, 240, 300, 360, 420, 480, 510, 540, 600]))
+                if cat == "ESCORT":
+                    dur = int(r.choice([120, 150, 180]))
+            en = st + dur
+            s = segs[int(r.choice(len(segs), p=weights))]
+            if r.random() < 0.66:
+                loc = "%d %s" % (address(r, s), s["street"].upper())
+                seg, ward = s["id"], s["ward"]
+            else:
+                i, j, ward, seg = nodes[int(r.integers(len(nodes)))]
+                loc = ("%s / %s" % (W.NS[i].upper(), W.EW[j].upper()) if r.random() < 0.5 else
+                       "%s / %s" % (W.EW[j].upper(), W.NS[i].upper()))
+            offs = 1 + int(r.random() < 0.38) + int(r.random() < 0.10)
+            client = CLIENTS[cat][int(r.integers(len(CLIENTS[cat])))]
+            out.append({"date": d, "start": hm(st), "end": hm(en), "overnight": en > 1440, "category": cat,
+                        "client": client, "loc": loc, "seg": seg, "ward": ward, "officers": offs, "venue": None})
+    for b in out:
+        lead = int(r.integers(2, 70)) if b["category"] != "EVENT" else int(r.integers(20, 110))
+        b["taken"] = b["date"] - dt.timedelta(lead)
+        if b["venue"] and b["date"].year == 2027 and b["client"] != "MOUNTJOY MARINERS HOCKEY CLUB":
+            b["taken"] = W.AS_OF - dt.timedelta(int(r.integers(9, 120)))
+        if b["client"] == "MOUNTJOY MARINERS HOCKEY CLUB":
+            # the club books each half season's home dates in one batch
+            b["taken"] = dt.date(b["date"].year - (1 if b["date"].month <= 6 else 0), 12, 14) \
+                if b["date"].month <= 6 else dt.date(b["date"].year, 8, 18)
+    for _ in range(64):
+        d = W.AS_OF + dt.timedelta(int(r.integers(2, 80)))
+        s = segs[int(r.choice(len(segs), p=weights))]
+        cat = "TRAFFIC CONTROL" if r.random() < 0.6 else ("ESCORT" if r.random() < 0.5 else "SECURITY")
+        st = int(r.choice([390, 420, 450, 480]))
+        out.append({"date": d, "start": hm(st), "end": hm(st + int(r.choice([240, 360, 480]))), "overnight": False,
+                    "category": cat, "client": CLIENTS[cat][int(r.integers(len(CLIENTS[cat])))],
+                    "loc": "%d %s" % (address(r, s), s["street"].upper()), "seg": s["id"], "ward": s["ward"],
+                    "officers": 1 + int(r.random() < 0.3), "venue": None,
+                    "taken": W.AS_OF - dt.timedelta(int(r.integers(1, 40)))})
+    out = [b for b in out if b["taken"] <= W.AS_OF]
+    out.sort(key=lambda b: (b["taken"], b["date"], b["start"], b["loc"]))
+    counters = {}
+    for b in out:
+        yy = b["taken"].year % 100
+        counters[yy] = counters.get(yy, 0) + 1 + int(r.random() < 0.06)
+        b["no"] = "PD%02d-%04d" % (yy, counters[yy])
+    for b in out:
+        future = b["date"] > W.AS_OF
+        if future:
+            b["status"] = "BOOKED"
+        elif b["venue"]:
+            b["status"] = "COMPLETED"
+        else:
+            u = r.random()
+            b["status"] = "COMPLETED" if u < 0.93 else ("CANCELLED" if u < 0.975 else "CANCELLED LATE")
+        pool = list(r.choice(bdg, size=b["officers"], replace=False))
+        st, en = _minutes(b["start"]), _minutes(b["end"])
+        if b["overnight"] or en <= st:
+            en += 1440
+        lines = []
+        for k in range(b["officers"]):
+            line = {"line": k + 1, "badge": int(pool[k]), "a_start": None, "a_end": None, "hours": 0.0}
+            if future:
+                line["status"] = "BOOKED"
+                if r.random() > 0.55:
+                    line["badge"] = None
+            elif b["status"] in ("CANCELLED", "CANCELLED LATE"):
+                line["status"] = b["status"]
+            elif r.random() < 0.012:
+                line["status"] = "NO SHOW"
+            else:
+                line["status"] = "WORKED"
+                u = r.random()
+                delta = 0
+                if u < 0.12:
+                    delta = -15 * int(r.integers(2, 9))
+                elif u < 0.20:
+                    delta = 15 * int(r.integers(1, 9))
+                a_en = max(st + 60, en + delta)
+                line["a_start"], line["a_end"], line["hours"] = st, a_en, (a_en - st) / 60.0
+            lines.append(line)
+        b["lines"] = lines
+    return out

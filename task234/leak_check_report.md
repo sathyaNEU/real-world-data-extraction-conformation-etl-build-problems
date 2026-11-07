@@ -1,18 +1,19 @@
 # leak check, task234
 
-**Verdict: REVIEW.** 11 files read, 36 golden figures and 12 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 10 files read, 36 golden figures and 12 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: positivity, laboratories, asserted, report, architecture, epidemic, golden, decisive, surveillance, county, testing, change, default, counts, message, monday, patients, brandmoor, linear, baseline, weekly, interface, period, messages, positives
+Stump terms swept: positivity, laboratories, report, asserted, architecture, golden, decisive, epidemic, change, surveillance, county, testing, message, brandmoor, default, counts, receipt, monday, patients, linear, baseline, weekly, period, messages, positives
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `DATA_DICTIONARY.md`: 9 of 25 stump-paragraph terms appear (laboratories, report, surveillance, county, change, message); read whether the document names the move
-- **REVIEW** `FCP-2_feed_completeness_protocol.pdf`: 9 of 25 stump-paragraph terms appear (laboratories, report, surveillance, county, counts, monday); read whether the document names the move
-- **REVIEW** `README.md`: 9 of 25 stump-paragraph terms appear (laboratories, report, surveillance, county, change, message); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 1)
+- **REVIEW** `FCP-2_feed_completeness_protocol.pdf`: 8 of 25 stump-paragraph terms appear (laboratories, report, surveillance, county, counts, monday); read whether the document names the move
 
 ## 6 ranking artifacts (INFO 1)
 - **INFO** `respiratory_stream_register.xlsx`: names 10 of 12 answer-set candidates; confirm it does not rank them on the decision question
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -29,9 +30,8 @@ Stump terms swept: positivity, laboratories, asserted, report, architecture, epi
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -82,3 +82,12 @@ the cancelled-order realism fix (a data-only change: the reports, documents and 
   the call reads no receipt time.
 - Cancelled orders: fixed; leak.py re-run on the rebuilt pack (REVIEW, no LEAK); goldens, figures.json and
   submission.md byte-identical.
+
+Reader (isolated, Sonnet, medium), 2026-10-31, on a fresh copy of prompt.txt and the 10-file pack after the reship
+repair (the README and the data dictionary withdrawn, the extract's two UTC columns named for their zone, a vaccination
+coverage distractor added). It read the pack for leaks and solved nothing. Questions 1 to 4 none: FCP-2 s.5 files the
+check that chooses the way of estimating the week's tests and names no way; no file ranks or scores the streams; no
+week-3 figure ships. Question 5: s.3's ratio and denominator, s.4's line and timing, s.2's test rules and s.6's
+specimen read literally. Question 6: an analytical choice (estimating the week's tests before the reports arrive, the
+filed check picking the estimator); the clocks, the influenza A and B rows, corrections and cancellations are Layer 1.
+The sweep line harmless.

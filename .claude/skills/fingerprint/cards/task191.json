@@ -1,85 +1,251 @@
 {
- "task": "task191",
- "architecture": "v1",
- "drawn": "2026-10-16",
- "slot_note": "seed AD14 kept its decision shape only: one capacity upgrade funded among several candidates that all show an evening shortfall. The seed's own architecture compares the strongest gap against a range uncongested ports have shown, which is a filed reference band deciding the call, so the build is re-rooted on the field's own treatment of a maximum that was selected for being largest.",
- "domain": "general-statistics-data-science",
- "subdomain": "multiple-testing-selective-inference",
- "niche": "judging the worst of many monitored series when the worst was chosen for being worst",
- "objective": "anomaly-detection",
- "shape": "13",
- "decision_type": "go_hold_or_stop",
- "answer_unit": "named_option",
- "answer": "Fund no interconnect augment this cycle.",
- "answer_source": "submission.md block 1; generator/figures.json call. The quarter's worst evening shortfall is 318 kbps on HVT-01 on 2027-02-17 in the 19:00 window, and every one of the eight earlier quarters of the same measurement on the same seven interconnects produced a larger worst window, 398 to 489 kbps.",
- "gap": [
-  "objective"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G17",
-  "G18"
- ],
- "gate_g": "signal_vs_noise_or_hold",
- "calibration_form": "none",
- "stump_strategy": "uncertainty_hold",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "published_series",
- "stakeholder_role": "the network planning lead",
- "role_family": "capacity_planner",
- "scoring_unit": "per active unit per period",
- "spine": {
-  "file": "panel_throughput_minutes.csv",
-  "rows": 224460,
-  "entity": "one measurement of one path in one minute",
-  "grain": "path x minute",
-  "source": "synthetic"
- },
- "forum": "committee_or_panel",
- "forcing_event": "period_close",
- "org_family": "software_or_platform",
- "world": {
-  "geography": "Netherlands",
-  "currency": "EUR",
-  "org_type": "video streaming platform",
-  "invented_names": [],
-  "people": [
-   "Amelia Jekel",
-   "Rick Claassen"
-  ]
- },
- "deliverables": [
-  "augment_decision_2027Q1.xlsx",
-  "shortfall_overview.png"
- ],
- "opening_move": "question-first",
- "question_form": "whether",
- "driver": "The decisive quantity is whether the largest shortfall among many candidate series is larger than the largest a quiet set of the same size and length produces, because the candidate was chosen for standing out, so judging it against the spread of one series calls a routine extreme a real degradation.",
- "driver_concrete": "Seven interconnects are watched every evening for a quarter and the worst of them is put forward, so the figure to beat is the distribution of the worst of seven over a quarter of evenings, which the uncongested paths' own record puts well above the one-series bound the worst interconnect clears.",
- "stump": "A competent solver builds each interconnect's evening shortfall against its own daytime baseline, tests the worst one against its own variation, finds it clears comfortably and funds the augment, where the same shortfall is inside what the worst of seven quiet paths produces in a quarter.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who cleans every series and applies the filed investment rule tests the worst interconnect's gap against that interconnect's own spread, gets a comfortable margin and funds the augment, where the honest comparison is against the maximum over seven paths and a quarter of evenings and the call is to hold.",
- "domain_test": "The deciding quantity is the null distribution of a maximum over many series and many periods, which selective inference estimates from the family rather than from the selected member; swap the interconnects for a single meter read once and nothing was selected, so the correction and the call disappear.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task189": "task189 and task191 share only the broadest generator tag, G17 statistical rigor, and the Gate G mechanism signal_vs_noise_or_hold. The mechanisms are unrelated. task189's decisive quantity is the mean of a set of results most of which carry only an upper bound, where two laboratories report to limits an order apart, so the call turns on estimating a mean under left censoring. task191's decisive quantity is the null distribution of a maximum: the figure is correct and uncensored, and the call turns on the breadth of the selection that produced it. Nothing is censored here and nothing is selected there.",
-  "task190": "furniture only: both packs shipped a handover manifest. task191's is renamed to the platform's own idiom and carries its own columns. task190's architecture 1 is spent and its driver, a stock read as a flow, has nothing to do with calibrating an extreme."
- },
- "lineage": [],
- "notes": "The deciding forum is the platform's capacity committee, redrawn from a board of directors after guard.py heart blocked the forum against task263.",
- "layer2_family": "forecast_uncertainty",
- "layer2_pattern": "own:null-of-the-selected-maximum",
- "layer1": [
-  "minute-level panel with gaps",
-  "two measurement vantage points",
-  "local time against UTC",
-  "a path renamed mid-quarter",
-  "a maintenance window to exclude",
-  "wide monthly sheets"
- ],
- "registered": "2026-10-16T23:55:31Z"
+  "task": "task191",
+  "architecture": "v4 (re-root 2026-10-31: a US payments platform's transaction-monitoring scenarios, the 2027 tuning set read on the share of each scenario's alerts that end in a SAR, the alerts still under investigation included)",
+  "drawn": "2026-10-31",
+  "slot_note": "re-root of task191 in the same objective (Anomaly Detection & Diagnostics), batch 1; architecture 3 moved to lineage, spent at stage 4 (judge SEND_BACK on Gate G and Gate H3)",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "fraud-aml-detection",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a payments platform's AML transaction-monitoring scenarios, read for the ones whose alerts end in a suspicious activity report too rarely to escape the next year's tuning",
+  "objective": "anomaly-detection",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "scoring_unit": "other",
+  "answer": "CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV go into the 2027 tuning and no other scenario; RMF-P2P, MUL-INF and MER-RND, below the floor on their decided alerts, clear it with their open investigations read by how they will end",
+  "answer_source": "submission.md block 1; golden tuning paper and alert figures workbook; generator/figures.json call",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G15",
+    "G12",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "censored_or_lagged_release",
+  "stump_strategy": "informative_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who drops the re-run duplicates, reads XB-HRJ with XB-HRJ2, dates each alert by its run's business date, carries each alert to the investigation it was escalated into or added to and reads the standard right (every alert raised in the year counts, those still under investigation by how they will end) reads productivity over the decided alerts, or projects the undecided ones at the decided share or at the share of decided investigations that filed, and sends CRY-OFF, CSH-VEL, DRM-REA, MER-RND, MUL-INF, PRF-DEV and RMF-P2P to tuning; every rule is read right and the answer is wrong because an alert heading for a SAR stays under investigation for about seven months while one heading for a closure without filing is closed within weeks, so the slow scenarios' undecided alerts are mostly SARs to come.",
+  "domain_test": "The deciding quantity is each scenario's alert-to-SAR conversion, the productivity measure AML tuning reads, and it is open on any extract because a SAR comes only after escalation, an investigation and the filing decision, months after the alert, while an alert closed without suspicion is closed at triage within days; put another field's nouns in (complaints resolved, claims paid) and nothing in them takes a suspicious-activity investigation's months to reach the rare outcome while the common one closes at once, and the task stops reading the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:undecided-alerts-are-mostly-sars-to-come",
+  "layer1": [
+    "alerts stamped in UTC by the nightly monitoring run while the platform's business day is Eastern time and ends at 22:00",
+    "a March 2026 re-run of one night's monitoring that raised a day's alerts a second time under new alert numbers",
+    "a scenario replaced in April 2026 by a re-thresholded version under a new code",
+    "alerts added to investigations that other scenarios' alerts opened, the SAR decision recorded on the investigation",
+    "a case manager export that also holds investigations opened before the alert export starts",
+    "SAR filings that are initial, continuing activity or corrections, with the prior-report field empty on some continuing activity reports",
+    "investigation records exported as an event history in JSON"
+  ],
+  "stakeholder_role": "the platform's BSA/AML officer, who sets the 2027 monitoring tuning set for the executive risk meeting before the 2027 independent AML review",
+  "role_family": "compliance_or_audit",
+  "spine": {
+    "file": "tm_alerts_2025-07_2026-10.csv",
+    "rows": 74360,
+    "entity": "one alert a monitoring scenario raised on a customer's activity (a re-run alert appears twice)",
+    "grain": "alert, July 2025 to October 2026",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "United States (a fictional payments platform in Columbus, Ohio, licensed as a money transmitter)",
+    "currency": "USD",
+    "org_type": "payments platform (P2P and merchant payments)",
+    "invented_names": [
+      "Kestrel Pay"
+    ],
+    "people": [
+      "Katherine Cobb",
+      "Miguel Swanson",
+      "Leah Berg"
+    ]
+  },
+  "deliverables": [
+    "tuning_scenarios_2027.docx",
+    "tm_alert_figures_2026.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "Each unit's share of cases that end in the rare outcome is read over every case it raised in the period, those still undecided included, and because a case heading for the rare outcome stays open for months while one heading for the common outcome is closed within weeks, the undecided cases are mostly rare-outcome cases; reading the share over decided cases alone, or projecting the undecided ones at the decided cases' share, understates it most for the units whose rare-outcome cases take longest to decide, so units that clear the floor read below it.",
+  "driver_concrete": "Each transaction-monitoring scenario's productivity, the share of its alerts raised in the year to 30 September 2026 that end in a SAR, read on 2 November 2026 when the slow scenarios' SAR investigations (funds moved in and out within 72 hours, many unrelated senders into one wallet, round-amount payments into a merchant) are mostly still open while their alerts closed without a SAR were closed within weeks.",
+  "stump": "Productivity read the way the monitoring MI reads it, the SARs among the alerts already decided (or the undecided alerts projected at that share, or at the share of decided investigations that filed), files CRY-OFF, CSH-VEL, DRM-REA, MER-RND, MUL-INF, PRF-DEV and RMF-P2P: it sends the funds-in-and-out, many-senders and round-amount merchant scenarios to tuning beside the genuinely unproductive ones; the step that lands a solver there is taking the undecided alerts to end like the decided ones, when an alert still undecided two months after it was raised has, in the scenario's own history, mostly ended in a SAR.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task192": "task192's lineage v2 counted a cohort's eventual events with the other terminal state leaving the population at risk, in conflict-event data; task191 reads a share of decided outcomes where the time to decision itself depends on the outcome, so the undecided cases carry the rare outcome, in AML alert dispositions.",
+    "task194": "task194 completes counts that crystallise late through a coding lag read across two vintages; task191 has no lag in the counts, only open investigations whose outcome is still to come.",
+    "task201": "task201 rebuilds exposure time lost before an event was reported; task191 estimates the outcome of cases still open, not their exposure."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-16",
+      "domain": "general-statistics-data-science",
+      "subdomain": "multiple-testing-selective-inference",
+      "niche": "judging the worst of many monitored series when the worst was chosen for being worst",
+      "objective": "anomaly-detection",
+      "shape": "13",
+      "decision_type": "go_hold_or_stop",
+      "answer_unit": "named_option",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G17",
+        "G18"
+      ],
+      "gate_g": "signal_vs_noise_or_hold",
+      "calibration_form": "none",
+      "stump_strategy": "uncertainty_hold",
+      "context_artifact": "published_series",
+      "forum": "committee_or_panel",
+      "forcing_event": "period_close",
+      "org_family": "software_or_platform",
+      "role_family": "capacity_planner",
+      "driver": "The decisive quantity is whether the largest shortfall among many candidate series is larger than the largest a quiet set of the same size and length produces, because the candidate was chosen for standing out, so judging it against the spread of one series calls a routine extreme a real degradation.",
+      "driver_concrete": "Seven interconnects are watched every evening for a quarter and the worst of them is put forward, so the figure to beat is the distribution of the worst of seven over a quarter of evenings, which the uncongested paths' own record puts well above the one-series bound the worst interconnect clears.",
+      "stump": "A competent solver builds each interconnect's evening shortfall against its own daytime baseline, tests the worst one against its own variation, finds it clears comfortably and funds the augment, where the same shortfall is inside what the worst of seven quiet paths produces in a quarter.",
+      "answer": "Fund no interconnect augment this cycle.",
+      "world": {
+        "geography": "Netherlands",
+        "currency": "EUR",
+        "org_type": "video streaming platform",
+        "invented_names": [],
+        "people": [
+          "Amelia Jekel",
+          "Rick Claassen"
+        ]
+      },
+      "deliverables": [
+        "augment_decision_2027Q1.xlsx",
+        "shortfall_overview.png"
+      ],
+      "question_form": "whether",
+      "fate": "spent 2026-10-31 at the batch 1 re-root: shipped 2026-10-17 on the interconnect worst-window call (fund nothing), its decisive step measured as landed in-house before any portal result; the multiple-testing cell, the filed comparison criterion and the statistic-of-a-statistic reference retired with it"
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-31",
+      "domain": "biomedical-clinical-research",
+      "subdomain": "genomics-gwas-high-dimensional-association",
+      "niche": "a functional genomics facility's genome-wide CRISPR knockout screen of one cancer cell line, read for the line's own dependencies before arrayed validation",
+      "objective": "anomaly-detection",
+      "shape": "10",
+      "decision_type": "ranked_slate_under_cap",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G3"
+      ],
+      "gate_g": "decomposition_attribution",
+      "calibration_form": "gold_standard_subsample",
+      "stump_strategy": "decomposition_attribution",
+      "context_artifact": "filed_standard",
+      "forum": "committee_or_panel",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "university_or_school",
+      "role_family": "portfolio_manager",
+      "driver": "The decisive quantity is each unit's own effect on an outcome measured through several probes, where every probe in a region also carries a damage term that grows with how many copies of the region the system holds, so units sitting in a multiplied region rank as the most affected and units in a lost region look spared; only the effect net of the region's damage, read off the reference units known to have no effect, ranks the units for the few places available.",
+      "driver_concrete": "Each gene's knockout effect in OSR-7 is read through four guides, and a guide that cuts in an amplified region also kills cells through the extra DNA breaks, so the genes of the line's amplicons look like strong dependencies and genes in its single-copy segments look spared; only the guide-level depletion net of the copy-number cutting effect, estimated on the non-essential reference genes across the line's copy-number states, gives the dependencies the institute validates.",
+      "stump": "A competent solver normalises the screen's guide counts, scales each gene's median depletion so that the non-essential reference genes sit at 0 and the common essentials at -1, sets the common essentials aside and fills the arrayed round's places with the most depleted genes past -0.5, most of them passenger genes of the line's amplicons, where the effect net of the copy-number cutting effect keeps the amplicons' own driver dependencies, drops their passengers and brings in dependencies from the single-copy segments.",
+      "answer": "",
+      "world": {
+        "geography": "Netherlands",
+        "currency": "EUR",
+        "org_type": "academic cancer research institute",
+        "invented_names": [
+          "Vliedorp Instituut voor Kankeronderzoek",
+          "OSR-7"
+        ],
+        "people": [
+          "Femke Nihoe",
+          "Rick Claassen",
+          "Merel Spanhaak"
+        ]
+      },
+      "deliverables": [
+        "osr7_validation_slate_2027.xlsx",
+        "osr7_gene_effects_2027.svg"
+      ],
+      "question_form": "what",
+      "fate": "spent 2026-10-31 at stage 2 with no data cut: the previous fork's drafting of the knockout-screen world was interrupted by a safety classifier, so the slot re-rooted to a cell far from genome editing, laboratory biology and anything dual-use; the design was never built or shipped"
+    },
+    {
+      "architecture": "v3",
+      "drawn": "2026-10-31",
+      "domain": "human-factors-ergonomics",
+      "subdomain": "safety-incident-error-analysis",
+      "niche": "a municipal bus fleet's forward-collision and pedestrian warnings, read for the depots whose drivers let genuine warnings pass",
+      "objective": "anomaly-detection",
+      "shape": "other",
+      "decision_type": "designation_set",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G15",
+        "G2",
+        "G18"
+      ],
+      "gate_g": "decomposition_attribution",
+      "calibration_form": "none",
+      "stump_strategy": "classification_error",
+      "context_artifact": "filed_standard",
+      "forum": "executive_team",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "utility_or_infrastructure",
+      "role_family": "compliance_or_audit",
+      "driver": "Each unit's rate of failing to act on a warning is read only on the warnings whose trigger was real, because the warning system fires on a large share of the passes at a few fixed places where nothing is in the way and operators rightly let those go, while the places where real hazards cluster fire on a small share of passes; the two kinds of place are told apart only by the share of passes on which the system fires, which no count of warnings carries, so the units whose routes cross the fixed places look worst and the unit that lets real hazards pass looks ordinary.",
+      "driver_concrete": "Each depot's share of genuine forward-collision and pedestrian warnings with no brake application within two seconds, where the warnings four fixed structures of the new network raise (an underpass beneath the railway, a bus-only link road, the busway's bollard gates and a sculpture on a roundabout) on a quarter or more of the buses passing them are not genuine and are set aside, told apart from the market-day shared space where pedestrians really step out, which fires on 2.6 per cent of passes, only by warnings per bus passage, the passes counted from the service return's trips operated over the stop-and-route register's sequences.",
+      "stump": "The fleet dashboard's measure, the no-brake share of every collision warning by depot against the fleet's, files Hornacho and Valdeolmos, whose lines cross the four fixed structures; setting aside the busiest or most ignored places as nuisance also drops the Plaza de Abastos, where pedestrians are really in the path, and files La Ribera; San Lázaro, whose drivers let 96.9 per cent of the Plaza's genuine warnings go, is flagged only once the places are classed by warnings per bus pass.",
+      "spent": "2026-10-31, stage 4: the judge returned DETERMINISTIC with SEND_BACK on Gate G and Gate H3 and the reconciliation confirmed it; the decisive step was catching four fixed structures whose warnings inflated the raw rates (planted_defect_flip, surface_read_rejection, sole_data_defect yes), so Layer 1 mess carried the stump"
+    }
+  ],
+  "notes": "",
+  "registered": "2026-10-31T21:24:59Z",
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "the",
+      "rounding opener": "shortfalls",
+      "deliverable set": "png+xlsx"
+    },
+    {
+      "question form": "where",
+      "second-sentence opener": "attention_programme_depots_2027.docx",
+      "rounding opener": "state",
+      "deliverable set": "docx+svg+xlsx"
+    }
+  ],
+  "shell": {
+    "question form": "what",
+    "second-sentence opener": "make",
+    "rounding opener": "investigations",
+    "deliverable set": "docx+xlsx"
+  }
 }

@@ -1,194 +1,147 @@
 {
-  "task": "task130",
-  "title": "The 2027 contribution to Corvane Health's new claims-made professional liability trust",
-  "domain": "Actuarial Science & Insurance",
-  "subdomain": "pricing-ratemaking-credibility (first-year funding of a self-insured claims-made professional liability trust at an Oregon health system)",
-  "stated_inputs": [],
-  "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "other: the contribution, then two reconciliation asks across four entities (open claims under each expiring carrier's policies missing from its latest loss run, with reserves; paid covered clinician FTE in each of three months) and a chart of the second",
-  "as_of": "2026-10-12",
-  "deliverables": [
-    "trust_funding_2027.xlsx",
-    "trustees_paper_2027.pptx"
+ "task": "task130",
+ "title": "Redbud Line Services: 2027 recordable injuries on Pinewater work",
+ "domain": "Economics & Econometrics",
+ "task_type": "discrete choice and limited dependent variable modeling",
+ "objective": "Forecasting & Predictive Modeling",
+ "decision": "how many recordable injuries Redbud's field employees will record on Pinewater work in 2027, and whether the rate they make on the 2027 work plan stays within CS-4's limit of 3.0",
+ "as_of": "2026-10-16",
+ "deliverables": [
+  "safety_plan_recordables_2027.docx",
+  "recordables_forecast_2027.xlsx",
+  "recordables_by_quarter_2027.png"
+ ],
+ "distractor_files": [
+  "good_catch_reports_2025-2026.csv",
+  "subcontractor_monthly_safety_2026.csv"
+ ],
+ "input_gates": {
+  "files": 12,
+  "formats": [
+   "csv",
+   "docx",
+   "pdf",
+   "xlsx"
   ],
-  "distractor_files": [
-    "patient_safety_events_2019-01_2026-09.csv",
-    "defense_panel_invoices_2026Q3.csv"
-  ],
-  "input_gates": {
-    "files": 17,
-    "formats": [
-      "csv",
-      "md",
-      "pdf",
-      "xlsx"
-    ],
-    "largest_file": "clinician_fte_by_month_2016-01_2025-12.csv",
-    "largest_file_rows": 224767
+  "largest_file": "timesheet_hours_by_pay_period_2021-2026.csv",
+  "largest_file_rows": 152804
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task130/generator/make.py (seeded, deterministic) around a fictional Georgia power line contractor, a fictional electric membership corporation and fictional people; every record and figure is invented. Rate definitions follow 29 CFR 1904.",
+   "date": "2026-10-16",
+   "license": "CC BY 4.0 (original work)"
+  }
+ ],
+ "files": [
+  {
+   "path": "case_management_export_2024-2026.xlsx",
+   "format": "xlsx",
+   "bytes": 170990,
+   "rows": 2360,
+   "source": "Constructed: Redbud case management export, 1 June 2024 to 9 October 2026: the cases migrated open, the supervisors' reports and the nurse line's cases",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task130/generator/build.py (seeded, deterministic) around a fictional Oregon health system (Corvane Health), its hospitals, medical group, trust, carriers and people; no real organisation, person, patient or claim is depicted.",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-12",
-  "generator": "task130/generator/build.py",
-  "files": [
-    {
-      "path": "CPLT_funding_policy_adopted_2026-09-22.pdf",
-      "format": "pdf",
-      "bytes": 64957,
-      "rows": null,
-      "source": "Constructed: Trust funding policy as adopted by the Trustees",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "CPLT_trust_agreement_executed_2026-08-14.pdf",
-      "format": "pdf",
-      "bytes": 108956,
-      "rows": null,
-      "source": "Constructed: Corvane Professional Liability Trust Agreement as executed (extract: definitions, coverage, claims administration, Schedules A and B)",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "QMPL_loss_run_Corvane_val_2026-06-30_rev1.xlsx",
-      "format": "xlsx",
-      "bytes": 79509,
-      "rows": null,
-      "source": "Constructed: Quillan Mutual loss run valued 30 June 2026, revision 1 issued 9 October 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "QMPL_loss_run_Corvane_val_2026-09-30.xlsx",
-      "format": "xlsx",
-      "bytes": 81922,
-      "rows": null,
-      "source": "Constructed: Quillan Mutual loss run for Tolliver Falls Hospital and Alderwick Medical Center, valued 30 September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "Stoneleigh_lossrun_CORVANE_20260930.csv",
-      "format": "csv",
-      "bytes": 243760,
-      "rows": 1560,
-      "source": "Constructed: Stoneleigh Casualty loss run for Corvane Medical Group and Brennick Community Hospital, valued 30 September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "clinician_fte_by_month_2016-01_2025-12.csv",
-      "format": "csv",
-      "bytes": 14766339,
-      "rows": 224767,
-      "source": "Constructed: Legacy payroll history: paid FTE by employee, month and cost centre for employed clinicians, residents, fellows and psychologists, January 2016 to December 2025",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "clinician_staffing_plan_2027.xlsx",
-      "format": "xlsx",
-      "bytes": 9081,
-      "rows": null,
-      "source": "Constructed: 2027 staffing plan: covered clinician FTE by entity, specialty class and month",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "cost_centre_directory_2026.csv",
-      "format": "csv",
-      "bytes": 4435,
-      "rows": 55,
-      "source": "Constructed: General ledger cost centre directory: company, entity and department",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "data_dictionary_rm_extracts.md",
-      "format": "md",
-      "bytes": 5394,
-      "rows": null,
-      "source": "Constructed: Data dictionary for the risk management extracts",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "defense_panel_invoices_2026Q3.csv",
-      "format": "csv",
-      "bytes": 10969,
-      "rows": 92,
-      "source": "Constructed: Defence panel invoices received for service from July to September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "extract_log_2026-10.csv",
-      "format": "csv",
-      "bytes": 2509,
-      "rows": 16,
-      "source": "Constructed: Extract log: each file's system, date, row count and preparer",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "hcm_clinician_pay_lines_2026-01_2026-09.csv",
-      "format": "csv",
-      "bytes": 3246648,
-      "rows": 30902,
-      "source": "Constructed: HCM pay lines for clinicians, one row per worker, position, work month and earning code, January to September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "hcm_job_profile_crosswalk.csv",
-      "format": "csv",
-      "bytes": 2811,
-      "rows": 33,
-      "source": "Constructed: HCM job profiles mapped to the legacy job codes they replaced",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "insurance_premium_history_2016-2026.xlsx",
-      "format": "xlsx",
-      "bytes": 9137,
-      "rows": null,
-      "source": "Constructed: Clinician occurrence policies by entity and term, 2016 to 2026: carrier, policy number, period, rated FTE and premium",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "patient_safety_events_2019-01_2026-09.csv",
-      "format": "csv",
-      "bytes": 4955320,
-      "rows": 69064,
-      "source": "Constructed: Patient safety event reports, January 2019 to September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "rm_carrier_notices_2012_2026.csv",
-      "format": "csv",
-      "bytes": 93314,
-      "rows": 838,
-      "source": "Constructed: Precautionary notices risk management sent to the carriers, 2012 to September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "rm_claims_register_extract_20261002.csv",
-      "format": "csv",
-      "bytes": 799174,
-      "rows": 4265,
-      "source": "Constructed: Risk management claims register extract: every clinician named on a claim number, valued 30 September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  {
+   "path": "crew_assignments_2020-2026.csv",
+   "format": "csv",
+   "bytes": 457702,
+   "rows": 12585,
+   "source": "Constructed: HR crew and team assignment history, September 2020 to September 2026",
+   "date": "2026-10-16",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "crew_register_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 31226,
+   "rows": 1038,
+   "source": "Constructed: Crew and technician team register as of 29 September 2026, with the March 2025 recodes",
+   "date": "2026-09-29",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "crew_safety_recognition_programme.pdf",
+   "format": "pdf",
+   "bytes": 3397,
+   "rows": null,
+   "source": "Constructed: Redbud HR-14 Crew Safety Recognition Programme, Revision 2 (effective 11 January 2021)",
+   "date": "2021-01-04",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ehs_case_log_2021-2024.csv",
+   "format": "csv",
+   "bytes": 345992,
+   "rows": 2908,
+   "source": "Constructed: Redbud EHS case log (legacy system), January 2021 to 31 May 2024, one row per case revision",
+   "date": "2026-10-16",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "good_catch_reports_2025-2026.csv",
+   "format": "csv",
+   "bytes": 586469,
+   "rows": 9585,
+   "source": "Constructed: Field good-catch (near-miss) reports, January 2025 to September 2026",
+   "date": "2026-10-16",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "payroll_calendar_2021-2027.csv",
+   "format": "csv",
+   "bytes": 7634,
+   "rows": 182,
+   "source": "Constructed: Payroll calendar of biweekly pay periods, 2021 to 2027",
+   "date": "2026-10-16",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "pinewater_contractor_safety_standard_cs4.pdf",
+   "format": "pdf",
+   "bytes": 5023,
+   "rows": null,
+   "source": "Constructed: Pinewater EMC Contractor Safety Performance Standard CS-4, Revision 3 (effective 1 January 2026)",
+   "date": "2025-12-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "recognition_programme_2027_notice.docx",
+   "format": "docx",
+   "bytes": 9487,
+   "rows": null,
+   "source": "Constructed: Redbud notice of 2 October 2026 ending HR-14 on 31 December 2026",
+   "date": "2026-10-02",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "subcontractor_monthly_safety_2026.csv",
+   "format": "csv",
+   "bytes": 2209,
+   "rows": 54,
+   "source": "Constructed: Subcontractors' monthly safety returns, January to September 2026",
+   "date": "2026-10-16",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "timesheet_hours_by_pay_period_2021-2026.csv",
+   "format": "csv",
+   "bytes": 11510437,
+   "rows": 152804,
+   "source": "Constructed: Payroll timesheet hours by unit and biweekly pay period, 11 January 2021 to 27 September 2026",
+   "date": "2026-10-16",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "work_plan_hours_2027.xlsx",
+   "format": "xlsx",
+   "bytes": 8345,
+   "rows": null,
+   "source": "Constructed: 2027 work plan hours by district, unit type and quarter, from Pinewater's 2027 work release",
+   "date": "2026-10-15",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  }
+ ]
 }

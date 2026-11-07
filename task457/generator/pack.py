@@ -20,8 +20,6 @@ FILES = {
     "nih": "nih_awards_marrowfield_fy2025.csv",
     "policy": "coi_policy_2024.pdf",
     "guide": "coi_disclosure_form_guide_2026.pdf",
-    "dict": "oricoi_field_definitions.xlsx",
-    "manifest": "oricoi_export_contents_2027-01-21.csv",
 }
 
 OP_COLUMNS = [

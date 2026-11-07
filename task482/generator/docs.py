@@ -1,286 +1,167 @@
-"""The pack's documents: the network's Performance Standard (Exhibit B to each payer agreement), the board's July 2026
-resolution on the 2027 two-sided track, the three payers' 2025 settlement statements on their own contract terms, and
-the network's field guide to the payers' feeds."""
+"""task482 architecture 16: the pack's documents. Velden's SCR-2, the gas supplier's invoices, the cover email
+and the workbook writer. PDFs carry their issue dates and wrap every table cell inside the page."""
 import datetime as dt
+import os
+from email.message import EmailMessage
+from email.utils import format_datetime
 
+import openpyxl
 import reportlab.rl_config
+from openpyxl.styles import Font
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import inch
+from reportlab.lib.units import mm
 from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-import world as W
+import params as P
+import officepdf as O
+import postprocess as PP
 
 reportlab.rl_config.invariant = 1
-STY = getSampleStyleSheet()
-BODY = ParagraphStyle("b", parent=STY["BodyText"], fontName="Helvetica", fontSize=9.5, leading=12.5, spaceAfter=6)
-SMALL = ParagraphStyle("s", parent=BODY, fontSize=8, leading=10)
-H = ParagraphStyle("h", parent=STY["Heading2"], fontName="Helvetica-Bold", fontSize=11, spaceBefore=8, spaceAfter=4)
-T = ParagraphStyle("t", parent=STY["Title"], fontName="Helvetica-Bold", fontSize=14, spaceAfter=10)
-HEAD = ParagraphStyle("hd", parent=STY["BodyText"], fontName="Helvetica-Bold", fontSize=7, leading=8.5, alignment=2)
-HEADL = ParagraphStyle("hdl", parent=HEAD, alignment=0)
-STAMPS = {"standard": b"D:20251216143000-06'00'", "resolution": b"D:20260724101500-05'00'",
-          "statements": b"D:20260612090000-05'00'"}
+CET = dt.timezone(dt.timedelta(hours=1))
+SS = getSampleStyleSheet()
+BODY = ParagraphStyle("b", parent=SS["Normal"], fontName="Helvetica", fontSize=9.2, leading=12.4, spaceAfter=5)
+H1 = ParagraphStyle("h1", parent=SS["Heading1"], fontName="Helvetica-Bold", fontSize=13.5, leading=17, spaceAfter=6)
+H2 = ParagraphStyle("h2", parent=SS["Heading2"], fontName="Helvetica-Bold", fontSize=10.4, leading=13.5,
+                    spaceBefore=6, spaceAfter=3)
+SMALL = ParagraphStyle("s", parent=BODY, fontSize=7.8, leading=10, textColor=colors.HexColor("#444444"))
+CELL = ParagraphStyle("c", parent=BODY, fontSize=8.0, leading=10.0, spaceAfter=0)
+CELLB = ParagraphStyle("cb", parent=CELL, fontName="Helvetica-Bold")
 
 
-def _pdf(path, title, story, author, org):
-    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.8 * inch, rightMargin=0.8 * inch, topMargin=0.7 * inch,
-                            bottomMargin=0.7 * inch, title=title, author=author, creator=author, subject=title,
-                            producer=org)
-
-    def footer(c, d):
-        c.saveState()
-        c.setFont("Helvetica", 7.5)
-        c.drawString(0.8 * inch, 0.45 * inch, org + "  |  " + title)
-        c.drawRightString(letter[0] - 0.8 * inch, 0.45 * inch, "Page %d" % d.page)
-        c.restoreState()
-
-    doc.build(story, onFirstPage=footer, onLaterPages=footer)
+def _esc(x):
+    return str(x).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def _table(rows, widths=None, size=8):
-    t = Table(rows, colWidths=widths, repeatRows=1)
-    t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", size), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", size),
-                           ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.black), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                           ("ALIGN", (1, 1), (-1, -1), "RIGHT"),
-                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2), ("TOPPADDING", (0, 0), (-1, -1), 2)]))
+def _table(rows, widths, right=()):
+    data = [[Paragraph(_esc(c), CELLB if i == 0 else CELL) for c in r] for i, r in enumerate(rows)]
+    t = Table(data, colWidths=[w * mm for w in widths], hAlign="LEFT")
+    st = [("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor("#333333")), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+          ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5), ("TOPPADDING", (0, 0), (-1, -1), 2.0)]
+    t.setStyle(TableStyle(st))
     return t
 
 
-def P(text, style=BODY):
-    return Paragraph(text, style)
+def _pdf(path, title, author, story, footer, subject, created, modified):
+    """The issuing office writes the document in Writer and exports it to PDF (officepdf)."""
+    O.build(path, story, title, author, subject, footer, created, modified)
 
 
-def standard_pdf(path):
-    payers = "%s, %s and %s" % tuple(W.PAYER_NAMES[p] for p in W.PAYERS)
-    rates = "; ".join("%s USD %.2f" % (W.PAYER_NAMES[p], W.CCF_RATE[p]) for p in W.PAYERS)
-    s = [P("Performance Standard for Commercial Members", T),
-         P(W.NETWORK + ". Adopted by the Board of Directors on 11 December 2025 and attached as Exhibit B to the network's "
-           "2026 value-based agreements with " + payers + ". Effective for performance year 2026.", SMALL),
-         P("1. Purpose", H),
-         P("This standard sets the one measure the network uses for each member practice's cost performance across its "
-           "commercial payers: the network measure. Each agreement's own settlement of shared savings with its payer is "
-           "governed by that agreement's Schedule A and is not changed by this standard."),
-         P("2. Attribution", H),
-         P("2.1 Each payer attributes its own commercial members on its own claims. A member is attributed for a performance "
-           "year to the member practice whose primary care clinicians furnished the most days of qualifying primary care "
-           "services to the member in that year; where practices tie, to the practice that furnished the latest such day. "
-           "A qualifying primary care service is a service with a code in Appendix A furnished by a clinician on the network's "
-           "primary care roster for that practice on the date of service."),
-         P("2.2 A member with no qualifying primary care service from a network clinician in the year is not attributed for "
-           "that year. A member attributed for a year is attributed for every month of the year in which the member was "
-           "covered by the payer, including the months before the member's first qualifying service."),
-         P("2.3 Each payer runs attribution monthly from March of the performance year (an interim run), on qualifying "
-           "services incurred through the end of the second month before the run and paid by the end of the month before it. "
-           "The final run for a performance year is the payer's April run in the following year, on all qualifying services "
-           "incurred in the performance year and paid by 31 March."),
-         P("3. The network measure", H),
-         P("3.1 A member's total cost of care for a year is the allowed amount, at its current version, of every claim for "
-           "covered medical and pharmacy services incurred in the year and first paid by 31 March of the following year, "
-           "capped at USD 250,000 for the member's year. A claim is incurred on its first date of service (a pharmacy "
-           "claim on its fill date)."),
-         P("3.2 A member month is a calendar month in which the member's coverage with the payer was in force."),
-         P("3.3 A practice's network measure for a year is the total cost of care of the members attributed to it on the "
-           "final runs of the three payers, summed across the payers, divided by those members' member months in the year, "
-           "summed across the payers."),
-         P("3.4 A practice's benchmark for 2026 is its network measure for 2025, rounded to the cent, times the "
-           "agreements' 2026 trend factor of 1.052, rounded to the cent."),
-         P("4. Interim reports", H),
-         P("4.1 After each interim run the network reports each practice's interim measure: the allowed amounts of the "
-           "claims incurred from 1 January through the month of the run's service cut and paid by the date of the payer's "
-           "feed, divided for each payer and month incurred by that payer's completion factor for the month (Appendix C), "
-           "for the members on the interim run, each member's year to date capped at USD 250,000, divided by those members' "
-           "member months from January through the month of the service cut."),
-         P("4.2 Interim reports are management information and are not used to settle shared savings."),
-         P("5. Care coordination fees", H),
-         P("5.1 Each payer pays the network a care coordination fee for each attributed member for each month of the "
-           "performance year the member is covered by the payer: " + rates + " a member month in 2026."),
-         P("5.2 Fees are paid on each interim run: for the month of the run, for each member on the run covered that month, "
-           "and, for a member on the payer's run for the first time in the year, for each earlier month of the year in which "
-           "the member was covered. Fees are paid to the network for the practice to which the run attributes the member."),
-         P("Appendix A. Qualifying primary care services", H),
-         P("The codes are listed in qualifying_primary_care_services.csv, issued with this standard."),
-         P("Appendix B. The payers' feeds", H),
-         P("Each payer sends the network, monthly, its claims and coverage for the members on its latest interim run and, "
-           "for the prior performance year, for the members on its final run, with its attribution runs and its fee "
-           "remittances. The layouts are set out in the network's field guide."),
-         P("Appendix C. Completion factors", H),
-         P("Each payer issues, with its September-paid feed, the share of a month's allowed amounts it has paid by 30 "
-           "September for each month incurred from January, from its lag study of the prior year. Claims with an allowed "
-           "amount over USD 100,000 are left out of the lag study.")]
-    _pdf(path, "Performance Standard for Commercial Members", s, W.PEOPLE["analytics"], W.NETWORK)
+def _pdfdate(d, tz="+00'00'"):
+    return ("D:%s%s" % (d.strftime("%Y%m%d%H%M%S"), tz)).encode()
 
 
-def resolution_pdf(path):
-    s = [P("Resolution 2026-11: Two-sided risk track for 2027", T),
-         P(W.NETWORK + ", Board of Directors. Adopted at the meeting of 23 July 2026.", SMALL),
-         P("Whereas each of the network's 2026 agreements with its commercial payers offers member practices, from 1 January "
-           "2027, a two-sided track that pays a larger share of savings and recovers a share of losses; and whereas a "
-           "practice should take on losses only where its cost performance is already clear of its benchmark;"),
-         P("<b>Resolved</b>, that the network enters a member practice in the two-sided track for 2027 only where the "
-           "practice's network measure for 2026 under the Performance Standard, on the payers' final 2026 attribution, comes "
-           "in at least 2 per cent below the practice's 2026 benchmark;"),
-         P("<b>Resolved further</b>, that because the payers' elections close before the final 2026 runs, the president "
-           "presents to the Board at its October meeting the network's projection of each practice's 2026 network measure on "
-           "that basis, and the Board elects on it;"),
-         P("<b>Resolved further</b>, that the elections be filed with each payer by 30 October 2026, and that a practice not "
-           "entered remains in the one-sided track for 2027."),
-         Spacer(1, 10),
-         P("Attest: " + W.PEOPLE["president"] + ", President.", SMALL)]
-    _pdf(path, "Board Resolution 2026-11", s, W.PEOPLE["president"], W.NETWORK)
+def scr2_pdf(path):
+    s = [Paragraph("Supplier Carbon Requirement SCR-2: product carbon intensity of aluminium supplies", H1),
+         Paragraph("%s, Purchasing, light metals. Revision 2, effective 1 January 2026; supersedes Revision 1 of "
+                   "March 2025." % P.BUYER, SMALL), Spacer(1, 4),
+         Paragraph("1. Scope", H2),
+         Paragraph("This requirement applies to every works that supplies aluminium semi-finished goods or castings to "
+                   "Velden. A supplier reports each product family it supplies to Velden, as listed in its supply "
+                   "agreement, for each calendar year.", BODY),
+         Paragraph("2. Specific direct emissions", H2),
+         Paragraph("A product family's specific direct emissions for a year are the carbon dioxide from the fuel the "
+                   "works burned to make that family in the year, in tonnes, divided by the tonnes of the family the "
+                   "works produced in the year.", BODY),
+         Paragraph("3. Attribution", H2),
+         Paragraph("Each production process is attributed the fuel it burned, and a product family carries the fuel "
+                   "each process burned on that family's metal. Fuel that heats the works' buildings, and fuel that "
+                   "pilot flames burn whether or not a process is running, belongs to no process; it is shared over "
+                   "the product families in proportion to the tonnes of each produced.", BODY),
+         Paragraph("4. Fuel and emission factor", H2),
+         Paragraph("Natural gas is taken at the energy the gas supplier billed it at, on gross calorific value, and "
+                   "its carbon dioxide at 0.18296 kilograms per kilowatt-hour.", BODY),
+         Paragraph("5. Production", H2),
+         Paragraph("A family's production is the tonnes of it that passed the works' final inspection in the year. A "
+                   "lot inspected more than once counts at its last result.", BODY),
+         Paragraph("6. Periods", H2),
+         Paragraph("Years, quarters, months and days are those of the works' local time.", BODY),
+         Paragraph("7. Low-carbon premium", H2),
+         Paragraph("For each contract year Velden pays a premium of EUR 38 per tonne of its call-offs of each product "
+                   "family whose specific direct emissions for the year before were 0.235 tonnes of carbon dioxide per "
+                   "tonne or less.", BODY),
+         Paragraph("8. The supplier's data package", H2),
+         Paragraph("By 31 January the supplier sends its fuel meters' interval records, its fuel invoices, its process "
+                   "logs and its production records for the year, with its energy records and the waste and scrap "
+                   "records Velden's supplier reporting asks for.", BODY),
+         Spacer(1, 6), Paragraph("Issued by Velden Purchasing, light metals. Approved: Head of Sustainable Sourcing.",
+                                 SMALL)]
+    _pdf(path, "SCR-2 Product carbon intensity", "Velden Automobil AG", s, "Velden SCR-2 Revision 2  |  public to "
+         "suppliers",
+         "Supplier carbon requirement SCR-2, Revision 2",
+         dt.datetime(2025, 11, 20, 9, 12, tzinfo=CET), dt.datetime(2025, 12, 8, 14, 3, tzinfo=CET))
 
 
-STATEMENT_TERMS = {
-    "B": dict(cap=150000.0, rx=True, msr=0.02, share=0.50, note="Schedule A: medical and pharmacy allowed, each member's "
-              "year capped at USD 150,000; savings shared at 50 per cent where the practice's savings reach 2 per cent of its "
-              "benchmark, times the practice's quality multiplier."),
-    "M": dict(cap=100000.0, rx=False, msr=0.0, share=0.45, note="Schedule A: medical allowed only (pharmacy is settled "
-              "under the pharmacy benefit agreement), each member's year capped at USD 100,000; savings shared at 45 per cent, "
-              "times the practice's quality multiplier."),
-    "T": dict(cap=200000.0, rx=True, msr=0.03, share=0.50, note="Schedule A: medical and pharmacy allowed, each member's "
-              "year capped at USD 200,000; savings shared at 50 per cent where the practice's savings reach 3 per cent of its "
-              "benchmark, times the practice's quality multiplier."),
-}
-
-
-def statement_rows(w):
-    """Each payer's 2025 settlement by practice on its own Schedule A terms, from the world's 2025 claims."""
-    col, att, ppl = w["claims"], w["att"], {q.pid: q for q in w["people"]}
-    quality = W.quality_multipliers()
-    out = {}
-    for payer in W.PAYERS:
-        terms = STATEMENT_TERMS[payer]
-        fin = att[("final", payer, 2025)]
-        tot = {}
-        for i in range(len(col["pid"])):
-            if col["payer"][i] != payer or col["year"][i] != 2025 or col["paid"][i] > W.FINAL_PAID[2025]:
-                continue
-            if col["pid"][i] not in fin or (col["ctype"][i] == "RX" and not terms["rx"]):
-                continue
-            tot[col["pid"][i]] = tot.get(col["pid"][i], 0.0) + col["allowed"][i]
-        g = W.rng(51, W.PAYERS.index(payer))
-        rows = []
-        for c in W.CODES:
-            mem = [pid for pid, v in fin.items() if v[0] == c]
-            mm = sum(W.enrolled_months(ppl[pid], 2025) for pid in mem)
-            tc = sum(min(terms["cap"], tot.get(pid, 0.0)) for pid in mem)
-            pmpm = tc / mm
-            bench = round(pmpm * float(g.uniform(0.965, 1.075)), 2)
-            sav = (bench - pmpm) * mm
-            earned = sav if sav >= terms["msr"] * bench * mm and sav > 0 else 0.0
-            qm = quality[(payer, c)]
-            pay = round(earned * terms["share"] * qm, 2)
-            rows.append(dict(practice=c, members=len(mem), mm=mm, tcoc=round(tc, 2), pmpm=round(pmpm, 2), bench=bench,
-                             savings=round(sav, 2), quality=qm, payment=pay))
-        out[payer] = rows
-    return out
-
-
-def statements_pdf(path, w):
-    rows = statement_rows(w)
+def invoices_pdf(path, invoices):
     s = []
-    for n, payer in enumerate(W.PAYERS):
-        if n:
+    for k, inv in enumerate(invoices):
+        if k:
             s.append(PageBreak())
-        s.append(P(W.PAYER_NAMES[payer] + ": Performance Year 2025 Shared Savings Statement", T))
-        s.append(P("Prepared for " + W.NETWORK + ". Final attribution run of April 2026; claims incurred in 2025 and paid "
-                   "through 31 March 2026. Issued 12 June 2026." + (" Signed for the plan: " + W.PEOPLE["payer"] + ", Manager, "
-                   "Provider Performance." if payer == "B" else ""), SMALL))
-        s.append(P(STATEMENT_TERMS[payer]["note"], SMALL))
-        hdr = [P("Practice", HEADL)] + [P(x, HEAD) for x in ("Members", "Member months", "Total cost (USD)", "PMPM",
-                                                             "Benchmark PMPM", "Savings (USD)", "Quality", "Payment (USD)")]
-        body = [[W.PRACTICE_NAMES[r["practice"]], "{:,}".format(r["members"]), "{:,}".format(r["mm"]), "{:,.2f}".format(r["tcoc"]),
-                 "%.2f" % r["pmpm"], "%.2f" % r["bench"], "{:,.2f}".format(r["savings"]), "%.2f" % r["quality"],
-                 "{:,.2f}".format(r["payment"])] for r in rows[payer]]
-        tot = ["Network", "{:,}".format(sum(r["members"] for r in rows[payer])), "{:,}".format(sum(r["mm"] for r in rows[payer])),
-               "{:,.2f}".format(sum(r["tcoc"] for r in rows[payer])), "", "", "{:,.2f}".format(sum(r["savings"] for r in rows[payer])),
-               "", "{:,.2f}".format(sum(r["payment"] for r in rows[payer]))]
-        s.append(_table([hdr] + body + [tot], widths=[1.6 * inch, 0.62 * inch, 0.66 * inch, 0.84 * inch, 0.5 * inch,
-                                                       0.72 * inch, 0.76 * inch, 0.52 * inch, 0.78 * inch], size=7))
-        s.append(Spacer(1, 6))
-        s.append(P("Savings are the benchmark PMPM less the PMPM, times member months; a negative figure is a loss and is not "
-                   "recovered under the one-sided track. The quality multiplier is 1.00 where every measure scored for the "
-                   "practice meets its target, 0.95 where three quarters or more do, 0.90 where half or more do, and 0.85 "
-                   "otherwise.", SMALL))
-    _pdf(path, "Performance Year 2025 Shared Savings Statements", s, W.PEOPLE["payer"],
-         "Payer statements as received by " + W.NETWORK)
+        s += [Paragraph("Northgate Gas Supply Ltd: VAT invoice %s" % inv["no"], H1),
+              Paragraph("Customer: %s. Supply point MPRN 8804419362. Account 30-77152. Issued %s." % (
+                  P.WORKS, inv["issued"].strftime("%d %B %Y")), SMALL), Spacer(1, 3)]
+        rows = [["Meter", "Read from", "Read to", "Opening read", "Closing read", "Units", "Volume (m3)"]]
+        for m in inv["meters"]:
+            rows.append([m["serial"], m["from"].strftime("%d/%m/%Y %H:%M"), m["to"].strftime("%d/%m/%Y %H:%M"),
+                         "%.0f" % m["open"], "%.0f" % m["close"], m["units"], "%.2f" % m["m3"]])
+        s.append(_table(rows, [25, 30, 30, 21, 21, 13, 24]))
+        s.append(Spacer(1, 4))
+        rows = [["Energy", "Value"],
+                ["Volume (m3)", "%.2f" % inv["m3"]],
+                ["Volume correction factor", "%.5f" % P.VCF],
+                ["Calorific value (MJ/m3)", "%.2f" % inv["cv"]],
+                ["Energy (kWh), volume x correction factor x calorific value / 3.6", "{:,.0f}".format(inv["kwh"])],
+                ["Unit rate (p/kWh)", "%.3f" % inv["rate"]],
+                ["Gas charge (GBP)", "{:,.2f}".format(inv["charge"])],
+                ["Standing charge, %d days (GBP)" % inv["days"], "{:,.2f}".format(inv["standing"])],
+                ["Climate Change Levy (GBP)", "{:,.2f}".format(inv["ccl"])],
+                ["VAT at 20 per cent (GBP)", "{:,.2f}".format(inv["vat"])],
+                ["Total (GBP)", "{:,.2f}".format(inv["total"])]]
+        s.append(_table(rows, [100, 50]))
+        if inv.get("note"):
+            s += [Spacer(1, 3), Paragraph(inv["note"], SMALL)]
+    _pdf(path, "Gas invoices 2026", "Northgate Gas Supply Ltd", s, "Northgate Gas Supply Ltd  |  MPRN 8804419362",
+         "VAT invoices, Brackwell Alloys Ltd, MPRN 8804419362, 2026",
+         dt.datetime(2027, 1, 12, 10, 40, tzinfo=dt.timezone.utc), dt.datetime(2027, 1, 12, 10, 40, tzinfo=dt.timezone.utc))
 
 
-def guide_txt(path):
-    text = """LARROWBROOK PHYSICIAN NETWORK - FIELD GUIDE TO THE PAYERS' VALUE-BASED FEEDS
-Maintained by Payer Performance Analytics (Joel Brewer, Director). Revised 13 October 2026.
-
-The payers send claims and coverage for the members on their latest interim attribution run and, for the
-prior performance year, for the members on their final run (Performance Standard, Appendix B). Each payer's
-files keep that payer's own layout. A member's identifier is the payer's; the master patient index carries
-one network patient identifier across payers.
-
-MERRINLAKE HEALTH PLAN (MLH)
-  mlh_tcoc_claims_2025-01_2026-09.csv     one row per claim; comma separated; dates YYYY-MM-DD
-    CLM_ID           claim number; a reprocessed claim is voided and replaced under new numbers
-    MBR_ID           Merrinlake member identifier
-    CLM_TYP          PROF professional, OUTP outpatient facility, INPT inpatient facility, PHRM pharmacy
-    SVC_FROM_DT      first date of service (fill date for pharmacy)
-    SVC_THRU_DT      last date of service
-    PD_DT            date paid
-    PROC_CD          CPT or HCPCS code (professional claims)
-    PROC_MOD         procedure modifier, where billed
-    POS_CD           place of service (professional claims)
-    REV_CD           revenue code (facility claims)
-    NDC_11           national drug code (pharmacy claims)
-    REND_NPI         rendering provider NPI (professional claims)
-    ALLOWED_AMT      allowed amount, USD
-    DAYS_SUPPLY      days supply (pharmacy claims)
-    ADJ_TYP          blank for an original claim; VOID for a reversal of it; REPL for its replacement
-    ORIG_CLM_ID      on VOID and REPL rows, the claim they reverse or replace
-  mlh_eligibility_2025_2026.csv           one row per coverage span; COV_TERM_DT 9999-12-31 while open
-  mlh_attribution_runs_py2025_py2026.csv  the final 2025 run (PY2025-F) and the October 2026 interim run (PY2026-10)
-  mlh_care_coordination_remittance_2026.csv  fees paid on each 2026 interim run, a line for each practice TIN,
-                                          coverage month (COV_MO) and line type (LINE_TYP: CUR the run's month, RETRO
-                                          earlier months); MBR_CNT is the member months the line pays
-
-KESSELCREST BENEFIT PARTNERS (KBP)
-  KBP_CLAIMS_LPN_20261009.txt             pipe delimited; dates MM/DD/YYYY
-    CLAIM_NO, LINE_NO, MEMBER_NO          claim, line and member; a reprocessed claim takes a suffix -01; a line with no
-                                          procedure, revenue or drug code is an adjustment to the claim
-    CLAIM_FORM                            1500 professional, UB04 facility, NCPDP pharmacy
-    BILL_TYPE                             type of bill on facility claims: 0111 inpatient, 0131 outpatient
-    FIRST_DOS, LAST_DOS, PAID_DATE        dates of service and payment
-    PROCEDURE, MODIFIER, PLACE_OF_SVC, REVENUE, NDC, RENDERING_PROV_NPI
-    ALLOWED_CENTS                         allowed amount in cents
-    CLAIM_STATUS                          P paid and current; A adjusted (superseded by a reprocessed claim)
-  KBP_ELIG_LPN_20261009.txt               coverage spans; blank TERM_DATE while open; REL_CD 18 self, 19 child
-  KBP_ATTRIBUTION_PY2025F_PY2026R10.xlsx  one sheet per run; the header row is the fourth row
-  KBP_CCF_REMIT_2026.xlsx                 care coordination remittances to the network's TINs in 2026; Service Period is
-                                          the month the fee covers
-
-PEMBERGLEN MUTUAL HEALTH (PMH)
-  pmh_partner_claims_2026-10-12.json      {"records": [...]}; one object per claim version
-    claimId, memberId, type               type professional, institutional_outpatient, institutional_inpatient, pharmacy
-    serviceStart, serviceEnd, adjudicated dates of service and of adjudication
-    cpt, modifier, pos, renderingNpi      professional claims (modifier where billed)
-    revenueCode                           facility claims
-    ndc, daysSupply                       pharmacy claims
-    allowed                               allowed amount, USD
-    version                               1 for the first adjudication; a reprocessed claim's later version replaces it
-  pmh_members_2026-10-12.csv              coverage; blank coverageEnd while open
-  pmh_attribution_py2025_py2026.csv       FINAL (2025) and INTERIM-10 (2026) runs
-  pmh_ccf_payments_2026.csv               care coordination payments on each 2026 interim run
-
-NETWORK FILES
-  lpn_primary_care_roster_2026-10.xlsx    the network's primary care clinicians by practice with effective dates
-  lpn_master_patient_index.csv            network patient identifier for each payer member identifier
-  payer_completion_factors_2026-09.csv    Appendix C of the Performance Standard
-  qualifying_primary_care_services.csv    Appendix A of the Performance Standard
-  payer_em_fee_schedules_2026.xlsx        each payer's 2026 evaluation and management rates for network clinicians
-"""
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(text)
+def email(path, files):
+    m = EmailMessage()
+    m["From"] = "%s <r.kent@brackwell-alloys.co.uk>" % P.PEOPLE["energy"]
+    m["To"] = "%s <tony.coleman@velden-auto.de>" % P.PEOPLE["buyer"]
+    m["Subject"] = "Brackwell Alloys: SCR-2 data package for 2026"
+    m["Date"] = format_datetime(dt.datetime(2027, 1, 21, 16, 12, tzinfo=dt.timezone.utc))
+    m["Message-ID"] = "<scr2-2026.brackwell.20270121161200@brackwell-alloys.co.uk>"
+    body = ("Tony,\n\nAs SCR-2 asks, here is our 2026 data package for the four families we supply you. The gas "
+            "meter export is the supplier's interval file for our one site meter, which was exchanged in April. The "
+            "furnace, homogenizing and oven logs are the shift logs as kept, and the production file is the "
+            "inspection system's export. The electricity, weighbridge and goods-in files are for your supplier "
+            "reporting.\n\nFiles:\n" + "".join("  %s\n" % f for f in files) +
+            "\nAny questions on the logs, Reece Parker in the works office can help.\n\nRegards,\n\n"
+            "Rosemary Kent\nEnergy and Environment, Brackwell Alloys Ltd\n")
+    m.set_content(body)
+    with open(path, "wb") as f:
+        f.write(bytes(m))
 
 
-def write_all(t, w, ids, cf):
-    standard_pdf(t("standard"))
-    resolution_pdf(t("resolution"))
-    statements_pdf(t("statements"), w)
-    guide_txt(t("guide"))
+def workbook(path, sheets, owner, last_by, created, modified, company, widths=None, formats=None):
+    """sheets: [(title, header, rows)]. Saved under the owner's name and stamps, in Excel's dialect."""
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)
+    for title, header, rows in sheets:
+        ws = wb.create_sheet(title)
+        ws.append(header)
+        for c in ws[1]:
+            c.font = Font(bold=True)
+        for r in rows:
+            ws.append([None if x == "" else x for x in r])
+        for col, fmt in ((formats or {}).get(title) or {}).items():
+            for row in ws.iter_rows(min_row=2, min_col=col, max_col=col):
+                for c in row:
+                    c.number_format = fmt
+        for i, w in enumerate((widths or {}).get(title, [16] * len(header))):
+            ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = w
+        ws.freeze_panes = "A2"
+    wb.save(path)
+    PP.normalize_ooxml(path, owner, last_by, created, modified, excel=True, company=company)

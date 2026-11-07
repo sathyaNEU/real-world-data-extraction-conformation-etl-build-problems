@@ -1,37 +1,42 @@
 {
  "task": "task272",
- "status": "OPEN",
- "domain": "demographic-social-science",
+ "status": "SHIPPED",
+ "domain": "general-statistics-data-science",
  "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-25",
- "stump": "A competent analyst who conforms the three hubs and takes the 2025 policy's yearly figure (the three months before the application times four) as each household's income over the twelve months before it applied files 5 grants (H11, H15, H17, H23, H26); one calendar for every seasonal kind of work files 6, one per kind of work across regions or per region or hospital across kinds of work 10; only each region's calendar for each kind of work names the 16.",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-11-01",
+ "stump": "A strong analyst who conforms the compounders' dose log, the set-up events and the gravimetric check register and runs the textbook capability study on each product's 2026 weighed doses (the overall mean and spread, normal tails) configures cefoxitin 2 g, the three bags and midazolam (P0431, P0610, P0614, P0618, P0702): the bag sets start high and lose about four per cent over a batch, so their weights spread wide though no bag dose comes near the limit, while cefazolin 2 g and phenylephrine hide their tails after the last weighed dose of the sets that carried a third batch; the weighed doses' own out-of-tolerance share and the quarantine sorts see only cefoxitin, and only every dose rebuilt on its set at the litres the set had pumped names P0412, P0431, P0507 and P0702.",
  "architecture": 3,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-21",
-  "checks": 51
+  "date": "2026-11-01",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-21 (no LEAK): program name, estimand words, column vocabulary, hospitals beside beds and filings; each answered in the note's Leak check",
-  "reader": "r272c and r272d (architecture 2) both landed the call: a seasonal calendar per hospital or region and kind of work; asks held (Ask A 0 of 31 each, Ask B 1 of 31 each, the H20 tie)"
+  "leak_py": "REVIEW 2026-11-01 on target.zip 81176264 (--asof 2027-01-18, no LEAK), each line ruled in the note",
+  "reader": "read 1 on 81176264, isolated, pack and prompt only: no leak, question 6 analytical (out-of-tolerance estimated across every dose made, the unweighed majority included); leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-21 (three_rules.strategy_risk, repeat.gate_g against task482 v4, overuse.gate_g; answered in the note's Draw item 9)",
-  "nearest": "0.07 task111 v2 (driver); task17 v3 lineage 0.05 differentiated on the card",
-  "surface": "clean 2026-10-21 (persona Kristin Robertson)"
+  "heart": "WARN 2026-11-01 on the final cut (people.first Cynthia against task110)",
+  "nearest": "0.08 task229 v2 (driver, lineage, differentiated on the card); test.same_driver_older differentiated against task271 v2, task308 v1 and task471 v1",
+  "surface": "exit 0 on the final cut 2026-11-01 (personas Cynthia Underwood, Erin Stewart, Spencer Frank)"
  },
  "judge": {
+  "pass": 1,
+  "date": "2026-11-01",
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md (architecture 2)"
+  "report": "task272/determinism_check_report.md",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "residual": "Midazolam's rate rests on a normal-tail extrapolation (about 20 to 90 under the fit's standard errors, over 10 throughout); the dose log's UTC clock is unlabelled but derivable from the SOP's hours and the events' Z stamps. After the thread's read the write-up's rival clause was rewritten and Critical Component 2's per-product rates (which the drift-aware variants spread at the decimal) were dropped for the sides of the limit; the pack is unchanged"
  },
  "returned": [],
- "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 3; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-21: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filter or reflex route, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 4 is closed and wave 5 (task273 to task278) is cut.",
+ "resume": "Shipped 2026-11-01 on architecture 3: the judge DETERMINISTIC, APPROVE (decisive step analytical, every dose placed on its set at the litres the set had pumped), the leak read clean, every free gate re-run on target.zip 81176264 (two byte-identical builds, the generator checks and verifier, figures_check 104 of 104, precut 61 checks, voice-check PASS with the which-quota WARN, guard heart WARN and surface exit 0). Waits on the portal.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -45,22 +50,32 @@
   {
    "architecture": 2,
    "drawn": "2026-10-21",
-   "fate": "spent 2026-10-21 at stage 4: Gate F failed, both scored readers fitted a seasonal calendar per hospital or region and kind of work and landed the 16"
+   "fate": "spent 2026-10-21 at stage 4: Gate F failed, both scored readers fitted a seasonal calendar per hospital or region and kind of work and landed the 16; retired again 2026-10-31 by the batch audit, short of the survivor anatomy"
   },
   {
    "architecture": 3,
-   "drawn": null,
-   "fate": "not drawn 2026-10-21: no candidate cleared the re-root screens (the note's last Tried and rejected line), so the number retires"
+   "drawn": "2026-10-31",
+   "fate": null
   }
  ],
  "gates": {
-  "checks": "0 failed",
-  "verify": "PASS",
+  "checks": "53 of 53 (one WARN: the lowest weighed dose orders the four first)",
+  "verify": "PASS, 85 figures",
   "byte_identical": true,
-  "figures_check": "85 figures, 0 absent",
-  "target_zip_md5": "66ca10c770c9de7091ae11a117f6ee9f",
-  "target_mb": 10.6,
-  "pair_ceiling": 29.4,
-  "family_margin_floor": 0.882
- }
+  "figures_check": "128 of 128",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS (WARN: the which-question shell quota)",
+  "leak_py": "REVIEW, no LEAK",
+  "target_zip_sha256": "811762642f4a39e7d2662cd99382434112b751153dba38a13e82bfc484bde5c5",
+  "target_mb": 5.4,
+  "pair_ceiling": 36.8,
+  "mirror_leakage": 15.1,
+  "family_margin": "in 43.6 or more, out 1.6 or less"
+ },
+ "history": [
+  {
+   "date": "2026-11-01",
+   "event": "SHIPPED: architecture 3, gravimetric verification for Cefazolin 2 g, Cefoxitin 2 g, Phenylephrine and Midazolam; judge DETERMINISTIC, APPROVE; target.zip 81176264"
+  }
+ ]
 }

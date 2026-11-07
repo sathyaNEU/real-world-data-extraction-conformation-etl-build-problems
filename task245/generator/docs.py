@@ -1,6 +1,6 @@
 """task245 documents: the air quality officer's request (eml), the council's QA/QC procedure for the network (pdf), the
 terminal operator's dust management and monitoring plan (pdf), the 2026 report's NO2 table (pdf), the operator's PM10
-workbook, the service log and the deposit-gauge results (xlsx), the data dictionary and the readme (md)."""
+workbook, the service log and the deposit-gauge results (xlsx)."""
 import datetime as dt
 import os
 
@@ -326,72 +326,6 @@ def table_workbook(path, df, sheet, title, note, producer, stamp, widths, create
 
 
 # ------------------------------------------------------------------ the registers
-def dictionary(F):
-    return f"""# Data dictionary
-
-## {F["council"]}
-The council's 2027 export from the network database: one row per station, pollutant and hour.
-- site_code, site_name: the council station.
-- pollutant: PM10, NO2, or NOx as NO2.
-- date: dd/mm/yyyy (GMT); time_end: the end of the hour (01:00 to 24:00, the hour ending 24:00 closing the day).
-- value: the hourly mean in ug/m3, blank where the hour is not valid.
-- unit: ug/m3.
-- status: R ratified and valid; F analyser fault; X rejected at ratification; S service or calibration; P power or
-  telemetry lost; O station out of service (procedure section 2.3).
-
-## {F["operator"]}
-The terminal operator's 2027 PM10 workbook, one sheet per quarter of its logger's clock: a date/time column in UK clock
-time (the start of the hour), then for each of its five stations a PM10 column (ug/m3) and a status column as ratified
-under the procedure (OK valid; FAULT analyser fault; REJECTED rejected at ratification; SERVICE service or calibration;
-POWER power or telemetry lost; OFF out of service).
-
-## {F["met"]}
-The port's met mast (10 m mast on the east breakwater): datetime_end_gmt (the end of the hour, GMT); wind_dir_deg (the
-direction the wind blows from, degrees true, blank in calm); wind_speed_ms (m/s); rain_mm; air_temperature_c (degrees C). Hours the
-mast did not report are blank.
-
-## {F["register"]}
-One row per station: site_code, site_name, operator, site_type, easting and northing (Ordnance Survey national grid,
-metres), pm10_analyser, no2_analyser, inlet_height_m.
-
-## {F["servicelog"]}
-Both technicians' records: date and time (UK clock), site, site name, type (alarm, fault visit, service, calibration,
-repair, site works, logger, deposit gauge), engineer, notes.
-
-## {F["deposit"]}
-The terminal's laboratory results for its deposit gauges: gauge, site, date on and date off (dd/mm/yyyy), days
-exposed, insoluble, soluble and total deposit (mg), collecting area (m2) and deposition rate (mg/m2/day) as the
-laboratory reports them, laboratory reference, remarks.
-
-## {F["asr2026"]}
-Table A.3 of last year's ASR: each council NO2 station's 2026 data capture and annual mean.
-
-## {F["bgmap"]}
-The background map extract used for the 2026 ASR: modelled annual mean background PM10 and NO2 for 2027 on the
-national grid's 1 km squares (x and y, the square's centre, metres), with the main source sectors.
-"""
-
-
-def readme(F):
-    return f"""# Thornmouth air quality network: 2027 data audit
-
-Files for the PM10 data-capture review of the network's 2027 results, gathered by the council's air quality team.
-
-- {F["request"]}: the air quality officer's request.
-- {F["procedure"]}: the council's QA/QC procedure for the network (version 4).
-- {F["council"]}: the council's 2027 export from the network database (ratified hourly PM10, NO2 and NOx).
-- {F["operator"]}: the terminal operator's 2027 PM10 workbook.
-- {F["met"]}: the port's met mast, 2027.
-- {F["register"]}: the network's station register.
-- {F["servicelog"]}: the council's and the operator's service records for 2027.
-- {F["deposit"]}: the terminal's deposit gauge results.
-- {F["plan"]}: the terminal's dust management and monitoring plan, revision 3.
-- {F["asr2026"]}: last year's ASR NO2 table.
-- {F["bgmap"]}: the background map extract used for last year's ASR.
-- DATA_DICTIONARY.md: the fields of each file.
-"""
-
-
 def write_all(target, F, R):
     p = lambda k: os.path.join(target, F[k])
     request(p("request"), F)
@@ -405,7 +339,3 @@ def write_all(target, F, R):
     table_workbook(p("deposit"), R.deposit_results(), "Results", "%s: deposit gauge results" % OPERATOR,
                    "Analysed by the terminal's contracted laboratory. Rates as reported by the laboratory.",
                    OPERATOR, "2028-01-19", [8, 13, 11, 11, 8, 10, 10, 12, 11, 13, 9, 34], "2027-01-12T10:10:00Z")
-    with open(p("dict"), "w") as fh:
-        fh.write(dictionary(F))
-    with open(p("readme"), "w") as fh:
-        fh.write(readme(F))

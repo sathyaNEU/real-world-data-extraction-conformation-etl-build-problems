@@ -461,11 +461,21 @@ def realism(target):
             ok("\u2014" not in s and "\u2013" not in s, "no em or en dash in %s" % f)
             txt += s if f.endswith(".txt") else ""
         b = open(p, "rb").read()
-        ok(b"openpyxl" not in b and b"ReportLab" not in b and b"python" not in b.lower()[:4000], "container scrubbed %s" % f)
+        if f.endswith(".pdf"):
+            from pypdf import PdfReader
+            m = PdfReader(p).metadata
+            ok(b"(unspecified)" not in b and m.get("/Subject") not in (None, "", "(unspecified)"),
+               "PDF %s carries a real Subject, no placeholder" % f)
+            ok("LibreOffice" in (m.get("/Producer") or "") and (m.get("/Creator") or "") == "Writer"
+               and b"ReportLab" not in b and b"reportlab" not in b,
+               "PDF %s exported by an office application, no programming library in it" % f)
+        else:
+            ok(b"openpyxl" not in b and b"ReportLab" not in b and b"python" not in b.lower()[:4000],
+               "container scrubbed %s" % f)
     import docs as D
     g = D.guidance_text()
     ok("\u2014" not in g and "\u2013" not in g, "no dash in the guidance")
-    found = set(re.findall(r"[A-Z][a-z]+ [A-Z][a-z]+(?=, Head of)", g))
+    found = set(re.findall(r"[A-Z][a-z]+ [A-Z][a-z]+(?=, (?:Head|Deputy Director) of)", g))
     ok(found <= names, "personas from the draw (%s)" % found)
     ok("equipment" not in g.lower(), "the guidance never mentions equipment")
     # no identical monthly counts, no round headline totals
@@ -643,7 +653,7 @@ def three_rules(target, F, R):
     tmp = tempfile.mkdtemp()
     t2 = os.path.join(tmp, "t")
     shutil.copytree(target, t2)
-    for k in ("wards", "wardref", "brokerage", "spot", "postcodes", "council_notes", "weekly", "census", "reablement"):
+    for k in ("wards", "wardref", "brokerage", "spot", "postcodes", "weekly", "census", "reablement"):
         os.remove(os.path.join(t2, P.FILES[k]))
     M3 = AN.main_call(t2)
     shutil.rmtree(tmp)
@@ -729,11 +739,8 @@ def three_rules(target, F, R):
     ok(all([int(r[c]) for c in heads[P.FILES["weekly"]][3:]] == wk[(r["provider_code"], AN.d(r["week_ending"]))]
            for r in rows), "R3c no plant: the national weekly return reproduces from the warehouse by trust and week "
                            "(nothing in it is wrong)")
-    texts = {f: open(os.path.join(target, f), encoding="utf-8").read() for f in os.listdir(target) if f.endswith(".txt")}
-    pin = "equipment the patient needs at home from the day they go home"
-    ok(sum(" ".join(t.split()).count(pin) for t in texts.values()) == 1 and pin in " ".join(
-        texts[P.FILES["ices_notes"]].split()) and pin not in g,
-       "the equipment notes say once what hospital-discharge equipment is for; no other document repeats it")
+    ok(not any(re.search(r"notes|dictionar|manifest|read_?me|request_log|layout", f, re.I) for f in os.listdir(target)),
+       "no shipped file describes the data (no field notes, dictionary, manifest or request log)")
     return moved
 
 

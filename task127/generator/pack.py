@@ -19,19 +19,15 @@ FILES = {
     "spells": "acute_discharges_65plus_2024-12_2026-09.csv",
     "wards": "acute_ward_stays_2024-12_2026-09.csv",
     "wardref": "ward_reference.csv",
-    "acute_notes": "acute_extract_notes.txt",
     "practices": "gp_practices_2026-09.csv",
     "ices": "ices_order_lines_2024-12_2026-09.csv",
-    "ices_notes": "ices_export_notes.txt",
     "brokerage": "brokerage_referrals_2024-12_2026-09.csv",
     "spot": "spot_care_invoice_lines_2025-26.csv",
     "postcodes": "postcode_districts_marchshire.csv",
-    "council_notes": "council_extract_notes.txt",
     "guidance": "winter_discharge_fund_2026-27.pdf",
     "weekly": "discharge_delays_weekly_return_2024-12_2026-09.csv",
     "census": "bed_census_daily_2024-12_2026-09.xlsx",
     "reablement": "reablement_91_day_outcomes_2024-26.xlsx",
-    "log": "data_request_log.csv",
 }
 DISTRACTORS = ["weekly", "census", "reablement"]
 TRUST_NAME = core.TRUSTS
@@ -243,6 +239,3 @@ def write_reablement(target):
 
 def write_docs(target, counts):
     D.guidance_pdf(os.path.join(target, FILES["guidance"]))
-    for k, fn in (("acute_notes", D.acute_notes), ("ices_notes", D.ices_notes), ("council_notes", D.council_notes)):
-        open(os.path.join(target, FILES[k]), "w", encoding="utf-8").write(fn())
-    _w(os.path.join(target, FILES["log"]), D.LOG_HEAD, D.log_rows(FILES, counts))

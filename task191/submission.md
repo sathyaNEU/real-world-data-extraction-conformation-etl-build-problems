@@ -1,86 +1,64 @@
-# task191 submission
-
 ## Tags
 
-**Domain:** General Statistics & Data Science, multiple testing and selective inference (judging one monitored extreme when the extreme was picked out of every interconnect, evening and window the platform watches).
-**Analytical objective:** Anomaly Detection & Diagnostics (whether an evening shortfall is a real degradation or what monitoring 1,851 windows a quarter produces on its own).
+> **Domain:** Banking, credit and financial risk, fraud and AML detection.
+> **Analytical objective:** Anomaly detection and diagnostics.
 
 ## 1. Final Recommendation
 
-**Fund no interconnect augment this cycle.**
-
-The quarter's worst evening shortfall is **318 kbps**, on **HVT-01** on 2027-02-17 in the 19:00 window. Clause 4.2 funds an augment where the shortfall is larger than the shortfall the network's own record shows the measurement produces without congestion, and the record is the eight earlier quarters of the same measurement on the same seven interconnects. Every quarter in it produced a larger worst window than this one, from 398 kbps up to 489, so the quarter is the quietest of the nine and no interconnect clears the record.
+**Put CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV into the 2027 tuning, and no other scenario.**
+Each is below the 3 per cent productivity floor over the twelve months to 30 September 2026 with every alert counted by how it will end. Not RMF-P2P, MUL-INF and MER-RND: their SARs so far are under 3 per cent of their decided alerts, but their investigations run longest, and the alerts still open on 2 November are mostly SARs to come.
 
 ## 2. Critical Components
 
-1. The figure the decision is taken on is the largest of the 1,809 interconnect evening windows the quarter leaves standing, so the record it is measured against is each earlier quarter's own largest at that same reach: 489, 471, 458, 447, 436, 424, 411, 398 kbps.
-2. **HVT-01** comes closest at **318** kbps, which stands **28** per cent above its own 99th percentile for the quarter and **20** per cent below the smallest worst window any earlier quarter produced.
-3. **14** evenings are left out, the ones on which work was booked inside an evening window. Keeping them would put the worst shortfall at **569** kbps on **STR-01**, above every quarter in the record, and fund an augment there.
-4. **DLF-01** carries the largest shortfall across the quarter as a whole, a mean of **129.1** kbps against **112.0** on the next interconnect, and the record shows that level is ordinary for it.
-5. Measured against its own evening-to-evening spread instead of the record, the quarter's worst window stands clear and would fund an augment on HVT-01.
+1. Read over the alerts already decided, RMF-P2P, MUL-INF and MER-RND fall below the floor as well as CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV.
+2. On 2 November RMF-P2P, MUL-INF and MER-RND had 91, 127 and 82 alerts from the year still under investigation.
+3. In those scenarios an alert ending in a SAR is decided months after it is raised, while one closed without a SAR is closed within weeks, so an alert still undecided is far more likely than the scenario's average to end in a SAR.
+4. Counted by how they will end, RMF-P2P, MUL-INF and MER-RND clear the floor and CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV stay below it.
 
 ## 3. Step-by-Step Solution
 
-1. Read the minute panel, resolved the UTC stamps to local time across the 28 March change, and took each interconnect's reference band and evening window medians as the delivered quality standard defines them, cross-checking against the pipeline's own daily rollup.
-2. Resolved every port code to the interconnect in service at the quarter end through interconnect_register.csv, which carries the port renamed on 12 February.
-3. Left out the 14 evenings on which clause 4.4's booked work fell inside an evening window.
-4. Computed the shortfall of every interconnect, evening and window the quarter's record holds, 1,851 of them, and took the largest of the 1,809 that survive step 3: 318 kbps on HVT-01.
-5. Clause 4.2 asks whether that is larger than the shortfall the record shows the measurement produces without congestion, and the figure was selected as the largest of 1,809, so the comparison has to be with what the record produces at that same reach, not with one interconnect's own spread.
-6. Took the same maximum from each of the eight earlier quarters in evening_quality_daily.csv: every one is larger than this quarter's, the smallest at 398 kbps and the largest at 489, so nothing is funded. The record holds 282 of its 15,330 windows at or above this quarter's worst, so the measurement plainly produces that level without congestion.
-7. For the peers, summed each peer's ports at every five-minute instant and took the 1,296th highest sample of the quarter against the commitment both sides had accepted; for the client builds, split the sessions by the release log's own rollout windows; for the incidents, counted to the restoration time the duty engineer recorded.
+1. Dated each alert in tm_alerts_2025-07_2026-10.csv by the business date of its run in tm_monitoring_runs_2025-07_2026-10.csv, left out the copies closed as duplicates and read XB-HRJ2 with XB-HRJ.
+2. Carried each escalated alert to its investigation in fcm_cases_export_2026-11-02.json: it ends in a SAR when the investigation's disposition is SAR filed; an alert still in triage or in an open investigation is undecided.
+3. For each scenario, read its alerts raised at least 330 days before the extract whose outcome is in: those that ended in a SAR were decided months after the alert, those that did not within weeks.
+4. Counted each undecided alert at the share of those older alerts of its scenario, still undecided at the same age, that ended in a SAR, and divided the SARs and expected SARs by the scenario's alerts in the year.
+5. Sent the scenarios below 3 per cent to the 2027 tuning.
+6. Investigations by quarter: each investigation in the export opened from 1 October 2025 to 30 September 2026 (Eastern date), counted once for the scenario of the alert whose escalation opened it (the alert whose triage closed at the investigation's opening).
+7. SARs by month: each filing in sar_filings_2025-07_2026-10.csv by its Eastern filing date, read along its investigation's filings in date order: the first is the initial report, a later one covering activity after the previous report is a continuing activity report whether or not its prior report field is filled, and one covering the same activity as the report it cites is a correction, left out.
+8. Recommended CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV for the 2027 tuning.
 
 ## 4. Deliverable Answers
 
-### augment_decision_2027Q1.xlsx
+### tuning_scenarios_2027.docx
 
-1. Recommendation: **fund no augment this cycle**.
-2. Comes closest: **HVT-01**, at **318** kbps.
-3. Evenings left out: **14**.
-4. Worst evening shortfall and the evening it fell on, by interconnect and window:
-   - DLF-01, the 19:00 window: 246 kbps, 2027-03-18
-   - DLF-01, the 20:00 window: 303 kbps, 2027-02-14
-   - DLF-01, the 21:00 window: 250 kbps, 2027-01-22
-   - HVT-01, the 19:00 window: 318 kbps, 2027-02-17
-   - HVT-01, the 20:00 window: 248 kbps, 2027-03-22
-   - HVT-01, the 21:00 window: 269 kbps, 2027-03-19
-   - KZD-01, the 19:00 window: 285 kbps, 2027-03-20
-   - KZD-01, the 20:00 window: 278 kbps, 2027-03-03
-   - KZD-01, the 21:00 window: 247 kbps, 2027-02-08
-   - OPL-01, the 19:00 window: 311 kbps, 2027-02-25
-   - OPL-01, the 20:00 window: 268 kbps, 2027-03-21
-   - OPL-01, the 21:00 window: 301 kbps, 2027-01-21
-   - RHN-01, the 19:00 window: 263 kbps, 2027-02-24
-   - RHN-01, the 20:00 window: 307 kbps, 2027-01-09
-   - RHN-01, the 21:00 window: 306 kbps, 2027-01-19
-   - STR-01, the 19:00 window: 290 kbps, 2027-01-17
-   - STR-01, the 20:00 window: 265 kbps, 2027-03-31
-   - STR-01, the 21:00 window: 312 kbps, 2027-03-06
-   - VSN-01, the 19:00 window: 249 kbps, 2027-02-14
-   - VSN-01, the 20:00 window: 241 kbps, 2027-01-08
-   - VSN-01, the 21:00 window: 237 kbps, 2027-01-01
+1. Scenarios going into the 2027 tuning: CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV.
+2. Scenarios staying out: ATM-WDL, CHB-ABU, CSH-LDS, ELD-EXP, FAN-OUT, GMB-SPL, MER-RND, MUL-INF, RMF-P2P and XB-HRJ (with XB-HRJ2).
+3. Chart: each scenario's estimated productivity against the 3 per cent floor, CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV in red, the only bars under the line.
 
-### shortfall_overview.png
+### tm_alert_figures_2026.xlsx
 
-5. One bar for each interconnect of its worst evening shortfall across the quarter, the closest one marked: HVT-01 318, STR-01 312, OPL-01 311, RHN-01 307, DLF-01 303, KZD-01 285, VSN-01 249.
-
-### Also requested
-
-6. Per peer, the quarter's billable 95th percentile, the commitment billed on and the overage:
-   - Delfzicht Breedband: 159 Mbps against 124 Mbps, 236 euros
-   - Grensweg Carrier: 337 Mbps against 326 Mbps, 79 euros
-   - Kabelnet Zuid: 238 Mbps against 196 Mbps, 246 euros
-   - Noordlijn Transit: 648 Mbps against 540 Mbps, 583 euros
-   - Rhenia Telecom: 142 Mbps against 130 Mbps, 85 euros
-   - Vastnet: 198 Mbps against 183 Mbps, 92 euros
-   - Zandpoort IX: 89 Mbps against 72 Mbps, 158 euros
-7. Per client build, the sessions and the share that rebuffered:
-   - b-41600 (4.16.0): 9,853,791 sessions, 3.0 per cent
-   - b-41700 (4.17.0): 10,484,730 sessions, 2.8 per cent
-   - b-41800 (4.18.0): 7,300,481 sessions, 5.8 per cent
-   - b-41806 (4.18.0): 6,389,401 sessions, 3.2 per cent
-   - b-41810 (4.18.1): 5,660,060 sessions, 3.1 per cent
-   - b-41900 (4.19.0): 7,387,510 sessions, 3.2 per cent
-8. Per month, the incidents opened, those restored inside the standard and those whose recorded cause sits outside the platform:
-   - 2027-01: 47 opened, 26 restored inside the standard, 20 with a cause outside the platform
-   - 2027-02: 44 opened, 30 restored inside the standard, 13 with a cause outside the platform
-   - 2027-03: 57 opened, 37 restored inside the standard, 30 with a cause outside the platform
+4. Investigations each scenario's alerts opened, by quarter, whole numbers:
+   - CSH-LDS: 2025 Q4 426, 2026 Q1 399, 2026 Q2 404, 2026 Q3 401
+   - CSH-VEL: 2025 Q4 163, 2026 Q1 143, 2026 Q2 148, 2026 Q3 144
+   - XB-HRJ (with XB-HRJ2): 2025 Q4 118, 2026 Q1 153, 2026 Q2 146, 2026 Q3 133
+   - RMF-P2P: 2025 Q4 322, 2026 Q1 304, 2026 Q2 292, 2026 Q3 311
+   - MUL-INF: 2025 Q4 391, 2026 Q1 366, 2026 Q2 345, 2026 Q3 391
+   - FAN-OUT: 2025 Q4 154, 2026 Q1 192, 2026 Q2 184, 2026 Q3 162
+   - CHB-ABU: 2025 Q4 108, 2026 Q1 95, 2026 Q2 99, 2026 Q3 105
+   - ATM-WDL: 2025 Q4 90, 2026 Q1 96, 2026 Q2 111, 2026 Q3 126
+   - PRF-DEV: 2025 Q4 166, 2026 Q1 184, 2026 Q2 188, 2026 Q3 177
+   - DRM-REA: 2025 Q4 71, 2026 Q1 80, 2026 Q2 77, 2026 Q3 71
+   - MER-RND: 2025 Q4 329, 2026 Q1 329, 2026 Q2 287, 2026 Q3 331
+   - CRY-OFF: 2025 Q4 72, 2026 Q1 84, 2026 Q2 73, 2026 Q3 69
+   - ELD-EXP: 2025 Q4 108, 2026 Q1 98, 2026 Q2 109, 2026 Q3 94
+   - GMB-SPL: 2025 Q4 76, 2026 Q1 79, 2026 Q2 80, 2026 Q3 83
+5. SARs filed in 2026 by month, initial and continuing activity, whole numbers:
+   - January: initial 161, continuing activity 85
+   - February: initial 135, continuing activity 93
+   - March: initial 161, continuing activity 70
+   - April: initial 152, continuing activity 76
+   - May: initial 157, continuing activity 86
+   - June: initial 168, continuing activity 89
+   - July: initial 133, continuing activity 85
+   - August: initial 163, continuing activity 102
+   - September: initial 162, continuing activity 88
+   - October: initial 143, continuing activity 79

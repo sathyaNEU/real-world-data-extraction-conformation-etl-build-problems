@@ -1,226 +1,635 @@
 {
- "a1_peers": {
-  "Delfzicht Breedband": {
-   "commitment_mbps": 124,
-   "overage_eur": 236,
-   "percentile_mbps": 159
+ "ask_investigations": {
+  "ATM-WDL": {
+   "2025 Q4": 90,
+   "2026 Q1": 96,
+   "2026 Q2": 111,
+   "2026 Q3": 126
   },
-  "Grensweg Carrier": {
-   "commitment_mbps": 326,
-   "overage_eur": 79,
-   "percentile_mbps": 337
+  "CHB-ABU": {
+   "2025 Q4": 108,
+   "2026 Q1": 95,
+   "2026 Q2": 99,
+   "2026 Q3": 105
   },
-  "Kabelnet Zuid": {
-   "commitment_mbps": 196,
-   "overage_eur": 246,
-   "percentile_mbps": 238
+  "CRY-OFF": {
+   "2025 Q4": 72,
+   "2026 Q1": 84,
+   "2026 Q2": 73,
+   "2026 Q3": 69
   },
-  "Noordlijn Transit": {
-   "commitment_mbps": 540,
-   "overage_eur": 583,
-   "percentile_mbps": 648
+  "CSH-LDS": {
+   "2025 Q4": 426,
+   "2026 Q1": 399,
+   "2026 Q2": 404,
+   "2026 Q3": 401
   },
-  "Rhenia Telecom": {
-   "commitment_mbps": 130,
-   "overage_eur": 85,
-   "percentile_mbps": 142
+  "CSH-VEL": {
+   "2025 Q4": 163,
+   "2026 Q1": 143,
+   "2026 Q2": 148,
+   "2026 Q3": 144
   },
-  "Vastnet": {
-   "commitment_mbps": 183,
-   "overage_eur": 92,
-   "percentile_mbps": 198
+  "DRM-REA": {
+   "2025 Q4": 71,
+   "2026 Q1": 80,
+   "2026 Q2": 77,
+   "2026 Q3": 71
   },
-  "Zandpoort IX": {
-   "commitment_mbps": 72,
-   "overage_eur": 158,
-   "percentile_mbps": 89
+  "ELD-EXP": {
+   "2025 Q4": 108,
+   "2026 Q1": 98,
+   "2026 Q2": 109,
+   "2026 Q3": 94
+  },
+  "FAN-OUT": {
+   "2025 Q4": 154,
+   "2026 Q1": 192,
+   "2026 Q2": 184,
+   "2026 Q3": 162
+  },
+  "GMB-SPL": {
+   "2025 Q4": 76,
+   "2026 Q1": 79,
+   "2026 Q2": 80,
+   "2026 Q3": 83
+  },
+  "MER-RND": {
+   "2025 Q4": 329,
+   "2026 Q1": 329,
+   "2026 Q2": 287,
+   "2026 Q3": 331
+  },
+  "MUL-INF": {
+   "2025 Q4": 391,
+   "2026 Q1": 366,
+   "2026 Q2": 345,
+   "2026 Q3": 391
+  },
+  "PRF-DEV": {
+   "2025 Q4": 166,
+   "2026 Q1": 184,
+   "2026 Q2": 188,
+   "2026 Q3": 177
+  },
+  "RMF-P2P": {
+   "2025 Q4": 322,
+   "2026 Q1": 304,
+   "2026 Q2": 292,
+   "2026 Q3": 311
+  },
+  "XB-HRJ": {
+   "2025 Q4": 118,
+   "2026 Q1": 153,
+   "2026 Q2": 146,
+   "2026 Q3": 133
   }
  },
- "a2_builds": {
-  "b-41600": {
-   "build_version": "4.16.0",
-   "rebuffered_pct": 3.0,
-   "sessions": 9853791
+ "ask_sars": {
+  "2026-01": {
+   "continuing": 85,
+   "initial": 161
   },
-  "b-41700": {
-   "build_version": "4.17.0",
-   "rebuffered_pct": 2.8,
-   "sessions": 10484730
+  "2026-02": {
+   "continuing": 93,
+   "initial": 135
   },
-  "b-41800": {
-   "build_version": "4.18.0",
-   "rebuffered_pct": 5.8,
-   "sessions": 7300481
+  "2026-03": {
+   "continuing": 70,
+   "initial": 161
   },
-  "b-41806": {
-   "build_version": "4.18.0",
-   "rebuffered_pct": 3.2,
-   "sessions": 6389401
+  "2026-04": {
+   "continuing": 76,
+   "initial": 152
   },
-  "b-41810": {
-   "build_version": "4.18.1",
-   "rebuffered_pct": 3.1,
-   "sessions": 5660060
+  "2026-05": {
+   "continuing": 86,
+   "initial": 157
   },
-  "b-41900": {
-   "build_version": "4.19.0",
-   "rebuffered_pct": 3.2,
-   "sessions": 7387510
+  "2026-06": {
+   "continuing": 89,
+   "initial": 168
+  },
+  "2026-07": {
+   "continuing": 85,
+   "initial": 133
+  },
+  "2026-08": {
+   "continuing": 102,
+   "initial": 163
+  },
+  "2026-09": {
+   "continuing": 88,
+   "initial": 162
+  },
+  "2026-10": {
+   "continuing": 79,
+   "initial": 143
   }
  },
- "a3_incidents": {
-  "2027-01": {
-   "cause_outside_platform": 20,
-   "opened": 47,
-   "restored_inside_standard": 26
+ "call": {
+  "stay": [
+   "ATM-WDL",
+   "CHB-ABU",
+   "CSH-LDS",
+   "ELD-EXP",
+   "FAN-OUT",
+   "GMB-SPL",
+   "MER-RND",
+   "MUL-INF",
+   "RMF-P2P",
+   "XB-HRJ"
+  ],
+  "tuning": [
+   "CRY-OFF",
+   "CSH-VEL",
+   "DRM-REA",
+   "PRF-DEV"
+  ]
+ },
+ "constants": {
+  "floor_per_cent": 3.0,
+  "history_days": 330
+ },
+ "counts": {
+  "ATM-WDL": {
+   "alerts": 2263,
+   "decided": 2225,
+   "sar_decided": 101,
+   "undecided": 38,
+   "undecided_in_investigation": 38
   },
-  "2027-02": {
-   "cause_outside_platform": 13,
-   "opened": 44,
-   "restored_inside_standard": 30
+  "CHB-ABU": {
+   "alerts": 1495,
+   "decided": 1470,
+   "sar_decided": 90,
+   "undecided": 25,
+   "undecided_in_investigation": 25
   },
-  "2027-03": {
-   "cause_outside_platform": 30,
-   "opened": 57,
-   "restored_inside_standard": 37
+  "CRY-OFF": {
+   "alerts": 2681,
+   "decided": 2651,
+   "sar_decided": 46,
+   "undecided": 30,
+   "undecided_in_investigation": 30
+  },
+  "CSH-LDS": {
+   "alerts": 6210,
+   "decided": 6136,
+   "sar_decided": 489,
+   "undecided": 74,
+   "undecided_in_investigation": 74
+  },
+  "CSH-VEL": {
+   "alerts": 7254,
+   "decided": 7208,
+   "sar_decided": 132,
+   "undecided": 46,
+   "undecided_in_investigation": 46
+  },
+  "DRM-REA": {
+   "alerts": 3104,
+   "decided": 3085,
+   "sar_decided": 47,
+   "undecided": 19,
+   "undecided_in_investigation": 19
+  },
+  "ELD-EXP": {
+   "alerts": 1661,
+   "decided": 1627,
+   "sar_decided": 106,
+   "undecided": 34,
+   "undecided_in_investigation": 34
+  },
+  "FAN-OUT": {
+   "alerts": 3633,
+   "decided": 3526,
+   "sar_decided": 165,
+   "undecided": 107,
+   "undecided_in_investigation": 107
+  },
+  "GMB-SPL": {
+   "alerts": 1083,
+   "decided": 1047,
+   "sar_decided": 56,
+   "undecided": 36,
+   "undecided_in_investigation": 36
+  },
+  "MER-RND": {
+   "alerts": 3258,
+   "decided": 3176,
+   "sar_decided": 87,
+   "undecided": 82,
+   "undecided_in_investigation": 82
+  },
+  "MUL-INF": {
+   "alerts": 4911,
+   "decided": 4784,
+   "sar_decided": 113,
+   "undecided": 127,
+   "undecided_in_investigation": 127
+  },
+  "PRF-DEV": {
+   "alerts": 10960,
+   "decided": 10885,
+   "sar_decided": 128,
+   "undecided": 75,
+   "undecided_in_investigation": 75
+  },
+  "RMF-P2P": {
+   "alerts": 3884,
+   "decided": 3793,
+   "sar_decided": 103,
+   "undecided": 91,
+   "undecided_in_investigation": 91
+  },
+  "XB-HRJ": {
+   "alerts": 2841,
+   "decided": 2798,
+   "sar_decided": 112,
+   "undecided": 43,
+   "undecided_in_investigation": 43
   }
  },
- "call": "none",
- "closest_below_record_pct": 35,
- "closest_over_own_99th_pct": 28,
- "closest_port": "HVT-01",
- "closest_shortfall_kbps": 318,
- "decided_evening": "2027-02-17",
- "decided_port": "HVT-01",
- "decided_shortfall_kbps": 318,
- "decided_window": "19:00",
- "evenings_in_quarter": 90,
- "evenings_left_out": 14,
- "flip_quarter": "2026Q1",
- "flip_shortfall_kbps": 489,
- "framework_clauses": [
-  "4.1",
-  "4.2",
-  "4.3",
-  "4.4",
-  "4.5",
-  "5.1",
-  "7.1",
-  "7.2"
+ "family": {
+  "business date read from the Eastern clock": {
+   "productivity": {
+    "ATM-WDL": 5.441,
+    "CHB-ABU": 6.594,
+    "CRY-OFF": 2.177,
+    "CSH-LDS": 8.559,
+    "CSH-VEL": 2.154,
+    "DRM-REA": 1.85,
+    "ELD-EXP": 7.686,
+    "FAN-OUT": 6.616,
+    "GMB-SPL": 7.164,
+    "MER-RND": 4.64,
+    "MUL-INF": 4.476,
+    "PRF-DEV": 1.507,
+    "RMF-P2P": 4.52,
+    "XB-HRJ": 4.725
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
+  },
+  "history from 300 days old": {
+   "productivity": {
+    "ATM-WDL": 5.468,
+    "CHB-ABU": 6.599,
+    "CRY-OFF": 2.189,
+    "CSH-LDS": 8.561,
+    "CSH-VEL": 2.157,
+    "DRM-REA": 1.84,
+    "ELD-EXP": 7.715,
+    "FAN-OUT": 6.557,
+    "GMB-SPL": 7.067,
+    "MER-RND": 4.667,
+    "MUL-INF": 4.469,
+    "PRF-DEV": 1.517,
+    "RMF-P2P": 4.53,
+    "XB-HRJ": 4.732
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
+  },
+  "history from 365 days old": {
+   "productivity": {
+    "ATM-WDL": 5.521,
+    "CHB-ABU": 6.613,
+    "CRY-OFF": 2.146,
+    "CSH-LDS": 8.569,
+    "CSH-VEL": 2.145,
+    "DRM-REA": 1.836,
+    "ELD-EXP": 7.695,
+    "FAN-OUT": 6.662,
+    "GMB-SPL": 7.214,
+    "MER-RND": 4.676,
+    "MUL-INF": 4.483,
+    "PRF-DEV": 1.5,
+    "RMF-P2P": 4.524,
+    "XB-HRJ": 4.724
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
+  },
+  "mature cohorts, 6 months": {
+   "productivity": {
+    "ATM-WDL": 4.981,
+    "CHB-ABU": 6.271,
+    "CRY-OFF": 2.543,
+    "CSH-LDS": 9.035,
+    "CSH-VEL": 2.283,
+    "DRM-REA": 2.14,
+    "ELD-EXP": 7.816,
+    "FAN-OUT": 6.504,
+    "GMB-SPL": 5.979,
+    "MER-RND": 3.939,
+    "MUL-INF": 3.427,
+    "PRF-DEV": 1.373,
+    "RMF-P2P": 4.097,
+    "XB-HRJ": 4.77
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
+  },
+  "mature cohorts, 7 months": {
+   "productivity": {
+    "ATM-WDL": 4.791,
+    "CHB-ABU": 6.258,
+    "CRY-OFF": 2.381,
+    "CSH-LDS": 9.258,
+    "CSH-VEL": 2.288,
+    "DRM-REA": 2.17,
+    "ELD-EXP": 8.226,
+    "FAN-OUT": 6.318,
+    "GMB-SPL": 6.316,
+    "MER-RND": 4.118,
+    "MUL-INF": 3.717,
+    "PRF-DEV": 1.36,
+    "RMF-P2P": 4.497,
+    "XB-HRJ": 4.899
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
+  },
+  "mature cohorts, 8 months": {
+   "productivity": {
+    "ATM-WDL": 5.078,
+    "CHB-ABU": 6.402,
+    "CRY-OFF": 2.618,
+    "CSH-LDS": 8.847,
+    "CSH-VEL": 2.25,
+    "DRM-REA": 2.022,
+    "ELD-EXP": 8.369,
+    "FAN-OUT": 6.172,
+    "GMB-SPL": 6.303,
+    "MER-RND": 4.121,
+    "MUL-INF": 3.866,
+    "PRF-DEV": 1.397,
+    "RMF-P2P": 4.382,
+    "XB-HRJ": 4.726
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
+  },
+  "mature cohorts, 9 months": {
+   "productivity": {
+    "ATM-WDL": 4.891,
+    "CHB-ABU": 6.691,
+    "CRY-OFF": 2.31,
+    "CSH-LDS": 8.419,
+    "CSH-VEL": 2.332,
+    "DRM-REA": 2.148,
+    "ELD-EXP": 8.787,
+    "FAN-OUT": 6.601,
+    "GMB-SPL": 6.234,
+    "MER-RND": 4.422,
+    "MUL-INF": 3.479,
+    "PRF-DEV": 1.465,
+    "RMF-P2P": 4.266,
+    "XB-HRJ": 4.384
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
+  },
+  "the re-run duplicates kept": {
+   "productivity": {
+    "ATM-WDL": 5.425,
+    "CHB-ABU": 6.586,
+    "CRY-OFF": 2.17,
+    "CSH-LDS": 8.543,
+    "CSH-VEL": 2.149,
+    "DRM-REA": 1.843,
+    "ELD-EXP": 7.649,
+    "FAN-OUT": 6.599,
+    "GMB-SPL": 7.157,
+    "MER-RND": 4.617,
+    "MUL-INF": 4.459,
+    "PRF-DEV": 1.503,
+    "RMF-P2P": 4.506,
+    "XB-HRJ": 4.72
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
+  }
+ },
+ "ladder": {
+  "R0 productivity over the decided alerts (the conversion an MI pack shows)": {
+   "productivity": {
+    "ATM-WDL": 4.539,
+    "CHB-ABU": 6.122,
+    "CRY-OFF": 1.735,
+    "CSH-LDS": 7.969,
+    "CSH-VEL": 1.831,
+    "DRM-REA": 1.524,
+    "ELD-EXP": 6.515,
+    "FAN-OUT": 4.68,
+    "GMB-SPL": 5.349,
+    "MER-RND": 2.739,
+    "MUL-INF": 2.362,
+    "PRF-DEV": 1.176,
+    "RMF-P2P": 2.716,
+    "XB-HRJ": 4.003
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "MER-RND",
+    "MUL-INF",
+    "PRF-DEV",
+    "RMF-P2P"
+   ]
+  },
+  "R1 SARs so far over every alert, the undecided read as not ending in a SAR": {
+   "productivity": {
+    "ATM-WDL": 4.463,
+    "CHB-ABU": 6.02,
+    "CRY-OFF": 1.716,
+    "CSH-LDS": 7.874,
+    "CSH-VEL": 1.82,
+    "DRM-REA": 1.514,
+    "ELD-EXP": 6.382,
+    "FAN-OUT": 4.542,
+    "GMB-SPL": 5.171,
+    "MER-RND": 2.67,
+    "MUL-INF": 2.301,
+    "PRF-DEV": 1.168,
+    "RMF-P2P": 2.652,
+    "XB-HRJ": 3.942
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "MER-RND",
+    "MUL-INF",
+    "PRF-DEV",
+    "RMF-P2P"
+   ]
+  },
+  "R2 the undecided projected at the scenario's decided share": {
+   "productivity": {
+    "ATM-WDL": 4.539,
+    "CHB-ABU": 6.122,
+    "CRY-OFF": 1.735,
+    "CSH-LDS": 7.969,
+    "CSH-VEL": 1.831,
+    "DRM-REA": 1.524,
+    "ELD-EXP": 6.515,
+    "FAN-OUT": 4.68,
+    "GMB-SPL": 5.349,
+    "MER-RND": 2.739,
+    "MUL-INF": 2.362,
+    "PRF-DEV": 1.176,
+    "RMF-P2P": 2.716,
+    "XB-HRJ": 4.003
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "MER-RND",
+    "MUL-INF",
+    "PRF-DEV",
+    "RMF-P2P"
+   ]
+  },
+  "R3 undecided investigations at the scenario's investigation SAR share": {
+   "productivity": {
+    "ATM-WDL": 4.824,
+    "CHB-ABU": 6.33,
+    "CRY-OFF": 1.868,
+    "CSH-LDS": 8.212,
+    "CSH-VEL": 1.952,
+    "DRM-REA": 1.632,
+    "ELD-EXP": 6.962,
+    "FAN-OUT": 5.357,
+    "GMB-SPL": 6.055,
+    "MER-RND": 2.895,
+    "MUL-INF": 2.583,
+    "PRF-DEV": 1.295,
+    "RMF-P2P": 2.884,
+    "XB-HRJ": 4.283
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "MER-RND",
+    "MUL-INF",
+    "PRF-DEV",
+    "RMF-P2P"
+   ]
+  },
+  "R4 each undecided alert read by how the scenario's alerts undecided at that age ended (golden)": {
+   "productivity": {
+    "ATM-WDL": 5.441,
+    "CHB-ABU": 6.594,
+    "CRY-OFF": 2.177,
+    "CSH-LDS": 8.559,
+    "CSH-VEL": 2.154,
+    "DRM-REA": 1.85,
+    "ELD-EXP": 7.686,
+    "FAN-OUT": 6.616,
+    "GMB-SPL": 7.164,
+    "MER-RND": 4.64,
+    "MUL-INF": 4.476,
+    "PRF-DEV": 1.507,
+    "RMF-P2P": 4.52,
+    "XB-HRJ": 4.725
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
+  }
+ },
+ "names": {
+  "ATM-WDL": "Card withdrawals at many ATMs in one day",
+  "CHB-ABU": "Merchant chargeback and refund abuse",
+  "CRY-OFF": "Transfers out to virtual asset exchanges",
+  "CSH-LDS": "Cash loads under the reporting threshold at retail partners",
+  "CSH-VEL": "Cash-load velocity against the account's profile",
+  "DRM-REA": "Dormant account reactivated with large flows",
+  "ELD-EXP": "Older customer paying new payees after a contact change",
+  "FAN-OUT": "Payments out to many new recipients",
+  "GMB-SPL": "Payments split across gambling merchants",
+  "MER-RND": "Round-amount payments into a merchant from few payers",
+  "MUL-INF": "Many unrelated senders into one wallet",
+  "PRF-DEV": "Activity far outside the account's expected profile",
+  "RMF-P2P": "Funds moved in and out within 72 hours",
+  "XB-HRJ": "Cross-border transfers with high-risk jurisdictions"
+ },
+ "productivity": {
+  "ATM-WDL": 5.441,
+  "CHB-ABU": 6.594,
+  "CRY-OFF": 2.177,
+  "CSH-LDS": 8.559,
+  "CSH-VEL": 2.154,
+  "DRM-REA": 1.85,
+  "ELD-EXP": 7.686,
+  "FAN-OUT": 6.616,
+  "GMB-SPL": 7.164,
+  "MER-RND": 4.64,
+  "MUL-INF": 4.476,
+  "PRF-DEV": 1.507,
+  "RMF-P2P": 4.52,
+  "XB-HRJ": 4.725
+ },
+ "traps": [
+  "RMF-P2P",
+  "MUL-INF",
+  "MER-RND"
  ],
- "grid": {
-  "DLF-01 19:00": {
-   "evening": "2027-03-18",
-   "worst_kbps": 246
-  },
-  "DLF-01 20:00": {
-   "evening": "2027-02-14",
-   "worst_kbps": 303
-  },
-  "DLF-01 21:00": {
-   "evening": "2027-01-22",
-   "worst_kbps": 250
-  },
-  "HVT-01 19:00": {
-   "evening": "2027-02-17",
-   "worst_kbps": 318
-  },
-  "HVT-01 20:00": {
-   "evening": "2027-03-22",
-   "worst_kbps": 248
-  },
-  "HVT-01 21:00": {
-   "evening": "2027-03-19",
-   "worst_kbps": 269
-  },
-  "KZD-01 19:00": {
-   "evening": "2027-03-20",
-   "worst_kbps": 285
-  },
-  "KZD-01 20:00": {
-   "evening": "2027-03-03",
-   "worst_kbps": 278
-  },
-  "KZD-01 21:00": {
-   "evening": "2027-02-08",
-   "worst_kbps": 247
-  },
-  "OPL-01 19:00": {
-   "evening": "2027-02-25",
-   "worst_kbps": 311
-  },
-  "OPL-01 20:00": {
-   "evening": "2027-03-21",
-   "worst_kbps": 268
-  },
-  "OPL-01 21:00": {
-   "evening": "2027-01-21",
-   "worst_kbps": 301
-  },
-  "RHN-01 19:00": {
-   "evening": "2027-02-24",
-   "worst_kbps": 263
-  },
-  "RHN-01 20:00": {
-   "evening": "2027-01-09",
-   "worst_kbps": 307
-  },
-  "RHN-01 21:00": {
-   "evening": "2027-01-19",
-   "worst_kbps": 306
-  },
-  "STR-01 19:00": {
-   "evening": "2027-01-17",
-   "worst_kbps": 290
-  },
-  "STR-01 20:00": {
-   "evening": "2027-03-31",
-   "worst_kbps": 265
-  },
-  "STR-01 21:00": {
-   "evening": "2027-03-06",
-   "worst_kbps": 312
-  },
-  "VSN-01 19:00": {
-   "evening": "2027-02-14",
-   "worst_kbps": 249
-  },
-  "VSN-01 20:00": {
-   "evening": "2027-01-08",
-   "worst_kbps": 241
-  },
-  "VSN-01 21:00": {
-   "evening": "2027-01-01",
-   "worst_kbps": 237
-  }
- },
- "own_99th_kbps": {
-  "DLF-01": 253,
-  "HVT-01": 248,
-  "KZD-01": 272,
-  "OPL-01": 267,
-  "RHN-01": 268,
-  "STR-01": 262,
-  "VSN-01": 239
- },
- "quarterly_worst_kbps": {
-  "2025Q1": 424,
-  "2025Q2": 398,
-  "2025Q3": 411,
-  "2025Q4": 458,
-  "2026Q1": 489,
-  "2026Q2": 436,
-  "2026Q3": 447,
-  "2026Q4": 471
- },
- "rank_of_nine": 9,
- "record_windows": 15330,
- "record_windows_at_or_above": 282,
- "rung0_port": "STR-01",
- "rung0_shortfall_kbps": 569,
- "rung2_mean_kbps": 129.1,
- "rung2_next_kbps": 112.0,
- "rung2_port": "DLF-01",
- "windows_assessed": 1809,
- "windows_in_quarter": 1851
+ "truth": {
+  "ATM-WDL": 5.612,
+  "CHB-ABU": 6.622,
+  "CRY-OFF": 2.126,
+  "CSH-LDS": 8.454,
+  "CSH-VEL": 2.082,
+  "DRM-REA": 1.772,
+  "ELD-EXP": 7.465,
+  "FAN-OUT": 6.551,
+  "GMB-SPL": 6.556,
+  "MER-RND": 4.573,
+  "MUL-INF": 4.459,
+  "PRF-DEV": 1.451,
+  "RMF-P2P": 4.454,
+  "XB-HRJ": 4.681
+ }
 }

@@ -1,430 +1,362 @@
-# task470 design note: Corrisan Valley's 2027 unleaded avgas grants
+# task470 design note
 
-Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first.
+Architecture 2 (re-rooted 2026-10-31). Read `## Tried and rejected` first.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task470.json` (architecture v1), registered 2026-10-18 after a pull, so
-  every card filed before it was in the check. Guard check PASS. Two bans cleared at the draw by redrawing the axis:
-  the context artifact (monitoring_export, against task190) is now operations_log, the receiver network's record of
-  each field's operations; the organisation family (government_agency, against task190) is now local_government, a
-  regional air district. The structural test's older matches (gap population, pattern E, Gate G
-  decomposition_attribution) are differentiated on the card: task107 v1 (a check's reach set by each source's delivery
-  kind), task129 v1 (two causes separated through a per-record state), task36 (a candidate excluded by a filed remedy)
-  and task44 v2 (a pilot's pooled effect split by a behavioural moderator). Nearest driver task153 at 0.08.
-- **Seed:** ET27 (a state aviation office funds first the airport with the highest 2019 share of departures flown by
-  aircraft of 50 seats or fewer; analysts joined the flights' tail numbers to today's aircraft register, many tails did
-  not match and some matched small private aircraft). Kept: the world (a public body funding airfields one by one, the
-  FAA aircraft register read through identifiers that change hands, emissions inventories), the decision (which fields
-  are funded first, on a quantity of activity by one class of aircraft at each field) and the quantity's kind (each
-  field's activity by the class that matters, here piston-engine aircraft, priced in lead). Made forward facing: the
-  2027 grant round, qualified on the 2026 inventory year. Dropped as the decisive step: the seed's move (reading old
-  tail numbers through today's register), which is identity resolution and data semantics; it survives as Layer 1
-  (a transponder's 24-bit address follows its N-number, and an N-number reissued or an aircraft re-registered since
-  2026 reads differently in the register as it stands now).
-- **Pairing:** Physical & Environmental Sciences / emissions-inventory / ETL. The district's evidence is a conformed
-  inventory built from sources never designed to join: its receiver network's record of every operation it heard at
-  each field (24-bit address, UTC time, event type), the FAA register's fixed-width files (master, deregistered,
-  aircraft reference, engine reference), the state aviation office's based aircraft list keyed by N-number, six
-  control towers' daily counts, four fields' count studies and the fields' master records. The deciding quantity is
-  each field's 2026 lead from piston aircraft, which airport lead inventories build from piston operations by engine
-  class and operation type times lead per operation; at a field without a count the operations come from the network,
-  and what the network misses has to be completed.
-- **Shape:** 01, a list of candidates against a cap: each of the 24 non-towered fields' 2026 lead from piston-engine
-  aircraft against the round's 12.5 kg, the count of qualifying fields and which they are.
-- **Strategy:** composition_mix (the network's seen-to-counted rate pooled over the counted fields does not fit a field
-  whose based fleet differs in the share that never broadcasts), pattern E, decisive generator G14 (the conditioned
-  yield), with G12 (a field the network hears little at is not a field with little activity) and G6 (the pool shifted
-  under the rate). Gate G decomposition_attribution: the decisive move books the missing operations to the aircraft
-  that generate them.
-- **World:** United States, an unnamed state. The Corrisan Valley Air Quality District, a regional air district run by
-  a governing board of county and city representatives, inventories lead from piston-engine aircraft at the 30
-  public-use general aviation fields in its valley: six with a control tower and 24 without. In 2025 it put an ADS-B
-  receiver on every field. Its Unleaded Avgas Transition Grants pay for an unleaded fuel tank and dispenser at a field
-  without a tower; the 2027 round funds every such field whose 2026 lead from piston-engine aircraft is 12.5 kg or
-  more, under the district's inventory method (CVAQD-AQ-17, Revision 3).
-- **Forcing fact:** the Governing Board adopts the 2027 grant round with the district's 2027 budget at its 10 March 2027
-  meeting; the air toxics planner's qualification memo and the field inventory go to it. As-of: 12 February 2027. The
-  call faces forward (the 2027 grant round); its quantity is the closed 2026 inventory year, which the round's
-  guidelines name as the basis (a retrospective quantity with its reason: the round qualifies on the latest complete
-  year).
-- **Forum and forcing event:** council_or_assembly (the governing board), budget_or_appropriation (the 2027 grant
-  round adopted with the budget). Organisation local_government; role policy_adviser. Personas from `guard.py names
-  --geo "United States" --seed 470`: Jeanette Steele (Air Toxics Planner, who writes the qualification memo), Yolanda
-  Cortez (Air Quality Specialist, who runs the receiver network) and Tonya Krause (Grants Program Manager); Brian Rowe
-  replaced (his first name in task445).
-- **Data-native sentence:** the district's receivers sit on every field and record every operation of an aircraft
-  that broadcasts ADS-B Out and none of one that does not; the aircraft that do not broadcast are not spread evenly but
-  based where old, privately flown piston aircraft are kept, so the operations the network misses are concentrated at
-  those fields and absent at the flight-school fields whose rental fleets all broadcast.
-- **The WHAT screen.** Population: every piston-engine aircraft operation (a takeoff or a landing, a touch-and-go being
-  one of each) at a field in 2026, by any aircraft, heard by the network or not (filed in the district's method).
-  Outcome: lead emitted, at the method's per-operation factors by engine class and operation type, an unrecorded
-  operation at 1.625 g. Window: calendar 2026, local time. Unit: kilograms of lead per field. Comparison: 12.5 kg or
-  more (the guidelines). The decisive step settles none of them: it is how the operations the network did not hear
-  are estimated at a field without a count, which method 4.4 leaves to "the fields with a count".
-- **Deliverables:** `corrisan_2026_field_piston_lead.csv` (each of the 24 fields' 2026 lead, whole kilograms) and
-  `cvaqd_2027_unleaded_grant_qualification.docx` (the memo to the Governing Board: the qualifying fields, the bar chart
-  of the 24 fields against the 12.5 kg line, the six towered fields' operations and lead).
-- **Sources, one line each:**
-  - `stumping/references/client/two-layer-task-design.md`: Physical & Environmental Sciences has Layer 1 techniques
-    and no Layer 2 patterns on file, so the pitfall comes from the five families: estimation_fit (survivorship,
-    weighting and post-stratification), here the missed activity placed with the units that never register.
-  - `dataset-generation/references/layer1-messiness.md`: detections in UTC against tower counts kept by local day and
-    tower hours, 24-bit addresses against N-numbers, the register's fixed-width layouts, based aircraft lists in mixed
-    N-number formats, consultants' count study layouts, master records carried for years; each to be asserted neutral
-    on the call.
-  - The lane's spent drivers (`guard.py mechanisms --objective etl`): task462 (aerial plume detection weighted by a
-    probability that rises with rate and wind) is the nearest family, a sensor that misses some activity; here the
-    miss is not a per-event probability but a property of the unit (it never broadcasts), and the missing activity is
-    rebuilt from which units were never heard anywhere in the year. task448 (a register's capture depending on the
-    filing route) and task456 (three imperfect records of one state) are capture problems on lists, not on a sensor.
+- **Card:** `.claude/skills/fingerprint/cards/task470.json`, architecture v2, registered 2026-10-31T17:41:05Z after a pull,
+  so every card filed before it was in the check (the re-roots of task118, task181 and task306 included). `guard.py check`
+  on the registered card: PASS. One older-build match on gap, pattern and Gate G (task477) is answered by a
+  differentiation line on the card. Axes drawn clear of the window at registration: organisation family
+  research_or_statistics_office (local_government is banned against task181, government_agency against task306,
+  utility_or_infrastructure against task118), forum minister_or_cabinet, forcing event statutory_or_regulatory_filing,
+  role statistical_office_head, strategy classification_error, calibration none, context artifact register, shape 01.
+  Architecture 1's identity and fate are the card's lineage, its shell (how-many, "Put", csv and docx) in
+  `lineage_shells`.
+- **Pairing.** Survey Research & Official Statistics / `census-register-administrative-data-quality` / Data Extraction &
+  Conformation. The task type serves ETL in the taxonomy. The work is the field's own: a register-based dwelling statistic
+  built by conforming the cadastre, the population register, the electricity hub's meter point register and its hourly
+  reads into one dwelling-level occupancy file under the scheme's data contract, and the call is the grant designation
+  that file decides.
+- **Niche.** A ministry's 2027 vacant dwelling activation grant, piloted in one fictional Norwegian county of ten
+  municipalities, goes to every municipality where at least 5.0 per cent of the dwellings the regulation counts stood
+  vacant in the reference fortnight of 9 to 22 November 2026. The regulation defines vacant by whether anyone lived in the
+  dwelling, whatever the population register shows, and has the national statistics office certify each municipality's
+  share by 15 January 2027 from the hub's hourly meter data, which the regulation makes the office's source.
+- **The call.** Which municipalities qualify (a designation set), with each municipality's vacant dwellings and share.
+  Retrospective measurement, forward decision: the fortnight is closed, the grant is the 2027 programme's, and the
+  regulation designates on that fortnight.
+- **Shape.** 01, the candidates against a threshold: each municipality's vacant dwellings and share (two figures for each
+  municipality), the designated set, the margin to the line, a chart of the shares against the threshold with named parts
+  and the two files; with the asks, well over 25 criteria. Decision designation_set, answer set_of_items, question form
+  whether (the call is where the grant should go).
+- **Strategy.** classification_error. Gap objective first (the register's residents and the meter's level are correct
+  records and are not what the regulation scores, which is whether anyone lived there), then population. Generators G3
+  (record against operation: the meter's level records the heating, not the household) and G12 (absence of a registered
+  resident against absence of residents). Gate G method_or_model_selection. Layer 2 family estimation_fit, pattern
+  own:occupancy-from-the-household-daily-cycle-against-a-heating-load.
+- **The ETL pincer, answered.** Of the five ETL moves this is the per-case input a second file pins: each dwelling's
+  occupancy, pinned by its own hourly reads. The forcing file pins a condition (a household's daily cycle on some day of
+  the fortnight). Reading the file correctly gives a level per hour and per day, and neither says whether anyone lived
+  there; occupancy is the presence of the morning and evening rise over the dwelling's own night-time load, a model of a
+  household's routine against a heating load that no field records, so a correct read is not sufficient. Nothing in the
+  step is identity resolution, grain or time semantics.
+- **Forum, event, organisation, role.** The ministry adopts the list (minister_or_cabinet); the regulation's delivery
+  deadline forces it (statutory_or_regulatory_filing); the national statistics office certifies it
+  (research_or_statistics_office), its dwelling statistics section head the stakeholder (statistical_office_head).
+- **People** (`guard.py names --geo Norway --seed 470`, locale no_NO): Martine Strøm, head of the office's dwelling
+  statistics section; Eirik Haug, the ministry's adviser on the scheme. Neither appears in the prompt.
+- **Data-native sentence.** An empty dwelling in a Norwegian November is heated (a lowered thermostat or frost protection
+  keeps the electric heating on), so its hourly load runs with the outdoor temperature at levels many lived-in flats never
+  reach, while the population register still lists residents who have moved to care or abroad and omits students and
+  workers who never re-registered; only a household's own morning and evening rise over its night-time load shows that
+  someone lived there.
+- **Abstraction sentence** (written against the nearest approved builds, not writable as the same): task182's "each
+  bore's own lagged driver response" reads a unit's departure from its own response to a shared driver; here the step is
+  the presence or absence of the users' daily rhythm in a unit's own record whose level a use-independent load carries,
+  with no response to a driver estimated. Against task236 (a notified share read through a sentinel network's positivity)
+  and task258 (each slow load rebuilt part by part), no second channel is used and nothing is rebuilt from components.
+- **Sources.** The client's two-layer standard; register-based housing statistics (dwelling occupancy from the
+  population register's registered residents, the official statistics convention this task's regulation sets aside);
+  utility-data vacancy statistics (a dwelling counted vacant below a consumption floor over a period, the field's
+  method at rung 1); smart-meter occupancy detection from load profiles (the household's daily activity cycle);
+  Norway's centralised meter-data hub, its hourly reads and quality codes, and its meter point register;
+  the Norwegian land register's public titles from before organisation numbers.
 
 ## Default path
 
-1. Read `adsb_field_events_20251230_20270102.csv`, times from UTC to Pacific time, kept local 2026; gave each event
-   its aircraft through `icao24` and MASTER.txt (DEREG.txt for an address MASTER no longer lists) and priced each
-   piston-engine operation by ACFTREF's engines and the method's Table 1, a touch-and-go two operations.
-2. At the six towers took the civil count in tower hours less the civil events recorded in those hours (method 4.2);
-   at the four count fields the study's piston-engine operations less those recorded (4.3).
-3. Took the network's share of the counted fields' operations: recorded over counted, 0.815.
-4. At each of the 20 fields without a count, put the unrecorded operations at the recorded piston operations times
-   (1 - 0.815) / 0.815, priced at 1.625 g (method 3.2, 4.4), and added the recorded lead.
-5. Compared each field with the guidelines' 12.5 kg.
+The path a competent analyst takes after conforming every file correctly and reading both governing documents (figures
+from the generator's checks on the built pack).
 
-Ends on: eight fields, A71 F37 K58 L08 P05 S27 T13 T61 (Kestrel Ridge, Pellow, Saltry and Tavish in; Orrin Flats,
-Umber Creek and Wickrow out).
+1. Read the regulation: the dwellings counted are the cadastre's Bolig units in use on or before 1 November 2026
+   (Section 3); a dwelling is vacant when nobody lived in it on any day of 9 to 22 November 2026, whatever the register
+   shows (Section 4); the office reads it from the hub's metered values with the cadastre (Section 5); 5.0 per cent or
+   more of a municipality's counted dwellings qualifies it (Section 6).
+2. Conform: 8,020 counted dwellings; each joined to its household metering points by the cadastre's unit ID, else by
+   municipality and address for a single-unit house (Snøholt's points still under Fjordeid's old number 5809); the
+   hourly values from UTC to Norwegian time, each hour once with the later delivery kept, a changed meter's two points
+   added.
+3. Apply the field's vacancy-from-meters rule, the utility-data vacancy statistic: each dwelling's average daily use
+   over the fortnight, vacant under a consumption floor. A floor of 3 kWh a day finds 113 switched-off and fridge-only
+   dwellings and no lived-in one; a floor of 10 finds 297, the lived-in dwellings' first percentile sitting at 9.3.
+4. Validate it: 75 per cent of the dwellings under a 3 kWh floor have nobody registered on 1 November, against 9 per
+   cent of the rest, so the floor agrees with the register where the register is right.
+5. Share by municipality; the highest is Solmoen's 3.7 per cent at a 3 kWh floor.
 
-Golden: seven fields, A71 F37 L08 O16 T13 U44 W33.
+Ends on: no municipality qualifies (none at any floor from 1 to 10 kWh a day).
+
+Golden: five municipalities qualify (Tverrvika 7.3, Hesteby 6.4, Solmoen 6.5, Ørnevik 8.2 and Fjordeid 5.4 per cent).
 
 ## Stump sentence
 
-The default path scales every field's recorded operations by the counted fields' 0.815 share and qualifies eight
-fields, A71 F37 K58 L08 P05 S27 T13 T61, putting the missed operations where the network already hears the most (the
-flight-school fields, whose rental fleets all broadcast) instead of with the based airplanes that never broadcast, so
-it drops the three vintage fields O16, U44 and W33 whose missed operations are a third of their lead.
+A competent solver conforms the cadastre and the hub's hourly values, counts as vacant the dwellings whose average daily
+use over the fortnight sits under a consumption floor, sees the floor agree with the register, and files that no
+municipality qualifies at any floor from 1 to 10 kWh a day; an empty dwelling in a Norwegian November is left heated, so
+the vacant dwellings use a median 20.5 kWh a day against 19.5 for the lived-in ones, and only a household's morning or
+evening rise over the dwelling's own night-time use on some day shows that someone lived there, which designates five.
 
 ## Three rules
 
-Task type: emissions inventory compilation (an activity-based airport lead inventory: operations by engine class and
-operation type conformed from a receiver network, the FAA register and counts, times factors per operation, the
-unobserved activity completed by estimation), a task type serving Data Extraction & Conformation (ETL).
+- **Task type:** census-register-administrative-data-quality in Survey Research & Official Statistics, which serves
+  Data Extraction & Conformation: a register-based dwelling statistic conformed from the cadastre, the meter data
+  hub's metering points and hourly values and the population register into one dwelling-level file under the
+  regulation's contract, the designation read from it.
+- **Domain test:** the quantity that decides is each dwelling's occupancy in the reference fortnight, the official
+  statistics question of whether a dwelling is lived in; the field's two estimators for it are the register-based
+  count (dwellings with no registered resident) and the utility-data vacancy statistic (a consumption floor on the
+  metered electricity), and both sit at the bottom of the ladder here.
+- **Swap:** put hospital wards for dwellings and admissions for residents and the call reads "which hospitals have
+  5 per cent of their wards empty"; a ward's occupancy sits in the admissions system, no ward is heated empty because
+  of the climate while its register lists the departed, and the household's own day against the building's heating has
+  no meaning, so the task stops making sense.
+- **Layer 1:** the hub's UTC hour stamps; days first delivered as estimates and replaced by a second delivery; hours
+  missing after communication faults; meters changed in the fortnight under a new point; Snøholt's points still under
+  Fjordeid's number because the grid company's records lag the 2024 split; addresses in capitals, unit numbers with a
+  space or missing on single-unit houses, some points without the unit ID; communal points at block addresses; the
+  register's events after 1 November; the land register's late registrations; the outage hours; every item as its
+  system produces it, nothing placed to be caught.
+- **Layer 2:** classification from a measured signal (estimation_fit): the choice of what in a dwelling's metered
+  record shows that someone lived there, the household's daily cycle against the building's own heating load, rather
+  than the level of use or the register.
+- **Decisive step:** recognising that in a Norwegian November an empty dwelling's electricity is its heating, so the
+  level of use cannot tell an empty dwelling from a lived-in one, and reading occupancy from whether, on any day, the
+  dwelling's morning or evening use rose above its own night-time use, the household's day.
+- **Not semantics:** every field read correctly (kWh per hour, UTC stamps, the E and M quality codes, the two
+  deliveries, unit IDs, Snøholt's old number) gives a correct level for each dwelling and day, and the level is not
+  occupancy; the floor route reads every field right and still files that no municipality qualifies.
+- **Not rule application:** no filed rule says how occupancy shows in metered values (Section 5 names the source only),
+  and executing every filed rule leaves the construction open: the enumerated family spreads from no municipality to
+  all ten (the register all ten; floors of 0.5 to 10 kWh a day none; 10.5 kWh four, 11 six, 11.5 seven, 12 nine; 13 and
+  over all ten; the register's empty dwellings with no household day Hesteby alone); the standing family, once Section 4
+  rules the register out, still spreads from none to all ten across the floors; what rules the floors out is the data's
+  own structure (vacant and lived-in dwellings with the same median use), silent, and the household-day members then
+  agree on the golden five across a corridor of 0.29 to 1.00 kWh.
+- **Analyst test:** a strong analyst who conforms every file and applies every filed rule takes the field's
+  utility-data vacancy rule, a consumption floor anywhere from 1 to 10 kWh a day, sees it validate against the register,
+  and files that no municipality qualifies.
+- **Estimand:** Sections 3, 4 and 6 of regulation_vacant_dwelling_grant_2027.pdf: the counted dwellings (the cadastre's
+  Bolig units in use on or before 1 November 2026), each vacant when nobody lived in it on any day of 9 to 22 November
+  2026 whatever the population register shows, a municipality's share of its counted dwellings rounded to one decimal,
+  qualifying at 5.0 per cent or more.
+- **No decoy:** nothing is planted: no memo, briefing, draft or stakeholder figure argues the floor or the register; the
+  regulation and the ministry's letter file the WHAT; the hub's, the cadastre's and the registers' files are what those
+  systems produce.
+- **No certified replay:** no certified, published or prior-year figure ships; nothing is recovered by reproducing a
+  published share or count.
+- **Lesson:** metered energy shows that a home is lived in through the shape of its use, not its level, wherever the
+  building's own load runs with nobody there (heating in a cold climate); no build on file reads a household's daily
+  cycle from a unit's own hourly record.
 
-Domain test: the deciding quantity is each field's 2026 lead from piston-engine aircraft, built the way airport lead
-inventories build it (landing and takeoff operations by engine class and operation type times lead per operation), with
-the operations the activity data misses estimated from the fields where the activity is fully counted; the field's
-completion estimator here is a ratio estimator whose auxiliary is the airplanes that generate the missed activity.
+## Survivor anatomy
 
-Swap: "which hospitals' 2026 sharps waste qualifies for a disposal grant, from a scanner network that reads only tagged
-containers" keeps the arithmetic but loses the domain's structure: here the misses are a property of the airplane
-(ADS-B Out or not), the airplanes are based unevenly by field type, the counts are towers' and counters', and the lead
-per operation is an engine-class factor; without them nothing fixes which auxiliary completes the inventory.
-
-Layer 1: the network's export in UTC against an inventory in Pacific local time (padding days, daylight time), the
-towers' counts kept in local tower hours with winter hours and closed days, the FAA register's padded layout (N-NUMBER
-without the N, upper-case MODE S CODE HEX against the export's lower-case `icao24`), N-numbers changed, exported or
-lapsed in 2026 (addresses only DEREG holds), the state's based list written four ways by county, the count studies in
-four layouts (L08's touch-and-go circuits), flight IDs blank or stale; each asserted neutral on the call and on every
-non-towered field's whole-kilogram lead (checks.py L1, SF2, SF9, SF10, SF12).
-
-Layer 2: estimation_fit: completing an undercounted activity record, where the choice of auxiliary decides the
-estimate; the missed operations are generated by the never-broadcasting airplanes, so they scale with the airplanes
-the network never recorded, not with what it recorded or with every based airplane.
-
-Decisive step: estimating each uncounted field's unrecorded operations as the counted fields' unrecorded operations per
-based piston airplane the network never recorded (23,376 over 338, 69.2) times that field's never-recorded airplanes,
-which qualifies O16, U44 and W33 and drops K58, P05, S27 and T61.
-
-Not semantics: every field, code, unit and definition read correctly (Pacific time, tower hours, civil columns, a
-touch-and-go two operations, TYPE ENGINE 1, the register's history, the network notes' sentence that aircraft without
-ADS-B Out are not recorded) still leaves the easy route scaling each field's recorded operations by one capture share;
-no field marks an airplane as non-broadcasting, and the step is the choice of estimator, not a reading.
-
-Not rule application: the method files the population (every piston-engine operation, recorded or not), the factors,
-the unrecorded operation's 1.625 g and the counted fields' unrecorded operations; 4.4 says only that the others are
-estimated from the fields with a count, and executing every filed rule with a capture share qualifies the default
-eight.
-
-Analyst test: a strong analyst who reads every file and rule correctly takes the counted fields' capture (0.815),
-completes each field's recorded operations with it and qualifies the eight fields A71 F37 K58 L08 P05 S27 T13 T61 (the
-default path's Ends on); split by flight training it qualifies nine; only the unrecorded operations per never-recorded
-airplane qualify the seven.
-
-Estimand: guidelines 2.1 and 2.2 (cvaqd_2027_unleaded_avgas_transition_grants.pdf): a public-use field in the district
-without a control tower whose 2026 lead from piston-engine aircraft, as method CVAQD-AQ-17 Revision 3 estimates it, is
-12.5 kg or more; method 1.1, 2.2 and 3 (cvaqd_aircraft_lead_inventory_method_rev3.pdf): every operation by a
-piston-engine aircraft at the field in calendar 2026 local time, recorded or not, at Table 1 or 1.625 g.
-
-No decoy: nothing is planted to be caught: the export, the register, the counts and the studies are what each system
-writes; no memo, draft, briefing or stakeholder figure argues a method or a list; the 5010 records are the airports'
-own filings, declared as the wrong-basis distractor and ruled out by their own dates and estimates.
-
-No certified replay: no published inventory, earlier qualification or certified figure ships to back a method out of;
-the counted fields are the method's own evidence (4.2, 4.3) and score candidates only by leave-one-out, which every
-analyst can run.
-
-Lesson: when a sensor misses whole units rather than a share of events, the activity it misses scales with the units
-it never detected, measured where the activity is fully counted, never with what it did detect; no build on file
-completes an undercounted record from the units that never registered.
+- **Actor:** the dwelling has rows (a cadastre unit, its metering points, their hours), and whether anybody lived in it
+  has no column anywhere: the register's residents are another quantity the regulation sets aside, and no file holds
+  a household, an occupancy flag or a vacancy code.
+- **Link:** the signal is a relation between rows of one dwelling's own record, its morning and evening hours against
+  its own night hours on the same day, a comparison no key offers and the field's vacancy statistic never makes.
+- **Reflex:** the field's methods for the quantity sit at rungs 0 and 1: the register's empty dwellings designate all
+  ten, and the utility-data consumption floor designates none at any floor from 1 to 10 kWh a day.
+- **Back-test:** the textbook route validates: 75 per cent of the dwellings a 3 kWh floor calls vacant have nobody
+  registered on 1 November, against 9 per cent of the rest, and none of them shows any use at all.
+- **Second use:** every file the decisive step reads (the cadastre, the meter register, the hourly values) is the
+  regulation's own evidence under Section 5 and is read by every route to the call; deleting the step drops no file.
+- **Shock:** the golden five are the top or bottom five of none of 20 shipped statistics (the register-empty share, the
+  mean and median use, the shares under and over floors from 1 to 30 kWh a day, the share of flats, the dwelling count,
+  the holiday homes), asserted in checks.py.
+- **Pins:** the WHAT is filed in the ministry's regulation (Sections 3, 4 and 6); no filed sentence names an hour of the
+  day, a daily pattern, a consumption level, heating or a test (asserted on both governing documents), and the
+  regulation's register sentence rules out rung 0 only.
 
 ## Readability screen
 
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0, one capture share from the counted fields (eight fields) | method 4.4 points to the fields with a count: fires | the towers' counts and the export side by side: fires | a capture or correction factor is the reflex for an undercounting sensor: fires | none | none | one ratio: fires | readable |
-| R1, the capture share split by the directory's flight training flag (nine fields) | none | the Flight Training column: fires | holding the pool to every visible attribute: fires | the counted fields' capture spreads 0.56 to 0.99: fires | none | two ratios: fires | readable |
-| R2, operations per based airplane at the counted fields (nine fields) | none | the based list beside the counts: fires | operations per based aircraft is the planner's textbook ratio: fires | none | none | one ratio: fires | readable |
-| R3, unrecorded operations per based airplane (eight fields) | none | the based list: fires | none | none | none | one ratio: fires | readable |
-| R4, never-recorded airplanes flying like the recorded ones (five fields) | the network notes' mechanism sentence: fires | none | none | none | none | none | readable |
-| R4b, the never-recorded share of a field's based airplanes as its unrecorded share (five fields) | the network notes' mechanism sentence: fires | the based list beside the export: fires | none | it matches the unrecorded share at F37, G42 and D19: fires | none | one share per field: fires | readable |
-| G (decisive), unrecorded operations per never-recorded airplane measured at the counted fields (seven fields) | no clause names never-recorded airplanes, a rate per airplane or an auxiliary; 4.4 says only "from the fields with a count": silent | no column flags an airplane as broadcasting or not; the never-recorded set is built by joining the based list through the register to the export: silent | the reflexes are the capture share and its splits; testing which auxiliary the misses scale with is no battery step: silent | the counted fields score the candidates only by a leave-one-out nobody asks for: silent | every file reconciles; nothing is anomalous: silent | a join across three files and a ratio over ten fields: silent | silent |
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Second use | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 the register's empty dwellings on 1 November | Section 4's register sentence | the register's rows | the official convention | none | none | a count | yes | readable |
+| R1 a consumption floor on the fortnight's average daily use | none | the hourly values | the utility-data vacancy statistic | the register agrees with it | none | a filter | yes | readable |
+| R2 the register's empty dwellings with no household day | Section 4 read as a pre-filter | the register's rows | none | none | none | a filter | yes | readable |
+| R3 (decisive) the household day on any day of the fortnight | no sentence names an hour, a pattern or heating | no column holds occupancy | the field's statistic is the level, not the shape | the register and the floor agree with each other, not with it | the battery cleans the hours and stops | a within-dwelling comparison across hours of the day | the files are the call's own evidence | silent |
 
 ## Semantic fork table
 
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | qualifies | 12.5 kg or more | more than 12.5 kg | same call: no field within 1 kg of the line (asserted) | guidelines 2.2 "is 12.5 kg or more" |
-| SF2 | 2026 | the local (Pacific) calendar year | the UTC year | same call and every lead in its whole kilogram (asserted) | method 1.1 "in local time (Pacific time)" |
-| SF3 | an operation | a takeoff or a landing, a touch-and-go two | a touch-and-go one, as the export's one event | same call (asserted) | method 2.1 "A touch-and-go is two operations" |
-| SF4 | piston-engine aircraft | TYPE ENGINE 1 (reciprocating) on a fixed wing | every fixed-wing airplane, turboprops and jets included | same call (asserted) | method 1.2 "Aircraft with turbine engines ... are outside the inventory" |
-| SF5 | fields without a control tower | the 24 public-use fields with ATCT N | the private strips too | not candidates | guidelines 2.1 "a public-use airfield"; the directory's Use column |
-| SF6 | lead at a field | its takeoffs and landings | flight away from the field | none ships | method 1.2 "lead emitted in flight away from the field" is outside |
-| SF7 | an unrecorded operation's lead | 1.625 g | class factors | none ships the class of an unrecorded operation | method 3.2 |
-| SF8 | the fields with a count | the six towers and the four count fields | towers only, studies only | same call and leads (asserted, SF13 rows) | method 4.2 and 4.3 name both |
-| SF9 | the tower's civil operations | air carrier, air taxi and general aviation itinerant, local civil | total operations, military included | same call and leads (asserted) | method 4.2 "civil operations"; the counts' column names |
-| SF10 | the tower's hours | the directory's hours, winter hours and closed days | the summer hours all year | same call and leads (asserted) | the directory's ATCT Hours (local) |
-| SF11 | based airplanes | the state's 2027 validation by N-number | the 5010 based counts | the 5010 counts carry no N-number to test | the 5010 notes: as last filed, the manager's report |
-| SF12 | recorded in 2026 | under any address the airplane carried in 2026 | under its current address only | same call and leads (asserted) | the register's history (DEREG) |
-| SF13 | the rate per never-recorded airplane | the ratio of totals at the ten counted fields | mean or median of the ten ratios, least squares through the origin, towers or studies alone | same call and every lead in its whole kilogram (asserted) | the data's structure: the ten ratios run 65 to 73 |
-| SF14 | lead in whole kilograms | rounded for reporting, qualified unrounded | qualified on the rounded lead | same call (asserted) | no field within 1 kg of the line |
+| SF1 | counted dwellings | Bolig units in use on or before 1 November 2026 | units with no date, units taken into use later, holiday homes | more dwellings, unmetered ones vacant | Section 3 (a date of taking into use on or before 1 November 2026) |
+| SF2 | vacant | nobody lived in it on any day of the fortnight | no registered resident on 1 November | all ten | Section 4 (whether anyone was registered does not decide) |
+| SF3 | the fortnight's clock | Norwegian time | the hub's UTC hours | same call | same call (asserted) |
+| SF4 | an hour delivered twice | the later delivery | the first, or both added | same call | same call (asserted) |
+| SF5 | a meter changed in the fortnight | both points added | the current point only | same call | same call (asserted) |
+| SF6 | communal points | not a dwelling's | joined by address where one dwelling has it | same call | same call (asserted) |
+| SF7 | Snøholt's points under 5809 | joined by unit ID | joined by address under 5809 | same call by ID | the meter register's unit IDs (asserted complete for Snøholt) |
+| SF8 | the threshold | on the share rounded to one decimal | on the unrounded share | same call | same call (asserted, no share within 0.2 points of the line) |
+| SF9 | the municipalities | the ten as they stood on 1 January 2026 | Fjordeid with Snøholt | same call | Section 2 |
+| SF10 | missing hours | the day read on the hours present | a day with a gap left out | same call | same call (asserted) |
+| SF11 | outage hours | read as recorded (zero) | left out | same call | same call (asserted) |
+| SF12 | the household day | morning or evening over night on any day | morning only, evening only, highest hour over lowest, spread of hours (outage hours left out), any cut from 0.2 to 0.8 kWh | same call | same call (asserted, every member separates) |
+| SF13 | on any day | a household on one day makes it lived in | the rise averaged over the fortnight | seven qualify | Section 4 (nobody lived in it on any day) |
+| SF14 | a two-unit house | two dwellings | one | same call | Section 3 (dwelling units) |
+| SF15 | holiday homes and care homes | not counted | counted | not in the extract | Section 3 |
+| SF16 | table A, held on 1 November | the register's state that day | by event date against registration date | same persons | same call (asserted, no event straddles the day) |
+| SF17 | table A, age | on 1 November | on 5 January | 26 of 30 cells move | the ministry's letter (by their age on that day) |
+| SF18 | table A, a block's renumbering | a change of unit number | a move | the old ground floors' residents lost | the records (every resident, one day, one floor up, old numbers absent from the cadastre) |
+| SF19 | table B, held on 1 November | by registration (tinglyst) date | by the deed's date | every figure moves | the ministry's letter (held on the land register); no transfer registered on the day |
+| SF20 | table B, a company the municipality owns | KF, or all shares held itself or through such a company, together | one holder with all the shares | three municipalities move | the ministry's letter (itself or through such a company) |
+| SF21 | table B, a title without an organisation number | the municipality when the name is its own | left out | every figure moves | the land register's holder name and the business register's names |
+| SF22 | table B, how many | dwellings | titles | every figure moves | the ministry's letter (how many of its counted dwellings) |
+| SF23 | table B, the inter-municipal company | not the municipality's | counted | Brekkevoll and Ravnsund move | the ministry's letter (all the shares) |
 
 ## Ladder
 
-- **R0, the default path: one capture share (eight fields).** The counted fields' recorded share is 0.815 (towers'
-  civil operations in tower hours and the studies' piston operations); completing each field's recorded operations
-  with it qualifies A71 F37 K58 L08 P05 S27 T13 T61. The variant that scales the recorded lead by the share names the
-  same eight. Dies to the counted fields themselves: their shares run from 0.56 (D19) to 0.99 (L08), and the share
-  predicts a left-out counted field's unrecorded operations with a mean error of 342 per cent (L08 +3,162).
-- **R1, the reflex correction: the share split by flight training (nine fields).** 0.858 at the training fields, 0.734
-  elsewhere; adds N26. Dies to the same fact: within each group the shares still spread 0.71 to 0.99 and 0.56 to 0.80.
-- **R2, operations per based airplane (nine fields).** 79.7 at the counted fields; adds H52 and W85, keeps the golden
-  seven. Dies to the leave-one-out (90 per cent mean error): based fleets differ in how much they fly at home.
-- **R3, unrecorded operations per based airplane (eight fields).** 15.3; adds K58, P05, T61 and U44, drops O16 and W33.
-  Dies to the counted fields: 1.4 per based airplane at L08, 28.5 at D19 (122 per cent mean error).
-- **R4, the sophisticated near miss: the never-recorded airplanes fly like the recorded ones (five fields).** Finds
-  the never-recorded airplanes but gives them the field's recorded airplanes' operations; keeps W33, drops O16 and U44.
-  Dies to the counted fields: the never-recorded airplanes fly 65 to 73 operations a year there, the recorded ones
-  28 to 76 at the vintage fields (31 per cent mean error).
-- **R4b, R4's variant: each field's recorded lead scaled up by the share of its based piston airplanes the network
-  never recorded (five fields, the same as R4).** The route reader round 1 took. It validates at three count fields
-  (F37 19.5 per cent never recorded against 20.2 per cent of operations unrecorded) and fails where the recorded
-  airplanes fly less than the never-recorded ones: W33 in at 5.2 per cent over the line, O16 and U44 out.
-- **R5, the network's record alone (four fields).**
-- **G, the decisive move (seven fields).** 23,376 unrecorded operations over 338 never-recorded airplanes at the
-  counted fields, 69.2 each, 65 to 73 field by field (4 per cent mean leave-one-out error, worst CRV +7).
-- **Margins:** the golden's nearest field is P05 at 11.1 per cent below the line (W33 13.0 above); every wrong rung's
-  nearest field is at least 3.8 per cent from it (R3's T61 and S27), R0's 7.5. Every lead is at least 0.28 kg from its
-  whole-kilogram edge; five other rate estimators give the same call and every lead in the same kilogram.
-- **Position, separation and dominance:** every rung names its own set (eight, nine, nine, eight, five, four against
-  seven); the corrections from R0 move fields in both directions and only the rate per never-recorded airplane takes
-  out the four training and park fields and brings in the three vintage ones together.
-- **Worth on the graded quantities:** the call (8) and the 24 leads (1.25 each): R0 keeps 11 leads, R0b 12, R1 5, R2
-  10, R3 8, R4 21, R4b 19, R5 9; none lands the call (generator/ceiling.py).
-- **Grid:** the Layer 1 items mishandled one at a time and the rate estimators swapped leave the call and every lead
-  in place (checks.py); the capture share, its split and the per-based rates each land on a named wrong set.
+| Rung | Construction | Designates | Main figures kept |
+|---|---|---|---|
+| R0 | the register's empty dwellings on 1 November (the official convention) | all ten | 2 of 20 |
+| R1 | a consumption floor of 1 to 10 kWh a day (the utility-data vacancy statistic) | none | 0 to 4 of 20 |
+| R1b | floors of 10.5 to 12 kWh a day | four, six, seven, nine (Brekkevoll, Hesteby, Kvernhaug, Ravnsund first) | 0 to 2 of 20 |
+| R2 | the register's empty dwellings with no household day | Hesteby alone | 0 of 20 |
+| G | the household day on any day of the fortnight | Tverrvika, Hesteby, Solmoen, Ørnevik, Fjordeid | 20 of 20 |
+
+Margins: the golden shares sit at least 0.27 points from the rounding line (Snøholt 4.68, Fjordeid 5.36); the counts are
+exact because the household day separates every dwelling (lived-in minimum 1.00 kWh, vacant maximum 0.29). No floor from
+0.5 to 30 kWh a day designates the golden five.
 
 ## Closure table
 
-| # | Axis | Reading and closure |
+| Axis | Reading in this build | Move |
 |---|---|---|
-| 1 | Population | every piston-engine operation at the field in 2026, recorded or not (method 2.2); the 24 public-use fields without a tower (guidelines 2.1) |
-| 2 | Unit of account | the field; lead in kilograms (method 3.3); an operation a takeoff or a landing (2.1) |
-| 3 | Attribution window | calendar 2026 in Pacific time (method 1.1); padding days and the UTC year change no figure (SF2, L1) |
-| 4 | As-of dating | the export of 8 January 2027, the register of 1 February 2027 with its cancelled registrations, the based validation of 1 January 2027 |
-| 5 | Version basis | one version of every file; the call reads each address through the register by date (Layer 1); the ask reads each operation as the aircraft that flew it, the register by date and, where the flight ID names another airframe registered that day, that airframe |
-| 6 | Denominator | the rate per never-recorded airplane over the ten counted fields (SF13); the decisive step (HOW), every member of the family agreeing |
-| 7 | Weighting | the ratio of totals; mean of ratios, median and least squares agree (SF13) |
-| 8 | Window length | the whole 2026 year at every counted field |
-| 9 | Boundary inclusivity | 12.5 kg or more (SF1); nothing within 1 kg |
-| 10 | Rounding path | lead summed in grams, reported in whole kilograms, qualified unrounded (SF14); operations to the nearest hundred |
-| 11 | Tie-break | none: each field is judged on its own lead |
-| 12 | Maturity and censoring | the 2026 year is closed; the unrecorded operations are completed by estimation, the decisive step |
-| 13 | Order of operations | events, aircraft, priced operations, counted fields' unrecorded, never-recorded airplanes, rate, completion, comparison |
-| 14 | Row order | no dependence |
-| 15 | Duplicate resolution | no repeated event id or registration; a touch-and-go one event, two operations (SF3) |
-| 16 | Identity normalisation | N-numbers normalised across the four county sheets, the register's N-NUMBER without the N, hex case (Layer 1, asserted every based N-number matches) |
-| 17 | Netting | a tower's unrecorded operations are its civil count less the recorded civil events in its hours (method 4.2); military columns out (SF9) |
-| 18 | Dimensional units | grams per operation to kilograms per field; UTC to Pacific with daylight time from 8 March to 1 November 2026 (network notes) |
-| 19 | Code and status semantics | TYPE ENGINE 1 on TYPE AIRCRAFT 4 or 5 is a piston-engine airplane (SF4); never the stump |
-| 20 | Integerisation | whole kilograms; operations to the nearest hundred |
-| 21 | Clause scope | guidelines 2.2: the 2027 round on the 2026 inventory; method 4.4: the fields without a count |
-| 22 | Forward window contents | the 2027 round's qualifying list on the closed 2026 inventory (a retrospective quantity with its reason, Draw) |
+| 1 Population | the counted dwellings: Bolig units in use on or before 1 November 2026 (Section 3); units with no date, taken into use later, holiday homes and care homes out | filed in Section 3; C1 on the data (SF1) |
+| 2 Unit of account | the dwelling (a cadastre unit), a two-unit house two dwellings; the municipality for the share | filed (Sections 3 and 6); SF14 |
+| 3 Attribution window | 9 to 22 November 2026, every hour of the fortnight read; the hourly values cover exactly that fortnight | filed in Section 4; C1, nothing at the edges moves a dwelling (SF3) |
+| 4 As-of dating | the dwellings as at 1 November (in-use date); municipalities as at 1 January 2026; table A on 1 November; table B on the land register on 1 November | filed in Sections 2 and 3 and in the ministry's letter; SF9, SF16, SF19 |
+| 5 Version basis | the hub's later delivery where an estimated day was replaced | C1: first, latest and both give the same call (SF4) |
+| 6 Denominator | the municipality's counted dwellings | filed in Section 6 |
+| 7 Weighting | none: a count over a count | filed in Section 6 |
+| 8 Window length | the whole fortnight, a dwelling lived in if any day shows a household | filed in Section 4 (on any day); SF13 records the averaged reading's other call |
+| 9 Boundary inclusivity | 5.0 per cent or more qualifies | filed in Section 6; no share within 0.2 points of the rounding line (C1) |
+| 10 Rounding path | each share rounded once to one decimal, the threshold read on the rounded share | filed in Section 6; C1, the unrounded reading gives the same call (SF8) |
+| 11 Tie-break | none needed: the designation is a set, no ranking | C1 |
+| 12 Maturity and censoring | none: the fortnight is closed and fully delivered; a few hours missing per meter | C1 (SF10) |
+| 13 Order of operations | join, clock, deduplicate, classify, count | C1: each order prints the same call (SF3, SF4, SF5 asserted on every variant) |
+| 14 Row order | none: every step is a set operation keyed by point and hour | C1 |
+| 15 Duplicate resolution | an hour delivered twice (estimate then measurement): the later | C1 (SF4) |
+| 16 Identity normalisation | point to dwelling by the cadastre's unit ID, else by municipality and address for a single-unit house; Snøholt's points under 5809 carry their IDs | the systems' own keys; C4 on the address-only join (SF6, SF7) |
+| 17 Netting against gross | a dwelling's two points (a changed meter) added hour by hour | C1 (SF5) |
+| 18 Dimensional units | kWh per hour throughout, one unit in the hub's file | units in the data |
+| 19 Code and status semantics | kundekategori Husholdning against Fellesmåling; the quality codes E and M | the hub's own codes; C1 (SF4, SF6); never the stump |
+| 20 Integerisation | whole dwellings and persons; nothing allocated | C1 by construction |
+| 21 Clause scope | Section 4's register sentence decides vacancy only; the register is the source of table A | filed scope (Section 4, the ministry's letter) |
+| 22 Forward window contents | the grant pays in March 2027 on the certified figures; nothing forecast | filed in Section 8; retrospective by the regulation's design |
 
 ## Literal reader
 
-Executed word for word, the guidelines and method fix the population (every piston-engine operation at each field in
-2026 Pacific time, recorded or not), the factors, 1.625 g for an unrecorded operation, the counted fields' unrecorded
-operations (4.2, 4.3) and the 12.5 kg line, and leave one thing open: how 4.4's estimate is made "from the fields with
-a count". The candidates are the capture share (R0, R1), the per-based rates (R2, R3), the never-recorded airplanes at
-the recorded ones' rate (R4) and the never-recorded airplanes at the counted fields' rate (G). The data separates them:
-the network notes say an aircraft without ADS-B Out is not recorded, the counted fields' unrecorded operations per
-never-recorded airplane run 65 to 73 while their capture runs 0.56 to 0.99 and their unrecorded operations per based
-airplane 1.4 to 28.5, and a leave-one-out at the ten counted fields gives mean errors of 4, 31, 90, 122 and 342 per
-cent for G, R4, R2, R3 and R0 (checks.py). Every member of G's family (ratio of totals, mean and median of ratios,
-least squares through the origin, towers or studies alone) gives the same seven fields and every lead in the same
-kilogram. Every write-up step names the file and rule it executes.
+Executed word for word, the prompt and Sections 2 to 7 file the counted dwellings, the fortnight, the share, its rounding
+and the threshold (SF1, SF8, SF9), and file vacant as nobody having lived in the dwelling on any day of the fortnight
+whatever the register shows; Section 5 names the evidence and not how it shows occupancy, so the literal reader has to
+decide what in a dwelling's metered values shows that someone lived there. Every reading that decides it from the record
+itself, a household's day against the dwelling's own night hours in any form SF12 lists, gives the golden five; the
+register's reading is ruled out by Section 4's last sentence, the averaged reading by Section 4's "on any day", and every
+consumption floor by the records (C4): no floor separates the dwellings nobody lived in, which use a median 20.5 kWh a
+day against the lived-in dwellings' 19.5, and floors over 9 kWh flag lived-in dwellings whose own hours show a household
+every day. Each convention the call needs is closed in the fork table (SF3 to SF15 the same call, asserted), and each term
+of the two tables by the ministry's letter or the records (SF16 to SF23). Every step of the write-up executes as written.
 
 ## Oracles
 
-None that ties only under the golden. The counted fields score every candidate on equal terms by the leave-one-out a
-solver chooses to run; no published inventory, earlier round or certified figure ships. The 5010 records give
-operations and based counts per field on another basis (managers' estimates for twelve months ending 2018 to 2025,
-every aircraft) and qualify 19 fields priced at 1.625 g, neither the golden nor rung 0 (the declared wrong-basis
-distractor). The lead monitors sit at two towered fields and rank no candidate.
+No shipped file ranks the municipalities on the call: no vacancy share, occupancy flag, household or count of empty
+dwellings is filed anywhere. The register is the one second source on occupancy and the regulation sets it aside; it
+agrees with the floor (the back-test), not with the golden. The outage log documents zero hours in three municipalities
+that no household-day reading depends on (SF11), and the municipality list documents Snøholt's split (SF7). Table A's
+only referee is the event log itself (every resident of a renumbered block moving one floor up on one day, the cadastre
+holding only the new numbers); table B's are the land register's holder names against the business register's and the
+shareholder register's counts. Nothing ties only under the golden.
 
 ## Ask sheet
 
-- **Ask A, each towered field's 2026 piston-engine operations (nearest hundred) and lead (whole kilograms): twelve
-  figures.** H18 home: the six towered fields complete the district's 2026 inventory that the board reads beside the
-  round; they are the counted fields whose counts the call consumes, and their piston lead is the trail from those
-  counts and the network's events through rows the call never prices (which aircraft flew each recorded operation).
-  Use: the inventory goes to the board whole. Path: the export (event_time_utc, site, event, icao24, flight_id),
-  MASTER.txt (N-NUMBER, MODE S CODE HEX, MFR MDL CODE, SERIAL NUMBER, CERT ISSUE DATE), DEREG.txt (MODE S CODE HEX,
-  MFR-MDL-CODE, SERIAL-NUMBER, CERT-ISSUE-DATE, CANCEL-DATE), ACFTREF.txt (TYPE-ACFT, TYPE-ENG, NO-ENG), the towers'
-  daily counts (Date, Facility, the civil columns), the directory's tower hours, the method (2.1, 3, 4.2), the network
-  notes (UTC, flight_id) and the register notes (codes): nine files, nineteen columns.
-  Primary device: D2 with D9, a label stored before a silent switch that the register's own history dates wrongly. At
-  each tower an owner or operator moved its N-number in 2026 from a piston airplane (Chieftain, 310, Baron, Seneca,
-  T210) to the turbine that replaced it (three at CRV). The Registry moved each number on paper 30 to 150 days before
-  the turbine came out of completion and arrived; until then the piston airplane, its transponder not yet
-  reprogrammed, kept flying at home on the old address with its pilot broadcasting its own new N-number as flight_id,
-  and it left the day before the turbine first appeared under the address. DEREG holds the piston airplane's
-  registration cancelled on the Registry's date, MASTER the turbine's issued that day and the piston airplane's new
-  registration (same serial and model). Read by the register's own dates, which is how a careful analyst resolves the
-  MASTER and DEREG fan-out, the piston airplane's last weeks or months price as the turbine's (nothing); read as the
-  aircraft that flew each operation, they are the piston airplane's, its broadcast identity naming it on every one.
-  No sweep sees it: every address resolves, nothing repeats, the dates tie, and flight IDs that are not the address's
-  own N-number are common texture (charter call signs, owners' changed numbers left in the avionics, four owners at the
-  towers who moved a number to an airplane of the same kind the same way, where both readings price alike).
-  Hazards: daylight time in the tower-hours filter (moves all six towers' figures when ignored), the winter hours and
-  closed days at VNL and DMR, the military columns (HWK, CRV), a touch-and-go two operations, turboprops on TYPE
-  AIRCRAFT 4 with TYPE ENGINE 2.
-  Stops (asserted, checks.py and generator/ceiling.py): the register's own dates misses all 12 (HWK 17,200 and 21 kg,
-  CRV 9,300 and 16, OSY 19,000 and 22, VNL 11,800 and 15, KTY 13,100 and 15, DMR 7,600 and 12); today's register misses
-  all 12; the moved addresses' events dropped and the moved addresses read as the piston airplane all year miss at
-  least 6; the aircraft that flew each operation gives all 12. The register's dates move every tower by 0.82 kg and 336
-  operations or more and land every figure at least 0.28 kg and 250 operations outside the golden's bin.
-  Realism: owners keep a personalised number across aircraft; the Registry's dates are its processing dates, and a
-  number change waits on the avionics shop; flight IDs are entered by the crew and change when they do.
-- **The construction layer:** the seven qualifying fields, the 24 leads and the chart; the cracker has them.
-- **Main population zero-counts (asserted):** under the register's own dates and under today's register every
-  non-towered field's lead, the counted fields' unrecorded operations and the rate are unchanged; every operation the
-  two readings price differently (2,257) is at a towered field.
-- **Hazard table (asserted):** the device moves all 12 figures; daylight time ignored moves six; winter hours ignored
-  one; military as civil two; none moves the call or a non-towered lead.
-- **Referee:** none; the towers' counts tie under every pricing (they count operations, not engines).
+**Table A, each municipality's persons registered in its counted dwellings on 1 November 2026, by age that day under
+18, 18 to 66 and 67 and over** (30 figures). H18: the ministry's follow-up of the pilot (its letter of 1 December) wants
+the population the counted dwellings held on the day the regulation fixes them; the call reads no register row. Primary
+device D2 (a label stored before a silent switch): in November the cadastre renumbered 197 flats in blocks whose
+residential floors had been numbered from a ground floor of shops, and the population register records the change as
+each resident's move to the unit number one floor up on the day; the cadastre extract carries only the new numbers, so
+undoing the register's events as written leaves the old ground floors' residents on numbers no dwelling has. The blocks
+cover every age band in every municipality. Hazards: the snapshot as it stands (D2), the dead and the emigrated added
+back (D4), the births and arrivals after 1 November (D5), ages on 5 January (D8), care home residents in units the
+regulation does not count (D5). Path: the register of 5 January, the event log and the cadastre (3 files: the register's person, birth date and address
+fields, the log's event, its two dates and its from and to addresses, the cadastre's address, unit, type and date of use). Stops: the register as it stands
+-21 to +9 (27 of 30 missed); every event undone as written -16 to -1 (all 30); the dead and the emigrated left out -13 to
+0 (20 of 30); ages on 5 January -12 to +12 (26 of 30). Realism: municipalities renumber flats to the national
+unit-number standard block by block, and the register writes each change as a move.
 
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
+**Table B, each municipality's counted dwellings held on the land register on 1 November 2026 by the municipality or a
+company it owns** (10 figures). H18: the follow-up wants the municipalities' own housing among the counted dwellings, the
+stock a municipality can bring back into use itself; the call reads no land register row. Primary device D7 (the true
+key elsewhere): 52 titles from before the business register hold the municipalities' own houses and blocks under the
+name of the day (a herredskommune, a bykommune, care of the chief executive or the property management) and no
+organisation number, so a join by number misses them and the business register's exact names do not match them. Second
+device D7 (names that lie both ways): private companies in a municipality's name (a builder, a landlord, a developer)
+hold dwellings, an inter-municipal company two municipalities share holds a block in each, and in three municipalities
+the housing company carries a name of its own and is owned 60 per cent through the municipality's holding company and
+40 per cent directly. Hazards: transfers registered after 1 November (D2), deeds signed before the day and registered
+after it (D8), the KF found by its parent (D5), titles at property level over many dwellings (D6). Path: the titles,
+the transfers, the business register, the shareholder register, the municipality list and the cadastre (6 files). Stops: organisation numbers only, with the KF and the full chain, -14 to -4 (all ten missed); exact names the
+same; every name beginning with the municipality's -49 to +63 (nine of ten); the titles as they stand -15 to +1 (all
+ten); the deeds' dates -8 to -1 (all ten); one holder with all the shares -94 to 0 (three); the municipality and its KF
+only -127 to 0 (six); no KF -97 to 0 (four); titles instead of dwellings -103 to -4 (all ten). Realism: the land register
+still carries many public titles from before organisation numbers in the holder's name of the day.
+
+Main population zero-counts: the call reads the cadastre's counted units, the meter register and the hourly values; no
+register event, title, transfer, business or shareholder row is among them, and the call computed from those three files
+alone is the golden (asserted). The cadastre and the meter register carry no old ground-floor number of a renumbered block
+(asserted), so table A's device rows sit only in the register's files.
+
+| Hazard | Asks moved | Per-ask deltas (largest) |
 |---|---|---|
-| A, each towered field's 2026 piston-engine operations and lead | converts UTC with daylight time, keeps tower hours with the winter hours and closed days and the civil columns, counts a touch-and-go twice, prices by TYPE ENGINE and NO-ENG, resolves every address's MASTER and DEREG rows by issue and cancel dates (reader round 2's route); the moved addresses' last piston weeks resolve to the turbines and price at nothing | miss |
+| a block's renumbering read as moves (D2) | A | -16 |
+| the snapshot as it stands (D2) | A | -21 |
+| the dead and the emigrated left out (D4) | A | -13 |
+| ages on 5 January (D8) | A | +12 |
+| titles without a number left out (D7) | B | -14 |
+| names beginning with the municipality's (D7) | B | +63 |
+| the titles as they stand (D2) | B | -15 |
+| the deed's date (D8) | B | -8 |
+| one holder with all the shares (D7) | B | -94 |
 
-- Mirror leakage: 0.0 per cent of ask weight (every rung reads the towers' register the cracker's way and misses all 12:
-  generator/ceiling.py).
-- Pair ceiling: 39.1 (weights 38 / 7 / 55: the call 8, each of the 24 leads 1.25; the cracker keeps the main block and
-  instructions, 45.0; the best mirror, R4, keeps 21 of the 24 leads, 33.2; average 39.1), rerun from the generated
-  rubric at ship.
-- Measured by: generator/ceiling.py on the cut pack.
+Referee: the event log for the renumberings; the land register's holder names against the business register for the
+old titles.
+
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
+|---|---|---|
+| Table A, Brekkevoll, Tverrvika, Hesteby, Kvernhaug, Solmoen | the register of 5 January rolled back by undoing every later event as the register writes it, the dead and emigrated added back, ages on 1 November | miss |
+| Table A, Ravnsund, Ørnevik, Langgrav, Fjordeid, Snøholt | the same | miss |
+| Table B, the ten municipalities | transfers undone by registration date, the KF by its parent, the shares the municipality holds itself and through its own companies added together, holders matched by organisation number and, where a title has none, by exact name | miss |
+
+Measured by: generator/ceiling.py on the cut pack: the cracker keeps 0 of the 40 table figures (table A 0 of 30, table B
+0 of 10); the mirror (stopped at the 10 kWh floor, its best rung) keeps 0 of 40 and 6.0 of the 38 recommendation points.
+
+Pair ceiling: 29.0 ((38 + 7 + 55 x 0) and (6.0 + 7 + 55 x 0), averaged)
+
+Mirror leakage: 0.0 per cent of ask weight
 
 ## Pre-ship check
 
-- **Three rules, re-read against the built pack.** Domain: the deciding quantity is each field's 2026 lead from piston
-  aircraft, built the way airport lead inventories build it (piston operations by engine class and kind times lead per
-  operation), the operations at a field without a count completed for the aircraft the receiver network never hears;
-  the capture rate qualifies eight, the rate per never-recorded based airplane seven, on the clean truth and on the pack
-  (checks.py R3a, R3b). Two layers: the Layer 1 inventory in `## Three rules`, each item asserted neutral on the call
-  and on every non-towered lead (L1, SF2, SF9, SF10, SF12); the ask's device confined to the towered fields (separation
-  rows: every operation the register's own dates price differently is at a tower); Layer 2 the choice of auxiliary.
-  The decisive step is none of the three banned kinds, each executed in checks.py: not a plant (R3c: no document names
-  the never-recorded airplanes, a capture or correction factor, an estimator per airplane or a verdict; no memo, draft
-  or briefing ships); not data semantics (the fork table: every term read right still leaves the capture rate on eight
-  fields); not rule application (R3a: every filed rule executed with one capture rate files the default path's eight;
-  R3b: the per-airplane rate alone files the golden seven).
-- **Gates.** 18 files in 4 formats (csv, pdf, txt, xlsx); the export at 187,609 rows; two distractors (the 5010 records,
-  the declared wrong-basis distractor, and the lead monitoring samples), each deletion asserted; checks.py green (103
-  rows); verify.py from the bundle alone (its own readers, time zone rule, tower-hours parser and flight-ID reading of
-  the register) matches the golden; two builds byte-identical (target.zip e7020bf9dcfe1912); figures_check.py (52
-  figures), precut.py (50) and voice-check.py exit 0; leak.py REVIEW (no LEAK) and three isolated readers (the last two
-  landing the call, the last missing all twelve towered figures on the rebuilt device); guard heart PASS; the surface
-  screen promotes task468 (two builds apart, the same calibration form and context artifact) and task36 (differentiated
-  on the card) for the author; the containers normalised (PDF stamps, OOXML properties) in build.py.
-- **Pair ceiling.** 39.1 measured by generator/ceiling.py with the cracker reading the register by its own dates (0 of
-  12) and the best mirror on R4 (33.2), mirror leakage 0; a response that reads the flight IDs against the register
-  lands the asks.
-
-## Leak check
-
-`leak.py --asof 2027-02-12`: REVIEW, no LEAK. Each REVIEW line answered: the guidelines carry 12.5 kg, the round's
-threshold, which every literal reading uses; the method, the network and register notes and the two count reports
-share the inventory's own words (operation, network, register, recorded, counts) and name no estimator, rate per
-airplane or never-recorded set; the 5010 records (the declared wrong-basis distractor), the directory and the based
-list name the fields beside counts, elevations and N-numbers and rank nothing on the call. Harmless.
-
-Reader, round 1 (answers appended to `leak_check_report.md`): nothing quoted for question 1 beyond method 4.4, which
-names no estimator; no file ranks the fields; question 6 an analytical choice. Its own answer qualified four fields
-(A71 F37 L08 T13): it read only the first county sheet of the based validation, estimated the never-recorded share of
-based airplanes there (R4b's route, checked against F37) and a median share elsewhere; on the towered fields it read
-today's register for the 198 addresses MASTER and DEREG share and missed all twelve figures (16,900 and 20 kg at HWK
-and so on, today's-register stop exactly). Fixed in the generator in one pass with the judge's note: MASTER now
-carries pending registrations (status R) among the county's other aircraft and no current registration expires before
-the download; the export's event ids take the network database's irregular share of keys; trips over more than a day
-are commoner (odd daily counts at D19 on about three days in ten); method 4.2 says the towers' unrecorded operations are
-taken as piston-engine operations; W33's recorded lead raised so R4b clears the line by 5.2 per cent. Harmless as
-the systems' own: no air carrier operations at the towers (general aviation towers), the lead monitors at two towered
-fields, a flight ID left at a cancelled number after an owner's N-number change, the 5010 records' stale and rounded
-estimates (their own notes say so).
-
-Judge, pass 1 (`determinism_check_report.md`): DETERMINISTIC, APPROVE. Every figure reproduced (23,376 over 338,
-69.16; the 20 never-recorded counts; the 24 leads; the towers' operations and lead); the seven hold for any rate from
-56 to 923 operations an airplane. Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no;
-Gate H domain, layers, decisive step analytical. Advisory notes: method 4.4 names no estimator (closed by the data:
-the per-airplane rate's coefficient of variation is 4 per cent at the counted fields against 42 to 50 for the others);
-the towers' unrecorded operations taken whole as piston (now pinned in method 4.2 and write-up step 7).
-
-Reader, round 2 (answers appended to `leak_check_report.md`): no leak; question 1 quotes method 2.2 and 4.4 and calls
-the network notes' sentence on aircraft without ADS-B Out and the based list the hint (the mechanism the determinism
-rule requires the network notes to state, never which or how many); no file ranks the fields; question 6 an analytical
-choice. It landed the call (the pooled rate per silent based airplane, 68.96) and all twelve towered figures: it read
-the 2026 DEREG rows of the moved addresses by their cancel dates, so the device of the time (today's register) was a
-mirror device the register notes' DEREG description resolves, and the cracker sheet had described the mirror. Rebuilt
-in the generator: the Registry's move now precedes each swap by 30 to 150 days, the old airplanes fly on under the old
-address broadcasting their new numbers, the turbines arrive on the swap day; ceiling.py's cracker reads the register by
-date (0 of 12). Realism fixed in the same pass: the register carries 141 aircraft models and 111 engines, each airframe
-on a model of its own class built in its year, strips flying Cubs, Champs, Huskies and RVs, engines corrected per model
-(the Chieftain's TIO-540-J2BD, the Baron's IO-550-C); the based list writes make and model as each sponsor does; a
-lapsed airplane validated before its cancellation; two charter operators' call signs; S27 sells 100LL; the network
-notes give the commissioning comparison's counts (9,603 of 9,617); the guidelines carry eligible costs, acceptance and
-reporting. Harmless: one emitter category per address (set at installation), the towers' counts a full 365-day grid (as
-the FAA's daily counts are), D19's daily spread (weather and weekends), even monthly turbine counts at G42 (each visit
-an arrival and a departure).
-
-Judge, pass 2 (`determinism_check_report_pass2.md`, the one re-judge): DETERMINISTIC, APPROVE on the fix-pass build.
-Every figure reproduced, the seven unchanged under eight fork combinations; Gate G method_or_model_selection,
-analytical_non_defect; Gate H domain, layers, decisive step analytical. Notes: method 4.4 names no estimator (the data
-separates); the L08 tow-plane reading (69.75 against 69.16, no graded figure moves); the DEREG same-day boundary (17
-events, no rounded figure moves). The ask's device was rebuilt after this pass with every main figure byte-identical;
-its golden is the aircraft that flew each operation, asserted in checks.py and recomputed by verify.py's own reading of
-the flight ID.
-
-Reader, round 3 (answers appended to `leak_check_report.md`; a first attempt stopped before writing and was rerun on a
-fresh copy of the same pack): no leak; question 1 nothing names the decisive step; question 5 method 4.2's literal
-reading gives the golden's unrecorded tower operations; question 6 an analytical choice. It landed the call (the rate
-per silent based airplane at the four count fields, 69.76) and read the moved addresses by the register's own dates,
-missing all twelve towered figures on the cracker's stop: the rebuilt device held. Fixed (data only, no graded figure
-moved): validation dates now run to the month's end and the 5010 managers round small fields to the hundred, so no two
-fields' rows coincide. Harmless: the near-constant rate per silent airplane (what forces the estimator), the
-commissioning counts, a number's move recorded on one date and mostly to turbines, the towers counting every operation
-the network records in their hours, the counties' N-number formats, the September to December validation campaign,
-two lapsed registrations still on the list, the lead monitoring file.
+1. Domain: the call stands on each dwelling's occupancy in the fortnight, read from its own hourly electricity record as
+   a household's day against the building's heating; with wards for dwellings there is no heating left on in an empty
+   home, no register that lags, and no household's day, and the task stops making sense.
+2. Two layers: Layer 1 (the hub's clock, deliveries, gaps and meter changes, Snøholt's old number, the address and unit
+   formats, the communal points, the outage hours) is cleaned by the battery and moves nothing (SF3 to SF11 asserted);
+   Layer 2, what in a dwelling's record shows that someone lived there, decides the call.
+3. No plant, semantics or rule application decides: the floor reads every field right and every filed rule applied and
+   files none; no sentence names the household's day; the register and the floor are the field's own methods.
+4. Determinism: the WHAT filed in Sections 3, 4 and 6 and the ministry's letter; the household-day family converges on
+   the golden five across every member and cut (SF12); the tables' terms closed (SF16 to SF23).
+5. Gates on the final cut (target.zip sha256 52fc465dedb924b1, after the shareholder register's realism pass, no figure
+   moved): generator checks 84 of 84, the verifier on every
+   graded figure, two byte-identical builds, figures_check.py 123 of 123, precut.py 61 of 61, voice-check.py PASS,
+   leak.py REVIEW with no LEAK, guard.py surface clean and heart WARN only on the question form (a gate asks
+   whether); the leak reader found no leak, and the determinism judge returned DETERMINISTIC, APPROVE (SF19 closes its
+   one low note, the deed's date against the registration date).
+6. leak.py REVIEW, sweep 3: the regulation's 5.0 is the threshold Section 6 files, shared by every reading,
+   harmless.
+7. leak.py REVIEW, sweep 4: the regulation's section, statistics, fortnight, points, office and cadastre are its
+   own nouns, none names the decisive step, harmless (ruled here, not sent to the reader).
 
 ## Tried and rejected
 
@@ -455,3 +387,47 @@ two lapsed registrations still on the list, the lead monitoring file.
 - 2026-10-18, at stage 4: the Registry's dates trailing the swap (the turbine flying under the number before its
   certificate): the turbines visit fields without a tower in that window, so the register's dates would price
   untowered operations as piston and move the call, and four towers' turbines fly too little to clear the bins.
+- 2026-10-31, architecture 1 spent at the batch 1 repair: `guard.py heart` BLOCKed it against task242, registered ninety
+  minutes earlier in another session, on strategy composition_mix, calibration gold_standard_subsample, forum
+  council_or_assembly, forcing event budget_or_appropriation and organisation family local_government, and on pattern E
+  against task197. It is the same core puzzle as task242 (a detector's capture calibrated on a gold-standard subsample,
+  corrected by the composition of what it misses), so the slot re-roots into another world, dataset and shell. The
+  repair's lessons (no file describing the data, no count the data hold in the prompt, the shell under its quotas,
+  metadata prose that says what the task decides) carry into architecture 2.
+- 2026-10-31, re-root screens on the item-response-theory-test-equating cell, each dead on file: item position effects
+  in pre-equating (task482 v6, landed at stage 4); rapid guessing in a low-stakes sitting (task479 v4); drifted or
+  released anchors and non-equivalent groups (task450, task471); rater severity on a shared subset (task471 v2).
+- 2026-10-31, re-root screen: a computer-based mode effect read against students' prior paper scores with the prior's
+  measurement error corrected. Rejected before code: the correction is a model of the measurement (the sampled case of
+  `guide-to-prompt`'s ETL pincer, whose estimate spreads across reasonable settings), and with schools opting in, the
+  school's mean prior score (measured almost without error) removes most of the bias, so the contextual model a strong
+  analyst writes first lands the golden.
+- 2026-10-31, re-root screens on the payment-claims and register cells: ACA grace-period cures (task482 v11, rule-heavy);
+  high-cost regression to the mean, bundles against a comparison group, contract-order reconciliation and risk-adjusted
+  ratios of totals (task487's screen); register over-coverage by signs of life (task478, task482); the seasonal
+  adjustment cell's patterns (task453, task463, task467, task477, task481 spent).
+- 2026-10-31, the world's first form, an Irish county council's vacancy programme: Ireland was drawn hours earlier by
+  task268, and local_government is banned against task181, so the world moved to a Norwegian county pilot run by the
+  national statistics office, where an empty dwelling is heated in November and the field's consumption floor fails for
+  a reason of the country's own housing.
+- 2026-10-31, at design: the weather service's hourly temperatures as a distractor: a temperature file beside an
+  occupancy question points at heating, the decisive step's own premise; replaced by the power exchange's day-ahead
+  prices.
+- 2026-10-31, at design: holiday homes' and building sites' metering points in the hub's extract: a set of homes
+  everyone knows stand empty, heated in November, would calibrate the empty profile for the solver; the extract covers
+  the household points from each dwelling's day of use, as the data agreement would.
+- 2026-10-31, at design: table B on organisation numbers, the KF and a one-step chain: a careful solver executing the
+  ministry's definition kept all ten figures; rebuilt on the municipalities' own titles from before the business
+  register (no number, the name of the day), namesake companies holding dwellings, and housing companies owned through
+  the holding company and directly together.
+- 2026-10-31, at design: the outages in three golden municipalities read as a pattern beside the answer; moved to
+  Brekkevoll, Solmoen and Snøholt. Range-type household-day readings (a day's highest hour over its lowest) take an
+  outage's zero hours as use in a vacant dwelling; with the outage log's hours left out they separate (SF12).
+- 2026-10-31, at design: the Shock screen found the golden five were the five municipalities with the fewest flats;
+  Hesteby's housing given more blocks and Snøholt's fewer, so no sort of a shipped statistic gives the set.
+- 2026-10-31, at design: table A's renumbering in one or two blocks per municipality: a careful solver kept a cell where
+  a small municipality's renumbered ground floors held nobody of one age band; blocks are now chosen until every band
+  lives on the old ground floors on 1 November, a household taking in a child, a lodger or a parent where none does.
+- 2026-10-31, at design: a register move dated before 1 November and registered after it opened two readings of "held
+  as resident on 1 November" (the registration or the event date); the October moves are registered by 31 October
+  (SF16).

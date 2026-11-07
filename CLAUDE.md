@@ -148,7 +148,7 @@ No isolated thread runs on the model's own initiative; the commands above licens
             the card and the pre-ship check proceed meanwhile; every finding fixed in the generator in one
             pass; a FIX_NOW is re-judged once
 5 SHIP      every gate re-run on the final cut (no skipped gate ships), target.zip from the final
-            rebuild, ledger row, card current                                 COMMIT "SHIPPED (taskNN): <call>"
+            rebuild, card current                                             COMMIT "SHIPPED (taskNN): <call>"
             then the next open number at once
 6 PORTAL    the author's list: APPROVED is SHIPPED_APPROVED, PENDING_REVIEW stays SHIPPED, a shipped build
             left off it stays SHIPPED, pending (absence is not a result; FAILED_TO_STUMP only when the
@@ -180,7 +180,7 @@ There is one branch, `main`. No build, skill or status branch is created, and no
   (taskNN): <what the repair moved>` after a fix command, `PAUSED (taskNN)` with the resume step in
   `pipeline.json` (only when the session ends mid-stage, never for a blocker: the section above),
   `RETIRED (taskNN)`. A skill change is its own commit, `SKILLS: <the rule>`.
-- **Each commit carries every artifact that status touches:** the task folder, its card, its ledger row, and at
+- **Each commit carries every artifact that status touches:** the task folder, its card, and at
   ship `target.zip` and the `golden/` files added with `git add -f`. Stage paths by name; never `git add -A`.
 - **Before every push:** `git pull --rebase origin main`, then push. Task folders and cards are one file per
   build, so they never collide; on a ledger conflict keep both rows. Never force-push, never rewrite history,
@@ -205,9 +205,9 @@ the task, then `pipeline.json` and the design note's `## Tried and rejected`.
 
 ## How a build is worked
 
-1. **Deliver before bookkeeping.** Finish and hand over what was asked; only then the ledger row, skill
-   lessons, house fixes or memory. This defers filing, never design or a skill. The ledger row is written
-   at ship (or retirement) and takes the portal result the day the author reports it
+1. **Deliver before bookkeeping.** Finish and hand over what was asked; only then skill lessons, house fixes or
+   memory. This defers filing, never design or a skill. The ledger holds only the builds the portal
+   approved: a row is written the day the author reports a build approved, never at ship
    (`stumping/references/shipped-ledger.md`).
 2. **One design note per build, with an append-only `## Tried and rejected` section** (that exact
    heading). When an approach dies, add one line: what was tried and why it died, written at the moment

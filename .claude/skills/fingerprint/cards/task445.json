@@ -1,139 +1,257 @@
 {
-  "task": "task445",
-  "architecture": "v1",
-  "drawn": "2026-10-11",
-  "slot_note": "seed ET02 (13F institutional ownership bridge: amendment types, filing-date value units, option rows, CUSIP repair). The seed's stump was rule application and data semantics, so it is re-rooted: the seed's mechanics stay as Layer 1 mess carried by the asks, and the decisive step is a Layer 2 censoring construction, completing a filing period whose 45-day window is still open at the extract. Hardening loop 1 (2026-10-11, after portal round 1 failed determinism): the estimand and a basis-selection criterion are filed in OM-4 s.2, and the decisive step moves from completing the open window at all to the basis the completion uses. Hardening loop 2 (2026-10-12, after in-house round 3 landed the call on the register-type change pooled across the names): the index and ETF sponsors' share holdings now follow each name's share count as well as their creations, so the type change pooled across names is the stump rung and the decisive step is moving each sponsor still due with the name's own count.",
-  "domain": "quantitative-finance",
-  "subdomain": "other",
-  "niche": "an independent ownership-research firm's quarterly crowded-ownership flag on a client watchlist, set from the SEC Form 13F structured data sets while the quarter's filing window is still open, so the flag has to rest on the institutional ownership the completed filing set will show",
-  "objective": "etl",
-  "shape": "03",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "WHII, GLI, OTF, JEMS and SAF carry the crowded flag for the December 2022 quarter; AMRB, TAAV, FENN, ABBB, OLPD, HAMR and NOPR do not.",
-  "answer_source": "task445/submission.md, 1. Final Recommendation (golden/crowded_flags_2022q4.csv crowded column carries the same call)",
-  "gap": [
+ "task": "task445",
+ "architecture": "v3 (re-root 2026-11-01: the Arafura Examinations Board's decision whether Question 6 of its 2026 Senior Certificate History Paper 2 is scaled before the grade boundaries are applied, read from the candidates who answered all three optional essays)",
+ "drawn": "2026-11-01",
+ "slot_note": "batch 1 re-root; architecture 1 (quantitative finance, the 13F holdings carry) failed the portal's determinism block, architecture 2 (record linkage of heat deaths) was sent back at its stage 4 judge on Gate H3",
+ "domain": "education-learning-sciences",
+ "subdomain": "item-response-theory-test-equating",
+ "niche": "an Australian not-for-profit examinations board's senior-certificate History paper on which candidates answer two of three optional essay questions, deciding before results whether the essay its candidates find hardest is scaled, which only the candidates who answered all three essays (marked in full, the best two credited) show without the choice in it",
+ "objective": "etl",
+ "shape": "14",
+ "decision_type": "dial_setting",
+ "answer_unit": "index_or_score",
+ "answer": "Scale Question 6: raise every candidate's mark on it by 2 marks before the best two essays are credited and the boundaries are applied (Questions 4 and 5 unchanged)",
+ "answer_source": "task445/generator/figures.json, call; golden p2_question_scaling_2026.docx",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G14",
+  "G16",
+  "G17"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "population_selection",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "close_out_summary",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every field and the board's code of practice correctly compares each optional question's marks with the others for the candidates who answered it, adjusting for their Section A marks or within the candidates who answered it beside another, finds Question 6 well under a mark and a half harder and files no scaling; candidates chose Question 6 by knowing its topic, so every comparison among its choosers carries that knowledge, and the candidates who answered all three essays, who chose nothing, put it over two marks harder, so its marks are scaled up.",
+ "domain_test": "The deciding quantity is an optional question's demand for the paper's candidates, the examinee-choice problem of test equating (making marks earned on different chosen questions comparable before one set of grade boundaries is applied); with wards or loans for essay questions there is no rubric choice, no topic a candidate chooses by and no marking of every attempt, so the task stops making sense.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:examinee-choice-unselected-comparison",
+ "layer1": [
+  "a marking export with one row per marking event, re-marks as later rows",
+  "marks timestamped in UTC from markers in five time zones",
+  "candidate numbers reissued when a candidate moved centre",
+  "an uncredited flag on the answers past the rubric",
+  "absent candidates and withdrawn scripts as zero-mark rows",
+  "Section A from the scanning system under its own question codes",
+  "post-results reviews logged in UTC, one request covering several components",
+  "centre codes changed at a 2025 merger of two school groups"
+ ],
+ "stakeholder_role": "the board's executive, on the Head of Research and Standards' paper before results are certified",
+ "role_family": "research_desk",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "p2_essay_marks_2026.csv",
+  "rows": 66353,
+  "entity": "a marking event on one candidate's answer to one Paper 2 essay question",
+  "grain": "marking event",
+  "source": "synthetic"
+ },
+ "forum": "executive_team",
+ "forcing_event": "statutory_or_regulatory_filing",
+ "org_family": "nonprofit_or_charity",
+ "world": {
+  "geography": "Australia (a fictional not-for-profit examinations board in Darwin examining schools across Australia, the Pacific and South-East Asia)",
+  "currency": "AUD",
+  "org_type": "a not-for-profit examinations board that sets, marks and awards a senior school certificate",
+  "invented_names": [
+   "Arafura Examinations Board",
+   "Arafura Senior Certificate"
+  ],
+  "people": [
+   "Mary Deleon",
+   "Philip Montes",
+   "Pamela Sullivan"
+  ]
+ },
+ "deliverables": [
+  "p2_question_scaling_2026.docx",
+  "history_p2_results_2026.csv",
+  "history_p2_entries_2026.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "whether",
+ "driver": "The decisive quantity is how demanding one optional item is against the others for the whole population, and each unit took the optional items it chose by a private advantage on them; every comparison among choosers (their means, an adjustment for a compulsory measure, the differences within units that took two) carries that advantage, and only the units that took every optional item compare them with no choice in it.",
+ "driver_concrete": "Question 6's demand is read from the candidates who answered all three optional essays, whose differences within the candidate carry no choice, because the candidates who chose Question 6 knew its topic, so its choosers' marks hide its demand in their means, in a Section A adjustment and in their own pairs of answers alike.",
+ "stump": "A competent analyst compares Question 6's marks with the other optional questions' for the candidates who answered it, adjusting for Section A or within the candidates who answered it beside another essay, finds it well under the code's mark and a half harder and files no scaling; the step that lands it there is reading demand from choosers, when the candidates who chose Question 6 knew its topic, and the candidates who answered all three essays put it over two marks harder, so its marks are scaled up by two.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task238": "task238 reads a reporting channel's effect through a randomised nudge (the arms' difference over the uptake difference); here nothing is assigned, and the comparison is the units that took every option and so chose none",
+  "task233": "task233 carries a missing-value departure measured on a gold-standard follow-up across base rates; here no value is missing and no follow-up exists, the bias is the choosers' own advantage on the option they chose",
+  "task256": "task256 carries a reference group's joint distribution of several measurements to a population; here the comparison is within the same units' own answers, with no reference group",
+  "task262": "task262 carries a noise reliability from a subsample selected on its level; here selection is on a private advantage for each option, and the units that chose no option remove it",
+  "task267": "task267 weights a two-phase reference check by its sampling fractions; here no sampling design exists, only the units that answered every option",
+  "task273": "task273's lineage reads a group's event rate from uninvolved parties drawn where events are frequent; here no exposure is measured and no second party exists",
+  "task280": "task280 corrects probes that the members' own activity silences; here every answer is marked in full and nothing under-samples",
+  "task465": "task465 fuses two traits held in different sources through a small source holding both; here one property of one option is read inside the units, from a single marking record",
+  "task473": "task473 completes positives an observer noticed by the notice share measured where everyone is tested; here every answer is observed and the bias is the choice of option itself",
+  "task54": "task54 multiplies a per-event loss over the units in custody under a recovered rule; here no rule is recovered and nothing is in custody"
+ },
+ "lineage": [
+  {
+   "architecture": "v1 loop 1 (built 2026-10-11, 4c2bcbb and a78cb74)",
+   "fate": "in-house round 2 missed at flat carry; in-house round 3 (2026-10-11) landed the call on the register-type change pooled across the names (0.042 points in OM-4 s.2's back-test against 0.60 for the all-filer change); hardened in loop 2 by making the index sponsors' holdings follow each name's share count, so that basis is the stump rung",
+   "gap": [
     "time",
     "population"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
     "E"
-  ],
-  "generators": [
+   ],
+   "generators": [
+    "G14",
+    "G16",
+    "G19"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "designation_set",
+   "driver": "A period still open at the extract is completed for the reporters not yet in by carrying each from its last report, but that report is stale for the class of reporter whose holdings drift every period at a common rate, so each missing reporter is moved by the drift its own class already shows among those that have reported, the basis a filed back-test criterion selects; flat carry misplaces the unit whose missing reporters are of the drifting class, and any single rate for every missing reporter misplaces the unit whose missing reporters are not."
+  },
+  {
+   "architecture": "v1 loop 0 (shipped 2026-10-11)",
+   "fate": "portal round 1 (2026-10-11): rubric average 52, determinism QC failed (answer_contradicts_files, golden_wrong): OM-4 s.2 named the filers for the period and filed no completion, so the literal reading counted only the reports on file; the driver also collided with task181 (task446 pre-flight); hardened in loop 1 by filing the estimand and a basis-selection criterion and moving the decisive step to the basis",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G12",
+    "G16",
+    "G6",
+    "G19"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "designation_set",
+   "driver": "The decisive quantity is the part of a period's total still held by reporters whose reports have not arrived at the extract; because slow reporters concentrate in some units and not others, it has to be completed reporter by reporter from each one's last report, and reading the arrived reports as the total, or scaling every unit by one aggregate completion share, misstates exactly the units whose holders report late and changes which units cross the threshold."
+  },
+  {
+   "architecture": "v1 loop 2 (shipped 2026-10-12, the 13F holdings carry)",
+   "drawn": "2026-10-11",
+   "domain": "quantitative-finance",
+   "subdomain": "other",
+   "niche": "an independent ownership-research firm's quarterly crowded-ownership flag on a client watchlist, set from the SEC Form 13F structured data sets while the quarter's filing window is still open, so the flag has to rest on the institutional ownership the completed filing set will show",
+   "objective": "etl",
+   "shape": "03",
+   "decision_type": "designation_set",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "E"
+   ],
+   "generators": [
     "G14",
     "G16",
     "G6",
     "G19"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "censored_or_lagged_release",
-  "stump_strategy": "forecast_method_backtest",
-  "decisive_rule_filed": true,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms every 13F line, reads OM-4 s.2 literally and back-tests the natural completion bases, the register-type change among them, grows each manager still due by its own type's change pooled across the twelve names (index and ETF sponsors about 4.5 per cent in shares, every other type flat), sees it beat every other basis it builds in the September back-test (about 0.7 points against 1.0 and up), and flags WHII, GLI, JEMS and SAF with OTF at about 79.2; only moving each index sponsor still due with the change its filed peers show in that name (equivalently its September stake grown by the sponsors' stake growth), the basis the filed criterion selects (about 0.04), flags WHII, GLI, OTF, JEMS and SAF.",
-  "domain_test": "The decisive step is how an index fund's 13F holdings behave: an index or ETF sponsor holds the index weight, so in shares it holds a fixed slice of each constituent's float, scaled by its own creations, and its share count in a name moves when that company issues, buys back or tenders while an active manager's does not; completing a quarter still inside its 45-day window has to move each sponsor still due with each name's own count; with another field's nouns there is no float to track, no creation mechanism and no filing window.",
-  "client_domain": "quantitative-finance",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:float-tracking-holders-in-completing-an-open-filing-window",
-  "layer1": [
-    "the SEC Form 13F data sets organised by the quarter a filing was submitted, not the period it reports, with the current quarter in a nightly build",
-    "originals with RESTATEMENT and NEW HOLDINGS amendments, including two amendments to one report filed the same day through two filing agents (the data set lists them in accession order, the amendment numbers give the other), a restatement whose submission header carries the previous quarter's period while its cover page carries the report's own, and a September report's option positions added in January when confidential treatment expired",
-    "put and call lines on the share CUSIP, some carrying the option only in the title of class with the put or call field blank",
-    "filer-keyed CUSIPs: leading zeros dropped, lower case, and failed check digits under filer-abbreviated issuer names",
-    "value in thousands of dollars before 2023-01-03 and in dollars after, by filing date, with one filer still on thousands after the switch",
-    "cover-page share counts at as-of dates either side of a period end, including an amended quarterly report's later count",
-    "manager families filing under several CIKs, a filer renamed between quarters, 13F notice filers and combination reports"
-  ],
-  "context_artifact": "register",
-  "stakeholder_role": "head of ownership research at an independent ownership-research firm that publishes a quarterly crowded flag to hedge fund clients",
-  "role_family": "product_manager",
-  "scoring_unit": "flat per seat",
-  "spine": {
+   ],
+   "gate_g": "method_or_model_selection",
+   "calibration_form": "censored_or_lagged_release",
+   "stump_strategy": "forecast_method_backtest",
+   "context_artifact": "register",
+   "forum": "customer_or_counterparty",
+   "forcing_event": "other",
+   "org_family": "professional_services",
+   "role_family": "product_manager",
+   "question_form": "where",
+   "opening_move": "question-first",
+   "deliverables": [
+    "crowded_flags_2022q4.csv",
+    "sep_quarter_bridge.png"
+   ],
+   "driver": "One class of holder keeps a fixed fraction of each unit rather than a fixed amount, so when a unit's size changes that class's amount in it moves with it, and the class's common change is a change in the fraction, the same in every unit; completing the holders not yet reported in a still-open period with one amount change per class pooled across units misstates the units whose size moved, carrying every class as a fraction misstates the units whose missing holders keep amounts, and the basis a filed back-test criterion selects moves each missing holder of that class with its own unit's size and the class's change in fraction while every other class keeps its amount.",
+   "stump": "A competent solver executes OM-4 literally, sees that the index and ETF sponsors that have filed grew their share holdings while every other register type held flat, grows each of the 129 managers still due by its own type's change pooled across the twelve names, sees that basis beat every other it builds in the September back-test (largest miss about 0.66 points against 1.0 for the all-filer change, 1.4 for flat carry and 2.2 per name), and flags WHII, GLI, JEMS and SAF with OTF at about 79.2; the step that lands it there is treating the sponsors' change as one factor for every name, when an index sponsor holds a fixed slice of each company, so in shares it moves with that name's share count as well as with its creations: OTF issued about 4.6 per cent more shares in October and its sponsors still due, 23 per cent of OTF, took their slice, which the two filed sponsors' OTF holdings show (up about 10.4 per cent against 4.5 pooled), so the basis the filed criterion selects grows each sponsor still due by the change its filed peers show in that name (largest miss about 0.04), which puts OTF at 80.4 and keeps FENN, whose managers still due are multi-strategy funds, at 79.6.",
+   "world": {
+    "geography": "United States",
+    "currency": "USD",
+    "org_type": "independent ownership-research firm serving hedge fund clients",
+    "invented_names": [
+     "Quillfield Research",
+     "Harrowby Point Partners",
+     "Prescott Funds Group",
+     "Prescott Global Indexing",
+     "Wexley Trust Wealth Advisors",
+     "Tregaron National Bank Wealth Management",
+     "Shelby Investment Group"
+    ],
+    "people": [
+     "Nancy Henderson",
+     "Brian Guerra"
+    ]
+   },
+   "spine": {
     "file": "form13f_2022q4/INFOTABLE.tsv (one INFOTABLE per drop: form13f_2022q3, form13f_2022q4, edgar13f_daily_20230103_20230203)",
     "rows": 39439,
     "entity": "one information-table line of one 13F filing (one security position, or put or call, as one manager reported it in one accession)",
     "grain": "accession x information-table line",
     "source": "synthetic, on the SEC Form 13F data set schema"
+   },
+   "fate": "spent 2026-10-31: the portal determinism block (answer_contradicts_files: OM-4 section 2 named the filers for the period and filed no completion, so a literal reading flagged WHII and JEMS) and the batch audit (short of the survivor anatomy: the decisive basis was a filed criterion's selection, not a link no key invites); re-rooted as architecture 2 into survey research and official statistics"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "other",
-  "org_family": "professional_services",
-  "world": {
-    "geography": "United States",
-    "currency": "USD",
-    "org_type": "independent ownership-research firm serving hedge fund clients",
-    "invented_names": [
-      "Quillfield Research",
-      "Harrowby Point Partners",
-      "Prescott Funds Group",
-      "Prescott Global Indexing",
-      "Wexley Trust Wealth Advisors",
-      "Tregaron National Bank Wealth Management",
-      "Shelby Investment Group"
-    ],
-    "people": [
-      "Nancy Henderson",
-      "Brian Guerra"
-    ]
-  },
-  "deliverables": [
-    "crowded_flags_2022q4.csv",
-    "sep_quarter_bridge.png"
-  ],
-  "opening_move": "question-first",
-  "driver": "One class of holder keeps a fixed fraction of each unit rather than a fixed amount, so when a unit's size changes that class's amount in it moves with it, and the class's common change is a change in the fraction, the same in every unit; completing the holders not yet reported in a still-open period with one amount change per class pooled across units misstates the units whose size moved, carrying every class as a fraction misstates the units whose missing holders keep amounts, and the basis a filed back-test criterion selects moves each missing holder of that class with its own unit's size and the class's change in fraction while every other class keeps its amount.",
-  "driver_concrete": "At the 3 February 2023 extract the December 13F window (deadline 14 February) is open and OM-4 s.2 files the estimand (every manager that reports holdings for the quarter, the 129 still due included, their holdings estimated) and the criterion that selects the basis (closest on the September window at the same day, by the largest miss across the twelve names); an index or ETF sponsor holds a fixed slice of each company's float, so its shares in a name move with that name's count (OTF's October follow-on +4.6 per cent, FENN's shares issued for an acquisition +4.8, ABBB's tender -5.4, the buybacks at WHII, JEMS, AMRB and NOPR, GLI's July follow-on +5.0, SAF's July tender -4.0) on top of its creations (its stake in every name +5.5 per cent a quarter), while every other register type is flat in aggregate in shares; the selected basis grows each sponsor still due by the change its filed peers show in that name (equivalently its September stake grown by the sponsors' stake growth), which puts OTF, a quarter of it held by sponsors still due, at 80.4, while the sponsors' change pooled across the names in shares (about 4.5 per cent) leaves OTF at about 79.2, and carrying every manager's stake or one rate for everyone flags FENN, whose managers still due are multi-strategy funds.",
-  "stump": "A competent solver executes OM-4 literally, sees that the index and ETF sponsors that have filed grew their share holdings while every other register type held flat, grows each of the 129 managers still due by its own type's change pooled across the twelve names, sees that basis beat every other it builds in the September back-test (largest miss about 0.66 points against 1.0 for the all-filer change, 1.4 for flat carry and 2.2 per name), and flags WHII, GLI, JEMS and SAF with OTF at about 79.2; the step that lands it there is treating the sponsors' change as one factor for every name, when an index sponsor holds a fixed slice of each company, so in shares it moves with that name's share count as well as with its creations: OTF issued about 4.6 per cent more shares in October and its sponsors still due, 23 per cent of OTF, took their slice, which the two filed sponsors' OTF holdings show (up about 10.4 per cent against 4.5 pooled), so the basis the filed criterion selects grows each sponsor still due by the change its filed peers show in that name (largest miss about 0.04), which puts OTF at 80.4 and keeps FENN, whose managers still due are multi-strategy funds, at 79.6.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task445": "Loop 1 (lineage) moved each missing reporter by its class's common drift pooled across the units, which round 3 landed; loop 2's decisive move is that the drifting class holds fractions of each unit, so a class change pooled across units in amounts is wrong unit by unit wherever a unit's size moved, and the selected basis applies the class's change in fraction with each unit's own size change; the loop 1 basis is loop 2's stump rung.",
-    "task181": "task181 nowcasts how much of a fortnight is still in transit, by each reporting route's own arrival delay (how much is missing); task445 knows exactly which holders are missing and turns on what they now hold: the missing index sponsors hold a fixed slice of each company, so they are moved with each name's share count and the sponsors' stake growth, not with their own history and not with a factor pooled across names, a basis a filed back-test criterion selects.",
-    "task107": "task107 v4 carries each unit forward past a dated step (a pay rise at a service anniversary) that earlier entrants show in the history, so its decisive step is when the step takes effect against the forward window; task445 has no dated event: one reporter class's holdings drift at a common rate every quarter (creations), measured on that class's filed peers in the same open period, and the decisive step is completing each missing reporter by its own class's drift, which a filed back-test criterion selects over flat carry and over any pooled rate.",
-    "task446": "task446 backs a forward count out of a screen's flagged share through error rates that hold across years while its yield moves with the base rate; task445 completes an open filing window holder by holder, and its decisive step is the quantity the missing index sponsors conserve (a slice of each company, moving with each name's share count), not a screen's yield against a base rate."
-  },
-  "lineage": [
-    {
-      "architecture": "v1 loop 1 (built 2026-10-11, 4c2bcbb and a78cb74)",
-      "fate": "in-house round 2 missed at flat carry; in-house round 3 (2026-10-11) landed the call on the register-type change pooled across the names (0.042 points in OM-4 s.2's back-test against 0.60 for the all-filer change); hardened in loop 2 by making the index sponsors' holdings follow each name's share count, so that basis is the stump rung",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "E"
-      ],
-      "generators": [
-        "G14",
-        "G16",
-        "G19"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "designation_set",
-      "driver": "A period still open at the extract is completed for the reporters not yet in by carrying each from its last report, but that report is stale for the class of reporter whose holdings drift every period at a common rate, so each missing reporter is moved by the drift its own class already shows among those that have reported, the basis a filed back-test criterion selects; flat carry misplaces the unit whose missing reporters are of the drifting class, and any single rate for every missing reporter misplaces the unit whose missing reporters are not."
-    },
-    {
-      "architecture": "v1 loop 0 (shipped 2026-10-11)",
-      "fate": "portal round 1 (2026-10-11): rubric average 52, determinism QC failed (answer_contradicts_files, golden_wrong): OM-4 s.2 named the filers for the period and filed no completion, so the literal reading counted only the reports on file; the driver also collided with task181 (task446 pre-flight); hardened in loop 1 by filing the estimand and a basis-selection criterion and moving the decisive step to the basis",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G12",
-        "G16",
-        "G6",
-        "G19"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "designation_set",
-      "driver": "The decisive quantity is the part of a period's total still held by reporters whose reports have not arrived at the extract; because slow reporters concentrate in some units and not others, it has to be completed reporter by reporter from each one's last report, and reading the arrived reports as the total, or scaling every unit by one aggregate completion share, misstates exactly the units whose holders report late and changes which units cross the threshold."
-    }
-  ],
-  "notes": "subdomain other: institutional ownership analytics from regulatory holdings filings, which the quantitative-finance task-type list does not carry. forcing_event other: the firm's quarterly flag file is published to clients on a fixed date inside the filing window. decisive_rule_filed true: the firm's methodology note (OM-4 s.2) files the estimand (the managers still due are in the population and their holdings are estimated) and the criterion that selects the estimation basis (the basis closest on the previous period at the same day, by the largest miss); it never names the basis. Personas drawn with guard.py names --geo 'United States' --seed 445 (Joan Collins skipped as a public figure name; Philip Montes and Pamela Sullivan skipped on a people.first WARN). Surface screen 2026-10-11: 0 promoted pairs; people.last WARN (Henderson in task117) answered in the design note. Hardening loop 1 (2026-10-11): card rewritten for the filed estimand and the basis-selection criterion; the shipped driver moved to lineage; stump_strategy forecast_method_backtest (the basis is chosen by a back-test the filed criterion names), decisive pattern E (one pooled carry rate applied to every missing reporter against the rate each reporter class shows). Prescott's December cover page carries a new name (an ask device); the old name stays in invented_names. Loop 1 people: Jonathan Richardson (data engineering, named only in data_sources.md) replaced by Brian Guerra (guard.py names --geo 'United States' --seed 445, the next name after the ones skipped at the draw), because task130 v3 (retired, filed later the same day) carries Jonathan Hoffman. Loop 1 build (2026-10-11): re-registered with register --force over the ban.forum BLOCK against task228 v2, a registration-order artifact (task445 registered customer_or_counterparty at 15:47, task228 v2 drew the same forum at 16:21 the same day); the forum is unchanged since the original PASS registration. Hardening loop 2 (2026-10-12): the loop 1 driver moved to lineage; decisive pattern E kept (the completion factor for the class that holds slices is conditioned on the name, through its share count), G6 added (the share count moves under the share metric); stump_strategy forecast_method_backtest and the calibration form unchanged; OM-4, the readme, the layout, data_sources.md and the prompt byte-identical; no filed sentence names a basis, a stake, float tracking or an index weight. Re-registered with register --force over the same ban.forum BLOCK against task228 v2 (registration order, unchanged since the original PASS registration). Loop 2 build (2026-10-12): heart BLOCK ban.org_family (professional_services) against task230 v2, the same registration-order artifact as the earlier ban.forum against task228 v2: task230 v2 was re-rooted after this card was drawn on 2026-10-11 and the guard sorts same-day cards by task number, so it reads as this card's predecessor; perssathya's author waived the organisation-family ban for exactly this pair on 2026-10-12. The world, forum and org family have not moved since the original PASS registration.",
-  "question_form": "which"
+  {
+   "architecture": "v2 (NHS Ellesmoor ICB's 2027 heat resilience grants, the register integrated with the medical examiner offices' logs)",
+   "drawn": "2026-10-31",
+   "domain": "general-statistics-data-science",
+   "subdomain": "data-integration-record-linkage-entity-resolution",
+   "niche": "deaths by date of occurrence for a heat summer, integrated from the death registrations and two medical examiner offices' referral logs that share no key, the deaths a coroner's inquest keeps off the register found by linking the logs to the registrations on name, birth date and date of death",
+   "objective": "etl",
+   "shape": "10",
+   "decision_type": "designation_set",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G3",
+    "G12",
+    "G13"
+   ],
+   "gate_g": "etl_conformance",
+   "stump_strategy": "maturity_censoring",
+   "forum": "board_of_directors",
+   "forcing_event": "season_or_peak",
+   "org_family": "hospital_or_health_provider",
+   "driver": "A count by date of occurrence for a recent window is completed for the units a second body still holds out of the record, read from that body's own log linked to the record on personal identifiers and dates, because the usual completion factor assumes the hold is as rare as in the closed windows it reproduces.",
+   "driver_concrete": "Each place's summer 2026 deaths are the deaths on the register plus the deaths the medical examiners referred to the coroner on which an inquest is still open, linked by name, birth date and date of death and placed by the deceased's postcode, because the July heat wave sent the deaths of people found at home to the coroner, so the earlier summers' share registered by October understates the summer and only the referral log names the missing deaths.",
+   "stump": "A competent analyst completes each place's registered summer deaths with the earlier summers' share registered by the same point and designates the places whose completed deaths exceed the expected by a tenth; the step that lands it there is treating this summer's unregistered deaths as the usual few, when the coroner holds the heat wave's deaths of people living alone for inquest and Ashwold's are most of them, so Ashwold is left out.",
+   "shell": {
+    "question form": "which",
+    "second-sentence opener": "their",
+    "rounding opener": "percentages",
+    "deliverable set": "csv+png"
+   },
+   "fate": "spent 2026-11-01 at stage 4: the determinism judge returned NOT_DETERMINISTIC with SOLUTION_WRONG, SEND_BACK; Gate H3 failed (the fund's terms counted every death whether registered or not, so linking the logs to the register executed the filed rule), supplementary 5 rode an unfiled version convention and the recommendation prose contradicted itself"
+  }
+ ],
+ "notes": "",
+ "lineage_shells": [
+  {
+   "question form": "which",
+   "second-sentence opener": "their",
+   "rounding opener": "percentages",
+   "deliverable set": "csv+png"
+  }
+ ],
+ "registered": "2026-11-01T00:50:34Z",
+ "shell": {
+  "question form": "whether",
+  "second-sentence opener": "set",
+  "rounding opener": "excess",
+  "deliverable set": "csv+xlsx"
+ }
 }

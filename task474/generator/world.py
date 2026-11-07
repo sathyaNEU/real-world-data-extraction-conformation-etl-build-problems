@@ -1,114 +1,161 @@
-"""The fixed world: the Bayline Port Authority, the roadway links around its terminals, the state's continuous count
-stations, the program year October 2025 to September 2026, and the traffic each class of vehicle makes by day of
-week and month. Every other module reads its parameters from here."""
+"""The simulated world: candidates, their registrations and every booked sitting on both vendors' papers.
+
+Everything is drawn from named, seeded streams, so the world is the same on every build."""
 import datetime as dt
+import hashlib
 
-PORT = "Bayline Port Authority"
-DOT = "State Department of Transportation, Traffic Monitoring Section"
-COUNTY = "Harbor County Public Works, Traffic Engineering"
-CONSULTANT = "Meridian Traffic Data LLC"
-DEPT = "Environmental Planning"
-PEOPLE = {"analyst": ("Paige Hodges", "Senior Environmental Planner"),
-          "director": ("Martin Estrada", "Director of Environmental Planning")}
-SEED = 4750
-GATE_SEED = SEED + 47                                     # the terminals' gate draw
-START = dt.date(2025, 10, 1)
-DAYS = [START + dt.timedelta(d) for d in range(365)]       # the program year: 1 October 2025 to 30 September 2026
-LINE = 5.00                                              # tonnes of NOx per mile per program year; at or above designates
-RULES_DATE = "14 January 2026"
-MEMO_DATE = "4 November 2026"
-CLASSES = ("P", "SU", "CU")                              # passenger vehicles (FHWA 1-3), single-unit trucks (4-7),
-                                                         # combination trucks (8-13)
-EF = {"P": 0.084, "SU": 1.62, "CU": 3.41}                # grams of NOx per vehicle-mile, 2026 calendar year fleet
+import numpy as np
 
-# weekly pattern (Monday first) and monthly pattern of each class, relative; trucks fall away at weekends and are flat
-# by season, passenger traffic peaks on Fridays and in summer
-DOW = {"P": (0.97, 1.00, 1.01, 1.03, 1.09, 0.99, 0.88),
-       "SU": (1.17, 1.21, 1.22, 1.20, 1.12, 0.63, 0.45),
-       "CU": (1.19, 1.25, 1.27, 1.25, 1.15, 0.53, 0.36)}
-MON = {"P": {1: .89, 2: .92, 3: .98, 4: 1.00, 5: 1.04, 6: 1.08, 7: 1.10, 8: 1.09, 9: 1.02, 10: 1.01, 11: .97, 12: .93},
-       "SU": {1: .95, 2: .97, 3: 1.00, 4: 1.01, 5: 1.03, 6: 1.03, 7: 1.00, 8: 1.02, 9: 1.01, 10: 1.02, 11: .99, 12: .97},
-       "CU": {1: .97, 2: .98, 3: 1.00, 4: 1.00, 5: 1.02, 6: 1.02, 7: .99, 8: 1.01, 9: 1.01, 10: 1.02, 11: 1.00, 12: .98}}
-HOLIDAYS = {dt.date(2025, 11, 27): (.72, .40), dt.date(2025, 12, 25): (.62, .22), dt.date(2026, 1, 1): (.80, .45),
-            dt.date(2026, 5, 25): (.85, .50), dt.date(2026, 7, 3): (.90, .60), dt.date(2026, 9, 7): (.86, .48)}
+import params as P
 
-# the state's continuous count stations in and around the metro area: id, route, road type, AADT, single-unit and
-# combination truck shares, whether it classifies
-STATIONS = {
-    "ATR-0112": ("I-880 at Ridley Avenue", "freeway", 118400, .045, .071, True),
-    "ATR-0127": ("I-880 at Cole Creek", "freeway", 96300, .041, .062, False),
-    "ATR-0135": ("SR-61 at Mill Street", "arterial", 31200, .036, .028, True),
-    "ATR-0141": ("SR-61 at Harbor Boulevard", "arterial", 27800, .044, .039, False),
-    "ATR-0156": ("I-580 at Delmar", "freeway", 142900, .038, .054, False),
-    "ATR-0163": ("US-9 at Lanford", "arterial", 22600, .031, .021, False),
-    "ATR-0178": ("SR-17 at Oakmont", "arterial", 18900, .029, .015, False),
-    "ATR-0182": ("I-580 at Pell Road", "freeway", 104700, .040, .066, True),
-    "ATR-0194": ("US-9 at Quarry Road", "arterial", 26400, .052, .047, True),
-    "ATR-0205": ("SR-17 at Brennan", "arterial", 15200, .027, .012, False),
-    "ATR-0211": ("I-880 at Selby", "freeway", 88100, .043, .058, False),
-    "ATR-0226": ("SR-4 at Tidewater", "arterial", 21300, .035, .033, False),
-}
-# the roadway links: id, name, road type, AADT, single-unit and combination truck shares, count program, count start
-# (the first of two count days)
-LINKS = {
-    "L01": ("Terminal Way, Gate 1 to SR-61", "arterial", 14920, .061, .243),
-    "L02": ("Harbor Boulevard, 7th to 12th Street", "arterial", 18250, .046, .121),
-    "L03": ("I-880 northbound ramps at Port Avenue", "freeway", 21680, .052, .178),
-    "L04": ("Port Avenue, I-880 to Terminal Way", "arterial", 13520, .058, .214),
-    "L05": ("SR-61, Mill Street to Harbor Boulevard", "arterial", 37170, .041, .083),
-    "L06": ("Cargo Drive, Berths 30 to 34", "arterial", 18010, .071, .332),
-    "L07": ("7th Street, Harbor Boulevard to Cole Creek", "arterial", 20650, .039, .061),
-    "L08": ("I-880 southbound ramps at Port Avenue", "freeway", 14100, .050, .169),
-    "L09": ("Delmar Road, I-580 to Cargo Drive", "arterial", 21940, .048, .129),
-    "L10": ("Ridley Avenue, I-880 to rail yard", "arterial", 12190, .066, .224),
-    "L11": ("Quarry Road truck route", "arterial", 12310, .063, .254),
-    "L12": ("Harbor Boulevard, 12th to 20th Street", "arterial", 28280, .035, .052),
-    "L13": ("Selby Street, rail yard to Terminal Way", "arterial", 11100, .068, .287),
-    "L14": ("Pell Road, I-580 to Berth 40", "arterial", 32850, .055, .196),
-}
-# the golden's NOx per mile each link is tuned to (tune.py scales each link's AADT)
-DESIRED = {"L01": 4.55, "L02": 3.92, "L03": 6.18, "L04": 4.38, "L05": 5.46, "L06": 4.45, "L07": 2.61, "L08": 4.12,
-           "L09": 4.57, "L10": 4.21, "L11": 4.26, "L12": 3.27, "L13": 4.44, "L14": 5.40}
-PROGRAM = {"L01": "county", "L02": "dot", "L03": "dot", "L04": "consultant", "L05": "dot", "L06": "consultant",
-           "L07": "county", "L08": "dot", "L09": "county", "L10": "consultant", "L11": "county", "L12": "dot",
-           "L13": "consultant", "L14": "county"}
-COUNT_DAY = {"L01": dt.date(2025, 12, 2), "L02": dt.date(2026, 7, 21), "L03": dt.date(2026, 4, 14),
-             "L04": dt.date(2026, 3, 10), "L05": dt.date(2026, 6, 16), "L06": dt.date(2026, 4, 14),
-             "L07": dt.date(2025, 11, 18), "L08": dt.date(2026, 8, 18), "L09": dt.date(2026, 5, 12),
-             "L10": dt.date(2025, 12, 9), "L11": dt.date(2026, 2, 10), "L12": dt.date(2025, 10, 21),
-             "L13": dt.date(2026, 9, 15), "L14": dt.date(2026, 2, 10)}
 
-FILES = {
-    "stations": "ccs_hourly_volumes_oct2025_sep2026.csv",
-    "register": "count_station_register_2026.xlsx",
-    "dot": "dot_short_counts_fy2026.csv",
-    "county": "county_traffic_counts_2025_2026.xlsx",
-    "consultant": "terminal_access_counts_2026.csv",
-    "links": "port_roadway_links_2026.xlsx",
-    "rates": "onroad_nox_emission_rates_2026.csv",
-    "rules": "air_corridor_program_rules_2027.pdf",
-    "notes": "data_notes.txt",
-    "gates": "terminal_daily_gate_report_fy2026.csv",
-    "certs": "heavy_duty_engine_certifications.xlsx",
-    "fleet": "drayage_truck_registry_2026.csv",
-    "no2": "no2_monitor_hourly_2026.csv",
-    "complaints": "truck_complaints_311_2025_2026.csv",
-}
-GOLDEN = {"workbook": "air_corridor_links_2027.xlsx", "memo": "air_corridor_designations_2027.pdf"}
+def rng(name):
+    h = int(hashlib.sha256(("%d:%s" % (P.SEED, name)).encode()).hexdigest()[:12], 16)
+    return np.random.default_rng(h)
 
-# the three container terminals: name, average truck visits on a weekday, the days between vessel calls on each of
-# its two services, and how far a call lifts the gate (the day of the call and the two after)
-TERMINALS = {"B20": ("Berth 20 Container Terminal", 2050, (9, 11), .34),
-             "B30": ("Pacific Gateway Terminal (Berths 30 to 34)", 1780, (8, 13), .38),
-             "B40": ("Berth 40 Intermodal Terminal", 1900, (10, 12), .31)}
-# the port's season: the import peak from August to October, the lull after the Lunar New Year sailings
-PORT_MONTH = {1: .97, 2: .84, 3: .91, 4: .98, 5: 1.0, 6: 1.02, 7: 1.04, 8: 1.09, 9: 1.11, 10: 1.10, 11: 1.0, 12: .94}
-# the terminal access roads: every truck visit to the terminal passes twice; a share of the terminal's drays use
-# another road, and a few non-terminal trucks use the access road
-ACCESS = {"L01": ("B20", .91, 140), "L06": ("B30", .94, 90), "L14": ("B40", .89, 160)}
-QUARTERS = {1: ("2025-10-01", "2025-12-31"), 2: ("2026-01-01", "2026-03-31"), 3: ("2026-04-01", "2026-06-30"),
-            4: ("2026-07-01", "2026-09-30")}
-# the asks: the port's drayage truck registry
-N_TRUCKS = 2600
-CARRIERS = ["Harborline Drayage", "Tri-County Cartage", "Seaboard Intermodal", "Coastal Haul LLC", "Bay Freight Co",
-            "Northpoint Logistics", "Rivera Trucking", "Atlantic Port Services"]
+
+def months():
+    y, m = P.FIRST_DAY.year, P.FIRST_DAY.month
+    while dt.date(y, m, 1) <= P.LAST_DAY:
+        yield y, m
+        m += 1
+        if m == 13:
+            y, m = y + 1, 1
+
+
+def gas_share(d):
+    pts = P.GAS_RAMP
+    if d < pts[0][0]:
+        return 0.0
+    for (a, ga), (b, gb) in zip(pts, pts[1:]):
+        if a <= d <= b:
+            return ga + (gb - ga) * (d - a).days / max((b - a).days, 1)
+    return pts[-1][1]
+
+
+def season_mix(m):
+    return P.MIX_SUMMER if 4 <= m <= 9 else P.MIX_WINTER
+
+
+SEASON = {1: 0.92, 2: 1.0, 3: 1.05, 4: 0.96, 5: 1.12, 6: 1.18, 7: 1.10, 8: 0.86, 9: 1.02, 10: 1.04, 11: 1.0, 12: 0.75}
+
+PROVIDERS = [("TP01", "Northgate College of Building Services", "North West"),
+             ("TP02", "Severn Heat Academy", "South West"),
+             ("TP03", "Midland Renewables Training", "West Midlands"),
+             ("TP04", "Thames Gateway Plumbing School", "London"),
+             ("TP05", "Pennine Energy Skills Centre", "Yorkshire and the Humber"),
+             ("TP06", "East Anglia Heating Institute", "East of England"),
+             ("TP07", "Black Country Installer Training", "West Midlands"),     # merged into TP03 in July 2025
+             ("TP08", "Solent Building Services College", "South East"),
+             ("TP09", "Tyne and Wear Low Carbon Skills", "North East"),
+             ("TP10", "Mercia Gas and Heat Pump Centre", "East Midlands"),
+             ("TP11", "Wessex Heat Pump Training", "South West"),
+             ("TP12", "Kent Energy Training Partnership", "South East"),
+             ("TP13", "Lancashire Heating Engineers' Academy", "North West")]
+MERGED = {"TP07": ("TP03", dt.date(2025, 7, 1))}
+GAS_PROVIDERS = ["TP10", "TP03", "TP12", "TP05"]     # the conversion courses the gas engineers come through
+
+BRINDLE_CENTRES = [("BR-%03d" % k, nm) for k, nm in enumerate(
+    ["Manchester Piccadilly", "Bristol Temple Quay", "Birmingham Colmore", "London Bridge", "Leeds Wellington",
+     "Norwich Riverside", "Southampton Ocean Way", "Newcastle Quayside", "Nottingham Castle Marina", "Exeter Sowton",
+     "Maidstone Kings Hill", "Preston Docks", "Coventry Westwood", "Sheffield Riverside", "Reading Green Park",
+     "Cambridge Science Park"], start=11)]
+
+
+BANK_HOLIDAYS = {dt.date(*x) for x in [
+    (2020, 1, 1), (2020, 4, 10), (2020, 4, 13), (2020, 5, 8), (2020, 5, 25), (2020, 8, 31), (2020, 12, 25), (2020, 12, 28),
+    (2021, 1, 1), (2021, 4, 2), (2021, 4, 5), (2021, 5, 3), (2021, 5, 31), (2021, 8, 30), (2021, 12, 27), (2021, 12, 28),
+    (2022, 1, 3), (2022, 4, 15), (2022, 4, 18), (2022, 5, 2), (2022, 6, 2), (2022, 6, 3), (2022, 8, 29), (2022, 9, 19),
+    (2022, 12, 26), (2022, 12, 27), (2023, 1, 2), (2023, 4, 7), (2023, 4, 10), (2023, 5, 1), (2023, 5, 8), (2023, 5, 29),
+    (2023, 8, 28), (2023, 12, 25), (2023, 12, 26), (2024, 1, 1), (2024, 3, 29), (2024, 4, 1), (2024, 5, 6), (2024, 5, 27),
+    (2024, 8, 26), (2024, 12, 25), (2024, 12, 26), (2025, 1, 1), (2025, 4, 18), (2025, 4, 21), (2025, 5, 5), (2025, 5, 26),
+    (2025, 8, 25), (2025, 12, 25), (2025, 12, 26), (2026, 1, 1), (2026, 4, 3), (2026, 4, 6), (2026, 5, 4), (2026, 5, 25),
+    (2026, 8, 31)]}
+
+
+def working_day(d):
+    """test centres sit Monday to Saturday outside the bank holidays of England and Wales"""
+    while d.weekday() == 6 or d in BANK_HOLIDAYS:
+        d = d + dt.timedelta(days=1)
+    return d
+
+
+def _weekday(r, y, m):
+    while True:
+        d = dt.date(y, m, int(r.integers(1, 29)))
+        if d.weekday() < 6:
+            return d
+
+
+def build():
+    r = rng("world")
+    persons = []
+    # first-time candidates month by month
+    for (y, m) in months():
+        base = P.FIRST_TIMERS_PER_MONTH[y] * SEASON[m]
+        mid = dt.date(y, m, 15)
+        g = gas_share(mid)
+        n = int(round(base / (1 - g)))
+        mix = season_mix(m)
+        kinds = list(mix)
+        probs = np.array([mix[k] for k in kinds]) * (1 - g)
+        kinds.append("gas")
+        probs = np.append(probs, g)
+        probs = probs / probs.sum()
+        for _ in range(n):
+            k = kinds[int(r.choice(len(kinds), p=probs))]
+            mu, sd = P.KINDS[k]
+            theta = float(r.normal(mu, sd))
+            first = _weekday(r, y, m)
+            if first > P.LAST_DAY:
+                continue
+            age = {"college": (17, 24), "changer": (24, 50), "installer": (25, 58), "gas": (28, 60)}[k]
+            dob = first - dt.timedelta(days=int(r.uniform(age[0], age[1]) * 365.25))
+            if k == "gas":
+                prov = GAS_PROVIDERS[int(r.integers(0, len(GAS_PROVIDERS)))]
+            else:
+                prov = PROVIDERS[int(r.integers(0, len(PROVIDERS)))][0]
+            reg = first - dt.timedelta(days=int(r.integers(20, 120)))
+            persons.append({"kind": k, "theta": theta, "first": first, "dob": dob, "provider": prov,
+                            "registered": reg})
+    persons.sort(key=lambda p: (p["registered"], p["first"]))
+    # sittings: each booked sitting in date order; absent and voided bookings are rebooked and are not attempts
+    s = rng("sittings")
+    for p in persons:
+        p["sittings"] = []
+        d = p["first"]
+        attempt = 0
+        while working_day(d) <= P.LAST_DAY:
+            d = working_day(d)
+            vendor = "old" if d < P.SWITCH else "new"
+            u = s.random()
+            if u < P.ABSENT_RATE:
+                p["sittings"].append({"date": d, "vendor": vendor, "status": "absent"})
+                d = d + dt.timedelta(days=int(s.integers(14, 60)))
+                continue
+            if u < P.ABSENT_RATE + P.VOID_RATE:
+                p["sittings"].append({"date": d, "vendor": vendor, "status": "void"})
+                d = d + dt.timedelta(days=int(s.integers(14, 60)))
+                continue
+            attempt += 1
+            th = p["theta"] + (P.RETEST_GAIN if attempt >= 2 else 0.0)
+            if vendor == "old":
+                score = int(np.clip(round(P.OLD_A + P.OLD_B * th + s.normal(0, P.OLD_ERR)), 0, 100))
+            else:
+                score = int(np.clip(round(P.NEW_A + P.NEW_B * th + s.normal(0, P.NEW_ERR)), 0, P.NEW_ITEMS))
+            p["sittings"].append({"date": d, "vendor": vendor, "status": "sat", "score": score, "attempt": attempt})
+            if vendor == "new":
+                break                       # new-paper results are held: nobody resits before the Board sets the mark
+            if score >= P.OLD_PASS:
+                break
+            near = d >= P.NEAR_MISS_FROM and P.NEAR_MISS[0] <= score <= P.NEAR_MISS[1]
+            if s.random() > (P.NEAR_MISS_RESIT_PROB if near else P.RESIT_PROB):
+                break
+            low = d >= P.NEAR_MISS_FROM and score < P.NEAR_MISS[0]
+            wait = P.LOW_WAIT_DAYS if low else (P.NEAR_MISS_WAIT_DAYS if near else P.RESIT_WAIT_DAYS)
+            if not near and s.random() < P.LAPSE_PROB:
+                wait = P.LAPSE_WAIT_DAYS            # comes back after a year or more away from the qualification
+            d = d + dt.timedelta(days=int(s.integers(*wait)))
+            while d.weekday() == 6:
+                d = d + dt.timedelta(days=1)
+    return persons

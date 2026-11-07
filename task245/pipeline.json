@@ -5,31 +5,43 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-18",
+ "updated": "2026-10-31",
  "stump": "Scaling each station's count over its valid days by its data capture, or reading the 90.4th percentile of its valid days, treats a station's lost days as ordinary for it and notes Market Street and Westholme Avenue, whose long outages fell in quiet spells; interpolating in time or filling from the rest of the network notes nobody; only rebuilding each lost hour from the network's background and the station's own response to the wind gives North Gate, Harbour Walk and South Yard, whose analysers stopped on the days the bulk terminal's plume blew onto them.",
  "architecture": 1,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-18"
+  "date": "2026-10-31",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), every line answered in the design note",
-  "reader": "three reads: read 1 found section 5.1's lost-day wording ambiguous and Market Street's NO2 capture fork (fixed in one generator pass with the realism notes); reads 2 and 3 question 1 none, question 6 analytical"
+  "leak_py": "REVIEW, no LEAK, on target.zip 7987c653 (2026-10-31), every line answered (leak_check_report.md)",
+  "reader": "10-31 reader on the reship cut: questions 1 to 4 none, question 6 an analytical choice, every sweep line harmless"
  },
  "duplicate_check": {
-  "heart": "PASS (test.same_puzzle_older NOTE, differentiated against task265)",
-  "nearest": "task182 v1 (lineage) at 0.08"
+  "heart": "WARN 2026-10-31 (repeat.deliverables pdf+xlsx against task161); the shell repeat against task124 v6 answered by the second sentence's opener",
+  "surface": "exit 0 on 2026-10-31: 4 pairs promoted (task246 back to back, task247 and task243 two apart, task265 on surface similarity), left to the author's optional clone-check"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "pass 1 APPROVE (its notes taken with the reader's findings in one pass); pass 2 on the shipped bundle APPROVE",
-  "report": "determinism_check_report.md, determinism_check_report_pass2.md"
+  "verdict": "DETERMINISTIC (10-31 pass 3 on target.zip 7987c653: the valid-day counts, the lost and valid days, the whole-year counts inside their ranges under every wind-aware rebuild, every NO2 mean and deposition rate reproduced)",
+  "disposition": "APPROVE; the narrative's background medians (not graded) differ slightly by an hourly against a daily median",
+  "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "report": "task245/determinism_check_report_pass3.md"
  },
- "returned": [],
- "resume": "",
+ "returned": [
+  {
+   "date": "2026-10-31",
+   "portal": "none: batch 1 keep-and-repair under the rules learned from the approved tasks",
+   "repair": "keep and repair",
+   "moves": "the README and the data dictionary withdrawn (files describing the data), the prompt without the station counts, in the whether form and with a fresh second-sentence opener, the metadata's subdomain and source text no longer naming the rebuild, the survivor anatomy written, the ceiling re-measured on the cut pack (generator/pair.py: pair 33.7)",
+   "freeze": "no main-call figure, stump, ladder, default path or call sentence moved, and no ask figure moved",
+   "commit": "RESHIPPED (task245): describing files withdrawn, prompt without a data count, shell redrawn"
+  }
+ ],
+ "resume": "Reshipped 2026-10-31 on target.zip 7987c653. Next: the portal result.",
  "approved": null,
- "delivered": "2026-10-18",
+ "delivered": "2026-10-31",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

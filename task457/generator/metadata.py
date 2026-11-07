@@ -22,8 +22,6 @@ SOURCES = {
     F["nih"]: "NIH awards for fiscal year 2025 with a faculty member as contact principal investigator, in the RePORTER export layout",
     F["policy"]: "the medical center's conflict-of-interest policy for the clinical faculty (June 2024)",
     F["guide"]: "the office's guide to the 2026 edition of the annual disclosure form",
-    F["dict"]: "the field descriptions of the data files",
-    F["manifest"]: "the list of the export's files of 21 January 2027",
 }
 DISTRACTORS = [F["research"], F["nih"], F["register_june"]]
 DELIVERABLES = ["coi_committee_docket_2027-02.docx", "faculty_remuneration_2026_conformed.csv"]
@@ -47,16 +45,12 @@ def write(target, out_path):
     meta = {
         "task": "task457",
         "architecture": 1,
-        "title": "Which fifteen faculty an academic medical center's conflict-of-interest office sends to its February "
-                 "committee, 2026 remuneration from a single manufacturer estimated before Open Payments publishes the year",
+        "title": "Conflict of interest committee docket, February 2027",
         "domain": "Survey Research & Official Statistics",
-        "subdomain": "census-register-administrative-data-quality (the faculty's self-reported disclosures validated "
-                     "against the Open Payments register on the years both cover, the amount-reporting error measured on "
-                     "matched reports and credibility-weighted by the number of them, carried to the year the register "
-                     "has not published)",
+        "subdomain": "census-register-administrative-data-quality (faculty disclosures and the Open Payments register)",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "01: a ranked list under a cap (the committee's fifteen), with a chart, three supporting tables "
-                        "and the conformed faculty-by-year file",
+        "prompt_shape": "01: a ranked list under the committee's cap, with a chart, supporting tables and a conformed "
+                        "faculty-by-year file",
         "as_of": "2027-01-27",
         "deliverables": DELIVERABLES,
         "distractor_files": DISTRACTORS,

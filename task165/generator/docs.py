@@ -120,8 +120,8 @@ def plan_text(W):
         "rebuilt from the airport station's records, and plans each road's salt per WSI point.",
     ]),
     ("5. Materials", [
-        "Roads are salted with bulk rock salt from the supply contract. Priority 3 hills take a sand and salt mix "
-        "made at the yards.",
+        "Roads are salted with bulk rock salt from the supply contract (material RS on the telematics platform, SALT on "
+        "the old AVL). Priority 3 hills take a sand and salt mix made at the yards (SS, SAND/SALT).",
         "Each dome's stock is taken from its September survey and brought forward by the loads weighed in to it and "
         "out of it at the scale houses.",
         "Three arterial circuits (%s, %s and %s) are maintained under contract RW-2023-07; the contractor's trucks "

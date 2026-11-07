@@ -1,92 +1,106 @@
-"""Cut the bundle, compute the goldens, write figures.json."""
+"""Build target/ from the world, read it the golden way into figures.json, and write metadata.json.
+
+    python3 task191/generator/build.py
+"""
+import json
 import os
 import shutil
 import sys
 
-import asks
-import docs
-import golden as G
-import pack as PK
-import panel
-import postprocess as PP
-import sim
-import world as W
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import analysis as A    # noqa: E402
+import common as C      # noqa: E402
+import pack as Pk       # noqa: E402
+import world as Wd      # noqa: E402
+
+LADDER = [
+    ("R0 productivity over the decided alerts (the conversion an MI pack shows)", "decided_only", {}),
+    ("R1 SARs so far over every alert, the undecided read as not ending in a SAR", "open_as_no", {}),
+    ("R2 the undecided projected at the scenario's decided share", "project_decided_share", {}),
+    ("R3 undecided investigations at the scenario's investigation SAR share", "status", {}),
+    ("R4 each undecided alert read by how the scenario's alerts undecided at that age ended (golden)", "golden", {}),
+]
+FAMILY = [
+    ("history from 300 days old", "golden", {"min_age": 300}),
+    ("history from 365 days old", "golden", {"min_age": 365}),
+    ("business date read from the Eastern clock", "golden", {"by": "eastern"}),
+    ("the re-run duplicates kept", "golden", {"dups": True}),
+    ("mature cohorts, 6 months", "mature", {"months": 6}),
+    ("mature cohorts, 7 months", "mature", {"months": 7}),
+    ("mature cohorts, 8 months", "mature", {"months": 8}),
+    ("mature cohorts, 9 months", "mature", {"months": 9}),
+]
 
 
-def cut(target):
-    if os.path.isdir(target):
-        shutil.rmtree(target)
-    os.makedirs(target)
-    qs = sim.calibrate(W.WORST_WINDOW)
-    minutes, rollup = panel.build(qs)
-    kept, dropped = PK.write_panel(target, minutes)
-    PK.write_rollup(target, rollup + PK.rollup_from_panel(kept))
-    PK.write_register(target)
-    PK.write_maintenance(target)
-    PK.write_health(target, dropped)
-    asks.write_edge(target)
-    asks.write_commitments(target)
-    asks.write_sessions(target)
-    asks.write_incidents(target)
-    asks.write_distractors(target)
-    PK.write_plan(target)
-    docs.framework(target)
-    docs.standard(target)
-    docs.dictionary(target)
-    docs.bulletin(target, [["2025Q1", "5,980", "41.2", "0.91"], ["2025Q2", "6,040", "39.8", "0.88"],
-                           ["2025Q3", "6,015", "38.9", "0.90"], ["2025Q4", "6,105", "43.1", "0.94"],
-                           ["2026Q1", "6,120", "44.6", "0.97"], ["2026Q2", "6,190", "42.0", "0.89"],
-                           ["2026Q3", "6,165", "41.3", "0.87"], ["2026Q4", "6,240", "45.8", "0.93"],
-                           ["2027Q1", "6,275", "46.9", "0.92"]])
-    PP.normalize_pdf(os.path.join(target, "network_capacity_framework.pdf"),
-                     b"D:20261014101500+00'00'", b"D:20261014101500+00'00'")
-    PP.normalize_pdf(os.path.join(target, "delivered_quality_standard.pdf"),
-                     b"D:20260622143000+00'00'", b"D:20260622143000+00'00'")
-    PP.normalize_pdf(os.path.join(target, "telemetry_dictionary.pdf"),
-                     b"D:20270412090000+00'00'", b"D:20270412090000+00'00'")
-    PP.normalize_pdf(os.path.join(target, "published_quarterly_quality_report.pdf"),
-                     b"D:20270409113000+00'00'", b"D:20270409113000+00'00'")
-    PP.normalize_ooxml(os.path.join(target, PK.FILES["plan"]), "Amelia Jekel", "Amelia Jekel",
-                       "2027-01-06T09:10:00Z", "2027-04-02T16:20:00Z",
-                       title="Interconnect capacity plan", excel=True)
-    PK.write_manifest(target)
+def figures(P, W):
+    call, prod = P.call("golden")
+    tr, n, s = Wd.truth(W)
+    fig = {"call": {"tuning": call, "stay": sorted(c for c in C.CODES if c not in call)},
+           "productivity": {c: round(prod[c], 3) for c in C.CODES},
+           "truth": {c: round(tr[c], 3) for c in C.CODES},
+           "counts": {c: P.counts(c) for c in C.CODES},
+           "names": {c: C.NAME[c] for c in C.CODES},
+           "constants": {"floor_per_cent": C.FLOOR, "history_days": 330}}
+    fig["ladder"] = {}
+    for label, m, kw in LADDER:
+        st, pr = P.call(m, **kw)
+        fig["ladder"][label] = {"tuning": st, "productivity": {c: round(pr[c], 3) for c in C.CODES}}
+    fig["family"] = {}
+    for label, m, kw in FAMILY:
+        st, pr = P.call(m, **kw)
+        fig["family"][label] = {"tuning": st, "productivity": {c: round(pr[c], 3) for c in C.CODES}}
+    aa = P.ask_investigations()
+    quarters = ["2025 Q4", "2026 Q1", "2026 Q2", "2026 Q3"]
+    fig["ask_investigations"] = {c: {q: aa.get((c, q), 0) for q in quarters} for c in C.CODES}
+    sb = P.ask_sars()
+    months = ["2026-%02d" % m for m in range(1, 11)]
+    fig["ask_sars"] = {m: {"initial": sb.get((m, "initial"), 0), "continuing": sb.get((m, "continuing"), 0)}
+                       for m in months}
+    traps = [c for c in C.CODES if c not in call and c in fig["ladder"][LADDER[0][0]]["tuning"]]
+    fig["traps"] = traps
+    return fig
+
+
+def metadata(n):
+    src = {"alerts": "transaction monitoring alerts, July 2025 to October 2026",
+           "cases": "AML case records from a case management system",
+           "sars": "suspicious activity report filing log",
+           "catalogue": "transaction monitoring scenario catalogue",
+           "runs": "nightly monitoring run log",
+           "procedure": "AML alert handling procedure",
+           "thread": "compliance email on the 2027 tuning set",
+           "risk": "customer risk tier extract",
+           "capacity": "case team staffing plan for 2027",
+           "qa": "quality assurance sampling of closed cases, 2026"}
+    meta = {"task": "task191",
+            "files": [{"name": Pk.FILES[k], "description": src[k], "source": "synthetic, built for this task",
+                       "format": Pk.FILES[k].rsplit(".", 1)[1], "license": "CC0-1.0", "created": "2026-10-31"}
+                      for k in Pk.FILES],
+            "distractors": [Pk.FILES[k] for k in Pk.DISTRACTORS],
+            "deliverables": ["tuning_scenarios_2027.docx", "tm_alert_figures_2026.xlsx"],
+            "rows": n}
+    with open(os.path.join(C.TASK, "metadata.json"), "w", encoding="utf-8") as f:
+        json.dump(meta, f, indent=1, ensure_ascii=False)
+        f.write("\n")
+
+
+def build():
+    W = Wd.build()
+    if os.path.isdir(C.TARGET):
+        shutil.rmtree(C.TARGET)
+    os.makedirs(C.TARGET)
+    n = Pk.build(W, C.TARGET)
+    P = A.Pack(C.TARGET)
+    fig = figures(P, W)
+    with open(os.path.join(HERE, "figures.json"), "w", encoding="utf-8") as f:
+        json.dump(fig, f, indent=1, sort_keys=True)
+        f.write("\n")
+    metadata(n)
+    return W, P, fig, n
 
 
 if __name__ == "__main__":
-    tgt = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "target")
-    cut(tgt)
-    g = G.compute(tgt)
-    task = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    gold = os.path.join(task, "golden")
-    os.makedirs(gold, exist_ok=True)
-    import deliver as DL
-    import figures as FG
-    import metadata as MD
-    DL.workbook(os.path.join(gold, "augment_decision_2027Q1.xlsx"), g)
-    DL.chart(os.path.join(gold, "shortfall_overview.png"), g)
-    PP.normalize_ooxml(os.path.join(gold, "augment_decision_2027Q1.xlsx"),
-                       "Amelia Jekel", "Rick Claassen",
-                       "2027-04-08T11:05:00Z", "2027-04-10T15:40:00Z",
-                       title="Interconnect augment decision 2027Q1", excel=True)
-    MD.write(task, g)
-    FG.write(os.path.dirname(os.path.abspath(__file__)), g)
-    import checks as CK
-    import verify as VF
-    n = CK.run(tgt)
-    k = VF.run(tgt, os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json"))
-    print("generator assertions", n, "independent checks", k)
-    print("decided : %s %s %s  %.0f kbps" % (g["decided_port"], g["decided_evening"],
-                                             g["decided_window"], g["decided_shortfall"]))
-    print("record  : %.0f kbps in %s; rank %d of 9" % (g["record_shortfall"], g["record_quarter"],
-                                                       g["rank_of_nine"]))
-    print("call    : fund %s" % g["fund"])
-    print("rung 0  : %s %.0f kbps (maintenance kept)" % (g["rung0_port"], g["rung0_shortfall"]))
-    print("rung 2  : %s mean %.1f kbps, next %.1f" % (g["rung2_port"], g["rung2_mean"],
-                                                      g["rung2_next"]))
-    print("closest : %s at %d kbps" % (g["closest_port"], g["closest_shortfall"]))
-    print("quarters:", g["quarterly_worst"])
-    print("a1      :", {k: (v["percentile_mbps"], v["commitment_mbps"], v["overage_eur"])
-                        for k, v in g["a1_peers"].items()})
-    print("a2      :", {k: (v["sessions"], v["rebuffered_pct"]) for k, v in g["a2_builds"].items()})
-    print("a3      :", g["a3_incidents"])
+    W, P, fig, n = build()
+    print("tuning", fig["call"]["tuning"], "traps", fig["traps"])
+    print("rows", n)

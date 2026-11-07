@@ -66,6 +66,6 @@ Against the tests each stream's own positivity says its laboratory ran in the we
    - Arbor Point Laboratory Services: 4,217
    - Westmarch Reference Laboratory: 2,835
 
-### respiratory_feed_completeness_2027-W03.png
+### respiratory_feed_completeness_2027-W03.svg
 
 4. Horizontal bar chart of the 29 streams' week-3 completeness against the 80 per cent line, grouped by laboratory: the six bars of Wexmoor Regional Medical Center Laboratory and Westmarch Reference Laboratory below the line, every other bar above it.

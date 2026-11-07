@@ -1,267 +1,141 @@
-"""Independent verifier for task130: reads only the shipped pack (target/) and the goldens, on its own code path (no
-generator module is imported), and recomputes the contribution, the expected number of Claims, both asks and the
-default path's figure, then compares them with the golden workbook.
-
-    python3 task130/generator/verify.py [target] [golden]"""
-from __future__ import annotations
-
-import bisect
-import csv
+"""Independent verifier: recompute the golden's forecast and the asks from target/ with pandas, on its own code
+path (each crew's count walked day by day from HR-14 Revision 2's start on 11 January 2021, exposure from crew-days
+weighted by each pay period's hours per working day; the first-aid cases deduplicated across the nurse line and the
+supervisors' reports on the worker and a seven-day window), and require agreement with the golden workbook."""
 import datetime as dt
-import math
 import os
-import re
 import sys
 
+import numpy as np
 import openpyxl
-from pypdf import PdfReader
+import pandas as pd
 
-REGISTER = "rm_claims_register_extract_20261002.csv"
-PAYROLL = "clinician_fte_by_month_2016-01_2025-12.csv"
-HCM = "hcm_clinician_pay_lines_2026-01_2026-09.csv"
-CROSSWALK = "hcm_job_profile_crosswalk.csv"
-DIRECTORY = "cost_centre_directory_2026.csv"
-PLAN = "clinician_staffing_plan_2027.xlsx"
-AGREEMENT = "CPLT_trust_agreement_executed_2026-08-14.pdf"
-QM_SEP = "QMPL_loss_run_Corvane_val_2026-09-30.xlsx"
-SC_SEP = "Stoneleigh_lossrun_CORVANE_20260930.csv"
-NOTICES = "rm_carrier_notices_2012_2026.csv"
-PREMIUMS = "insurance_premium_history_2016-2026.xlsx"
-BOOK = "trust_funding_2027.xlsx"
-MONTHS = {m: i for i, m in enumerate(["January", "February", "March", "April", "May", "June", "July", "August",
-                                       "September", "October", "November", "December"], start=1)}
-CLASS_NAMES = ["Obstetrics", "Surgery", "Emergency Medicine", "Anesthesiology", "Hospital and Medical Specialties",
-               "Primary Care", "Advanced Practice"]
-ENTITY_NAMES = {"Tolliver Falls Hospital": "TFH", "Alderwick Medical Center": "AMC", "Corvane Medical Group": "CMG",
-                "Brennick Community Hospital": "BCH"}
-LINES = {"TFH": "QM-TFH", "AMC": "QM-AMC", "CMG": "SC-CMG", "BCH": "SC-BCH"}
-ENTS = ["TFH", "AMC", "CMG", "BCH"]
-END = dt.date(2027, 12, 31)
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import pack as P   # noqa: E402  (file names only)
+
+K = 200000
+A0, A1 = pd.Timestamp("2026-01-05"), pd.Timestamp("2026-09-27")
 
 
-def agreement(target):
-    flat = re.sub(r"\s+", " ", "\n".join(p.extract_text() for p in PdfReader(os.path.join(target, AGREEMENT)).pages))
-    trans = {}
-    for code in ENTS:
-        m = re.search(r"\b%s (\d{1,2}) (\w+) (\d{4})" % code, flat)
-        trans[code] = dt.date(int(m.group(3)), MONTHS[m.group(2)], int(m.group(1)))
-    classes = {}
-    names = "|".join(re.escape(n) for n in sorted(CLASS_NAMES, key=len, reverse=True))
-    for m in re.finditer(r"(%s) (\d{5}) ([A-Z]{3}-[A-Z]{2,4})\b" % names, flat):
-        classes[m.group(2)] = m.group(1)
-        classes[m.group(3)] = m.group(1)
-    return trans, classes
+def hol(y):
+    import world as W
+    return W.holidays(y)
 
 
-def read_csv(target, name):
-    with open(os.path.join(target, name), encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
-
-
-def num(s):
-    return float(s) if s else 0.0
-
-
-def experience(target, classes):
-    pay = read_csv(target, PAYROLL)
-    job = {}
-    fte_years = {c: 0.0 for c in CLASS_NAMES}
-    for r in pay:
-        job.setdefault((r["employee_id"], r["pay_month"]), r["job_code"])
-        if "2016-01" <= r["pay_month"] <= "2024-12" and r["job_code"] in classes:
-            fte_years[classes[r["job_code"]]] += float(r["fte"]) / 12.0
-    incidents = {}
-    for r in read_csv(target, REGISTER):
-        if "2016-01-01" <= r["incident_date"] <= "2024-12-31":
-            incidents.setdefault(r["incident_no"], []).append(r)
-    claims = []
-    for ino in sorted(incidents):
-        rs = incidents[ino]
-        covered = [r for r in rs if r["coverage_line"] != "CONTRACT" and
-                   job.get((r["clinician_id"], r["incident_date"][:7])) in classes]
-        if not covered:
-            continue
-        made = min(r["claim_made_date"] for r in rs)
-        first_no = min((r["claim_made_date"], r["claim_no"]) for r in rs)[1]
-        first = min((r for r in covered if r["claim_no"] == first_no), key=lambda r: int(r["defendant_seq"]))
-        cls = classes[job[(first["clinician_id"], first["incident_date"][:7])]]
-        inc = dt.date.fromisoformat(rs[0]["incident_date"])
-        lag = (dt.date.fromisoformat(made) - inc).days
-        cost = sum(num(r["indemnity_paid"]) + num(r["defense_paid"]) + num(r["indemnity_reserve"]) +
-                   num(r["defense_reserve"]) for r in covered) * 1.05 ** (2027 - inc.year)
-        claims.append((cls, lag, cost))
-    return claims, fte_years
-
-
-def main_call(target):
-    trans, classes = agreement(target)
-    claims, fte_years = experience(target, classes)
-    wb = openpyxl.load_workbook(os.path.join(target, PLAN), data_only=True)
-    plan = {}
-    for row in wb["Covered FTE 2027"].iter_rows(min_row=6, values_only=True):
-        if row[0]:
-            plan[(row[0], row[2])] = [float(v) for v in row[3:15]]
-    by_cls = {}
-    for cls, lag, cost in claims:
-        by_cls.setdefault(cls, []).append((lag, cost))
-    cum = {}
-    for cls, v in by_cls.items():
-        v.sort()
-        lags = [x[0] for x in v]
-        cc, nn, c_acc = [], [], 0.0
-        for k, (lag, cost) in enumerate(v):
-            c_acc += cost
-            cc.append(c_acc)
-        cum[cls] = (lags, cc)
-    total = count = exposure = 0.0
-    for (e, c), fte in plan.items():
-        lags, cc = cum[c]
-        d = trans[e]
-        while d <= END:
-            nxt = dt.date(d.year + (d.month == 12), d.month % 12 + 1, 1)
-            w = fte[d.month - 1] / 12.0 / (nxt - dt.date(d.year, d.month, 1)).days
-            exposure += w
-            k = bisect.bisect_right(lags, (END - d).days)
-            if k:
-                total += w * cc[k - 1] / fte_years[c]
-                count += w * k / fte_years[c]
-            d += dt.timedelta(days=1)
-    # the default path: the window's count at each class's average Claim cost
-    avg = {c: sum(x[1] for x in v) / len(v) for c, v in by_cls.items()}
-    default = 0.0
-    for (e, c), fte in plan.items():
-        lags, _ = cum[c]
-        d = trans[e]
-        while d <= END:
-            nxt = dt.date(d.year + (d.month == 12), d.month % 12 + 1, 1)
-            w = fte[d.month - 1] / 12.0 / (nxt - dt.date(d.year, d.month, 1)).days
-            default += w * bisect.bisect_right(lags, (END - d).days) / fte_years[c] * avg[c]
-            d += dt.timedelta(days=1)
-    return dict(total=total, count=count, exposure=exposure, default=default, claims=len(claims),
-                fte_years=sum(fte_years.values()))
-
-
-def era_starts(target):
-    wb = openpyxl.load_workbook(os.path.join(target, PREMIUMS), data_only=True)
-    terms = {}
-    for row in wb["Premium history"].iter_rows(min_row=5, values_only=True):
-        if row[0]:
-            start = row[3].date() if hasattr(row[3], "date") else row[3]
-            terms.setdefault(ENTITY_NAMES[row[0]], []).append((start, row[1]))
-    out = {}
-    for e, t in terms.items():
-        t.sort()
-        car, start = t[-1][1], t[-1][0]
-        for s, c in reversed(t):
-            if c != car:
-                break
-            start = s
-        out[e] = start
-    return out
-
-
-def ask_a(target):
-    reg = read_csv(target, REGISTER)
-    key = lambda s: re.sub(r"[^A-Z0-9]", "", str(s).upper())
-    claim_inc = {key(r["claim_no"]): r["incident_no"] for r in reg}
-    notice_inc = {key(r["notice_no"]): r["incident_no"] for r in read_csv(target, NOTICES)}
-    names = {"Tolliver Falls Hospital": "TFH", "Alderwick Medical Center": "AMC", "CORVANE MEDICAL GROUP": "CMG",
-             "BRENNICK COMMUNITY HOSP": "BCH"}
-    wb = openpyxl.load_workbook(os.path.join(target, QM_SEP), data_only=True)
-    refs = [(names[row[2]], row[4] or "", row[5].date().isoformat(), str(row[7]).upper())
-            for row in wb["Loss Run"].iter_rows(min_row=8, values_only=True) if row[3]]
-    for r in read_csv(target, SC_SEP):
-        mo, dd, yy = r["DATE_OF_LOSS"].split("/")
-        refs.append((names[r["INSURED_NAME"]], r["INSURED_REF"], "%s-%s-%s" % (yy, mo, dd), r["CLM_TYPE"].upper()))
-    # suits on a run with no insured reference: the register's one suit of that entity on that date of care
-    suits_on = {}
-    for r in reg:
-        if r["matter_type"] == "Suit":
-            suits_on.setdefault((r["entity_at_incident"], r["incident_date"]), set()).add(r["incident_no"])
-    on_run = {}
-    for e, ref, dol, ctype in refs:
-        ino = claim_inc.get(key(ref)) or notice_inc.get(key(ref))
-        if not key(ref) and ctype == "SUIT" and len(suits_on.get((e, dol), ())) == 1:
-            ino = next(iter(suits_on[(e, dol)]))
-        if ino:
-            on_run.setdefault(e, set()).add(ino)
-    eras = era_starts(target)
-    res = {}
-    for e, line in LINES.items():
-        opn = {r["incident_no"] for r in reg if r["coverage_line"] == line and r["status"] in ("OPEN", "REOPENED")
-               and r["incident_date"] >= eras[e].isoformat()}
-        miss = sorted(i for i in opn if i not in on_run.get(e, set()))
-        reserves = sum(num(r["indemnity_reserve"]) + num(r["defense_reserve"]) for r in reg
-                       if r["coverage_line"] == line and r["incident_no"] in miss)
-        res[e] = (len(miss), reserves)
-    return res
-
-
-def ask_b(target):
-    _, classes = agreement(target)
-    xw = {r["job_profile_code"]: r["legacy_job_code"] for r in read_csv(target, CROSSWALK)}
-    cc = {r["cost_centre"]: r["entity_code"] for r in read_csv(target, DIRECTORY)}
-    lines = [r for r in read_csv(target, HCM) if r["work_month"] in ("2026-07", "2026-08", "2026-09")]
-    # a trainee in a month is paid on a resident or fellow position for that month (a termination payout follows the
-    # position's end)
-    trainees = {(r["worker_id"], r["work_month"]) for r in lines if xw[r["job_profile_code"]].startswith("GME-")
-                and r["earning_code"] != "TRM"}
-    out = {}
-    for r in lines:
-        if xw[r["job_profile_code"]] not in classes or (r["worker_id"], r["work_month"]) in trainees:
-            continue
-        k = (cc[r["cost_centre"]], r["work_month"])
-        out[k] = out.get(k, 0.0) + float(r["hours"]) / 173.33
-    return out
-
-
-def r1000(x):
-    return int(math.floor(x / 1000.0 + 0.5) * 1000)
-
-
-def r250k(x):
-    return int(math.floor(x / 250000.0 + 0.5) * 250000)
-
-
-def r1(x):
-    return math.floor(x * 10 + 0.5) / 10
-
-
-def main(target, golden):
-    mc = main_call(target)
-    a = ask_a(target)
-    b = ask_b(target)
-    wb = openpyxl.load_workbook(os.path.join(golden, BOOK), data_only=True)
-    errors = []
-    if wb["Contribution"]["B4"].value != r250k(mc["total"]):
-        errors.append("contribution %s against %s" % (wb["Contribution"]["B4"].value, r250k(mc["total"])))
-    w3 = wb["Carrier loss runs"]
-    for i, e in enumerate(ENTS):
-        cnt, res = w3.cell(row=4 + i, column=6).value, w3.cell(row=4 + i, column=7).value
-        cnt = 0 if cnt == "None" else cnt
-        if cnt != a[e][0] or res != r1000(a[e][1]):
-            errors.append("ask A %s: %s %s against %s %s" % (e, cnt, res, a[e][0], r1000(a[e][1])))
-    w4 = wb["Covered FTE 2026"]
-    for i, e in enumerate(ENTS):
-        for j, mo in enumerate(("2026-07", "2026-08", "2026-09")):
-            if w4.cell(row=4 + i, column=2 + j).value != r1(b[(e, mo)]):
-                errors.append("ask B %s %s: %s against %s" % (e, mo, w4.cell(row=4 + i, column=2 + j).value,
-                                                              r1(b[(e, mo)])))
-    if errors:
-        raise SystemExit("verify: %d mismatches\n  " % len(errors) + "\n  ".join(errors))
-    print("verify: %d experience Claims on %s FTE-years; 2027 exposure %.1f FTE-years; %.2f expected Claims; contribution "
-          "%s from %s (default path, the window's count at each class's average cost: %s); ask A %s; ask B %s; all "
-          "match the golden workbook" % (
-              mc["claims"], "{:,.1f}".format(mc["fte_years"]), mc["exposure"], mc["count"],
-              "{:,}".format(r250k(mc["total"])), "{:,.0f}".format(mc["total"]), "{:,.0f}".format(mc["default"]),
-              ", ".join("%s %d/%s" % (e, a[e][0], "{:,}".format(r1000(a[e][1]))) for e in ENTS),
-              ", ".join("%s %s" % (e, "/".join("%.1f" % r1(b[(e, mo)]) for mo in ("2026-07", "2026-08", "2026-09")))
-                        for e in ENTS)))
-    return dict(main=mc, a=a, b=b)
+def main(target, golden_dir):
+    f = lambda k: os.path.join(target, P.FILES[k])
+    leg = pd.read_csv(f("legacy"), dtype=str, keep_default_na=False)
+    new = pd.read_excel(f("cases"), sheet_name="Cases", dtype=str).fillna("")
+    reg = pd.read_excel(f("register"), sheet_name="Crews", dtype=str).fillna("")
+    asg = pd.read_csv(f("assign"), dtype=str, keep_default_na=False)
+    hrs = pd.read_csv(f("hours"), keep_default_na=False)
+    # cases: the new system wins for migrated cases; latest revision; no recurrences
+    leg = leg[~leg["case_no"].isin(set(new["legacy_case_no"]) - {""})]
+    leg = leg.sort_values(["case_no", "revision"]).groupby("case_no").tail(1)
+    cmap = {"First aid": "FA", "Medical treatment": "MT", "Restricted work": "RW", "Days away": "DA"}
+    a = pd.DataFrame({"emp": leg["employee_no"], "date": pd.to_datetime(leg["injury_date"], format="%m/%d/%Y"),
+                      "job": leg["job_ref"], "cls": leg["classification"].map(cmap), "recur": leg["recurrence_of"] != "",
+                      "src": "Supervisor"})
+    new["revision"] = new["revision"].astype(int)
+    new = new.sort_values(["case_id", "revision"]).groupby("case_id").tail(1)
+    b = pd.DataFrame({"emp": new["employee_id"], "date": pd.to_datetime(new["injury_date"].str[:10]),
+                      "job": new["job_reference"], "cls": new["osha_class"], "recur": new["recurrence_of_case"] != "",
+                      "src": new["source"]})
+    allc = pd.concat([a, b]).reset_index(drop=True)
+    allc["pine"] = ~allc["job"].str.startswith("MA-")
+    asg["from"] = pd.to_datetime(asg["assigned_from"])
+    asg["to"] = pd.to_datetime(asg["assigned_to"].replace("", "2099-12-31"))
+    mall = allc.reset_index().merge(asg, left_on="emp", right_on="employee_id")
+    mall = mall[(mall["from"] <= mall["date"]) & (mall["date"] <= mall["to"])]
+    assert mall["index"].is_unique and len(mall) == len(allc), "every case on one crew or team on its day"
+    m = mall[(~mall["recur"]) & (mall["cls"] != "FA")].copy()
+    info = reg.set_index("unit_code")
+    m["type"] = m["crew_or_team"].map(info["unit_type"])
+    m["district"] = m["crew_or_team"].map(info["district"])
+    canon = dict(zip(reg.loc[reg["status"] == "Recoded", "unit_code"], reg.loc[reg["status"] == "Recoded", "recoded_to"]))
+    m["canon"] = m["crew_or_team"].map(lambda x: canon.get(x, x))
+    crew_t = {"OH", "UG", "SUB", "VEG"}
+    m["crew"] = m["type"].isin(crew_t)
+    # hours: adjustments to the period they correct, the unit's own district
+    hrs["ps"] = pd.to_datetime(np.where(hrs["adjusts_pay_period"] != "", hrs["adjusts_pay_period"], hrs["pay_period_start"]))
+    hrs["worked"] = hrs["regular_hours"] + hrs["overtime_hours"]
+    hrs["home"] = hrs["unit_code"].map(info["district"])
+    hrs["canon"] = hrs["unit_code"].map(lambda x: canon.get(x, x))
+    # rates over the history
+    h0, h1 = pd.Timestamp("2021-01-11"), pd.Timestamp("2026-09-27")
+    tech_h = hrs.loc[~hrs["unit_type"].isin(crew_t), "worked"].sum()
+    tech_n = ((~m["crew"]) & m["pine"]).sum()
+    tech_rate = tech_n * K / tech_h
+    # counts: day by day per crew from HR-14 Revision 2's start, restarted after each recordable and each 90th day
+    resets = {}
+    for cr, g in m[m["crew"]].groupby("canon"):
+        resets.setdefault(cr, set()).update(g["date"].dt.date)
+    ch = hrs[hrs["unit_type"].isin(crew_t) & (hrs["worked"] != 0)]
+    per_day = {}
+    for (cr, ps), w in ch.groupby(["canon", "ps"])["worked"].sum().items():
+        p = ps.date()
+        wd = [p + dt.timedelta(days=k) for k in range(14)]
+        wd = [x for x in wd if x.weekday() < 5 and x not in hol(x.year)]
+        for x in wd:
+            per_day.setdefault(cr, {})[x] = per_day.setdefault(cr, {}).get(x, 0.0) + w / len(wd)
+    exp_e = exp_all = 0.0
+    n_e = n_all = 0
+    pine = m[m["crew"] & m["pine"]]
+    pine_by = {cr: set(g["date"].dt.date) for cr, g in pine.groupby("canon")}
+    pine_cnt = pine.groupby(["canon", pine["date"].dt.date]).size().to_dict()
+    for cr, days in per_day.items():
+        start = dt.date(2021, 1, 11)
+        rs = resets.get(cr, set())
+        day, end = start, max(days)
+        while day <= end:
+            n = (day - start).days
+            h = days.get(day, 0.0)
+            k = pine_cnt.get((cr, day), 0)
+            exp_all += h
+            n_all += k
+            if n < 35:
+                exp_e += h
+                n_e += k
+            if day in rs or n == 89:
+                start = day + dt.timedelta(days=1)
+            day += dt.timedelta(days=1)
+    clean = n_e * K / exp_e
+    ws = openpyxl.load_workbook(f("plan"), read_only=True)["2027 hours"]
+    crew_plan = tech_plan = 0.0
+    for r in ws.iter_rows(min_row=5, values_only=True):
+        if r[0] in ("Blue Ridge", "Piedmont", "Lakes", "Coastal"):
+            if r[1] in crew_t:
+                crew_plan += sum(r[2:6])
+            else:
+                tech_plan += sum(r[2:6])
+    total = (clean * crew_plan + tech_rate * tech_plan) / K
+    # the asks: first-aid cases, each injury once. A nurse-line case goes with a supervisor's case for the same
+    # worker dated within the seven days before its call; with none, it is an injury of its own.
+    sup = mall[mall["src"] != "Nurse line"]
+    nl = mall[mall["src"] == "Nurse line"]
+    pair = nl[["index", "emp", "date"]].merge(sup[["emp", "date"]], on="emp", suffixes=("", "_s"))
+    gap = (pair["date"] - pair["date_s"]).dt.days
+    twinned = set(pair.loc[(gap >= 0) & (gap <= 7), "index"])
+    inj = pd.concat([sup, nl[~nl["index"].isin(twinned)]])
+    fa = inj[(inj["cls"] == "FA") & inj["pine"] & ~inj["recur"] & (inj["date"] >= A0) & (inj["date"] <= A1)].copy()
+    fa["district"] = fa["crew_or_team"].map(info["district"])
+    fa["q"] = np.where(fa["date"] <= pd.Timestamp("2026-03-31"), 0, np.where(fa["date"] <= pd.Timestamp("2026-06-30"), 1, 2))
+    asks = {dist: [int(((fa["district"] == dist) & (fa["q"] == q)).sum()) for q in range(3)]
+            for dist in ("Blue Ridge", "Piedmont", "Lakes", "Coastal")}
+    # compare with the golden workbook
+    gb = openpyxl.load_workbook(os.path.join(golden_dir, "recordables_forecast_2027.xlsx"), data_only=True)
+    fc = gb["2027 forecast"]
+    g_total = fc["C8"].value
+    assert abs(round(total) - g_total) <= 1, "forecast %.2f against the golden %s" % (total, g_total)
+    db = gb["2026 by district"]
+    for row in db.iter_rows(min_row=4, max_row=7, values_only=True):
+        dist = row[0]
+        assert list(row[1:4]) == asks[dist] and row[4] == sum(asks[dist]), "first aid %s: %s against %s" % (dist, row, asks[dist])
+    print("verify: match (forecast %.1f, clean %.3f, technicians %.3f; the four districts' first-aid cases by quarter)"
+          % (total, clean, tech_rate))
 
 
 if __name__ == "__main__":
-    task = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    t = sys.argv[1] if len(sys.argv) > 1 else os.path.join(task, "target")
-    g = sys.argv[2] if len(sys.argv) > 2 else os.path.join(task, "golden")
-    main(t, g)
+    t = os.path.join(os.path.dirname(HERE), "target")
+    main(t, os.path.join(os.path.dirname(HERE), "golden"))

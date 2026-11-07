@@ -77,6 +77,16 @@ loses the heaviest days as they happen. Nearest driver task229 v3 at 0.06.
   movement. None spends losses that fall on the outcome's own high values, rebuilt from a driver the record does not
   lose.
 
+## Survivor anatomy
+
+Actor: that a plume station's analyser stopped on the days the terminal's dust reached it has no column; it is a relation between each lost hour (a fault, power or out-of-service status in the export or the operator's workbook), the met mast's wind that hour against the station's bearing to the terminal (the register's grid references) and the station's own response to the wind fitted on its valid hours, which nothing stores.
+Link: each lost hour is rebuilt from the other stations' median that hour plus the station's own increment by wind sector, speed band and wet day, a construction across stations and files (the two operators' data, the mast, the register) that no key offers and no sentence invites.
+Reflex: the field's own correction for short data capture, the valid-day count scaled by capture or the 90.4th percentile of the valid daily means as UK practice reports it, sits at rungs 0 and 1 and notes Market Street and Westholme Avenue (`Ends on:`), not the golden North Gate, Harbour Walk and South Yard.
+Back-test: the two field corrections agree with each other, both naming Market Street and Westholme Avenue, so a solver who checks one against the other sees the easy route confirmed.
+Second use: every file the step reads is in the pack for the network's ordinary reporting: the export and the workbook for every statistic (the NO2 ask reads the export), the mast because the terminal's dust plan requires it, the register for the report's site table and the service log for the outages and the NO2 ask's logger lines.
+Shock: the plume stations' lost days read as ordinary analyser faults spread through the year, their capture (285 to 294 days) above the two long-outage roadside stations, so the stations with the shortest capture are the easy route's pair and the golden three are not the extreme of any shipped statistic.
+Pins: AQ-QP-04 section 5.1 files the estimand (every day of the year counts by the concentration that day, a lost day included) and 5.2 the note; no sentence says how a lost day is estimated, that the analysers stopped on plume days, or names the wind.
+
 ## Default path
 
 1. Read the council's export (the PM10 rows, status R) and the terminal's workbook (status OK; UK clock time, each hour
@@ -183,7 +193,7 @@ a reported figure.
 |---|---|---|---|---|---|
 | SF1 | days above 50 | daily mean above 50 | at least 50 | same call | no valid daily mean within 0.6 of 50 (asserted) |
 | SF2 | the daily mean | unrounded | rounded to whole units first | same call | same counts (asserted) |
-| SF3 | the terminal's clock | UK clock time moved to GMT | read as GMT throughout | same call | same call (asserted); the workbook and dictionary say UK clock time |
+| SF3 | the terminal's clock | UK clock time moved to GMT | read as GMT throughout | same call | same call (asserted); the workbook's note and the dust plan say UK clock time |
 | SF4 | the terminal's stamps | the start of the hour | the end of the hour | same call | same call (asserted); "marks the start of the hour" |
 | SF5 | a valid daily mean | at least 18 of 24 hours | another threshold | ruled out | section 3: "at least 18 of the day's 24 hourly means are valid" (asserted) |
 | SF6 | the station's result | every day of the year, a lost day counting by the concentration that day | the valid days only, or every lost day as an exceedance | ruled out | section 5.1: "such a day counts if the concentration at the station that day exceeded 50 µg/m³, and not otherwise" (asserted) |
@@ -275,8 +285,7 @@ audit"); the call reads no NO2 row. Primary device D3 (units set per date): the 
 technician's June rounds convert NO2 and NOx from ppb at 1.88 µg/m³ per ppb, their default, so from each station's
 fitting the export is 1.6 per cent low against the procedure's 1.91 (section 5.3); only the service log's logger lines
 say so, and nothing in the export moves. Hazards: a week of two stations' hours imported twice from the analyser's
-store (D1, exact repeats), the NOx rows beside the NO2 rows (D5). Path: the export, the service log, the procedure, the
-dictionary (4 files, 11 columns: site_code, pollutant, date, time_end, value, status; the log's Date, Time (UK clock),
+store (D1, exact repeats), the NOx rows beside the NO2 rows (D5). Path: the export, the service log and the procedure (3 files, 11 columns: site_code, pollutant, date, time_end, value, status; the log's Date, Time (UK clock),
 Site, Type, Notes). Stops: the export as it stands -0.25 to -0.13 (all six missed); every hour rescaled +0.12 to +0.21
 (all six); the re-sent week kept +0.00 to +0.11 (moves TH2 and TH5). Realism: a telemetry upgrade fitting loggers with
 the supplier's 25 C default is a common source of a 1 to 2 per cent NO2 bias that ratification misses.
@@ -318,7 +327,7 @@ Referee: the service log for the loggers' conversion and the gauge exchange; the
 | Ask B, North Gate, East Berth, Rail Sidings | periods started in 2027, void out, days-weighted, total over the laboratory's collecting area | miss |
 | Ask B, South Yard, West Gate | the same | miss |
 
-Measured by: generator/pair.py on the cut pack: the cracker keeps 0 of the 11 ask figures (also 0 taking the
+Measured by: generator/pair.py on the cut pack (target.zip 7987c653, re-measured at the 10-31 repair): the cracker keeps 0 of the 11 ask figures (also 0 taking the
 laboratory's rates, 0 putting the Frisbee area on every period, 0 rescaling every NO2 hour); the mirror (stopped at the
 scaled count) keeps 0 of 11, Ls 0, and 15.4 of the 38 recommendation points (7 of 12 notes, 6 of 12 whole-year counts
 inside the accepted range).
@@ -365,7 +374,7 @@ Mirror leakage: 0.0 per cent of ask weight
 - Sweep 3 and sweep 5, the procedure (`tbc_aq_network_qaqc_procedure_v4.pdf`): it carries the call's vocabulary and
   section 5.2's definition of the note, because the note is its own subject; it names no station, no count and no way
   of estimating a lost day. A governing clause that would exist without the build. Harmless.
-- Sweep 4, the dictionary, the README, last year's NO2 table and the procedure: the shared terms are the field's nouns
+- Sweep 4, last year's NO2 table and the procedure (the dictionary and the README withdrawn at the 10-31 repair): the shared terms are the field's nouns
   (network, record, monitoring, background, source, concentration); none names the wind, the bearing, a rebuild or the
   plume, and R3c in checks.py asserts that no filed sentence ties a stop to the dust or the wind. Harmless.
 - Sweep 6, the service log, the deposit results, the terminal's workbook, the council's export and the procedure's
@@ -378,7 +387,7 @@ Reader, three reads (one isolated agent each, Sonnet, medium, the prompt and the
   its analyser went off with the works, which last year's table implies would be annualised. Fixed in one generator
   pass: section 5.1 now says a lost day counts if the concentration at the station that day exceeded 50, and not
   otherwise (the estimand, filed; nothing on how to know it); Market Street's NO2 analyser stays running through the
-  works; section 2.2 and the dictionary say the terminal's statuses are ratified on the procedure's terms. Its realism
+  works; section 2.2 says the terminal's statuses are ratified on the procedure's terms. Its realism
   notes were taken: the procedure gained document control, a calibration section, a station annex and a history; the
   service log's notes vary; the deposit cells are numbers; the terminal's quarterly sheets split on its own clock.
 - Read 2 (after the fix): Q1 none beyond the estimand ("Nothing says to estimate those days ... it does not say how
@@ -417,3 +426,9 @@ Reader, three reads (one isolated agent each, Sonnet, medium, the prompt and the
 - Independent hourly wind scatter (22 degrees) with regimes switching at midnight: rejected in checks; reading the
   terminal's clock one hour off moved North Gate and South Yard under 35, so the call hung on a Layer 1 reading. The
   scatter now persists from hour to hour and a change of regime veers over a few hours.
+- 2026-10-31, the README and the data dictionary: withdrawn at the batch 1 repair (files describing the data; the
+  dictionary listed every column of the met mast's file); the clocks, the status codes and the daily-mean rule are the
+  procedure's (sections 2 and 3) and the operator workbook's, the dust plan's and the service log's own notes.
+- 2026-10-31, the prompt naming the stations (the council's seven and the terminal's five) in a which-form question: the
+  counts withdrawn and the question asked in the whether form (which is over its corpus cap); the metadata's subdomain,
+  which named the rebuild from the background and the wind, now says what the task decides.

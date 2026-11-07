@@ -1,418 +1,277 @@
-# task125 design note (architecture 2, ladder re-rooted at stage 2)
+# task125 design note (architecture 4, the Mountjoy hot spot patrols)
 
-Architecture 1 (Wealdmoor County Council's digit filter) was solved in-house twice and sent back by the determinism
-judge; architecture 2 drew Merrowland Statistics' Household Labour Survey. Architecture 2's first ladder shipped, was
-measured by a blind reader holding only a fresh unzip of `target.zip`, `prompt.txt` and the figure names, and failed
-Gate F: the reader took 2 of 2 call figures and 38 of 53 ask figures, and quoted the methods note's section 5 as what
-told it the decisive step ("the effect of a change is measured by applying the change to the last full quarter
-collected before it and re-running the estimation as in section 4"). The pack stated the method, so executing it was
-rule application. This ladder is re-rooted at stage 2 on the same draw: section 5's procedure sentence is gone, the
-base quarter is settled by the records rather than by a sentence, and the cap now runs long enough that the decisive
-step carries the call itself rather than only the forward path.
+Architectures 1 to 3 are spent and in the card's lineage; their measured deaths are in the last section of this note.
+Architecture 3 died as a planted-defect flip, so this draw is held to one test before anything else: every recorded
+number in the pack is accurate as recorded, and the easy route uses accurate numbers the wrong way.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task125.json` (v2), registered 2026-10-12, re-read at this re-root.
-  `guard.py check`: WARN repeat.gate_g (forecasting in task124) and repeat.deliverables (docx and xlsx in task120).
-  Answers: the forward figure here is pinned by the panel's own rotation once the recruitment selection is measured,
-  with no trend or driver to extrapolate, so it is a different FINE-numbers shape from task124's pre-cool hours; a
-  methods note with a chart and a quarter-by-quarter workbook is what a statistics office's methods division hands its
-  head, so the format set stays. Strategy `composition_mix`, forum the head's line manager (the Government
-  Statistician), forcing event the statutory July to September release. test.same_driver_older against task132 is
-  differentiated on the card. Labels at stage 3: decisive gap time, G6 then G13, context artifact filed_standard.
-- **Pairing:** Survey Research & Official Statistics (client domain), task type `anomaly-detection`, objective Anomaly
-  Detection & Diagnostics. The anomaly is the July to September 2026 rise in the Household Labour Survey's published
-  unemployment rate; the diagnosis is how much of it, and of every published quarter to September 2027, is the
-  first-interview visit cap rather than the labour market.
-- **World:** a fictional English-speaking country (Merrowland), its national statistics office (Merrowland Statistics)
-  and the Household Labour Survey (HLS): quarterly, a five-wave rotating panel of addresses, wave 1 face to face,
-  waves 2 to 5 by telephone, person weights raked to population controls. For the 2026/27 field year (1 April 2026 to
-  31 March 2027) a field budget cut stops first interviews after three visits (six before and after). People
-  (guard.py names, en_NZ, seed 125): Raewyn Bailey, Jane Phillips, Aaron Tucker, Dylan Fletcher.
-- **Stakeholder and forum:** the head of labour market statistics (role `statistical_office_head`) must say in the
-  July to September release (13 November 2026, forcing event `statutory_or_regulatory_filing`) whether the rise is
-  real, and put to the Government Statistician (forum `line_manager_or_team`) what the cap does to the published rates
-  through September 2027 once six visits return in April.
-- **Shape 02 (forecast across periods):** the cap's distortion of the published rate in each quarter from July to
-  September 2026 to July to September 2027, for the unemployment rate and the employment rate, with the April to June
-  to July to September change decomposed; arithmetic fixed at design.
-- **Strategy and gate:** `composition_mix`, gate G `forecasting`, gap population then time, generators G6 then G13,
-  pattern none, layer 2 `estimand_identification` (own:recruitment-selection-accumulating-through-a-rotating-panel).
-- **Data-native sentence:** a household that needs a fourth visit to be found at home is one whose adults are out by
-  day, mostly at work, and this panel keeps every household it recruits for five quarters, so a cap on recruitment
-  visits removes the employed-heavy households from the sample for five quarters per intake and its effect on the
-  published rate compounds for as long as the cap is issued, which is why the quarter-on-quarter change it causes is
-  nothing like the gap it causes.
-- **Same-puzzle test:** task132 (population, none, forecasting) differentiated on the card; no build in the last
-  twelve shares gap, pattern and decision type with a recruitment-protocol selection compounding through a panel.
-  Nearest drivers 0.08 (task500 v2) and under.
-- **Sources (one line each):** `stumping/references/strategies.md` F5 (the mix moves under a correct pooled rate; here
-  the property is rebuilt from the contact log joined to the panel, never a person-file column) and F1's current form
-  (a clock already in the data: each intake's position in its five-quarter run); the client's
-  continuum-of-resistance and fieldwork-effort literature teaches that late contacts differ, and this build differs by
-  making the selected households persist through a rotating panel so the effect accumulates across overlapping
-  intakes and outlasts the change.
+- **Card:** `.claude/skills/fingerprint/cards/task125.json`, architecture v4, registered 2026-10-31T22:06:02Z after
+  `guard.py recent`, `coverage` and `mechanisms --objective anomaly-detection`. `check` PASS: the one older structural
+  match (task178 v3, gap time, pattern G5, method selection) is differentiated on the card, and the bans against the
+  last three builds (task306 v4, task191 v4, task482 v16: committee_or_panel and other forums, launch, audit and
+  purchase-order events, financial and manufacturing organisations) are clear.
+- **Pairing:** Criminology & Justice, task type crime-incidence-hotspot-analysis, objective Anomaly Detection &
+  Diagnostics, a pairing never built: which street segments of a city are its 2027 hot spots, the places whose patrol
+  crime stands far above the rest, for a two-car directed-patrol programme with room for 20 segments.
+- **Shape:** 01, a ranked list under a cap: each candidate segment's expected 2027 patrol crimes, the cut at 20, the
+  designated set; the asks' ward-by-quarter and ward grids supply the rest of the criteria.
+- **Strategy:** `composition_mix`; Gate G `method_or_model_selection`; gap time then population; generators G5 (the
+  crowds that raise a segment's crime are provided elsewhere in 2027), G6 (each segment's crime is a mix of a steady
+  part and an event-night part whose weights move), G13 (the record's horizon is not the window's).
+- **Data-native sentence:** the five street segments around the Memorial Gardens and the five around the Lakeshore
+  Centre record about half their street crime on their venue's event nights, and from January 2027 the Mariners play
+  their home games at the Lakeshore Centre, so the Gardens keep a handful of shows and the Lakeshore takes the season.
+- **World:** the City of Mountjoy, Ontario, a fictional lakeshore city of about 120,000; the Mountjoy Police Service,
+  which also polices the Township of Elmvale under contract; the Mountjoy Mariners, a junior hockey team; the Memorial
+  Gardens (the old arena) and the Lakeshore Centre (the city's events centre, reopened to take the team). People from
+  `guard.py names --geo Canada --seed 125`: Lindsey Turner (Superintendent, Patrol Operations, the requester), Eric
+  Gordon (Manager, Crime Analysis Unit, the protocol's owner), Ruben Stafford (Chief of Police, who approved the
+  protocol and chairs the command team).
+- **Forum and forcing event:** the Superintendent, Patrol Operations adopts the 2027 designation with the platoons'
+  deployment plan on 12 January 2027 (line_manager_or_team: the forum was redrawn at the stage 4 repair from
+  executive_team, banned against task122 v4 once the forcing-event redraw re-registered the card); the designation is made once the year has closed, for the calendar year ahead
+  (period_close; vote_or_meeting was banned against task172 v2, drawn just before, and the card was re-registered at
+  2026-10-31T23:51:44Z); the extracts are of 6 January 2027; the organisation is a municipal police service
+  (local_government).
+- **Sources:** synthetic throughout, modelled on how Ontario police services keep records-management occurrence
+  exports, paid-duty registers, CAD exports and tour rosters, and on street-segment hot spot practice (Weisburd's law of
+  crime concentration, the Brantinghams' crime generators); no real dataset, person or organisation.
 
 ## Default path
 
-1. Read FI-2026/04: first interviews are capped at three visits for addresses issued from 1 April 2026, and telephone
-   interviews at waves 2 to 5 are unchanged.
-2. Take the interview visit of each address from the call records (the visit number of its interview call) and join it
-   to the person file on the serial: the households a three-visit cap would not have recruited are those interviewed
-   at a fourth, fifth or sixth visit.
-3. Take the last quarter collected before the cap, January to March 2026, drop those households from its wave-1
-   intake, re-rake the rest to the population controls and read the change in each rate.
-4. A fieldwork change changes that quarter's fieldwork, so the gap applies to wave 1 in each quarter whose intake is
-   issued under the cap and is zero once six visits return.
-5. April to June and July to September 2026 therefore carry the same wave-1 gap, so the cap contributes nothing to the
-   change between them and the whole published rise is the labour market.
+1. Read the protocol: the Crime Analysis Unit designates the 20 street segments with the highest expected patrol crimes in
+   calendar 2027; patrol crimes are the Table 1 codes, each occurrence once on its latest version, unfounded out, dated
+   by occurrence.
+2. Conform mps_rms_occurrences_2022_2026.csv: latest versions, legacy codes through the 2023 crosswalk, the legacy
+   versions' day-first dates, unfounded dropped, the report date where there is no occurrence date.
+3. Count each segment's founded patrol crimes by year, and back-test the field's forecast of next year's hot spots
+   (last year's counts, crime at places being stable): the 2025 ranking recovers 20 of 2026's top 20.
+4. Take each segment's 2027 expectation from its own record (its 2026 count, its 2022 to 2026 mean or that mean shrunk
+   to the city's) and designate the top 20: the 14 chronic segments, King St from Wellington to Albert, and the five
+   segments around the Memorial Gardens (Albert St King to Queen, Queen St Wellington to Albert, Wellington St King to
+   Queen, Wellington St Queen to Princess, King St Water to Wellington).
 
-Ends on: the unemployment rate 0.21 point above the six-visit rate in each quarter whose intake is capped and 0.00 from April to June 2027 (the employment rate 0.79 below, then 0.00), and none of the 0.27-point July to September rise the cap, so the rise is real.
-Golden: the unemployment rate 0.39, 0.53, 0.62, 0.47 and 0.28 point above the six-visit rate from July to September 2026 to July to September 2027 (the employment rate 1.42, 1.97, 2.44, 1.88 and 1.19 below), 0.18 of the 0.27-point July to September rise the cap and 0.09 the labour market.
+Ends on: the five Memorial Gardens segments in and the five Lakeshore Centre segments out
+Golden: the five Lakeshore Centre segments in and the five Memorial Gardens segments out
 
 ## Stump sentence
 
-A competent solver finds the cap in the field instruction, measures how much dropping the households first interviewed
-at a fourth to sixth visit moves a wave-1 intake, and files that one wave-1 gap (0.21 point) for every quarter the cap
-is issued and 0.00 from April to June 2027, with none of the 0.27-point July to September rise the cap, so the rise is
-real; the step that lands it there is taking the unit the change acts on to be the quarter's fieldwork, when it is the
-intake, which the panel keeps for five quarters, so each published quarter is a mix of capped and uncapped intakes, the
-gap compounds to 0.62 point by January to March 2027 and the change between two quarters that are both capped is the
-change in the mix, not zero.
+The default path designates the 14 chronic segments, King St from Wellington to Albert and the five Memorial Gardens
+segments, leaving the five Lakeshore Centre segments out; the step that lands it there is forecasting each segment's
+2027 from its own record, when about half of the venue segments' street crime falls on their venue's event nights and
+the paid-duty register's 2027 sheet books the Mariners' home games at the Lakeshore Centre from January.
 
 ## Three rules
 
-- **Task type:** anomaly-detection in Survey Research & Official Statistics (a break in a published series diagnosed
-  against the survey's own design), which serves Anomaly Detection & Diagnostics in the client's taxonomy.
-- **Domain test:** the quantity that decides the call is the survey methodologist's: what a calibrated estimator built
-  on a rotating panel reports when a recruitment protocol selects which households enter each intake, how long the
-  panel keeps them, and how their selected outcomes regress over the later waves. It is estimated the way a statistics
-  office estimates the effect of a fieldwork change, by rebuilding the published estimator on the sample the change
-  would have left, intake by intake and wave by wave.
-- **Swap:** "how much of the July to September rise in the unemployment rate is the labour market, and how far will the
-  three-visit cap on first interviews hold the published rates off the six-visit rates to September 2027" with another
-  field's nouns becomes "how much of the rise in the defect rate is the process" and stops making sense at once: there
-  is no first-interview visit protocol selecting which units enter, no five-quarter rotation keeping each intake, no
-  overlapping intakes making one period's estimate a mix of two fieldwork regimes, and no raking to population
-  controls for the removal to move through.
-- **Layer 1:** wave-1 call records one row per visit with the call-record app's re-sends among the non-interview calls;
-  household serials that gained a check digit at the July to September 2026 processing run; person numbers re-ordered
-  between waves when a roster changes; telephone interviews recording hours as hours and minutes while face-to-face
-  interviews record decimal hours; population controls rebased once in the period; a superseded field instruction
-  beside the current one; the call-record application replacing paper call sheets at the January to March 2025 intake;
-  a fiscal field year against calendar quarters; a release table rounded to one decimal. Each is what these systems
-  produce, and none decides the call.
-- **Layer 2:** the shortcut is to treat a change to first-interview fieldwork as a property of the quarter's
-  fieldwork; the expert treats it as a property of the intake, follows each capped intake through the five quarters
-  the panel keeps it, measures how the selected households' outcomes persist and decay across the telephone waves,
-  re-runs the calibrated estimator on each quarter's own mix of capped and uncapped intakes, and reads the
-  quarter-on-quarter change off the change in that mix.
-- **Decisive step:** the unit of analysis is the intake, not the quarter, so the counterfactual is rebuilt for each
-  target quarter on the waves that quarter's capped intakes hold, and the cap's share of a change between two quarters
-  is the change in the gap rather than the gap.
-- **Not semantics:** every field, code, unit and definition read correctly leaves the easy route on 0.21 point in each
-  capped quarter and 0.00 after, and on none of the rise. No column, code or definition marks a later-wave record as
-  one recruited under the cap; the visit number sits in the call records of the intake quarter and reaches waves 2 to 5
-  only through the serial, and the one quarter the counterfactual can be rebuilt on is identified by what the records
-  cover, not by what any field says. Reading `wave`, `intake`, `ilo_status` and the h.mm hours perfectly changes no
-  graded figure of the call.
-- **Not rule application:** no shipped sentence says how the effect of a fieldwork change is measured, which quarter
-  to rebuild it on, or that a recruitment change reaches past wave 1. The methods note files the design, the
-  definitions, the raking and the sampling error, and the field instruction files the cap and says telephone
-  interviews at waves 2 to 5 are unchanged, which is true and pulls the other way. Executing every filed rule gives
-  the default path's answer. **Said plainly: this line is the one that is argued rather than measured.** The decisive
-  step is a choice of the unit of analysis, which `CLAUDE.md` rule 3 counts as analysis, but once that choice is made
-  the construction is exact arithmetic on recorded fields rather than an estimation, because a cap is a subsetting of
-  a sample and the pre-cap quarter observes the subset it removes. The architecture therefore has no estimated
-  quantity in the deciding position and no open estimator family (measured: 3e-06 point of spread on the unemployment
-  gap across six licensed variants); its defence against rule application rests entirely on the unit-of-analysis
-  carve-out and on the pack no longer stating the construction.
-- **Analyst test:** a strong analyst who reads the field instruction and the methods note correctly, takes ILO status
-  as derived and the final weights as published, identifies the capped-out households exactly and rebuilds the
-  estimator properly, but treats the cap as a wave-1 effect, files the unemployment rate 0.21 point above the
-  six-visit rate in each quarter whose intake is capped and 0.00 from April to June 2027 (the employment rate 0.79
-  below, then 0.00), and none of the 0.27-point July to September rise the cap, so the rise is real.
-- **Estimand:** for each quarter, the HLS published estimator's rate less the rate the same estimator would give had
-  first interviews had six visits throughout, for persons aged 15 and over in the responding households of the
-  quarter's five intakes, in percentage points on the published rates; the population, the definitions, the raking and
-  the unit sit in the methods note's sections 1, 3, 4 and 5 and the prompt's own wording ("what six visits all along
-  would give"), and the window and the comparison quarters sit in the prompt.
-- **No decoy:** nothing is planted to be caught. There is no memo, draft, briefing or stakeholder figure arguing the
-  wrong answer, no copied block, no withheld rule. The sentence the default path leans on (telephone interviews at
-  waves 2 to 5 are unchanged) is a true operational fact about the telephone protocol, shipped because a real
-  instruction says it; the easy route misreads it as a fact about the sample, which is an inference the pack never
-  makes.
-- **No certified replay:** the method is not hidden and recovered by reproducing a published figure. The release table
-  reproduces under every rung and every basis (asserted); the claimant series is blind to the cap; nothing in the pack
-  ties only under the golden construction.
-- **Lesson:** a protocol change at the point of recruitment acts on the intake, not on the period, so in a rotating
-  panel its effect on a published series compounds while it is issued and decays after it stops, and the change
-  between two periods inside its run is the change in the mix of regimes rather than the effect itself. No build on
-  file teaches it: the nearest, task132, moves a population property under a correct pooled rate within one period.
+Task type: crime-incidence-hotspot-analysis (Criminology & Justice), which serves Anomaly Detection & Diagnostics: the hot spots are the street segments whose patrol crime stands far above the city's, diagnosed by what generates it there.
+Domain test: the quantity that decides is each street segment's expected count of founded patrol crimes in 2027, the hot spot forecast place-based policing rests on, and environmental criminology reads an arena as a crime generator whose crowds raise street crime on the segments around it on event nights; put a hospital ward in for the segment and nothing generates on a published calendar, so the forecast has nothing to move.
+Swap: "Which hospital wards get the 2027 infection-control nurses, by expected infections?" reads differently, because a ward's infections do not come from a building next door whose crowds arrive on a published calendar and move to another building in January.
+Layer 1: the records system's export as it writes it (one row per report version, later versions reclassifying, correcting the segment or recording an occurrence unfounded; legacy codes and day-first dates on versions entered before the March 2023 migration; occurrences with no occurrence time dated by their report; reports of 2021 and 2027 occurrences inside the extract), the paid-duty register in two layouts (one row per booking to 2023 with abbreviated venue names, one row per officer line from 2024), the CAD's UTC stamps through the March and November clock changes and the contracted township's events in the dispatch export; each is produced by the system that records it and none is placed to be caught.
+Layer 2: composition_mix in the estimation_fit family: each segment's count is a steady part plus a part tied to its venue's event nights, the 2027 calendar moves the second part, and the comparison is decided by forecasting each part on its own calendar.
+Decisive step: splitting each segment's record into its steady rate and its excess on each venue's event nights, and carrying the excess by the venues' 2027 calendar instead of by the segment's own past.
+Not semantics: every field, code, unit and date read right still leaves each segment's 2026 count and its five-year mean, which are correct counts and put the Gardens segments on top; no column says which crimes came with a crowd or where the crowds go in 2027.
+Not rule application: the protocol files the estimand and no method, and executing every filed rule with the field's forecast (last year's count or a multi-year mean) files the default; enumerated family, 40 constructions (counts, means, shrunk mean, trend, last 365 days, the 2026 count scaled by nights, the Gardens' excess removed, the proximity swap, the event-aware fits), 5 distinct designations, spread of five segments; standing family (the event-aware fits on three to five years, three 2027 calendars, with and without day-of-week terms), 18 members, one designation; the ruling-out is quiet, the venues' event nights in the register against the occurrence dates, with no sentence.
+Analyst test: a strong analyst conforms the export (latest versions, crosswalk, day-first legacy dates, unfounded out), reads the protocol, back-tests last year's counts as the forecast (20 of 20) and designates the 14 chronic segments, King St from Wellington to Albert and the five Memorial Gardens segments, leaving the five Lakeshore Centre segments out; every field is read and every rule applied, and the call is wrong because those segments' 2027 crimes follow the venues' 2027 calendar.
+Estimand: hot_spot_patrol_protocol_2027.pdf sections 2 and 3: population, the street segments in the City's street segment file; outcome, founded patrol crimes (Table 1 codes, each occurrence once on its latest version, dated by occurrence) expected in calendar 2027; unit, crimes per segment; comparison, the 20 highest.
+No decoy: nothing is planted to be caught; no memo, briefing or earlier designation ranks the segments; the ward profiles and the streetlight requests are context; the register is the paid-duty office's own record.
+No certified replay: no certified or published figure reproduces the method; no file carries an expected count, a hot spot list or an event effect.
+Lesson: a hot spot forecast built on a place's own record assumes what generates its crime stays put; a model that learns to split a place's count into its steady part and the part a scheduled generator brings, and to carry each by its own calendar, forecasts the way environmental criminology reads crime generators, which no build on file teaches.
+
+## Survivor anatomy
+
+Actor: the deciding property, how much of a segment's crime comes on a venue's event nights, has no column; occurrences carry a date and a segment, the register carries duties at addresses, and the property is a relation between the two.
+Link: no key ties an occurrence to a duty; the comparison that reads it (a segment's crimes on a venue's event nights against its other nights) is one the field's ranking never asks for, and no sentence invites it.
+Reflex: the field's forecast of next year's hot spots, last year's count or a multi-year mean (crime at places is stable), sits at rungs 0 and 1 and files the default.
+Back-test: the textbook route validates: the 2025 ranking recovers 20 of 2026's top 20, because the Mariners played at the Gardens in both years.
+Second use: the register is the paid-duty office's own record of every duty in the city (traffic control, escorts, film, security and events) and comes in Information Management's standard extract set; the occurrences carry the ranking, the street file the ranking and both asks.
+Shock: the Lakeshore segments' 2026 counts (30 to 38, ranks 21 to 29) read as ordinary; the golden 20 is the top of no single statistic among nine sorted (checks.py SHOCK).
+Pins: the WHAT sits in the protocol (the segments, the codes, the counting, the date, the year, the 20) and Directive PO-14's measures; no filed sentence names events, venues, a calendar, crowds or how to forecast (R0, SF1 to SF11).
 
 ## Readability screen
 
-Each rung is the move a solver makes to leave the rung below; the decisive rung has to be silent on all six tests.
-
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0, the wave-1 gap in each capped quarter | yes, the instruction names first interviews and three visits and says waves 2 to 5 are unchanged | yes, the call records carry the visit number | yes | no | no | yes, one difference scaled by a share | readable |
-| 1, that gap carried unchanged into every later wave of each capped intake | no | no | yes, once the rotation is in view | no | no | yes, the same gap times wave shares | readable |
-| 2, the intake as the unit: per-wave removal on each quarter's own mix (decisive) | no: the instruction speaks of first interviews only, the methods note of design, definitions, estimation and sampling error, nothing of a recruitment change's reach into later waves or of how a change is measured | no: no column marks a later-wave record as recruited under the cap; the visit sits in the call records of the intake quarter and reaches waves 2 to 5 through the serial over up to four quarters, and no field says which quarter the counterfactual can be rebuilt on | no: the reflexes all land elsewhere, measured (no adjustment, wave-1 simulation, a constant carried gap, the rotation-group difference in differences, the matched-panel change, year on year) | no: the release table and the claimant series tie under every basis | no: every key unique, every join matched once the check digit is handled | no: each quarter's gap is a re-estimate on a different mix of intakes at different waves, and the cap's share of a change is a difference of two such re-estimates | silent |
-| 3, the calibrated estimator re-run on each reduced sample | yes, the methods note says every published estimate uses the raked weights | no | partly, reweighting is a reflex but re-raking a counterfactual sample is not | no | no | no | readable |
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Second use | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 each segment's 2026 count | the protocol's estimand | the occurrence columns | the field's forecast | none | the battery cleans the export | one count | yes | readable |
+| R1 the five-year mean, or shrunk to the city's | none | the occurrence columns | crime at places is stable | the 2025 back-test confirms it | the battery | one mean | yes | readable |
+| R2 trend, or the last 365 days | none | the occurrence columns | a forecaster's habit | none | the battery | one fit | yes | readable |
+| R3 (decisive) each segment's steady rate and venue excess carried by the 2027 calendar | none names events, venues, crowds or a calendar | no column holds a crime's crowd or a segment's venue | not the hot spot reflex | no file prices any segment's 2027 count | the battery stops at clean counts | not affine in any shipped column | the register is the paid-duty office's own record of every duty | silent |
 
 ## Semantic fork table
 
-| SF | Term or convention | Golden reading | Alternatives | Call under each | Ruled out by |
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | the six-visit rate | the rate the published estimator gives with six visits all along | the published rate before April 2026 carried forward | the default's ending, not a reading | the prompt's own wording ("what six visits all along would give") |
-| SF2 | unemployment rate | ILO unemployed over the labour force, person weights, ages 15 and over | ages 15 to 64; unweighted | same call | the methods note's definition (asserted within 0.01 on the gap) |
-| SF3 | employment rate | employed over population 15 and over | 15 to 64 | same call | the methods note's definition |
-| SF4 | the quarter the counterfactual is rebuilt on | January to March 2026 | an earlier quarter (October to December 2025 and back) or a later one (April to June 2026, July to September 2026) | an earlier quarter cannot be split at every wave the capped intakes hold and moves the figures by up to 0.085 point; a later quarter is itself capped, so the households to remove are already absent | the records: January to March 2026 is the only quarter with no capped intake at any wave whose five intakes all carry visit histories (the call-record app replaced the paper call sheets at the 2025Q1 intake); every earlier uncapped quarter has 15 per cent or more of its sample with no visit history and every later quarter has a capped intake, both asserted in checks.py, and no document says which quarter to use |
-| SF5 | a household the cap would not have recruited | interviewed at wave 1 at a fourth, fifth or sixth visit | refusals; every non-contact | same call | the instruction's cap counts visits to an address; asserted |
-| SF6 | re-estimation | re-rake to the population controls after dropping those households | keep the base quarter's final weights; unweighted | rung 3 below, not a reading | the methods note: every estimate the office publishes uses the raked weights |
-| SF7 | the six-visit restoration | first interviews issued from 1 April 2027, so the capped intakes are April to June 2026 to January to March 2027 | from the July to September 2027 intake | same call | the prompt's date and the instruction's field year; asserted |
-| SF8 | the cap's share of the published change | the change in the gap between April to June and July to September 2026 | the July to September gap itself; a year-on-year change | the July to September gap alone files 0.39 of a 0.27-point rise and a negative labour market, which no reading of "how much of the rise is the labour market" supports once both quarters are capped | the prompt asks what the rates would differ from six visits all along in each quarter and how much of the rise between two named quarters is the labour market, so the market's share is the change in the six-visit series; asserted |
-| SF9 | rounding | hundredths of a point, from unrounded estimates | rounding each rate first | same call | the prompt; the methods note's section 7; asserted |
+| SF1 | founded | not unfounded on the latest version | unfounded on any version | same call (asserted) | protocol section 3, Founded |
+| SF2 | legacy codes | read through the 2023 crosswalk | not patrol codes | same call (asserted) | protocol section 3, Patrol crime |
+| SF3 | counting | each occurrence once, latest version | every version | same call (asserted) | protocol section 3, Counting |
+| SF4 | an occurrence's date | occurred_from, the report date where none | the report date | same call (asserted) | protocol section 3, Date |
+| SF5 | an occurrence's segment | the latest version's | the first version's | same call (asserted) | protocol section 3, Counting |
+| SF6 | legacy dates | day first | month first | same call (asserted) | convergence |
+| SF7 | the 2027 calendar | 2026's nights with the Mariners at the Lakeshore Centre | the 2027 bookings alone; the five-year average with the move | same call (asserted, C2 and C3) | convergence |
+| SF8 | the fitting window | 2022 to 2026 | three or four years | same call (asserted) | convergence |
+| SF9 | day-of-week terms | none | in the fit | same call (asserted) | convergence |
+| SF10 | the designation's population | every segment | the candidates | same call (asserted) | protocol sections 2 and 3 |
+| SF11 | a tie at the cut | none | none | margin 23 asserted | M1 |
+| SF12 | a call | a request received, not an officer-started event | every event | moves the asks only | Directive PO-14, section 2 |
+| SF13 | a call's date | the local receipt date | the UTC date | moves the asks only | Directive PO-14, section 2 |
+| SF14 | a tour's date | the date it starts | the dispatch's date | moves ask A only | the roster's only 2025 rows, the night tour of 31 December 2025 (asserted) |
+| SF15 | a call's ward | the ward its address lies in, by the street file | the CAD district | moves the ask | Directive PO-14, section 2: a ward counts the calls at addresses in it, and a call outside the City's wards belongs to none |
+| SF18 | a venue's event night | any EVENT duty at the venue, games and shows | the Mariners' games alone | the Lakeshore excess unidentified | the data: the Lakeshore Centre held no hockey night before 2027 (asserted) |
+| SF19 | the venues in the old layout | MEM GARDENS and LAKESHORE CTR read as the venues | missed | same call (asserted, a 2024 to 2026 fit) | convergence |
+| SF20 | a night with both venues busy | counted for both | for neither | same call (asserted) | convergence |
+| SF21 | officer-hours | dispatch to clear times the officers on the unit | unit-hours | moves ask A | Directive PO-14, section 2 |
+| SF22 | a crew across a tour change | none crosses | none | same figures | no assignment crosses a change (asserted) |
+| SF23 | a unit's hours across a clock change | elapsed time between the UTC stamps | wall-clock difference | same figures | every stamp is UTC (asserted: every row runs forward, D3 and D4) |
+| SF24 | a night tour's date across a clock change | the date it starts on the local clock | a day of elapsed time back from the dispatch, local midnight less a day of elapsed time, seven hours of elapsed time back, twelve elapsed hours from the tour's start | same figures | every unit on a call is crewed alike on every reading (asserted, SF24, T4, D3 and D4): the night of 8 March's after-midnight units carry the night of 7 March's crews |
 
 ## Ladder
 
-Built values (asserted in checks.py by name, printed by the build). Gap = published rate less the six-visit rate,
-points; unemployment rate first, employment rate below it. The last column is the cap's share of the April to June to
-July to September change in the unemployment rate, which is the call's headline.
+| Rung | Construction | Files | Dies to |
+|---|---|---|---|
+| 0 | each segment's 2026 count | the default: the 14, King St Wellington to Albert, the Gardens five | the venue segments' crime follows their venue's nights |
+| 1 | the 2022 to 2026 mean, or shrunk to the city's | the default | the same |
+| 2 | trend, or the last 365 days | the default | the same |
+| 2b | the 2026 count scaled by each venue's 2027 nights over its 2026 nights | another wrong set (King St Wellington to Albert out, a warm segment in) | the steady part does not move with the calendar |
+| 2c | the Gardens' excess removed, nothing added at the Lakeshore Centre | another wrong set (three warm segments, one Lakeshore) | the crowds go to the Lakeshore Centre |
+| 2d | the Gardens five swapped for the six segments nearest the Lakeshore Centre | another wrong set (17 of the golden) | the crowds walk to the terminal and the bars, not to the nearest blocks |
+| 3 (decisive) | steady rate plus each venue's excess, carried by the 2027 calendar | the golden: the 14, King St Wellington to Albert, the Lakeshore five | the golden |
 
-| Rung | Construction | Jul-Sep 26 | Oct-Dec 26 | Jan-Mar 27 | Apr-Jun 27 | Jul-Sep 27 | cap share of the rise |
-|---|---|---|---|---|---|---|---|
-| 0, default | the wave-1 gap in each capped quarter, zero after | 0.21 / -0.79 | 0.21 / -0.79 | 0.21 / -0.79 | 0.00 / 0.00 | 0.00 / 0.00 | 0.00 (the whole 0.27 the market) |
-| 1 | the wave-1 gap carried unchanged at each later wave of each capped intake | 0.60 / -2.26 | 0.85 / -3.15 | 1.07 / -3.93 | 0.95 / -3.16 | 0.67 / -2.02 | 0.28 (the market -0.01) |
-| 2 | per-wave removal on January to March 2026, final weights kept | 0.45 / -2.26 | 0.61 / -3.15 | 0.72 / -3.93 | 0.57 / -3.16 | 0.34 / -2.02 | 0.21 (the market 0.06) |
-| 3, golden | per-wave removal on January to March 2026, re-raked | 0.39 / -1.42 | 0.53 / -1.97 | 0.62 / -2.44 | 0.47 / -1.88 | 0.28 / -1.19 | 0.18 (the market 0.09) |
-
-- **Position:** rung 0 gives one figure for three quarters and zero for the last two, and files no cap at all in the
-  change; the golden rises to 0.62 and falls to 0.28, and files 0.18 of 0.27.
-- **Margins (measured, tolerance 0.05 on the unemployment gap and 0.15 on the employment gap):** rung 0 off the golden
-  by at least 0.18 point on the unemployment gap in every quarter (0.18, 0.32, 0.41, 0.47, 0.28) and by at least 0.63
-  on the employment gap; rung 1 by at least 0.21 and 0.83; rung 2 by at least 0.06 on the unemployment gap and 0.83 on
-  the employment gap. On the headline, rung 0 is 0.18 out, rung 1 0.10 out and rung 2 0.03 out, and all three print a
-  different cap share and a different labour market share from the golden's 0.18 and 0.09.
-- **Dominance:** the decisive move (the intake as the unit) is the only one that makes the gap change from quarter to
-  quarter at all, so it alone can put anything but zero in the headline; re-raking then brings the carried gap down to
-  the golden and carries every employment cell.
-- **Grid:** wave-1 only, carried constant, carried by the panel; final weights or re-raked: six paths, each asserted.
-- **Worth:** the decisive move carries the headline (the cap's and the market's share of the rise, four graded
-  figures) and all ten gap cells; re-raking carries every employment cell and three of the unemployment cells.
-- **Direction, asserted in every quarter:** rung 0 understates the gap and rung 1 overstates it, so the golden is
-  bracketed rather than extreme.
-- **The sign flip:** the published employment rate fell 0.34 point while the six-visit employment rate rose 0.29, so
-  the two routes disagree on the direction of the employment call and not only on its size.
-- **The simulation's own truth (information):** the generator also builds the six-visit counterfactual of the capped
-  intakes that were actually fielded; its July to September gap is 0.35 point against the estimate's 0.39 (asserted
-  within 0.12), which is what the base-quarter estimator costs in sampling noise.
+- **Margins on the cut pack** (checks.py): the golden's 20th (Simcoe St, Sherbrooke to Hunter) expects 57 and its 21st
+  (Lake St, McDonnel to Parkhill) 34, a gap of 23; every member of the standing family files the same 20 (C2, C3), as do
+  the same calendars fitted on one or two years (8 of 8, INFO). Every count route files the default (R0), on the clean
+  truth too (R0t).
+- **Pricing sequence.** (1) The residue the filed WHAT leaves is how 2027 is expected, a method. (2) The Gardens five
+  must fall from 48 to 65 recorded in 2026 to 27 to 31 expected, and the Lakeshore five rise from 30 to 38 to 76 to 82:
+  about half their crime falls on their venue's nights (801 of 1,345 on the Gardens' 200 nights, 410 of 822 on the
+  Lakeshore Centre's 61). (3) No one-group-by reaches it; the two half-aware routes miss (2b, 2c). (4) The standing
+  family is unanimous; the easy route sits outside it because the event nights refute a stable forecast for these ten
+  segments. (5) and (6) No variance is corrected. (7) No subset of rows prints a segment's 2027 count. (8) The reflex
+  sweep runs as code (R0, R1, R2, SHOCK).
 
 ## Closure table
 
-| # | Axis | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | persons 15 and over in the responding households of the quarter's five intakes | filed in the methods note; C1 |
-| 2 | Unit of account | the person for rates, the address for the cap | filed: the instruction counts visits to an address |
-| 3 | Attribution window | survey quarter | filed in the methods note |
-| 4 | As-of dating | microdata to July to September 2026 as locked 20 October 2026 | filed in the extract notes |
-| 5 | Version basis | final weights; population controls as rebased | C1: the rebasing predates the base quarter (asserted) |
-| 6 | Denominator | the labour force (unemployment rate), population 15 and over (employment rate) | filed definitions |
-| 7 | Weighting | raked person weights | filed in the methods note; SF6 |
-| 8 | Window length | the base quarter the counterfactual is rebuilt on | SF4, closed by what the records cover rather than by a sentence |
-| 9 | Boundary inclusivity | fourth visit and later | SF5 |
-| 10 | Rounding path | hundredths of a point from unrounded estimates | the methods note section 7 (changes computed from unrounded estimates, rounded independently); SF9 |
-| 11 | Tie-break | none | no decision turns on a tie; the gap's largest quarter clears the next by 0.09 point (asserted) |
-| 12 | Maturity and censoring | the July to September 2026 file complete at lock; the October to December 2026 intake not yet fielded | filed in the extract notes |
-| 13 | Order of operations | drop households, re-rake, estimate | asserted |
-| 14 | Row order | none | C1 over permutations |
-| 15 | Duplicate resolution | the call-record app's re-sends are non-interview rows; the visit of interview is unique per address | asserted |
-| 16 | Identity normalisation | address serial across files, check digit dropped from the July to September 2026 run | asserted |
-| 17 | Netting | the cap's share of a change is the change in the gap | SF8; asserted |
-| 18 | Dimensional units | percentage points; hours | dictionary |
-| 19 | Code semantics | ILO status codes, call outcome codes | dictionary; never the stump |
-| 20 | Integerisation | counts integers | C1 |
-| 21 | Clause scope | the cap binds first interviews issued from 1 April 2026 to 31 March 2027, so the intakes April to June 2026 to January to March 2027 | filed in the instruction and the prompt; asserted |
-| 22 | Forward window contents | intakes, waves and controls to September 2027 | the base quarter's structure; controls held at their latest vintage |
+| Axis | Reading in this build | Move |
+|---|---|---|
+| 1 Population | the street segments in the City's street segment file | filed (protocol section 3) |
+| 2 Unit of account | founded patrol crimes per segment | filed (protocol section 3) |
+| 3 Attribution window | calendar 2027 | filed (protocol section 3, Expected patrol crimes) |
+| 4 As-of dating | an occurrence's occurred-from date, the report date where none | filed (protocol section 3); SF4 |
+| 5 Version basis | the latest version of each occurrence | filed (protocol section 3); SF3, SF5 |
+| 6 Denominator | none: a count | filed |
+| 7 Weighting | none | filed |
+| 8 Window length | the record 2022 to 2026; one calendar year forward | filed; SF8 |
+| 9 Boundary inclusivity | 1 January to 31 December | filed; the 2021 and 2027 reports fall outside (asserted) |
+| 10 Rounding path | whole crimes on the chart, from unrounded expectations | C1; no graded expected count |
+| 11 Tie-break | none needed: the gap at the cut is 23 | M1, SF11 |
+| 12 Maturity and censoring | occurrences reported by the extract; 2026 complete to 31 December | asserted (C0) |
+| 13 Order of operations | conform, count by day, fit, carry, rank | C0, C1 |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | each occurrence once | filed; SF3 |
+| 16 Identity normalisation | legacy codes through the crosswalk | filed; SF2 |
+| 17 Netting against gross | unfounded occurrences out | filed; SF1 |
+| 18 Dimensional units | crimes a year | filed |
+| 19 Code and status semantics | Table 1 codes, UNFOUNDED, the legacy CLR codes | filed (protocol section 3, the crosswalk) |
+| 20 Integerisation | whole crimes on the chart only | C1 |
+| 21 Clause scope | the protocol binds the call; Directive PO-14's call, ward, tour and officer-hour definitions bind the asks | filed scope |
+| 22 Forward window contents | 2027's event nights at each venue from the register (2026's calendar with the Mariners at the Lakeshore Centre, or the bookings, or the five-year average) | SF7, convergence |
 
 ## Literal reader
 
-Executing the prompt and the shipped documents word for word: the gap in a quarter is the published estimator's rate
-less the rate it would give had first interviews had six visits all along; the cap removes, from every intake issued
-from 1 April 2026 to 31 March 2027, the households first interviewed at a fourth to sixth visit; the panel keeps each
-intake for five quarters, so a quarter's sample holds each capped intake at the wave its issue date puts it; the
-estimator rakes every sample to the population controls. Nothing in the pack says how to measure the effect of a
-fieldwork change or on which quarter, and only January to March 2026 can carry the construction at every wave the
-capped intakes hold, so each quarter's gap is January to March 2026 re-estimated without those households in those
-waves, and the cap's share of the April to June to July to September change is the difference of two such gaps. Every
-reading in SF1 to SF9 returns the golden path; the default path comes from the same estimand by taking the quarter
-rather than the intake as the unit the cap acts on.
+Executed word for word, the protocol designates the 20 segments with the highest number of founded patrol crimes each
+is expected to record in calendar 2027. A literal reader has to expect a 2027 count; the register's 2027 sheet books the
+Mariners' home games at the Lakeshore Centre and the record shows the venue segments' crime on their venue's nights,
+so the expectation that uses what the pack holds about 2027 files the golden; an expectation that carries 2026 forward
+reads 2027 as 2026, which the pack's own 2027 bookings contradict.
 
 ## Oracles
 
-- The release table to April to June 2026: the published rates the microdata reproduces; ties under every basis.
-- The administrative claimant count: a different concept on a benefit rule changed in 2025; moves with the labour
-  market, blind to the cap; ties under every basis (a distractor).
-- The July to September 2026 microdata: its wave-1 and wave-2 intakes are both capped, so it shows the cap's presence
-  and nothing about which quarter to rebuild the counterfactual on or how far the cap reaches.
-- The field staffing list: interviewers by region, never read by the solution (a distractor).
-- None ties only under the golden.
+None on the main call: no file carries an expected count, a hot spot list, an event effect or a ranking. The verifier
+(generator/verify.py) recomputes the designation by cell means and every ask figure with pandas from target/ alone.
 
 ## Ask sheet
 
-The main call's declared row population: the person file's January to March 2026 records (columns serial, wave,
-quarter, ILO status, age group, sex, region, final weight) and the April to June and July to September 2026 published
-rates, the call records' interview rows for the intakes of January to March 2025 to January to March 2026, the
-population controls and the methods note. Person numbers, hours and every non-interview call row are outside it. Each
-ask is a measure the quarterly fieldwork and quality report carries for every region beside the headline (H18 home: an
-audit trail of the call's inputs, the intake's visits, the panel's flows and the employed's hours), on which the call
-does not turn; none is keyed to the call or its construction, and the three share no primary family and no file path.
-No sentence in the pack adjudicates a device.
+One ask on the deployment plan's 2026 picture, by ward and quarter, reading neither the occurrences the call ranks nor
+the register the call reads.
 
-**Ask 1. First-interview visits made to the July to September 2026 intake, each region (6 whole numbers).**
-- Use: the field budget the cap was meant to save, read beside the call.
-- Primary device (D1, a replay under fresh ids, key kept): the call-record app re-sent part of the non-interview calls
-  logged offline after an August update, each re-sent call under a new record id with the same serial, visit number and
-  visit time and a later upload time; counted as rows every region is high. Only an internal inconsistency finds it:
-  two calls to one address with the same visit number and minute.
-- Reading pin (judge pass 1): the methods note's section 2 identifies a visit by the address serial and its visit
-  number; it says nothing of uploads.
-- Over-cleaning hazard: interviewers call twice on one day (afternoon and evening), so a de-duplication on serial and
-  date drops real visits; on serial and visit number it is exact.
-- Shared hazard: the serial's check digit in the July to September file (region comes from the address register).
-- Span (3 files, 8 columns): call records, address register, field instruction.
-- Ladder (asserted): rows counted (the cracker, every region high); de-duplicated on serial and date (every region
-  low); golden. The July to September 2026 intake is outside the base quarter's five intakes, so no ask device sits in
-  the call's own population.
+**Ask A, each ward's officer-hours on calls for service in each quarter of 2026 (32 figures, whole hours).**
+- H18 home: the patrol workload the deployment plan sets the platoons against. Files: mps_cad_calls_2026.csv,
+  mps_patrol_roster_2026.csv, mountjoy_street_segments.csv (12 columns on the path).
+- Primary device (D8, a recorded date for the event date): the roster dates each night tour by the evening it starts,
+  so a unit dispatched between midnight and 07:00 is crewed by the previous date's night tour; joined on the
+  dispatch's own date it takes the next evening's crew, and crews change from night to night. Moves every cell by an
+  hour or more (D1b).
+- Hazards: UTC stamps through both clock changes (a call's date is its local receipt date, a unit's hours the elapsed
+  time between its stamps), officer-started events (not calls), cancelled units (dispatch to clear), and the
+  contracted township's events, whose district numbers repeat the wards' and which Directive PO-14 files as belonging
+  to no ward.
+- Pin test: the asking sentence pins the ward, the quarter and the unit; Directive PO-14 pins a call, its date, its
+  ward, the tours' hours and officer-hours; none names a tour's date.
+- Every cell sits at least a quarter of an hour from its rounding edge and holds under the negative-interval
+  handlings (none remain) and every reading of a night tour's date (SF24): the calendar, a day of elapsed time back,
+  local midnight less a day of elapsed time (the re-judge's pandas route), seven hours of elapsed time back, the naive
+  wall clock, and tours of twelve elapsed hours (D3, D4, M4, T4); hours read on the wall clock hold too (D5, no unit on
+  a call works across a change), and the roster holds one row per tour and unit (T5); the verifier reproduces all 32
+  on the wall clock and on aware times both ways, and the re-judge's own method reproduces all 32.
 
-**Ask 2. Of the respondents unemployed in April to June 2026, the share employed in July to September 2026, each
-region (6 figures, percent to two decimals).**
-- Use: the flows the release carries beside the rate, telling a moving labour market from a protocol.
-- Primary device (D7, the true key in another field): the telephone system lists a household's members oldest first,
-  the face-to-face interview in the order they were entered, and a member who leaves shifts the rest up; a join on
-  serial and person number pairs different people in those households, the joined pairs pass every check (one match
-  each) and every region moves. Only sex and date of birth disagreeing across a pair shows it.
-- Hazard: the check digit (shared with ask 1); wave-1 newcomers in July to September with no April to June record.
-- Span (2 files, 9 columns): person file, data dictionary.
-- Reading pin (judge pass 1): the methods note's section 6 counts flows on people interviewed in both quarters,
-  unweighted; it names no key.
-- Ladder (asserted): joined on serial and person number (the cracker, every region off); joined on serial alone
-  (fan-out, every region off); golden, serial, sex and date of birth (one match each).
+| Ask row | The cracker (landed the call, hygiene battery, every filed definition executed) | Verdict |
+|---|---|---|
+| A, 32 ward-quarter officer-hours | crews each unit from the roster's tour of the dispatch's own date | miss |
 
-**Ask 3. Total weekly hours actually worked by the employed in July to September 2026, each region (6 figures,
-thousands of hours to one decimal, final weights).**
-- Use: the hours the release carries, read for intensity beside the rate.
-- Primary device (D3, units set per source): telephone interviews store hours and minutes as h.mm (37.30 for 37 hours
-  30 minutes) while face-to-face interviews store decimal hours; summed as decimals every region is low by about 0.3
-  per cent (asserted). Only the telephone values' fractions never exceeding .59, against the face-to-face quarter
-  hours, show it.
-- Over-correction hazard: converting every value as h.mm, face-to-face decimals included, puts every region high.
-- Referee (judge pass 1): the release table's national total actual weekly hours for each quarter to April to June
-  2026, which only the converted telephone hours reproduce (raw sums miss by more than 50 thousand in every quarter,
-  asserted); it fixes the level without a sentence naming the encoding.
-- Span (2 files, 7 columns): person file, data dictionary.
-- Ladder (asserted): raw sum (the cracker); every value converted; golden.
+Pair ceiling: 28.5 ((38 + 7 + 55 x 0) and (5 + 7 + 55 x 0), averaged)
+Mirror leakage: 0.0 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack, target.zip 1af4c489)
 
-**The cracker sheet.** The cracker landed the call, ran the hygiene battery (keys unique, no exact duplicates, every
-join matched) and executed every filed rule:
+## Leak review
 
-| Ask figures | The cracker's path | What keeps it wrong | Cracker result |
-|---|---|---|---|
-| Ask 1, visits (6) | call rows of the July to September intake counted by region | re-sent calls under fresh ids inflate every region | miss |
-| Ask 2, flows (6) | April to June and July to September joined on serial and person number | re-ordered person numbers pair different people | miss |
-| Ask 3, hours (6) | weighted sum of the hours column for the employed | telephone hours are hours and minutes | miss |
-| Chart (rec block, not an ask) | carried by the main call | scored with the recommendation | outside |
-
-The mirror sheet (stopped at rung 0) differs from the cracker sheet only on the recommendation criteria and the chart.
-
-Measured by: generator/pair.py, run on the cut pack (0 of 18 ask figures graded right on the cracker's path and 0 of
-18 on the over-correction).
-
-Mirror leakage: 8.0 per cent of the ask weight (method credit on the ask paths, no figure).
-
-**Pair arithmetic.** Planning weights 38 recommendation, 7 instruction following, 55 asks over 18 ask figures. With
-each top response keeping about 8 per cent of the ask weight: C = 38 + 7 + 4.4 = 49.4 for the cracker, S = 6 + 7 + 4.4
-= 17.4 for the mirror.
-
-Pair ceiling: 33.4
-
-## Pins
-
-- The design, the definitions, the raking to region and age-sex controls and the sampling error: the methods note
-  (sections 1, 3, 4 and 5), once. Nothing in it says how the effect of a fieldwork change is measured or on which
-  quarter.
-- The cap (three visits, first interviews, the 2026/27 field year, the 2027/28 pattern set with that year's budget):
-  FI-2026/04, once; the return to six visits from 1 April 2027 is the prompt's scenario.
-- Ask readings: none filed; each ask's wording fixes its quantity. No sentence adjudicates a device.
-
-## Stopping rule
-
-Two portal solves of the gap path or the headline by different routes re-root the decisive step; a determinism finding
-that the base quarter is open is closed by what the records cover, never by filing the method; a solve landing the path
-from a filed sentence sends that sentence out of the pack and the build back to design. One more measured Gate F
-failure on this ladder retires the architecture rather than hardening it, because the only remaining lever would be a
-plant.
-
-## Build record
-
-- Realisation: the sampling noise is fixed by world.SALT = 14, chosen from 40 scanned on the joint criterion that the
-  cap be the larger share of the rise (0.18 of 0.27), the labour market's share be a clean positive figure (0.09), the
-  published employment change flip sign on a six-visit basis (-0.34 against +0.29), every rung sit outside the
-  tolerance, and every graded figure sit mid-bin. Measured on the chosen realisation: the tightest graded rate figure
-  is the July to September 2027 unemployment gap at 0.00106 point from its printed cell's edge (the raking converges
-  to 1e-12, so that is about 1e9 times the numerical noise), and the tightest ask figure is Pellard's total hours at
-  0.00041 of a thousand hours from its edge (a float sum whose worst-case accumulation error is 2.5e-05, so about 16
-  times the noise even without pairwise summation).
-- The cap's timeline was moved from one quarter before the released quarter to the 2026/27 field year so that the
-  released quarter and its comparison quarter are both capped. That is what makes the decisive step carry the
-  headline: with only one capped quarter, the wave-1 route and the golden agree on the cap's share of the change.
-- Licensed-family spread, measured on the clean truth over six variants (base-quarter controls against each target
-  quarter's own, raking from unit weights against the base quarter's final weights, 60, 200 and 1000 iterations):
-  3e-06 point on the unemployment gap and 2.5e-05 on the employment gap, against a printed unit of 0.01 and a lever of
-  0.18 to 0.47 point. The family is closed; the reason it is closed is also the reason the construction is arithmetic
-  rather than estimation (see the Not rule application line).
-- Reflex sweep, measured on the clean truth: 0 of 6 textbook routes reach the golden's headline (no adjustment 0.00,
-  the wave-1 route 0.00, the carried gap 0.28, the weights-kept route 0.21, a rotation-group difference in differences
-  0.34, the matched-panel change 0.58, against the golden's 0.18); the wave-1 cross-section and the year-on-year
-  change answer other questions and the claimant series is blind to the cap.
-- Gates (stage 3): 300 checks, the independent verifier, two byte-identical builds, figures_check 155 figures,
-  precut 51 of 51 with no WARN, leak.py REVIEW (sweep 4's design-note vocabulary only, all eleven other sweeps clean,
-  including answer figures in the pack, announcements, ranking artifacts and dates), voice-check PASS at 997
-  characters, guard.py validate 0 invalid, guard.py surface exit 0 with no vocabulary, file-name or persona overlap.
-- **guard.py heart is BLOCK, and the three findings are the draw's, not this ladder's.** The card was registered on
-  2026-10-12 and the corpus moved under it: `ban.artifact` (context artifact filed_standard) against task501 v4 and
-  `ban.strategy` (composition_mix) against task448, both cards delivered since, and `test.same_driver` (gap time,
-  pattern G6, Gate G forecasting) inside the batch against task501 v3. The fourth,
-  `test.same_driver_older` against task150, carried guard's own prescribed fix and is now a NOTE with a
-  differentiation line on the card. The remaining three each ask for a card axis to be redrawn, which is a stage-1
-  action, and relabelling an axis to clear a ban is the move `stumping` Part 6 names as banned, so they are left for
-  the author. Nearest driver 0.07 (task467), well under the 0.12 warn line, so the driver text itself is clear.
-
-## Judge record
-
-- Pass 1 and pass 2 (2026-10-12) were on architecture 2's first ladder and are **void**: the determinism judge's
-  APPROVE is scoped to the pack it saw (`determinism-check`, Running the judge), and this re-root moves every graded
-  figure, the base quarter, the cap's timeline and the methods note. Pass 2's own Gate H line already read the
-  decisive step as "borderline rule application through section 5", which the blind reader then measured. The reports
-  are kept as evidence of the architecture's history; the judge owes this pack a fresh run at stage 4.
-- Carried forward from pass 1, and kept in this pack: the methods note's sections 2, 6 and 7 (visit identity, flows,
-  rounding from unrounded estimates) and the release table's total actual weekly hours as the hours referee. A
-  dictionary line naming the h.mm encoding was declined as narrating the device.
+`leak.py task125 --asof 2027-01-06` on target.zip 1af4c489: REVIEW, no LEAK; each line ruled.
+- Sweep 3, golden figures in the pack: every hit is a segment number (the designated segments' ids) in the geography
+  files (the street file, the occurrences, the CAD export, the streetlight requests), where every segment's id
+  appears; harmless.
+- Sweep 4 on the protocol (calendar, occurrence, record, counts): the protocol's own nouns for its estimand (the
+  calendar year, occurrences, the records system, counting); it names no event, venue, schedule or method; harmless.
+- Sweep 9, the register's dates after the extract: the paid-duty register's bookings for duties still to come
+  (status BOOKED), the register's own content; harmless.
+- Sweep 12 first refused a field guide to the exports (a document naming the files' columns, LEAK); it was replaced by
+  Directive PO-14, which defines the measures in the Service's own words and names no file field.
+- After the stage 4 judge, Directive PO-14 gained one sentence (a call outside the City's wards belongs to none),
+  the protocol's section 2 names the Superintendent, Patrol Operations as adopting the designation (the forum
+  redrawn from the command team), and the request and the prompt lost the medians and the command team; the
+  main thread re-reads them beside the re-judge.
+- The re-judge's repair changed no document and not the prompt: only the CAD export's clear times (7 rows) and the
+  roster's night tour of 8 March (7 rows) moved.
 
 ## Pre-ship check
 
-- Call: most of the July to September rise is the cap (0.18 of 0.27, the labour market 0.09); the published
-  unemployment rate sits 0.39, 0.53, 0.62, 0.47 and 0.28 point above the six-visit rate from July to September 2026 to
-  July to September 2027, the employment rate 1.42, 1.97, 2.44, 1.88 and 1.19 below, and the rates are back on a
-  six-visit basis from April to June 2028.
-- Default path: the wave-1 gap in each capped quarter and nothing after (0.21, 0.21, 0.21, 0.00, 0.00), with none of
-  the rise the cap.
-- Gates: as the Build record lists them. **Stage 4 is owed:** the leak reader and the determinism judge have not seen
-  this pack, so the build is not ready to ship.
-- Deliverables: hls_visit_limit_note_2026q3.docx (two pages, chart and table), hls_visit_limit_path_2027.xlsx (gap
-  path, the April to June to July to September split, regions, notes).
-- Card: the stump, driver and answer brought up to this ladder.
+1. The three rules re-read against the built pack: the decisive step is the split of each segment's record into its
+   steady rate and its venue excess, carried by the 2027 calendar, analytical; every recorded number is accurate, and
+   the mess is Layer 1 only, each piece asserted not to move the call (SF1 to SF6, SF18 to SF20).
+2. Determinism: the WHAT filed in the protocol and Directive PO-14; every standing member files the same 20 (C2, C3),
+   as does every 2027 count of 20 to 60 Lakeshore and 0 to 10 Gardens nights (C4); no expected count is a graded figure.
+3. The stage 4 judge (NOT_DETERMINISTIC, reconciled to FIX_NOW; determinism_check_report.md) passed the main call, the
+   deck's answers, Gates G and H, and failed the officer-hours ask on three unit rows that cleared before dispatch on
+   8 March, a dispatch before its call's receipt, and Ward 2 Q1. Repaired in the generator in one pass: every unit time
+   is reckoned in UTC (the generator had added minutes on the wall clock across the March gap), the golden's elapsed
+   times too (two stamps in one zone subtract by wall clock), no unit is dispatched in the first hour of 9 March (a
+   night tour dated by subtracting a day of elapsed time lands on 7 March there, the Ward 2 Q1 difference), every cell
+   a quarter hour from its edge and an hour from the device's value; PO-14 files that a call outside the City's wards
+   belongs to none, which spent the medians ask's only device, so the medians were dropped (the gate refuses an ask
+   the cracker keeps). The main call, the stump, the deck's answers and every critical component are unchanged
+   (figures.json); 13 of the 32 officer-hours cells moved by one to four hours.
+4. The one re-judge (DETERMINISTIC, SOLUTION_WRONG minor, FIX_NOW, on target.zip d5c73e26) forced the designation,
+   the lists and the chart and reproduced 29 of 32 cells; Ward 2, 5 and 6 Q1 came out 2.6, 1.0 and 1.7 hours high.
+   Root cause, its own route: a night tour's date taken as the dispatch's local midnight less a day of elapsed time
+   (pandas' normalize, then a Timedelta) is 23:00 on 7 March for the 14 City unit rows dispatched after midnight on
+   9 March (the change took an hour from 8 March), so those rows took the Saturday night's crews, and 7 of them
+   differed from the Sunday night's. Repaired in the generator: the night of 8 March's after-midnight units carry
+   the night of 7 March's crews (7 roster rows, no draw), so every reading of a night tour's date crews every unit on
+   a call alike (SF24, T4). Wards 1, 2, 3, 5 and 6 Q1 moved by one to six hours (604, 457, 774, 912, 1034); the
+   other 27 cells, the main call, the stump, the deck and every other figure are unchanged (figures.json).
+5. Gates on the final cut (target.zip 1af4c489): generator checks, the verifier, two byte-identical builds,
+   figures_check.py, precut.py, voice-check.py, leak.py (REVIEW, ruled above), guard.py heart and surface.
+6. Guard WARN repeat.gate_g (method_or_model_selection against task172 v2, drawn just before): task172 chooses how an
+   interim's conditional power carries a trial's treatment effect over its remaining follow-up; here the method is a
+   forecast's split of each place's count by a venue calendar. The labels share a Gate G mechanism, not a driver;
+   the heart's nearest driver sits at 0.11.
 
 ## Tried and rejected
 
@@ -484,251 +343,23 @@ plant.
   estimated quantity in the deciding position on this draw, and a third measured Gate F failure retires the number
   rather than hardening it.
 
-## Pre-ship check, architecture 2 (2026-10-23)
-
-**The free gates, all re-run on the final pack.** Generator checks 300 assertions passed; `verify` OK with
-18 regional figures recomputed independently; two builds byte-identical at sha256 `052a1c1b078e0b29`;
-`target.zip` cut from that build at sha256 `5314b654417ae84b`, 12 files each identical to `target/`;
-`figures_check.py` PASS at 155 figures in blocks 1 to 4 with none absent from `figures.json`;
-`voice-check.py` PASS with the prompt at 998 characters; `leak.py --asof 2026-10-20` REVIEW, not LEAK, with
-sweeps 1 to 3 and 5 to 11 clean; `guard.py surface` clean on the hard-tell screen.
-
-**The 10/10 rules re-read against the built pack.** The decisive step is still the unit of analysis, the
-intake rather than the quarter, which is analysis and not a reading or a procedure; the mess is still
-Layer 1 only (the serial gaining a tenth check-digit character in the 2026Q3 run, local-time call stamps,
-the 2025-based control rebase); nothing is planted to be caught. The isolated stage-4 reader independently
-answered the rule-3 question as **(a) an analytical choice** and found no sentence that announces the
-decisive step, which is the external confirmation Gate H wants.
-
-**The stage-4 reader's six answers.** Question 1, nothing announces the decisive step; the nearest pointers
-are the methods note's section 4 ("Every quarter's sample is therefore made of five intakes, one at each
-wave") and section 6, which "tell you to re-rake and to use matched people, but they do not say a visit cap
-shifts who responds". Question 2, no file ranks or scores the candidates; the release tables stop at April
-to June 2026 and carry no six-visit counterfactual. Question 3, no file exists only to help the analyst.
-Question 4, no figure reads as the answer. Question 5, the filed sentences fix the rate definitions, the
-raked weights, the unweighted matched-pair flow base and the unrounded-then-rounded convention, and the
-reader's own summary is that they "fix the definitions and the population, but not the counterfactual
-method", which is exactly the WHAT filed and the HOW left open. Question 6, an analytical choice.
-
-**Its two realism findings, one fixed at source and one ruled harmless.**
-- **Fixed.** `population_controls_2023q1_2027q4.xlsx`, sheet "Age and sex": `25-34 male` and `25-34 female`
-  were byte-identical in all 20 rows, which no real control table would be. The cause was `FEMALE[1] = 0.500`
-  in `generator/models.py`, where every other band sits off 0.5 (ratios 1.04082, 0.9802, 0.96078, 0.94175,
-  0.90476, 0.73913). Corrected to 0.497, which keeps the array monotone in age, and rebuilt. Exactly one of
-  33 figure keys moved, the ask figure `total_weekly_hours_thousand`, and `submission.md` block 4 item 5 was
-  updated to its six new values. Every main-recommendation and critical-component figure is unchanged: the
-  gap path 0.39/0.53/0.62/0.47/0.28, rung 0 0.21/0.21/0.21/0.00/0.00, rung 1 0.60/0.85/1.07/0.95/0.67, and
-  the cap's share of the rise 0.180 against rung 0 0.000, rung 1 0.282 and rung 2 0.208.
-- **Harmless, no change.** The reader judged the methods note to read "partly as teaching a method", naming
-  sections 4, 5 and 6. Declined on `leak-check`'s own test, would the sentence exist without the trap: a
-  rotating panel's wave structure, raking by iterative proportional fitting to region and age-by-sex
-  controls, the quarter-on-quarter caveat that consecutive samples share four intakes, and the matched-pair
-  unweighted flow base are all standard content of a real labour-force methods note, and the asks need the
-  flow and hours definitions to be determinate at all, so trimming them would cost Gate B and make the
-  document less realistic, not more. The reader itself found no announcement of the decisive step.
-- `leak.py`'s REVIEW is sweep 4 alone, five documents sharing generic survey vocabulary (change, population,
-  intakes, statistics, records, controls, instruction, telephone, weights, quarters). Ordinary domain words.
-
-**The guard's state at ship, and the author's override.** One BLOCK remains, `ban.strategy` on
-`composition_mix` against task446 (v3), carried on the author's explicit `--force` with the reason on the
-card. The measured case: driver similarity is 0.07 against a 0.12 WARN line and a 0.30 BLOCK line, the
-nearest of 280 cards; `heart` found nothing above 0.07 against any driver, lineage driver, stump or ledger
-row; and task446 sits on banking-credit-financial-risk/credit-scoring-pd-modeling under forecasting, so
-only the coarse label collides. Two BLOCKs that registration surfaced after the author's decision were NOT
-forced and were corrected on accuracy instead: `forcing_event` from `statutory_or_regulatory_filing` to
-`budget_or_appropriation`, because nothing here is filed to a regulator and the pack's own field instruction
-says the cap exists to bring fieldwork within the field budget; and a truthful differentiation line against
-task179 (v3), which `test.same_puzzle_older` raised on three coarse labels alone.
-**The three WARNs answered:** `people.first` and `people.last`, the persona Aaron Tucker shares a first name
-and a surname with task267, one older build, which the rule scores as WARN rather than BLOCK and which is
-not worth a pack churn that would void the reader's pass; `repeat.gate_g`, `decomposition_attribution`
-repeats task252 (v2), and the Gate G mechanism is the one axis this build cannot rotate without changing
-the decisive step itself, which the 10/10 rules fix.
-
-### The determinism judge, round 1: FIX_NOW, and what each finding got (2026-10-23)
-
-**Verdict DETERMINISTIC conditional on one fork, disposition FIX_NOW.** Every graded figure recomputed from
-`target/` in the judge's own hands: published unemployment 5.5893 then 5.8624 (a rise of 0.273), employment
-58.8786 then 58.5387; the counterfactual unemployment gaps 0.213, 0.393, 0.532, 0.619, 0.473, 0.276 and the
-employment gaps -0.791, -1.420, -1.971, -2.442, -1.881, -1.191, matching critical components 1, 2, 5 and 6;
-the six-visit rates 5.38 then 5.47 and 59.67 then 59.96, so the employment change is plus 0.29 and the cap's
-share -0.63; and every supplementary ask, the visit counts 3,866, 2,378, 1,851, 1,629, 1,408, 1,282, the flow
-shares and the weighted hours. It also re-raked from equal-within-region weights and reproduced the file's
-weights to about 1e-5, and confirmed the main call holds under every alternative baseline it tried.
-
-**F1, the one real fork, now fixed.** Nothing shipped filed which sample the six-visit counterfactual is
-built on. The golden uses the one quarter the construction can run on at all, and the generator already
-asserted that (`SF4 one feasible base quarter`, plus the two prior quarters each failing at more than 15 per
-cent of the sample having no visit history), but feasibility is a deduction a solver has to make rather than
-a filed sentence, so on a literal read the baseline was open. The judge's alternatives are real in that they
-produce numbers: a 2025Q4 base gives 0.21, 0.41, 0.53, 0.67, 0.39, 0.19 and a 2025Q3 base 0.21, 0.37, 0.50,
-0.50, 0.25, 0.09, against the golden's 0.21, 0.39, 0.53, 0.62, 0.47, 0.28, with a household bootstrap putting
-one gap's standard deviation near 0.07 against a 0.005 rounding grain. They are reachable only by dropping
-the sixth or more of each earlier sample that has no visit history, which is a biased subsample rather than a
-defensible base, but the exposure was real because nothing said so. **Fixed by filing the comparison in the
-prompt**, which now reads "from the latest quarter with all five waves' visit histories" and, for the sign,
-"published less six-visit". That is the WHAT (`determinism-check` section 1: population, outcome, window,
-unit, comparison) and never the HOW; the decisive step is still the unit the cap acts on, the intake rather
-than the quarter. The named property is exactly the condition the feasibility loop tests, and `checks.py` now
-asserts both clauses are present (`SF4 the base quarter is filed in the prompt`, `SF5b the gap's sign is
-filed in the prompt`), so the pin and the code cannot drift. Assertions 300 to 302. The prompt is 999
-characters and passes `voice-check.py`; the pack is untouched, so both build hashes are unchanged.
-
-**F5, the gap's sign**, folded into the same clause: "published less six-visit".
-
-**F6, the telephone hours convention, not fixed, and the reason is that it is already closed more strongly.**
-The judge found CATI `actual_hours` are hours and minutes while `hls_data_dictionary.md` does not say so, and
-proposed a dictionary line. The generator refuses it: `checks.py` line 191 asserts the dictionary stays
-silent on "minutes", because the convention is a deliberate ask-layer device. It is closed by the records
-instead, asserted twice and recomputed independently, which `determinism-check` prefers over filing: line 179
-asserts telephone hours never run past .59 and line 180 that face-to-face hours fall on quarter hours, so the
-lattice is visible in the data; and the block at line 200, "the published hours referee: only the converted
-telephone hours reproduce it, every quarter", asserts for every quarter that the release table's hours total
-sits within 0.051 of the converted sum and more than 50 from the raw sum. `verify.py` recomputes it from the
-shipped bundle alone. The judge's own numbers agree: the converted 2026Q2 total 83,589.1 equals the release
-table's Table 1 where the raw sum is 83,305.1. A solver summing raw hours is contradicted by a shipped
-control total, so the readings converge on the records (C1) rather than forking.
-
-**F2, F3, F4 and F7 the judge closed itself**, and its closures match the design: raking to the target
-quarter's own controls changes nothing to three decimals and re-raking after removal is required by the
-methods note's section 4; the labour-market share is the change in the six-visit rate, 0.09, where using the
-whole July to September gap instead gives -0.12; and `person_no` is unstable between quarters (2,961 of
-24,043 pairs disagree on sex or date of birth), so matching on sex and date of birth is the sound key at 797
-matched pairs against 799.
-
-**Its Gate lines.** Files and hygiene PASS, 12 files in 6 formats, the person file at 490,398 rows, several
-distractors, nothing reading as generated and nothing exclusion-level. Stump power "good": treating the cap
-as a wave-1-only effect gives a constant 0.21 gap and files "the 0.27 rise is the labour market". Three
-rules: domain pass, layers pass, decisive step **analytical**, the easy route named as the wave-1-only gap.
-Gate G: mechanism `decomposition_attribution`, family `analytical_non_defect`, no surface-read dependency and
-no sole data defect.
-
-### The leak reader, round 2, on the new pin: clean (2026-10-23)
-
-Re-run because the prompt changed, on a fresh isolated copy of `prompt.txt` and the 12-file pack and nothing
-else. It was asked the six standard questions plus one more, aimed squarely at the two clauses the F1 fix
-added, with the categories put to it as (i) fixes a basis that would otherwise be ambiguous, leaving the
-analytical work untouched, or (ii) tells you how to do the analysis or which way the answer comes out.
-
-**Both clauses came back (i).** On the base quarter: "It fixes which quarter's data to use as the base...
-It names a quarter by description rather than by label, so the analyst must derive which quarter that is. It
-gives nothing away about the method", and it added that reading the clause to exclude July to September 2026,
-whose later waves are not yet observed, "is real work". On the sign: "category (i), sign convention only",
-and "I found no clause stating the direction of the gap itself". That is the Part 4 test passed, a pin that
-fixes the basis and never the answer.
-
-**The other six unchanged.** Question 1, no sentence names the decisive step, and the reader's own statement
-of the hardest judgement is the designed one: that under the cap "the addresses that would have been
-interviewed on visits 4 to 6 are missing from wave 1, and the wave 2 to 5 follow-ups are lost with them",
-so a strong analyst "must reconstruct what six visits would have produced and carry it forward through the
-5-wave rotation", with "nothing in the pack" stating the method. Question 2, no ranking file. Question 3, no
-helper-only file, with the claimants extract, the staffing JSON and the superseded field instruction read as
-distractors, which is what `metadata.json` declares them. Question 4, no answer-like figure. Question 6,
-**(a) an analytical choice**.
-
-**One point it raised and the answer to it.** It noted that naming "the rise" implies one exists, and that
-the release tables stop at April to June 2026. That is not a presupposition leak under H23, which permits "a
-fact the requester knows before any analysis": the office holds the person-quarter microdata, the July to
-September rate is computable from the shipped file (the judge recomputed 5.5893 then 5.8624 independently),
-and "none of it" remains a grammatical answer to how much of the rise is the labour market, so nothing is
-presupposed that the pack does not carry.
-
-**Its realism tells, all weak and none acted on:** short PDFs that are essentially numbered lists, which is
-what a real one-page field instruction is; a consecutive `record_id` sequence, which is what a single extract
-run produces; uniformly structured interviewer ids; and the same density note as round 1 on the methods
-note's flow and rounding sections, answered there.
-
-### The determinism judge, round 2: NOT_DETERMINISTIC, and my round-1 fix was the defect (2026-10-23)
-
-**The re-judge found that the pin I wrote did not pin anything, and it was right.** My clause read "from the
-latest quarter with all five waves' visit histories". Executed word for word, "visit histories" means call
-records exist, which is true of 2026Q1, 2026Q2 and 2026Q3 alike, so the literal "latest" selects **2026Q3**,
-whose base files a July to September gap of **0.00** and a path of 0.00, 0.14, 0.26, 0.36, 0.36. The golden
-needs January to March 2026 and is reached only by inferring that "visit histories" means SIX-visit
-histories, after which "latest" does no work at all. The judge's measured alternatives: 2025Q4 gives 0.41,
-0.53, 0.67, 0.39, 0.19; 2026Q2, whose wave 1 is already capped and so untrimmable, gives 0.15, 0.30, 0.42,
-0.49, 0.29. Only 2026Q1 lands on 0.39, 0.53, 0.62, 0.47, 0.28. A described property was the wrong instrument:
-the lesson is that **a pin on the WHAT names the thing, it does not describe a property and hope the
-description is unique.**
-
-**Fixed with the judge's own recommended wording, which is also less leaky than mine.** The prompt now reads
-"from January to March 2026, the last six-visit quarter". That names the quarter outright, so there is no
-inference left, and it drops the phrase "all five waves", which the judge noted was "a mild hint that later
-waves matter, which weakens the wave-1-only trap a little". `checks.py` now binds the prompt to the code with
-`W.qname(W.TEMPLATE_Q) + ", the last six-visit quarter"`, so the named quarter is by construction the one the
-feasibility loop picks and the two cannot drift. On whether naming it gives the task away, the judge's own
-answer: "No on balance. It files the WHAT (reference sample) that was genuinely ambiguous: the base choice
-moves figures by 0.02 to 0.5 point, far past rounding. It does not file the HOW: placing capped intakes by
-wave through the rotation, re-raking, and the change-in-gap attribution are untouched."
-
-**Fork 2, the flow denominator, also real and also fixed.** "the share of April to June unemployed respondents
-employed" has no stated denominator. The literal reading takes all April to June unemployed respondents, which
-gives 25.51, 18.78, 30.59, 18.12, 21.01, 25.47, where the golden takes only those re-interviewed (797 of
-1,019) for 31.65, 25.19, 37.96, 24.11, 30.12, 29.03. The methods note's section 6 closes it only for a solver
-who recognises the ask as a flow, and the prompt never said "flow" or "interviewed in both". Now filed as
-"interviewed in both quarters", asserted as `SF5c`. The match key stays closed by the data: `person_no`
-disagrees on date of birth in 106 of 799 pairs, so serial, sex and date of birth is the only stable identity.
-
-**The unit, also filed.** "how much of the rise is the labour market" had no unit, 0.09 points against 33 per
-cent of the rise. Now "in points", asserted as `SF5d`. Assertions 302 to 304.
-
-**Fork 3, telephone hours: the judge reversed itself and confirmed the pack closes it.** On a second look it
-verified the conversion against the release table in **all 14 quarters** (2026Q2 converted 83,589.1 equals the
-published 83,589.1 against a raw 83,305.1; 2026Q1 85,326.1 against 85,054.3; 2023Q1 82,267.0 against
-82,005.6) and ruled it "not an open fork... the shipped files force the conversion", "Judged closed. Advisory
-only: it remains a data-semantics ask (ask-level, allowed)". That is the disposition this note argued at round
-1, now independently confirmed, and no dictionary line was added.
-
-**Everything else it checked reproduced or closed.** Every graded figure recomputed from `target/` in the
-judge's own hands, including the gap paths, the 0.273 rise with 0.180 the cap and 0.093 the labour market, the
-six-visit rates, the regional visit counts after dropping the 381 duplicate uploads, the flow shares and the
-converted hours. Raking to base-quarter controls, to target-quarter controls, or from the file weights gives
-identical gaps to three decimals, so there is no control or start-weight fork. The capped intakes' yield at
-visits 1 to 3 is unchanged (visit 1: 1,917 in 2026Q1 against 1,856 and 1,875; visit 2: 957 against 952 and
-983; visit 3: 517 against 533 and 524), so the "remove the late households and nothing else moves"
-counterfactual is supported by the data rather than assumed. Gate F "reasonable", with the wrong paths
-checked: the wave-1 reading gives a constant 0.21 gap and leaves the whole 0.27 to the labour market, and
-keeping weights without re-raking gives 0.245, 0.453, 0.612, 0.722, 0.567, 0.337. Gate G
-`decomposition_attribution`, `analytical_non_defect`, no surface-read dependency, no sole data defect, and the
-clean-data test still stumps. Gate H all pass with `decisive_step: analytical`, its own borderline note being
-that the rotation and cap dates are stated so placement could read as rule application, while "the estimation
-(trim, re-rake, difference the gap) keeps it analytical".
-
-**The re-judge budget is spent** (`determinism-check`: a FIX_NOW is re-judged once). These three fixes are the
-judge's own prescriptions, in its own words for two of them, each asserted and each tied to the code, so the
-remaining exposure is leakage rather than determinism, and that is what the third isolated reader checks.
-
-### The leak reader, round 3, on all four pins: clean, and no shortcut (2026-10-23)
-
-Run because the prompt changed again, on a fresh isolated copy. Asked the five standard questions, then each
-of the four pins against the same (i) or (ii) test, then outright whether prompt plus pack permits a shortcut.
-
-**All four pins came back (i).** The named quarter: "It fixes the baseline. It does not shorten the work,
-because the gap is still a counterfactual for every quarter... It does not say WHY the quarter matters beyond
-being the clean pre-change baseline." It noted one mild (ii), that naming a pre-cap quarter hints the effect
-starts from April to June 2026, which the pack already states twice over, in the field instruction's own
-effective date and in the extract notes' line that July to September 2026 is the second quarter issued under
-it, so the clause adds nothing the files do not carry. The sign clause: "(i), a sign convention only. It does
-not say which way the gap runs, and 'how far, if at all' leaves existence open." The flow denominator: "(i), a
-population and denominator definition consistent with methods note section 6... It does no analytical work",
-with one residual noted, that weighted against unweighted is not stated in the prompt, which the methods
-note's section 6 settles in its own words. The unit: "(i)", matching the release tables' own heading.
-
-**The shortcut question, answered outright: "No. The prompt plus the pack does not let you shortcut the main
-question."** Its reasoning is the designed one: the easy route, applying the contacts lost by keeping only
-visits 1 to 3 to the published rate, "is a plausible wrong answer, not a shortcut to the right one. It misses
-the selection of late contacts into unemployment, the carry-through to waves 2 to 5, and the raking."
-
-**Questions 1 to 5 unchanged across all three rounds:** no sentence names the decisive step, no file ranks the
-candidates, no file exists only to help the analyst, no figure reads as the answer, and question 5 is **(a) an
-analytical choice** in every round. It also found, unprompted, that January to March 2026 is where the
-population controls rebase, and called it "a genuine confound and not given away", which is depth the pin did
-not spend.
-
-**One new realism tell, ruled harmless:** "The population controls grow by an almost identical ratio each
-quarter, which is too smooth." Declined, because that is what a projection series is: the workbook's own Notes
-sheet says the controls are population estimates and projections and that quarters after July to September
-2026 are projections, and the one place the series is not smooth is the 2026Q1 rebase, which is both stated
-and load-bearing. The rest of its tells (fictional names, tidy one-page instructions, a uniform staffing
-file) it rated not severe itself.
-
+- Architecture 2 as a whole (2026-10-31, at the batch audit, re-rooted rather than repaired): it shipped before the survivor-anatomy gates and falls short on all three of them. The actor is schema-visible (the person file's `wave` and `intake` columns, the visit number reaching the later waves through the household serial, a key that invites the join), so there is no actor without a column and no link without a key; and the field's method (re-running the calibrated estimator on the capped subset) is the golden rather than the bottom of the ladder, which its own "Not rule application" line conceded by calling the decisive step exact arithmetic on recorded fields, argued rather than measured. Architecture 3 draws a new domain and world.
+- Architecture 3 (2026-10-31, the Umzimela sulfate load directives, at stage 4): the determinism judge returned
+  NOT_DETERMINISTIC with SEND_BACK and the reconciliation confirmed it. The decisive step was catching four boundary
+  samples taken in unmixed plumes and swapping in the sum of the inflows' loads (mechanism planted_defect_flip,
+  family surface_read_rejection, sole_data_defect yes): the schedule executed literally files MZ2 and NY3 over and MZ4
+  and NY2 within, the reverse of the golden, and no shipped sentence says a sample is unrepresentative. The asks also
+  rode unfiled methods (drift removal additive or proportional, a sulfate basis change from SO4 to S). Lesson: every
+  recorded number must be accurate as recorded and the governing text executed word for word must give the golden;
+  a stump that catches a wrong measurement is a planted flip at any depth. Report kept as
+  determinism_check_report_arch3.md.
+- Architecture 4, ask A first drafted as each ward's founded patrol crimes by quarter of 2026 (the first prompt, 2026-10-31, at the design): it reads the occurrences the call ranks, so any device on it would move the call or ride the call's own cleaning; re-sited onto the CAD and the patrol roster.
+- Architecture 4, a payroll export as ask A's device, its night hours split at midnight onto a next-day line with no booking reference (2026-10-31, at the design): pairing a record's halves is in the hygiene battery, so the cracker links them and keeps the ask; replaced by the roster's night tour dated by the evening it starts.
+- Architecture 4, the 2027 calendar with the reopened Lakeshore Centre's season unbooked at the extract (2026-10-31, at the build): the Lakeshore segments' bookings-only expectation sat level with the warm segments and that member filed another 20; the Lakeshore Centre's first season is on sale at the extract (18 shows booked) and every 2027 calendar now files one designation.
+- Architecture 4, the first parameter sets and seeds 125043 to 125045 (2026-10-31, at the build): increments near one crime a night put two thirds of the Gardens segments' crime on event nights, and the narrower gaps let a Lakeshore or warm segment into the count routes or let a one-year fit swap King St, Wellington to Albert, for a Gardens segment; the steady rates were raised, the gaps widened and the seed taken from a search of the ladder's conditions (125054: the gap at the cut 23, every count route on the default).
+- Architecture 4, a third ask on each ward's paid-duty hours worked in 2026 (2026-10-31, at the design gate): every hazard on its path (overnight duties, cancelled and no-show lines, intersections) is in the hygiene battery, so the cracker kept all eight figures and the gate's per-ask miss rule refused it; a midnight-split payroll, a ward stored at booking and reissued booking numbers were each weighed as its device and set aside (pairing halves is in the battery, a stored ward forks the ward set, the reissued numbers bite in January only); the ask was dropped and the register stays in Information Management's standard extract set.
+- Architecture 4, a field guide to the six exports (2026-10-31, at the leak sweep): leak.py sweep 12 refused it as a document describing the data (39 columns named, every column of the roster); its definitions of a call, its date, officer-hours and the tours moved into Directive PO-14, a governing document in the Service's genre, the codes and counting stayed in the protocol, and the formats were left to the files.
+- Architecture 4, the CAD's unit times summed on the local wall clock (2026-11-01, at the stage 4 judge): across the 8 March gap three units cleared before their dispatch and one was dispatched before its call came in, and the golden's own elapsed times were wall-clock differences; every stamp is now reckoned in UTC and asserted to run forward.
+- Architecture 4, the medians ask once Directive PO-14 filed the township's calls (2026-11-01, at the repair): the township's events in the district column were its only device, so the cracker would keep all eight medians and the per-ask miss rule refuses it; dropped from the prompt, the request and the goldens.
+- Architecture 4, keeping all 32 cells through the re-judge's tour dating by moving the 9 March after-midnight calls to other cars (2026-11-01, at the pass-2 repair): in Wards 2, 5 and 6 every car of the ward and its neighbours that was one-officer on the Sunday night was two-officer on the Saturday, so no swap there kept both the cells and the crews; the Sunday night's after-midnight units carry the Saturday crews instead and five Q1 cells move.
+- Architecture 4, leaving 9 March from midnight to 07:00 without a dispatch (2026-11-01, at the pass-2 repair): a seven-hour hole in a city's calls, where about ten are due, would read as planted; the quiet first hour stays and the crews carry instead.

@@ -1,22 +1,27 @@
 # leak check, task306
 
-**Verdict: REVIEW.** 18 files read, 27 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 20 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: register, registered, sentence, population, reader, decisive, carries, imports, registrations, netherlands, registration, arrive, arrival, stream, carried, golden, section, repair, asserted, register-only, calendar, estimand, replacement, kestrel, plover
+Stump terms swept: orders, momentum, participation, average, candidate, executions, trades, sentence, decisive, golden, warranty, market, rebalances, export, pounds, smaller, standard, population, candidates, carries, turnover, determinism, carried, register, storms
 
-## 4 design-note vocabulary (REVIEW 5)
-- **REVIEW** `garantievoorwaarden_tractieaccu_2026.pdf`: 6 of 25 stump-paragraph terms appear (carries, netherlands, registration, replacement, kestrel, plover); read whether the document names the move
-- **REVIEW** `lijn_exports_toelichting.md`: 3 of 25 stump-paragraph terms appear (carries, kestrel, plover); read whether the document names the move
-- **REVIEW** `prijslijst_revisiepakketten_2026.pdf`: 4 of 25 stump-paragraph terms appear (netherlands, replacement, kestrel, plover); read whether the document names the move
-- **REVIEW** `rdw_extract_veldbeschrijving.pdf`: 6 of 25 stump-paragraph terms appear (register, registered, netherlands, registration, kestrel, plover); read whether the document names the move
-- **REVIEW** `tooling_plan_2027_draft.docx`: 8 of 25 stump-paragraph terms appear (register, registered, carries, netherlands, registration, calendar); read whether the document names the move
+## 1 file names (REVIEW 1)
+- **REVIEW** `research_backtests_2027_candidates.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
+
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `ic_capital_allocation_policy_2026.pdf`: 5 of 25 stump-paragraph terms appear (candidate, executions, trades, rebalances, standard); read whether the document names the move
+- **REVIEW** `tca_standard_rev4.pdf`: 6 of 25 stump-paragraph terms appear (orders, participation, average, pounds, standard, register); read whether the document names the move
+
+## 6 ranking artifacts (REVIEW 1, INFO 1)
+- **REVIEW** `research_backtests_2027_candidates.xlsx`: names 4 of 7 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `trading_account_register.csv`: names 3 of 7 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 37% of 196 prompts (cap 30%); reword at the role level, not the verb
 
 ## 2 author vocabulary (clean)
 
@@ -24,32 +29,50 @@ Stump terms swept: register, registered, sentence, population, reader, decisive,
 
 ## 5 announcements (clean)
 
-## 6 ranking artifacts (clean)
-
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
 
 ## 9 dates after the setting (clean)
 
-## 11 prompt gate (clean)
-
 
 ## Solver's-eye read
 
-Two isolated readers (general-purpose, sonnet, medium), each holding only `prompt.txt` and a fresh unzip of the pack.
+Architecture 4, read 1 on target.zip 2ac88df8 (isolated Sonnet reader, a fresh copy of prompt.txt and target/ only),
+before the FIX_NOW repair.
 
-**Round 1, on target.zip 4442d745.** Filed the register-only split (Mira city car 1,250, Volta hatch 1,000, Plover saloon 350, Kestrel SUV 300, Tern van 100) and 3,400, the default path's named wrong answer; score_reader: call keys 1 of 6 (the Plover saloon's 350, which that rung shares with the golden), ask figures 5 of 15, all five on ask C (dock 2's zero rejects and the recycler's blank core codes). Ask C was re-sited (design note, `## Tried and rejected`); its realism tells were fixed in the same pass.
+1. Decisive step: no sentence announces it; the nearest is IC-07 section 2's estimand (a candidate's expected alpha at
+   a size is its gross alpha less the expected cost a year of trading its rebalances at that size), which gives no
+   method.
+2. Ranking file: none; the research workbook carries gross alpha, tracking error and information ratio only, before
+   cost.
+3. Helping file: none; the TCA standard's term table is a standard's glossary and the security master's corporate
+   action notes are data.
+4. Answer figure or name: none; the gross alphas are context.
+5. Population sentences: IC-07 section 2 files the rebalances of the twelve months to 30 November 2026, scaled to the
+   capital and traded in full on the rebalance day, costed at the TCA standard's shortfall from the desk's own
+   executions; their literal result is the golden's population.
+6. What decides: an analytical choice, the cost of trading GBP 400 million estimated from the desk's much smaller
+   executions, which needs a size-dependent cost model the pack does not prescribe; the re-created orders, the block
+   allocations, pence against pounds and the account mapping are Layer 1.
 
-**Round 2, on target.zip a62fa349** (the shipped 7aa71d60 differs only in the goods-receipt numbering and the benches' go-live start times, data only; no document or prompt changed). Filed the register-only split and 3,400 again; score_reader: call keys 1 of 6 (Plover's 350 again), ask figures 0 of 15 (the natural read on all three asks).
+Read 2 on target.zip 7f2aba02, after the repair changed IC-07 section 2, the TCA standard's section 3, the ESG list
+and the data.
 
-1. Decisive step: quoted the warranty terms' first-admission clock and the plan's pack-age rule, both filed conventions (SF6, SF7) on lower rungs; nothing pointed it at the cars still to arrive.
-2. None.
-3. The line notes and the RDW field descriptions (an IT readme and the publisher's field list, each describing its files).
-4. None.
-5. The plan's largest-remainder sentence, executed on its own register-only forecast; the population was not read as filed against the golden.
-6. Read its own route as filed conventions plus a conditional hazard, which is the default path by design (R3a); the step from that route to the golden, the fleet of 2027 with the imports still to arrive, appears in no filed sentence.
+1. Decisive step: none; IC-07 section 2 states the comparison, not the step.
+2. Ranking file: none (gross alpha only: momentum 5.05, mid-cap value 3.02, large-cap quality 1.84 per cent).
+3. Helping file: none.
+4. Answer figure or name: none.
+5. Population sentences: IC-07 section 2 as in read 1, the cost source narrowed to the desk's executions in stocks of
+   the candidate's index band; literal execution gives the golden's population.
+6. What decides: an analytical choice, the participation-dependent cost within each band carried to GBP 400 million;
+   an analyst who applies the desk's average shortfall files momentum, and no sentence announces the step.
 
-REVIEW lines (rulings in the design note): the warranty terms, harmless, the first-admission clock is a filed convention; the price list, harmless; the RDW field descriptions, harmless, ordinary field documentation; the plan, harmless, it files the estimand and the conventions and names no import.
+Sweep lines: the research workbook's Notes sheet is Research's own methodology note, harmless; IC-07 and the TCA
+standard name the estimand and define shortfall, participation and volatility without a cost-versus-size method,
+harmless; the workbook ranks on gross alpha only, harmless. The TCA standard's consolidation-day and 60-session rules
+read as the desk's own measurement convention in the standard's definitional voice (mild, not a leak).
 
-Realism lines: the curves' fitted look and their 1.0000 tail kept (an OEM service table of fitted shares); receipt numbers stepping by exactly 3, fixed; all four benches starting at 06:00 on go-live day, fixed; the plan's created date before its text date, kept (drafted 6 August, saved 14 August at revision 9); the line notes as a readme, the unused superseded articles, the Tern van's small volume and the BMS serial prefixes, kept as what such files hold.
+Realism: the email's header and quoted-printable wrapping, the GBX and GBP units, the BACKUP-RECOVERY orders, the block
+allocations and the re-used account code read as the organisation's own systems; the mild tells (one-per-row tenfold
+consolidations, synthetic-sounding issuer names on the ESG list, tidy commission tiers) give nothing away.

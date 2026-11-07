@@ -24,15 +24,11 @@ SOURCES = {
     P.F_SURVEY: "Tessaline Geomatics, salt dome stock survey report TG-2026-0917 for the City of Quellbrook (16 September 2026)",
     P.F_PLAN: ORG + " Roads Division, winter maintenance plan 2026-27 (18 September 2026)",
     P.F_PROC: ORG + " Roads Division, road salt procurement procedure RO-PR-07, revision 3 (12 May 2025)",
-    P.F_DICT: ORG + " Roads Division fleet telematics, data dictionary for the 25 September 2026 pull",
-    P.F_MANIFEST: ORG + " Roads Division fleet telematics, export manifest for the 25 September 2026 pull",
     P.F_TIMESHEETS: ORG + " Payroll, yard winter timesheets, winter 2025-26",
     P.F_BRINE: ORG + " Roads Division, yard brine plant production log, 1 October 2023 to 23 September 2026",
 }
 DISTRACTORS = [P.F_TIMESHEETS, P.F_BRINE]
-TITLE = ("How much rock salt a lakeshore city's roads division commits above its rolled-over supply contract for the "
-         "first winter after a bus network redesign moved 424 lane-km of collectors to bare-pavement service, when the "
-         "collectors it moved before were streets its hazard-spot salting already covered along much of their length")
+TITLE = "Seasonal rock salt commitment, winter 2026-27"
 
 
 def rows_of(path):
@@ -66,13 +62,10 @@ def write(task_dir):
         "domain": "Urban & Regional Science",
         "client_domain": "Urban & Regional Science",
         "house_domain": "urban-regional-science",
-        "subdomain": "municipal service demand and resource allocation (a city's winter road salt for a change of "
-                     "service level, forecast from the spreader records of the streets that went through the same "
-                     "change before, conditioned on how much of each street the old service already salted)",
+        "subdomain": "municipal service demand and resource allocation (winter road salt)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "a committed seasonal tonnage to the nearest 100 t, each works yard's dome stock and room on 1 "
-                        "November 2026, each yard's Priority 1 arterial rock salt in each of three winters, and a "
-                        "one-page report to council charting the arterial figures",
+        "prompt_shape": "a committed seasonal tonnage, each works yard's dome stock and room before the season, each "
+                        "yard's arterial rock salt by winter, and a one-page council report with a chart",
         "as_of": "2026-09-25",
         "deliverables": ["salt_commitment_2026-27.xlsx", "seasonal_salt_commitment_council_report.docx"],
         "distractor_files": DISTRACTORS,

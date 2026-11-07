@@ -1,8 +1,8 @@
-"""The golden deliverables, computed from the shipped files only: corrisan_2026_field_piston_lead.csv (each of the 24
-fields without a tower, its 2026 lead) and cvaqd_2027_unleaded_grant_qualification.docx (the memo to the Governing
-Board: the qualifying fields, the chart against the round's line, the towered fields' operations and lead); and
-figures.json, every figure the write-up states."""
-import csv
+"""The golden deliverables, computed from the shipped files only: county_dwelling_occupancy_2026-11.xlsx (every dwelling
+the regulation counts, its municipality, the persons registered there on 1 November 2026 and whether it stood vacant,
+with the municipalities' summary) and vacancy_grant_certification_2027.docx (the office's certification letter to the
+ministry: the qualifying municipalities, each municipality's vacant dwellings and share, the chart against the
+threshold and the two tables the ministry asked for); and figures.json, every figure the write-up states."""
 import io
 import json
 import os
@@ -11,116 +11,149 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-import bundle as B      # noqa: E402
+import numpy as np      # noqa: E402
+
 import methods as M     # noqa: E402
 import world as W       # noqa: E402
 
-GREEN = "#2f6b4a"
-GREY = "#a9b1ad"
+BLUE = "#1f4e79"
+GREY = "#a6adb4"
+RED = "#9c2f2f"
+WORDS = {0: "No", 1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
+         10: "Ten"}
 
 
 def fmt(n):
     return "{:,}".format(int(n))
 
 
-def kg(v):
-    return int(round(v))
-
-
-def r100(v):
-    return int(round(v / 100.0)) * 100
-
-
 def compute(target):
-    P = B.Pack(target)
-    inv = P.inventory()
-    rungs, sets, par = M.rungs(P, inv)
-    names = {lid: P.dir[lid]["Facility Name"] for lid in B.FIELDS}
-    counties = {lid: P.dir[lid]["County"] for lid in B.FIELDS}
-    return dict(P=P, inv=inv, rungs=rungs, sets=sets, par=par, names=names, counties=counties)
-
-
-def order(X):
-    lead = X["inv"]["lead"]
-    return sorted(W.UNTOWERED, key=lambda l: (-lead[l], l))
+    d = M.load(target)
+    res, cnt = M.call(d)
+    per = M.persons_nov1(d).groupby("dw").size()
+    cnt = cnt.assign(persons=cnt["bruksenhet_id"].map(per).fillna(0).astype(int))
+    g = M.series(d)
+    lv = M.level(g).reindex(cnt["bruksenhet_id"]).fillna(0.0).to_numpy()
+    floors = {}
+    for fl in range(1, 11):
+        r, _ = M.call(d, "level", float(fl))
+        floors[fl] = M.designated(r)
+    reg, _ = M.call(d, "register")
+    rs, _ = M.call(d, "reg_and_shape")
+    regn = cnt["persons"].to_numpy()
+    vac = cnt["vacant"].to_numpy()
+    return dict(d=d, res=res, cnt=cnt, lv=lv, floors=floors, reg=reg, rs=rs, ask_a=M.ask_a(d), ask_b=M.ask_b(d),
+                vac_reg=int(((regn > 0) & vac).sum()), lived_noreg=int(((regn == 0) & ~vac).sum()),
+                renum=len(M.renumberings(d)[1]))
 
 
 def figures(X):
-    inv, names = X["inv"], X["names"]
-    lead = inv["lead"]
-    q = B.qualifying(lead)
-    qo = [l for l in order(X) if l in q]
-    below = [l for l in order(X) if l not in q]
-    C = W.COUNTED
-    unrec_c = sum(inv["unrec"][l] for l in C)
-    nd_c = sum(inv["nd"][l] for l in C)
-    est = [l for l in order(X) if l not in W.STUDIED]
-    r0 = X["sets"]["R0 one capture rate"]
-    caps = {l: (inv["tower"][l]["heard_in_hours"] / inv["tower"][l]["civil"]) if l in W.TOWERED else
-            inv["heard"].loc[l, "ops"] / X["P"].study[l] for l in C}
-    lo, hi = min(caps, key=caps.get), max(caps, key=caps.get)
-    r1 = X["sets"]["R1 capture by flight training"]
+    res = X["res"]
+    names = {nr: res[nr]["name"] for nr in res}
+    q = M.designated(res)
+    out = [nr for nr in res if nr not in q]
+    below = max(out, key=lambda nr: res[nr]["raw"])
+    above = min(q, key=lambda nr: res[nr]["raw"])
+    lv, vac = X["lv"], X["cnt"]["vacant"].to_numpy()
+    assert all(v == [] for v in X["floors"].values())
     return dict(
         count=len(q),
-        count_word={6: "Six", 7: "Seven", 8: "Eight"}[len(q)],
-        qualifying=[dict(lid=l, name=names[l], lead_kg=kg(lead[l])) for l in qo],
-        first_below=dict(lid=below[0], name=names[below[0]], lead_kg=kg(lead[below[0]])),
-        threshold_kg=str(W.THRESHOLD_KG),
-        fields=[dict(lid=l, name=names[l], county=X["counties"][l], lead_kg=kg(lead[l])) for l in order(X)],
-        counted=dict(unrecorded=fmt(unrec_c), never_recorded=str(nd_c), per_airplane="%.1f" % (unrec_c / nd_c)),
-        never_recorded={l: str(inv["nd"][l]) for l in est},
-        towers=[dict(lid=l, name=names[l], ops=fmt(r100(inv["ops"][l])), lead_kg=kg(lead[l])) for l in W.TOWERED],
-        rivals=dict(
-            capture_pct=str(int(round(100 * X["par"]["r"]))),
-            capture_set=[names[l] for l in r0],
-            capture_in=[names[l] for l in r0 if l not in q],
-            capture_out=[names[l] for l in q if l not in r0],
-            training_set_count=len(r1),
-            training_in=[names[l] for l in r1 if l not in q],
-            school_pct=str(int(round(100 * X["par"]["r_school"]))),
-            other_pct=str(int(round(100 * X["par"]["r_other"]))),
-        ),
-        unrecorded_g=str(W.LEAD_UNRECORDED),
-        stated=dict(clauses=["method 2.1", "method 3.2", "method 4.2", "method 4.3", "method 4.4", "guidelines 2.2"],
-                    year="2026", round="2027"),
-        capture_low=dict(name=names[lo], pct=str(int(round(100 * caps[lo])))),
-        capture_high=dict(name=names[hi], pct=str(int(round(100 * caps[hi])))),
+        count_word=WORDS[len(q)],
+        threshold="5.0",
+        qualifying=[dict(nr=nr, name=names[nr], vacant=res[nr]["vacant"], share="%.1f" % res[nr]["share"]) for nr in q],
+        municipalities=[dict(nr=nr, name=names[nr], counted=fmt(res[nr]["counted"]), vacant=res[nr]["vacant"],
+                             share="%.1f" % res[nr]["share"], qualifies=nr in q) for nr in res],
+        lowest_qualifying=dict(name=names[above], share="%.1f" % res[above]["share"]),
+        highest_below=dict(name=names[below], share="%.1f" % res[below]["share"]),
+        totals=dict(counted=fmt(sum(r["counted"] for r in res.values())), vacant=fmt(sum(r["vacant"] for r in
+                    res.values())), persons=fmt(int(X["cnt"]["persons"].sum()))),
+        vacant_registered=fmt(X["vac_reg"]),
+        lived_unregistered=fmt(X["lived_noreg"]),
+        vacant_median_kwh="%.1f" % np.median(lv[vac]),
+        lived_median_kwh="%.1f" % np.median(lv[~vac]),
+        rivals=dict(register_count=len(M.designated(X["reg"])), floor_low="1", floor_high="10",
+                    register_and_profile=[names[nr] for nr in M.designated(X["rs"])]),
+        cut="0.5",
+        age_bands=dict(under="18", upper="66", over="67"),
+        renumbered=X["renum"],
+        ask_a=[dict(nr=nr, name=names[nr], under_18=fmt(a["u18"]), age_18_66=fmt(a["18-66"]), age_67=fmt(a["67+"]))
+               for nr, a in X["ask_a"].items()],
+        ask_b=[dict(nr=nr, name=names[nr], held=fmt(v)) for nr, v in X["ask_b"].items()],
     )
 
 
-def write_csv(X, F, path):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        wr = csv.writer(fh, lineterminator="\n")
-        wr.writerow(["loc_id", "field", "county", "lead_2026_kg"])
-        for r in F["fields"]:
-            wr.writerow([r["lid"], r["name"], r["county"], r["lead_kg"]])
+# ---------------------------------------------------------------------------------------------- the workbook
+def write_xlsx(X, F, path):
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Font, PatternFill
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Dwellings"
+    head = ["Municipality no.", "Municipality", "Dwelling ID", "Address", "Unit", "Persons registered 1 Nov 2026",
+            "Vacant 9-22 Nov 2026"]
+    ws.append(head)
+    names = {m["nr"]: m["name"] for m in F["municipalities"]}
+    c = X["cnt"].copy()
+    c["addr"] = [("%s %s%s" % (a, n, b)).strip() for a, n, b in zip(c["adressenavn"], c["husnr"], c["bokstav"])]
+    c["husnr_i"] = c["husnr"].astype(int)
+    c = c.sort_values(["kommunenr", "adressenavn", "husnr_i", "bokstav", "bruksenhetsnr", "bruksenhet_id"])
+    for r in c.itertuples():
+        ws.append([int(r.kommunenr), names[r.kommunenr], int(r.bruksenhet_id), r.addr, r.bruksenhetsnr, int(r.persons),
+                   "Yes" if r.vacant else "No"])
+    bold = Font(bold=True)
+    fill = PatternFill("solid", fgColor="DCE6F1")
+    for cell in ws[1]:
+        cell.font = bold
+        cell.fill = fill
+        cell.alignment = Alignment(wrap_text=True, vertical="top")
+    for col, wd in zip("ABCDEFG", (14, 14, 13, 26, 8, 15, 13)):
+        ws.column_dimensions[col].width = wd
+    ws.freeze_panes = "A2"
+    ws.auto_filter.ref = "A1:G%d" % (len(c) + 1)
+    s = wb.create_sheet("By municipality")
+    s.append(["Municipality no.", "Municipality", "Counted dwellings", "Vacant dwellings", "Vacancy share (%)",
+              "Qualifies"])
+    for m in F["municipalities"]:
+        s.append([int(m["nr"]), m["name"], int(m["counted"].replace(",", "")), m["vacant"], float(m["share"]),
+                  "Yes" if m["qualifies"] else "No"])
+    s.append([None, "County", int(F["totals"]["counted"].replace(",", "")), int(F["totals"]["vacant"].replace(",", "")),
+              None, None])
+    for cell in s[1]:
+        cell.font = bold
+        cell.fill = fill
+        cell.alignment = Alignment(wrap_text=True, vertical="top")
+    for cell in s[s.max_row]:
+        cell.font = bold
+    for row in s.iter_rows(min_row=2, min_col=5, max_col=5):
+        for cell in row:
+            cell.number_format = "0.0"
+    for col, wd in zip("ABCDEF", (14, 14, 11, 10, 11, 10)):
+        s.column_dimensions[col].width = wd
+    s.freeze_panes = "A2"
+    wb.save(path)
 
 
-def chart_png(X, F):
+# ---------------------------------------------------------------------------------------------- the letter
+def chart_png(F):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    lead = X["inv"]["lead"]
-    q = {r["lid"] for r in F["qualifying"]}
-    ls = order(X)
-    vals = [lead[l] for l in ls]
-    fig, ax = plt.subplots(figsize=(6.6, 3.5), dpi=150)
-    cols = [GREEN if l in q else GREY for l in ls]
-    ax.bar(range(len(ls)), vals, color=cols, width=0.68)
-    ax.axhline(W.THRESHOLD_KG, color="#7a2e2e", linewidth=1.0, linestyle=(0, (4, 2)))
-    ax.text(len(ls) - 0.6, W.THRESHOLD_KG + 0.35, "Round threshold, %.1f kg" % W.THRESHOLD_KG, ha="right",
-            va="bottom", fontsize=7.4, color="#7a2e2e")
-    for i, (l, v) in enumerate(zip(ls, vals)):
-        ax.text(i, v + 0.25, str(kg(v)), ha="center", va="bottom", fontsize=6.4, color="#2b2b2b")
-    ax.set_xticks(range(len(ls)))
-    ax.set_xticklabels(ls, rotation=90, fontsize=7)
-    ax.set_ylabel("2026 lead from piston-engine aircraft (kg)", fontsize=7.8)
-    ax.set_title("%s of the 24 fields without a tower reach the %.1f kg line" % (F["count_word"], W.THRESHOLD_KG),
-                 fontsize=9, loc="left")
+    ms = sorted(F["municipalities"], key=lambda m: float(m["share"]))
+    vals = [float(m["share"]) for m in ms]
+    fig, ax = plt.subplots(figsize=(6.4, 3.6), dpi=150)
+    cols = [BLUE if m["qualifies"] else GREY for m in ms]
+    ax.barh(range(len(ms)), vals, color=cols, height=0.62)
+    ax.axvline(5.0, color=RED, linewidth=1.0, linestyle=(0, (4, 2)))
+    ax.text(5.07, len(ms) - 0.45, "Threshold 5.0 %", color=RED, fontsize=7.4, va="center")
+    for i, v in enumerate(vals):
+        ax.text(v + 0.08, i, "%.1f" % v, va="center", fontsize=7.2, color="#2b2b2b")
+    ax.set_yticks(range(len(ms)))
+    ax.set_yticklabels(["%s (%s)" % (m["name"], m["nr"]) for m in ms], fontsize=7.6)
+    ax.set_xlabel("Vacant dwellings, per cent of counted dwellings, 9 to 22 November 2026", fontsize=7.6)
+    ax.set_xlim(0, max(vals) * 1.15)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.tick_params(axis="y", labelsize=7.5)
-    ax.set_ylim(0, max(vals) * 1.12)
+    ax.tick_params(axis="x", labelsize=7.4)
     fig.tight_layout()
     buf = io.BytesIO()
     fig.savefig(buf, format="png", metadata={"Software": None})
@@ -147,6 +180,27 @@ def _join(xs):
     return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
 
 
+def _table(doc, head, rows, right_from=2, widths=None):
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Pt
+    t = doc.add_table(rows=1, cols=len(head))
+    t.style = "Light List Accent 1"
+    for c, txt in zip(t.rows[0].cells, head):
+        c.text = txt
+    for r in rows:
+        cells = t.add_row().cells
+        for c, v in zip(cells, r):
+            c.text = str(v)
+    for rw in t.rows:
+        for k, c in enumerate(rw.cells):
+            for p in c.paragraphs:
+                for run in p.runs:
+                    run.font.size = Pt(9)
+                if k >= right_from:
+                    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    return t
+
+
 def write_docx(X, F, path):
     from docx import Document
     from docx.shared import Inches, Pt, RGBColor
@@ -155,90 +209,82 @@ def write_docx(X, F, path):
     st.font.name = "Calibri"
     st.font.size = Pt(10.5)
     for sec in doc.sections:
-        sec.left_margin = sec.right_margin = Inches(0.9)
-        sec.top_margin = sec.bottom_margin = Inches(0.8)
+        sec.left_margin = sec.right_margin = Inches(0.95)
+        sec.top_margin = sec.bottom_margin = Inches(0.85)
+    grey = RGBColor(0x59, 0x59, 0x59)
     h = doc.add_paragraph()
-    run = h.add_run("%s  |  Planning and Air Toxics" % W.DISTRICT)
-    run.font.size = Pt(9)
-    run.font.color.rgb = RGBColor(0x5C, 0x5C, 0x5C)
+    hr = h.add_run("Statistics Office  |  Section for Dwelling Statistics")
+    hr.font.size = Pt(9)
+    hr.font.color.rgb = grey
     foot = doc.sections[0].footer.paragraphs[0]
-    fr = foot.add_run("%s  |  2027 Unleaded Avgas Transition Grants: qualifying fields  |  Page " % W.DISTRICT_SHORT)
+    fr = foot.add_run("Certification, 2027 vacant dwelling activation grant, %s pilot  |  Page " % W.COUNTY)
     fr.font.size = Pt(8)
-    fr.font.color.rgb = RGBColor(0x5C, 0x5C, 0x5C)
+    fr.font.color.rgb = grey
     _page_field(foot)
+    sh, mi = W.PEOPLE["section_head"], W.PEOPLE["ministry"]
+    addr = doc.add_paragraph()
+    addr.add_run("%s\nHousing Policy Department\nAttn. %s\n\nOur ref. 26/4470-3   Your ref. letter of 1 December 2026"
+                 "\n12 January 2027" % (W.MINISTRY, mi[0])).font.size = Pt(9.5)
     t = doc.add_paragraph()
-    rt = t.add_run("%s fields without a tower qualify for the 2027 unleaded avgas round" % F["count_word"])
+    rt = t.add_run("Certification under Section 7: vacant dwellings in the %s pilot of the 2027 vacant dwelling "
+                   "activation grant" % W.COUNTY)
     rt.bold = True
-    rt.font.size = Pt(14)
-    rt.font.color.rgb = RGBColor(0x2F, 0x6B, 0x4A)
-    meta = doc.add_paragraph()
-    meta.add_run("To: Governing Board, meeting of 10 March 2027\n"
-                 "From: %s, %s\nCopy: %s, %s\nDate: 12 February 2027\n"
-                 "Subject: 2027 Unleaded Avgas Transition Grants, qualifying fields on the 2026 aircraft lead "
-                 "inventory" % (W.PEOPLE["planner"][0], W.PEOPLE["planner"][1], W.PEOPLE["grants"][0],
-                                W.PEOPLE["grants"][1])).font.size = Pt(9.5)
-    qn_ = ["%s (%s, %d kg)" % (r["name"], r["lid"], r["lead_kg"]) for r in F["qualifying"]]
+    rt.font.size = Pt(13)
+    rt.font.color.rgb = RGBColor(0x1F, 0x4E, 0x79)
+    qn_ = ["%s (%s per cent)" % (r["name"], r["share"]) for r in F["qualifying"]]
     p = doc.add_paragraph()
-    r1 = p.add_run("%s of the 24 public-use fields without a control tower qualify for the 2027 round: " %
-                   F["count_word"])
-    r1.bold = True
-    p.add_run("%s. Each emitted %.1f kg or more of lead from piston-engine aircraft in 2026 under method %s, "
-              "Revision 3, which the round's guidelines (section 2.2) make the test. The highest field below the "
-              "line is %s at %d kg." % (_join(qn_), W.THRESHOLD_KG, W.METHOD_ID, F["first_below"]["name"],
-                                       F["first_below"]["lead_kg"]))
-    doc.add_paragraph(
-        "How the operations the network missed were placed. The receiver network records every operation of an "
-        "aircraft that broadcasts ADS-B Out and none of one that does not. At the ten fields with a count (the six "
-        "towers and the four fields the District had counted through 2026) the counts exceed what the network "
-        "recorded by %s operations, and those fields have %s based piston airplanes that the network never "
-        "recorded anywhere in 2026: %s operations a year for each. The fields without a count were completed the "
-        "same way, %s operations for each based piston airplane the network never recorded there, at %s g each "
-        "(method section 3.2). The airplanes that never broadcast are not spread evenly: the vintage fields "
-        "keep most of them and the flight-school fields almost none, so the network hears %s per cent of the "
-        "counted fields' operations overall, %s per cent at %s and %s per cent at %s." % (
-            F["counted"]["unrecorded"], F["counted"]["never_recorded"], F["counted"]["per_airplane"],
-            F["counted"]["per_airplane"], F["unrecorded_g"], F["rivals"]["capture_pct"],
-            F["capture_low"]["pct"], F["capture_low"]["name"], F["capture_high"]["pct"], F["capture_high"]["name"]))
-    doc.add_paragraph(
-        "Scaling every field's recorded operations by that %s per cent instead would have qualified %s and "
-        "left out %s." % (F["rivals"]["capture_pct"], _join(F["rivals"]["capture_in"]),
-                          _join(F["rivals"]["capture_out"])))
-    doc.add_picture(io.BytesIO(chart_png(X, F)), width=Inches(6.3))
+    p.add_run("%s municipalities qualify for the grant: %s. " % (F["count_word"], _join(qn_))).bold = True
+    p.add_run("In each of them %s per cent or more of the dwellings the regulation counts (Section 3) stood vacant in "
+              "the reference fortnight of 9 to 22 November 2026 (Sections 4 and 6). The highest share below the "
+              "threshold is %s's %s per cent. Across the county %s of the %s counted dwellings stood vacant." % (
+                  F["threshold"], F["highest_below"]["name"], F["highest_below"]["share"], F["totals"]["vacant"],
+                  F["totals"]["counted"]))
+    _table(doc, ["Municipality", "No.", "Counted dwellings", "Vacant dwellings", "Vacancy share (%)", "Qualifies"],
+           [[m["name"], m["nr"], m["counted"], m["vacant"], m["share"], "Yes" if m["qualifies"] else "No"]
+            for m in F["municipalities"]] + [["County", "", F["totals"]["counted"], F["totals"]["vacant"], "", ""]])
+    doc.add_paragraph()
+    doc.add_picture(io.BytesIO(chart_png(F)), width=Inches(6.2))
     cap = doc.add_paragraph()
-    rc = cap.add_run("Lead by field, 2026, kilograms. Qualifying fields in green. Field figures in "
-                     "%s." % W.GOLDEN["csv"])
+    rc = cap.add_run("Figure 1. Vacancy share by municipality against the Section 6 threshold. Qualifying "
+                     "municipalities in blue.")
     rc.italic = True
     rc.font.size = Pt(8)
-    doc.add_paragraph("The towered fields. They are outside the round but complete the 2026 inventory; their "
-                      "operations are the network's recorded piston operations, each assigned to the aircraft that "
-                      "flew it, and the towers' counts beyond what the network recorded. Where an owner moved an "
-                      "N-number to a turbine in 2026, the piston airplane kept flying on its old address until the "
-                      "turbine arrived, weeks after the Registry's date, and those operations are counted as its own.")
-    tbl = doc.add_table(rows=1, cols=4)
-    tbl.style = "Light List Accent 1"
-    for c, txt in zip(tbl.rows[0].cells, ("Field", "LocID", "Piston operations, 2026", "Lead, 2026 (kg)")):
-        c.text = txt
-    for r in F["towers"]:
-        row = tbl.add_row().cells
-        row[0].text, row[1].text, row[2].text, row[3].text = r["name"], r["lid"], r["ops"], str(r["lead_kg"])
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
-    for rw in tbl.rows:
-        for c in rw.cells[2:]:
-            c.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    src = doc.add_paragraph()
-    rs = src.add_run("Sources: ADS-B field events export of 8 January 2027; FAA register extract of 1 February "
-                     "2027; tower daily counts; the 2026 count studies; the state's 2027 based aircraft "
-                     "validation.")
-    rs.italic = True
-    rs.font.size = Pt(8)
-    notes = doc.add_paragraph()
-    rn = notes.add_run(
-        "Notes. Operations as a tower counts them: a takeoff or a landing is one, a touch-and-go two (method "
-        "section 2.1). The year is 2026 in Pacific time. Lead is rounded to the whole kilogram and operations to "
-        "the nearest hundred from unrounded totals; qualification is judged on the unrounded lead. An airplane "
-        "that changed its N-number during 2026 is counted as recorded when the network heard either address.")
-    rn.font.size = Pt(8.5)
-    rn.font.color.rgb = RGBColor(0x40, 0x40, 0x40)
+    doc.add_paragraph(
+        "How vacancy was established. Each counted dwelling was joined to its household metering points in the hub's "
+        "extract, by the cadastre's unit ID or, for a house without one, by its address, and its hourly values were "
+        "put on Norwegian time, the measured value kept where an hour had been estimated first, a dwelling's two "
+        "points added where its meter was changed in the fortnight. A dwelling was taken as lived in when, on at "
+        "least one day, its use in the morning or the evening rose above its own night-time use by more than %s kWh "
+        "an hour, the household's day; it was vacant when no day showed one. The level of use does not settle it in "
+        "November: an empty dwelling here is left heated, and the vacant dwellings used a median %s kWh a day against "
+        "%s for the lived-in ones. Nor does the register: %s of the vacant dwellings still had someone registered in "
+        "them on 1 November, and %s lived-in dwellings had nobody registered." % (
+            F["cut"], F["vacant_median_kwh"], F["lived_median_kwh"], F["vacant_registered"], F["lived_unregistered"]))
+    doc.add_paragraph("The dwelling-level list is in %s." % W.GOLDEN["xlsx"])
+    a = doc.add_paragraph()
+    a.add_run("Table A. Persons registered as resident in the counted dwellings on 1 November 2026, by age that "
+              "day").bold = True
+    _table(doc, ["Municipality", "No.", "Under 18", "18 to 66", "67 and over"],
+           [[r["name"], r["nr"], r["under_18"], r["age_18_66"], r["age_67"]] for r in F["ask_a"]])
+    n1 = doc.add_paragraph()
+    r1 = n1.add_run("The register of 5 January 2027 with every event after 1 November undone. Where the cadastre "
+                    "renumbered a block's flats in November the register shows each resident moving to the new unit "
+                    "number on the day; those entries are a change of number, not a move.")
+    r1.font.size = Pt(8.5)
+    r1.font.color.rgb = grey
+    b = doc.add_paragraph()
+    b.add_run("Table B. Counted dwellings held on the land register on 1 November 2026 by the municipality or a company "
+              "it owns").bold = True
+    _table(doc, ["Municipality", "No.", "Dwellings"], [[r["name"], r["nr"], r["held"]] for r in F["ask_b"]])
+    n2 = doc.add_paragraph()
+    r2 = n2.add_run("Titles as registered on 1 November 2026, transfers registered after that day undone. A company the "
+                    "municipality owns as defined in the ministry's letter, from the business register and the "
+                    "shareholder register; titles from before the business register in the municipality's own name "
+                    "are the municipality's.")
+    r2.font.size = Pt(8.5)
+    r2.font.color.rgb = grey
+    sig = doc.add_paragraph()
+    sig.add_run("\nYours sincerely\n\n%s\n%s" % (sh[0], sh[1])).font.size = Pt(10.5)
     doc.save(path)
 
 
@@ -247,11 +293,15 @@ def main(target, golden, figures_path):
     os.makedirs(golden, exist_ok=True)
     X = compute(target)
     F = figures(X)
-    write_csv(X, F, os.path.join(golden, W.GOLDEN["csv"]))
-    write_docx(X, F, os.path.join(golden, W.GOLDEN["memo"]))
-    PP.normalize_ooxml(os.path.join(golden, W.GOLDEN["memo"]), W.PEOPLE["planner"][0], W.PEOPLE["planner"][0],
-                       "2027-02-09T17:12:00Z", "2027-02-12T22:41:00Z", company=W.DISTRICT)
-    stamp = 1802565660.0
+    xp = os.path.join(golden, W.GOLDEN["xlsx"])
+    write_xlsx(X, F, xp)
+    PP.normalize_ooxml(xp, W.PEOPLE["section_head"][0], W.PEOPLE["section_head"][0], "2027-01-08T09:14:00Z",
+                       "2027-01-12T13:52:31Z", excel=True, company="Statistics Office")
+    dp = os.path.join(golden, W.GOLDEN["docx"])
+    write_docx(X, F, dp)
+    PP.normalize_ooxml(dp, W.PEOPLE["section_head"][0], W.PEOPLE["section_head"][0], "2027-01-11T08:03:00Z",
+                       "2027-01-12T14:20:00Z", company="Statistics Office")
+    stamp = 1799761200.0
     for f in os.listdir(golden):
         os.utime(os.path.join(golden, f), (stamp, stamp))
     with open(figures_path, "w") as fh:

@@ -1,120 +1,67 @@
-# determinism-check report, task268, 2026-10-28
-
-Re-judge after pass6's send-back. Pass6 (`determinism_check_report_pass6.md`) found the main call and the
-cars-on-cover ask uniquely forced, and sent the build back on a second ask, the 2026 claims baseline. That ask
-has been retired from `prompt.txt`, `submission.md` and the goldens; the ask layer is now the private cars on
-cover on 30 September 2026 by region and by cover (COMP, TPFT, TPO). The main call and its figures are
-unchanged. This pass judges the repaired bundle end to end, isolated thread spawned fresh on a clean unzip of
-the current `target.zip`.
+# determinism-check report, task268, 2026-10-31
 
 ## Verdict
-**DETERMINISTIC**
-**Disposition:** APPROVE — every load-bearing figure reproduced exactly from the shipped files; no repair,
-no rerun.
-**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect,
-surface_read_dependency: no, sole_data_defect: no
+NOT_DETERMINISTIC (one supplementary answer only: deck item 4, the loose-coffee kilogram grid). The main call, the overlap CSV and the multibuy grid are forced and reproduce. No SOLUTION_WRONG.
+**Disposition:** FIX_NOW (the counter ask only; the home and overlap data and the stump stay frozen). If the counter payments have to be regenerated, the repair is still confined to the counter ask.
+**Stumping type:** mechanism: etl_conformance (entity resolution of the unit of analysis), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+
+Thread verdict: /tmp/determinism-check-task268-20261031184538/verdict.md (one pass, one thread, target.zip 8783d495).
 
 ## Why
-The judge thread reproduced the main call (Mersey + Pennine) and every cars-on-cover figure independently from
-a fresh unzip, seeing only the prompt text and the shipped bundle. The deciding mechanism is the Motor
-Reserving Standard's own mandated back-test (clause 3.3, within two per cent): the whole-book pooled
-development, a by-head-of-claim split, and the literal `notified_by` field split each miss accident year 2022
-in Wessex (8.54%, 7.85%, 6.78% respectively), so the Standard itself disqualifies them; only the development
-split by notifying route (claims-management company, joined through `claimant_representatives.csv`'s
-`firm_type`, versus everyone else) clears every region (max miss 1.09%, matching Critical Component 4's
-"within 1.1 per cent" verbatim). That route split reproduces the stated 2025 frequencies (8.9 / 8.2 / 8.0 /
-7.3 / 5.9) and the 0.2 Pennine–Severn gap to the digit, while every naive method the thread tried (pooled,
-by-head, literal `notified_by`, binary representative/non-representative, by cover) ranks Severn above
-Pennine — the Mersey + Severn pairing the golden explicitly names and rejects. The cars-on-cover ask (the
-repaired ask layer) reproduced to the exact car for all five regions and all three cover types once the
-vehicle-in-force snapshot was overlaid with each policy's latest mid-term ADDRESS/COVER change effective by
-30 September 2026, and once the claims-notification timestamps were read as UTC and converted to UK local
-time before dating. No gate A–E failure found.
+Oro Rosso 1,857 / 741 / 40%, Nordhavn 1,568 / 764 / 49%, gap 9 points, is forced by a long but determinate join: till receipt to Faircourt SALE row on terminal, amount and time, then card_ref to home. Refund netting, order date, order version, STORE cards, REPLACED folding and cancelled orders leave the ranking and percentages unchanged. The unit "home" is named in the prompt, and card_ref is the only cross-key shipped.
+
+Ask 4 (kg to one decimal per guest roaster per quarter) fails Gate C (underspecified_objective / competing_defensible_answer). The files do not fix which label-to-payment assignment is the sale.
+1. 122 of 178 unresolved card sales have both a label-containing and an accessories-only decomposition with the same total (for example 10.20 = a 10.20 label, or gift box 6.00 + filter papers 4.20). Another 14 have two equal-size label sets. The 25-minute label window is in no shipped file.
+2. Cash lines (4,481) match labels by price with no filed window (observed lag 5 to 95 minutes). 114 have two same-priced candidate labels.
+3. The scale 2 re-dating offset is a window (248,110 to 248,113 minutes), not a value. The quarter result does not move on it.
+With every ambiguity pushed to its low or high reading, the grid spans 6 to 13 kg per roaster-quarter. The golden (Glenmore 514.0 / 503.0 / 521.2 / 541.9) sits near the top of the band, and a consistent rule lands 0.2 to 0.8 kg off most cells.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Car-years earned 2025, private car (5 regions) | Mersey 61,924.81; Pennine 40,568.81; Severn 47,215.47; Wessex 38,108.96; Fenland 23,927.05 | same, from `earned_exposure_2019_2025.xlsx` | yes |
-| Claims from 2025 accidents notified by 30 Sep 2026 (5 regions) | Mersey 5,297; Pennine 2,991; Severn 3,713; Wessex 2,681; Fenland 1,374 | same, `motor_claims_notified_2019_2026.csv` joined to region via `postcode_district_sales_regions.csv`, UTC→UK-local date | yes |
-| AY2022 back-test miss, Wessex, by method | pooled/head/`notified_by` "miss ... by 6.8 to 8.5 per cent"; route split "within 1.1 per cent" | pooled 8.54%, by-head 7.85%, literal `notified_by` 6.78%, by-route 1.09% | yes |
-| Route development factors | CMC 3.7, Solicitor 1.2 | CMC 3.687≈3.7, Solicitor 1.174≈1.2 | yes |
-| AY2025 frequency per 100 car-years (5 regions) | 8.9 / 8.2 / 8.0 / 7.3 / 5.9 | 8.909 / 8.200 / 8.017 / 7.301 / 5.887 → same roundings | yes |
-| Gap, Pennine to Severn | 0.2 | 0.184 → 0.2 | yes |
-| Cars on cover 30 Sep 2026 by region × cover (15 cells) | as in Critical Component 3 / ask 4 | same to the exact car, vehicle-in-force rows overlaid with latest mid-term change ≤ cutoff | yes |
-
-A second, independently-constructed valid route split (binary is_CMC vs. everyone else, collapsing the
-solicitor category) also clears the 2% back-test (max 1.01%) and converges on materially the same rounded
-answer (8.9/8.2/8.0/7.3/5.9, gap 0.2), which rules out a knife-edge dependency on one arbitrary partition of
-the representative population.
+| Card receipts matched to one SALE row | 50,047 | 50,047, unique | yes |
+| Homes that bought coffee | 3,802 | 3,802 | yes |
+| Oro Rosso | 1,857 / 741 / 40% | same | yes |
+| Nordhavn | 1,568 / 764 / 49% | same | yes |
+| Halloran's, Cafetto, Bellvale, Kinvara, Westquay | 51, 52, 52, 56, 79% | same | yes |
+| Gap | 9 points | 9 | yes |
+| Multibuy grid (20 cells) | as filed | same; 4 cells need 7 ADJ lines on two-deal receipts resolved by value and quantity | yes |
+| Loose coffee grid (12 cells) | as filed | band 6 to 13 kg wide, golden inside it | NO |
 
 ## Competing answers that survived
-None. Every naive AY2025 projection the thread tried (pooled, by-head-of-claim, literal `notified_by`, binary
-representative/non-representative, by cover) ranks Severn above Pennine and files Mersey + Severn — the wrong
-pair the golden names and rejects — but none of them survives the Standard's own clause 3.3 back-test, so none
-is defensible. No fork on the cars-on-cover ask: vehicle rows are read literally (on/off/cancelled dates;
-multiple concurrently-on-cover rows per policy are genuine multi-vehicle policies, not a join artifact), and
-the ADDRESS/COVER overlay from `policy_changes_2025_2026.csv` is forced by the prompt's "as at 30 September
-2026" and the vehicle file's own stale term-start snapshot.
+- Ask 4 fork: labels paid by card as the label-containing set against accessories alone (and the equal-size label sets). The shipped rule meant to close it is absent: the 25-minute window and the unpaid-label convention are filed nowhere. Open.
+- Main call: none survives. The card or account unit files Nordhavn (16.5%), and cards only or cards plus unlinked online files Westquay (25.6%). The brief's "home" and Rewards terms 2.1 and 2.2 rule these out (design SF1). Residual note: no file states that a shared card_ref marks one home.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| File count | ≥10 | 11 shipped files | yes |
-| Format mix | ≥3 formats | csv ×5, xlsx ×2, pdf ×3, txt ×1 = 4 formats | yes |
-| Large file | ≥1 file ≥25,000 rows | `motor_claims_notified_2019_2026.csv` 137,580 rows; `policy_vehicles_in_force_20260930.csv` 248,648 rows; `policy_changes_2025_2026.csv` 32,264 rows | yes |
-| Distractors named | `metadata.json` names ≥2, no filename labels one | `telematics_supplier_quote_2026.pdf`, `aggregator_quote_volumes_2025_26.xlsx`, neither filename says "distractor" | yes |
-| Distractor relevance/unused | unused by solution, relevant enough to weigh; one reproduces a graded quantity and a shipped fact rules it out | both unused in the route-development or cars-on-cover computation; `aggregator_quote_volumes_2025_26.xlsx` tempts a naive "most demand" read (quotes/clicks/sales by region) toward a different region ranking, but it is new-business quote volume, not the in-force vehicle stock the cars-on-cover ask and the frequency's car-year denominator require, so the vehicle-in-force and exposure files rule it out structurally rather than by one coincident arithmetic match | partial — relevance and non-use confirmed; no distractor figure was found to reproduce a graded quantity arithmetically before being ruled out by a shipped fact |
-| Deliverables | 1–3, all present in golden, no format family required | 2: `telematics_pilot_regions_2027.xlsx`, `telematics_pilot_regions_2027.pptx`, both in `golden/` | yes |
-| Asks multi-dimensional | not stacked lookups; unit + rounding stated | frequency (5 regions + gap, one decimal) and cars-on-cover (5 regions × 3 covers, whole cars) stated in the prompt's closing sentence | yes |
-| Prompt shape / rubric ≥25 criteria | identifiable shape, rubric ≥25 criteria | prompt shape (claims-frequency-severity, actuarial) is identifiable; no rubric artifact is present in the task folder for this pass to recount directly | not independently checked this pass — no rubric file in `task268/` to recompute against; flagging for the author to confirm at the regular rubric gate, not a determinism finding |
-| Realism / not LLM-generated | nothing reads LLM-authored; goldens read as real work product | judge's hygiene pass: Reserving Standard's v3→v4 versioning note, informal email cross-talk in `telematics_pilot_thread.txt`, mixed legacy/new claims-system references read as genuine operational artifacts; no benchmark/authoring disclosure, no placeholder names | yes |
+| Files | 10 or more | 13 | yes |
+| Formats | 3 or more | 6 (pdf, csv, xlsx, parquet, json, docx) | yes |
+| Large file | 25,000 rows or more | settlement 257,557; till lines 73,375 | yes |
+| Distractors | 2 or more, in metadata, no file name labels one | catchment_households_census2022.csv and coffee_brand_tracker_2026.xlsx in metadata.json; names do not label them | yes |
+| Distractors unused yet weighable; none answers a graded quantity | required | Thread found them unused by the solution. I did not re-run the check that none reproduces a graded quantity arithmetically. | partial |
+| Deliverables | 1 to 3, all in golden | 2 (pptx, csv), both in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | the prompt's last sentence states them; asks are grids | yes |
+| Prompt shape and rubric 25 or more criteria | identifiable; 25 or more | The shape is a per-rival, per-roaster-quarter, per-supplier-quarter grid. The rubric is generated downstream and was not available to count. | not verified |
+| Reads as real work product | required | no authoring language found by the thread; golden realism not re-judged | yes |
 
 ## Gate G reconciliation
-Judge: `mechanism: method_or_model_selection`, `stumping_family: analytical_non_defect`,
-`surface_read_dependency: no`, `sole_data_defect: no`. Gate H: `domain: pass`, `layers: pass`,
-`decisive_step: analytical`.
+The thread's decisive step is analytical, with the easy route being the per-card or per-account share (Nordhavn at 17%). It names no distractor as the surface read, so the distractors are not too load-bearing. It gives mechanism etl_conformance and stumping_family analytical_non_defect. The design note and card agree on the substance:
+- the card has `stump_class: analytical`, with an analyst_test and domain_test that match the thread's easy route;
+- the ladder's R1 (Nordhavn at 16.5%) and R3 (Oro Rosso at 39.9% against Nordhavn at 48.7%) match the thread's figures exactly;
+- the card carries no mechanism, stumping_family, surface_read_dependency or sole_data_defect values to compare against.
+No mismatch. The thread flags one risk: home linking is an inference no file states, so a reviewer may read it as a hidden rule. SF1 closes it with the brief's "anyone in it" and the terms' one-member cards.
 
-Design note's `## Three rules` (card `stump_class: analytical`): Layer 2 is named
-`field_method, own:claim-count-development-by-notifying-route`, the basis chosen by the Standard's own
-out-of-sample back-test, with "no decoy" and "no certified replay" both asserted — no shipped figure is itself
-a frequency, ultimate count, or development factor that could be reproduced by replay. `analyst_test` names
-the exact easy route (pooled, by-head, or by-`notified_by` development → Mersey and Severn) and `domain_test`
-names the field's own completion-by-development-with-back-test method as the deciding quantity. This matches
-the judge's classification point for point: the judge independently discovered the same three failing naive
-splits (pooled, by-head, literal `notified_by`) and the same passing route split, with misses (8.54/7.85/6.78
-vs. 1.09 per cent) that match the design note's own figures (8.54, 7.85, 6.78 vs. "within 1.1 per cent") to
-two decimal places. No mismatch: the judge did not name either declared distractor as a surface read carrying
-the task, and the design note likewise asserts no decoy and no certified replay. This is the library's own
-textbook route (claims-development-by-report-lag-factor, validated by a governing standard's back-test) that
-a strong analyst applying the field's standard method would still take the easy way and get wrong — a
-landable call under `stumping` 1.3, not a planted trap. The main thread should weigh it as such against the
-design note's ladder, but nothing here signals a send-back.
+Gate H line: domain pass, layers pass, decisive_step analytical. This is the duplication-of-purchase table at the household unit, which is the field's market-structure method. It is not a standard-method pass, because the household assembly via the bank-card match is the judgment the data must settle.
 
 ## Stump power (Gate F)
-The judge's assessment: the pilot terms and the Reserving Standard both describe the general mechanics of
-development and back-testing, but neither names "split by notifying route" or "claims-management company" as
-the required grouping. A model has to run the mandated back-test itself, discover that the obvious whole-book,
-by-head, or by-field development fails it, and then search for and find the one split (joined through
-`claimant_representatives.csv`) that passes. A model that computes a pooled or by-head development factor and
-stops — the natural "list the Standard's steps and apply them" route — files Mersey + Severn, the wrong pair.
-This is a genuine out-of-sample-validated method-selection trap on honest, correctly-reported data, consistent
-with the design note's `analyst_test`, and it is the field's own standard analytical move (claims development
-completed by report-lag factor, validated against a closed year) rather than a reflex to distrust a stated
-number. Two independently-constructed valid splits converge on the same rounded answer, which also rules out
-the task collapsing to a knife-edge arbitrary partition.
+Moderate to good. The card-level route needs no settlement join and files Nordhavn. A solver who does the join but links cards only files Westquay at about 26%. Only the full home build lands Oro Rosso. The ask-4 defect does not touch the call.
 
 ## Findings, ranked
-1. (informational, not a send-back) The spec-gate distractor check is partially unconfirmed: neither
-   `telematics_supplier_quote_2026.pdf` nor `aggregator_quote_volumes_2025_26.xlsx` was found to reproduce a
-   graded quantity arithmetically before being ruled out by a shipped fact; both are relevant-but-unused by
-   file type and subject matter rather than by a near-miss number. Worth a author glance at the next regular
-   hygiene pass, not a determinism defect.
-2. (informational) No rubric artifact exists in `task268/` for this pass to recount against the "≥25
-   criteria" gate; flag for the regular rubric check, not raised here as a determinism finding.
-3. No Gate A–H finding. No competing answer survives for the main call or the cars-on-cover ask. No
-   Gate G or Gate H mismatch between the judge and the design note.
+1. Ask 4 (the loose-coffee grid) is not determinate at one decimal. The labels-versus-accessories decomposition is ambiguous, the 25-minute window is unfiled, cash-line matching has no window, and the band is 6 to 13 kg wide. Fix: rebuild the counter payments so that every card sale decomposes into exactly one label set. That means no label price equals an accessory sum inside the window, and no two same-priced labels share a window. File the convention in coffee_counter_price_board_2026.pdf or the brief: labels paid by card within N minutes, cash lines within M minutes, unpaid labels not sold. Then restate the grid from the rebuilt pack. Rounding to whole kilograms does not help because the band exceeds 0.5 kg.
+2. The scale 2 re-dating offset is a window, not a value. This is minor because no quarter moves. Fix: pin the offset, or make the S2 label dates recoverable by one rule in the price board PDF.
+3. Optional: no file states that a shared card_ref marks one home. Fix: leave it, since adding a sentence lowers stump power. Keep SF1's closure.
+4. The design note's fork table has no row for the counter ask. Fix: add the forks above (with their closures) to the fork table and assert them in checks.py after the rebuild.
 
 ## Next action for the author
-None required for determinism. Ship: record the portal result in the ledger and mark the card's
-`mechanism`/`stumping_family` fields (currently `None`) with the judge's values
-(`method_or_model_selection` / `analytical_non_defect`) to keep the card current with this pass's verdict.
+Run /fix-determinism on ask 4 only. Regenerate the counter payments so each card sale has a unique label decomposition, file the label and cash windows and the unpaid-label rule in the price board PDF, and re-state the loose-coffee grid. Keep the home, overlap and multibuy data byte-identical, then re-judge once.

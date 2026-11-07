@@ -1,229 +1,257 @@
-"""Assertions on the built pack and goldens: the ladder (every rung's set and margin), the forcing record, the
-semantic fork rows, the ask goldens and their wrong paths, the separation of device rows from the main population,
-the input gates and the realism sweep. Raises on the first failure; prints one line per assertion."""
-import glob
+"""Assertions on the cut pack: the call, every route the ladder prices, the fork rows, the asks' devices, the
+separation of the asks from the call, and the input gates.
+
+    python3 task181/generator/checks.py
+"""
+import datetime as dt
 import json
 import os
 import re
 import sys
-
-import numpy as np
-import pandas as pd
-import pdfplumber
+import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import asks as A          # noqa: E402
-import deliver as DL      # noqa: E402
-import exposure as X      # noqa: E402
-import models as M        # noqa: E402
-import world as W         # noqa: E402
+import common as C   # noqa: E402
+import solve as S    # noqa: E402
 
+GOLD = ["GS-16", "GS-21"]
+DEFAULT = ["GS-05", "GS-12", "GS-16", "GS-21"]
+FAILS = []
 N = [0]
 
 
-def ok(cond, msg):
+def check(label, ok, detail=""):
     N[0] += 1
-    if not cond:
-        raise SystemExit("CHECK FAILED %d: %s" % (N[0], msg))
-    print("  ok %2d  %s" % (N[0], msg))
+    print(("PASS  " if ok else "FAIL  ") + label + ("" if ok else "   " + str(detail)))
+    if not ok:
+        FAILS.append(label)
 
 
-def name_set(d):
-    return sorted(W.NAME[W.SECTORS[s]] for s, v in d.items() if v > W.TOLERANCE)
+def margins(table, gold):
+    m_in = min(table[c]["observed"] - table[c]["limit"] for c in gold)
+    m_out = min(table[c]["limit"] - table[c]["observed"] for c in table if c not in gold)
+    return m_in, m_out
 
 
-def run(target, golden, world=None, meta_path=None):
-    print("checks: %s" % target)
-    c = DL.compute(target)
-    r, sets = c["r"], c["sets"]
-    g = r["golden"]
-    S = range(8)
-    T = W.SECTORS.index("TRV")
+def period_adjusted(P, inf, repair):
+    """Rung 1: the expectation scaled for the department's own rise after the repair date (the period effect)."""
+    win = P[(P["day"] >= C.WIN0) & (P["day"] <= C.WIN1)]
+    post = win["knife"] >= repair
+    f = (sum(i in inf for i in win.index[post]) / win["expected"][post].sum()) / \
+        (sum(i in inf for i in win.index[~post]) / win["expected"][~post].sum())
+    out = {}
+    for c in C.CONSULTANTS:
+        w = win[win["consultant"] == c]
+        pp = w["knife"] >= repair
+        e = float(w["expected"][~pp].sum() + w["expected"][pp].sum() * f)
+        o = int(sum(i in inf for i in w.index))
+        out[c] = dict(expected=e, observed=o, limit=C.poisson_upper(e))
+    return out, f
 
-    # ---------------------------------------------------------------- the call and the ladder
-    ok(sets["golden"] == ["TRV"], "golden: Tarvik alone over 40.0 (%s)" % ", ".join("%.1f" % g[s] for s in S))
-    ok(g[T] >= 1.15 * W.TOLERANCE, "golden margin: Tarvik %.1f at least 1.15 x 40.0" % g[T])
-    ok(max(g[s] for s in S if s != T) <= W.TOLERANCE / 1.15, "golden margin: every other sector at or under 34.8 "
-       "(highest %.1f)" % max(g[s] for s in S if s != T))
-    for k in ("R0", "R1", "R1_record", "R1_summers", "R2_density", "R2b_own", "R2b_pooled", "R2b_pooled_s26"):
-        ok(sets[k] == [], "rung %s names no sector (highest %s %.1f)" % (k, W.SECTORS[max(S, key=lambda s: r[k][s])],
-                                                                        max(r[k].values())))
-    ok(max(r["R1"].values()) <= W.TOLERANCE / 1.2, "default path: highest forecast at least 1.2 x under 40.0 (%.1f)"
-       % max(r["R1"].values()))
-    ok(r["R1"][T] < 20, "default path: Tarvik low on the summer 2026 rate (%.1f)" % r["R1"][T])
-    ok(sorted(r["R1"], key=lambda s: -r["R1"][s]).index(T) >= 4, "position: Tarvik 5th or lower on the default path")
-    ok(sets["R2c_trend"] not in ([], ["TRV"]) and "TRV" not in sets["R2c_trend"],
-       "rung R2c (trend) names a wrong set: %s" % sets["R2c_trend"])
-    for k in ("R3_summers", "R3_s26", "R3_y26", "R3_own", "R3_all_losses", "R3_meet", "R3_moving_pairs",
-              "R3_within_1000ft", "R3_within_2000ft"):
-        top = max(r[k][s] for s in S if s != T)
-        ok(sets[k] == ["TRV"] and r[k][T] >= 1.15 * W.TOLERANCE and top <= W.TOLERANCE / 1.15,
-           "variant %s: Tarvik alone (%.1f), next %.1f" % (k, r[k][T], top))
-    s26 = [tuple(int(x.timestamp()) for x in W.season(2026))]
-    e26 = M.exposures(c["plan"], {"utc": [(int(pd.Timestamp("2027-06-01", tz="UTC").timestamp()),
-                                           int(pd.Timestamp("2027-09-01", tz="UTC").timestamp()))]})
-    utc27 = {s: c["lam"] * e26[(s, "utc")]["cross"] / e26[(s, "utc")]["fh"] * 1e5 for s in S}
-    ok(name_set(utc27) == ["Tarvik"], "SF2: the season read in UTC gives Tarvik alone (%.1f)" % utc27[T])
-    ok(all(abs(g[s] / W.TOLERANCE - 1) >= 0.06 for s in S), "SF8: no sector within 6 per cent of 40.0")
-    ok(name_set({s: round(g[s], 1) for s in S}) == ["Tarvik"], "SF9: rates rounded to one decimal first, same set")
-    ok(name_set(r["R3_all_losses"]) == ["Tarvik"], "SF1: every loss of separation, pilot-induced included, same set")
-    ok(all(name_set(r[k]) == ["Tarvik"] for k in ("R3_summers", "R3_s26", "R3_y26")), "SF5: estimation window, same set")
-    ok(all(name_set(r[k]) == ["Tarvik"] for k in ("R3_meet", "R3_moving_pairs", "R3_within_1000ft",
-                                                    "R3_within_2000ft")), "SF6: pair definition, same set")
-    ok(name_set(r["R3_own"]) == ["Tarvik"], "SF7: each sector's own rate per pair, same set")
-    fh_clip = {}
-    a27, b27 = (int(x.timestamp()) for x in W.season(2027))
-    p = c["plan"]
-    for s in S:
-        m = p["sec"] == s
-        fh_clip[s] = float((np.minimum(p["t1"][m], b27) - np.maximum(p["t0"][m], a27)).clip(min=0).sum()) / 3600
-    ok(name_set({s: c["exp27"][s] / fh_clip[s] * 1e5 for s in S}) == ["Tarvik"],
-       "SF3: flight hours clipped at the season's edges, same set")
-    ok(len(set(c["rec"]["sec"].tolist())) == 8 and set(c["occ"]["code"].dropna()) <= set(W.SECTORS),
-       "SF4: occurrences and flight hours are recorded per elementary sector")
-    # discriminator dominance
-    e27, e26_ = c["ex27"][(T, "s27")], c["ex"][(T, "s26")]
-    ok(e27["cross"] / e26_["cross"] >= 4 and e27["fh"] / e26_["fh"] <= 1.12,
-       "dominance: Tarvik's pairs x%.1f against flight hours x%.2f, summer 2026 to summer 2027"
-       % (e27["cross"] / e26_["cross"], e27["fh"] / e26_["fh"]))
 
-    # ---------------------------------------------------------------- the forcing record
-    occ = c["occ"]
-    rec = c["rec"]
-    smi = occ[occ["occurrence_type"] == "SMI"]
-    df = pd.DataFrame({"cs": rec["callsign"], "sec": rec["sec"], "t0": rec["t0"], "t1": rec["t1"], "a": rec["a"],
-                       "b": rec["b"]})
-    df = df[df["cs"].isin(set(smi["ac1_callsign"]) | set(smi["ac2_callsign"]))]
-    grp = {k: v for k, v in df.groupby(["cs", "sec"])}
-    crossed = 0
-    for o in smi.itertuples():
-        def trav(cs):
-            d = grp.get((cs, o.sec))
-            d = d[(d["t0"] <= o.ts + 60) & (d["t1"] >= o.ts - 60)]
-            return d.iloc[0]
-        i, j = trav(o.ac1_callsign), trav(o.ac2_callsign)
-        lo, hi = max(i.t0, j.t0), min(i.t1, j.t1)
-        li = lambda q, t: q.a + (q.b - q.a) * (t - q.t0) / (q.t1 - q.t0)
-        if (li(i, lo) - li(j, lo)) * (li(i, hi) - li(j, hi)) < 0:
-            crossed += 1
-    ok(crossed == len(smi), "every loss of separation in the record is a pair whose levels changed order (%d of %d)"
-       % (crossed, len(smi)))
-    ok(set(smi["atm_contribution"]) <= {"D", "I", "N"} and set(smi["status"]) == {"Closed"},
-       "every loss of separation closed with its ATM contribution determined")
-    lam_s = [c["L"][(s, "all")] / c["ex"][(s, "all")]["cross"] for s in S]
-    fh_s = [c["L"][(s, "all")] / c["ex"][(s, "all")]["fh"] for s in S]
-    ok(max(lam_s) / min(lam_s) < 1.4 and max(fh_s) / min(fh_s) > 1.4,
-       "losses per pair hold across sectors (max/min %.2f) while losses per flight hour do not (%.2f)"
-       % (max(lam_s) / min(lam_s), max(fh_s) / min(fh_s)))
-    ok(max(lam_s) / min(lam_s) >= 1.1, "losses per pair vary by ordinary chance between sectors (max/min %.2f)"
-       % (max(lam_s) / min(lam_s)))
-    for s in S:
-        for win in ("s25", "s26"):
-            rate = c["L"][(s, win)] / c["ex"][(s, win)]["fh"] * 1e5
-            if rate > W.TOLERANCE / 1.06:
-                ok(False, "realised %s rate under the tolerance for %s" % (win, W.SECTORS[s]))
-    ok(True, "every sector's realised summer 2025 and 2026 rate at least 6 per cent under 40.0")
+def session_adjusted(P, inf, D):
+    """Rung 2: afternoon-list procedures carry their own department rate (a visible attribute of the operation)."""
+    ops = D["ops"].set_index("booking_no")
+    win = P[(P["day"] >= C.WIN0) & (P["day"] <= C.WIN1)]
+    pm = win["session"] == "PM"
+    f = (sum(i in inf for i in win.index[pm]) / win["expected"][pm].sum()) / \
+        (sum(i in inf for i in win.index[~pm]) / win["expected"][~pm].sum())
+    out = {}
+    for c in C.CONSULTANTS:
+        w = win[win["consultant"] == c]
+        p = w["session"] == "PM"
+        e = float(w["expected"][~p].sum() + w["expected"][p].sum() * f)
+        out[c] = dict(expected=e, observed=int(sum(i in inf for i in w.index)), limit=C.poisson_upper(e))
+    return out, f
 
-    # the close-out reproduces from the record
-    with pdfplumber.open(os.path.join(target, "HACC_summer2026_safety_closeout.pdf")) as pdf:
-        text = "\n".join(pg.extract_text() or "" for pg in pdf.pages)
-    for s in S:
-        nm = W.NAME[W.SECTORS[s]]
-        m = re.search(r"^%s (\d+) (\d+) ([\d,]+) ([\d.]+)$" % nm, text, re.M)
-        ok(m is not None and int(m.group(1)) == c["L"][(s, "s25")] and int(m.group(2)) == c["L"][(s, "s26")] and
-           int(m.group(3).replace(",", "")) == round(c["ex"][(s, "s26")]["fh"]) and
-           m.group(4) == "%.1f" % (c["L"][(s, "s26")] / c["ex"][(s, "s26")]["fh"] * 1e5),
-           "close-out row reproduces for %s" % nm)
 
-    # ---------------------------------------------------------------- the asks
-    a = c["asks"]
-    d = a["delay"]
-    for k, s in enumerate(W.SECTORS):
-        v = d["golden"][k]
-        ok(abs((v * 100) % 1 - 0.5) >= 0.15, "ask 1 %s %.4f sits mid-bin at two decimals" % (s, v))
-    ok(all("%.2f" % d["golden_by_eobt"][k] == "%.2f" % d["golden"][k] for k in S),
-       "ask 1 converges: the season read by off-block time takes the same flights as by sector entry")
-    ok(all("%.2f" % d["every_plan"][k] != "%.2f" % d["golden"][k] for k in S),
-       "ask 1 cracker (plans that never flew kept) misses every sector")
-    ok(all("%.2f" % d["every_row"][k] != "%.2f" % d["golden"][k] for k in S), "ask 1 natural read (every row) misses "
-       "every sector")
-    ok(sum("%.2f" % d["callsign_day"][k] != "%.2f" % d["golden"][k] for k in S) >= 6,
-       "ask 1 callsign-and-day dedup misses at least six sectors")
-    for s in W.SECTORS:
-        mins = int(round(a["hours"][s] * 60))
-        ok(mins % 6 in (0, 1, 5), "ask 2 %s %.2f h sits mid-bin at one decimal" % (s, a["hours"][s]))
-    ok(all("%.1f" % a["hours_current"][s] != "%.1f" % a["hours"][s] for s in W.SECTORS),
-       "ask 2 cracker (current table all season) misses every sector")
-    ok(all("%.1f" % a["hours_rev8"][s] != "%.1f" % a["hours"][s] for s in W.SECTORS),
-       "ask 2 the manual's table all season misses every sector")
-    ok(all(a["enc_rows"][s] != a["enc"][s] for s in W.SECTORS), "ask 3 cracker (report rows counted) misses every sector")
-    ok(any(a["enc_utc"][s] != a["enc"][s] for s in W.SECTORS), "ask 3 hazard: the season read in UTC moves a sector")
-    ok(len(set(a["enc"].values())) >= 5 and len(set(round(x, 2) for x in d["golden"].values())) == 8,
-       "realism: ask figures differ across sectors")
-    rev8, rev9 = A.om_table(target), A.current_table(target)
-    diff = sorted(k for k in rev9 if sorted(map(tuple, rev9[k])) != sorted(map(tuple, rev8[k])))
-    ok(diff == ["C5", "C6A", "C6B"], "the manual's revision 8 differs from the current table in C5, C6A, C6B only")
-    log = pd.read_csv(os.path.join(target, "sector_configuration_log_2026-05_2026-09.csv"), keep_default_na=False)
-    ok(int(log["remarks"].str.contains("revision 9").sum()) == 1, "one logged entry for the revision taking effect")
-    ok(set(log["configuration"]) <= set(rev9) and set(log["configuration"]) <= set(rev8),
-       "every logged configuration code is in both tables")
+def own_history(P, inf):
+    """A consultant judged against their own 2022 to 2026 ratio of observed to expected."""
+    out = {}
+    for c in C.CONSULTANTS:
+        h = P[(P["consultant"] == c) & (P["knife"].dt.year <= 2026)]
+        ratio = sum(i in inf for i in h.index) / h["expected"].sum()
+        w = P[(P["consultant"] == c) & (P["day"] >= C.WIN0) & (P["day"] <= C.WIN1)]
+        e = float(w["expected"].sum() * ratio)
+        out[c] = dict(expected=e, observed=int(sum(i in inf for i in w.index)), limit=C.poisson_upper(e))
+    return out
 
-    # ---------------------------------------------------------------- separation and the pack
-    slots = pd.read_csv(os.path.join(target, "nm_slot_allocations_2026-05_2026-09.csv"), dtype={"ifplid": str})
-    flown = set(rec["ifplid"])
-    never = set(slots["ifplid"]) - flown
-    ok(len(never) > 0 and not (never & flown), "device rows (plans that never flew, %d) are outside the flight data"
-       % len(never))
-    ok(set(occ["occurrence_type"][occ["occurrence_type"] == "SMI"]) == {"SMI"} and
-       not (set(occ[occ["occurrence_type"] == "ACAS RA"]["occurrence_no"]) & set(smi["occurrence_no"])),
-       "the advisory reports (ask 3) are outside the main call's occurrence rows")
-    src = open(os.path.join(HERE, "models.py")).read()
-    ok("configuration" not in src and "slot" not in src and "roster" not in src and "met_cb" not in src,
-       "the main call's computation reads none of the ask files or distractors")
-    ok(not any(x in open(os.path.join(HERE, f)).read() for f in ("models.py", "asks.py")
-               for x in ("controller_roster", "met_cb")), "no golden computation reads a distractor")
-    files = sorted(os.listdir(target))
-    meta = json.load(open(meta_path)) if meta_path else None
-    ok(len(files) >= 10, "input gate: %d files" % len(files))
-    ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "input gate: %d formats" % len({f.rsplit(".", 1)[1] for f in files}))
-    ok(len(rec["t0"]) >= 25000, "input gate: the flight data has %d rows" % len(rec["t0"]))
-    ok(meta is None or (len(meta["distractor_files"]) >= 2 and all(x in files for x in meta["distractor_files"])),
-       "input gate: two distractors named in metadata.json")
-    p27 = c["plan"]
-    ok(p27["t0"].min() >= a27 and p27["t0"].max() < b27, "the planning traffic covers the local summer 2027 season")
-    ok(rec["t0"].min() >= int(W.ACTUAL_START.timestamp()) and rec["t0"].max() < int(W.ACTUAL_END.timestamp()),
-       "the flight data covers 1 Jan 2025 to 30 Sep 2026")
-    ok(occ["ts"].max() < int(W.ACTUAL_END.timestamp()), "no occurrence dated after 30 Sep 2026")
 
-    # ---------------------------------------------------------------- realism sweep
-    ok(len({c["L"][(s, "all")] for s in S}) >= 5, "realism: loss counts differ across sectors")
-    ok(all(round(c["ex"][(s, "all")]["fh"]) % 100 for s in S), "realism: no round flight-hour totals")
-    texts = []
-    for f in files:
-        if f.endswith((".csv", ".md", ".json")):
-            texts.append(open(os.path.join(target, f), encoding="utf-8").read())
-        elif f.endswith(".pdf"):
-            with pdfplumber.open(os.path.join(target, f)) as pdf:
-                texts.append("\n".join(pg.extract_text() or "" for pg in pdf.pages))
-    ok(not any("—" in t or "–" in t for t in texts), "no em or en dash anywhere in the pack")
-    people = set(json.load(open(os.path.join(HERE, "..", "..", ".claude", "skills", "fingerprint", "cards",
-                                             "task181.json")))["world"]["people"])
-    named = set(W.PEOPLE.values()) | {"Kenny Lassen"}
-    ok(named <= people, "every persona in the pack is on the card (%s)" % ", ".join(sorted(named)))
-    for t in texts:
-        for bad in ("crossing", "decoy", "golden", "trap", "re-filed", "refiled", "duplicate"):
-            if bad in t.lower():
-                ok(False, "the pack never names %r" % bad)
-    ok(True, "the pack never names a crossing, a re-filing or a duplicate")
-    # goldens
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    ok(fig["sectors_over_tolerance"] == ["Tarvik"], "figures.json carries the call")
-    ok(sorted(os.listdir(golden)) == sorted([DL.DECK, DL.CSV]), "exactly the two goldens the prompt names")
-    print("checks: %d passed" % N[0])
-    return N[0]
+def main():
+    R = S.solve()
+    D, P, inf, exposed, rep = R["D"], R["P"], R["inf"], R["exposed"], R["repair"]
+    fig = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
+    # ---------------- the call
+    check("call: the golden refers %s" % ", ".join(GOLD), S.referred(R["gold"]) == GOLD, S.referred(R["gold"]))
+    check("call: figures.json carries the same set", fig["call"]["referred"] == GOLD, fig["call"])
+    mi, mo = margins(R["gold"], GOLD)
+    check("call: the golden's margins (inside %d, outside %d) are at least 4 counts" % (mi, mo), mi >= 4 and mo >= 4)
+    check("default path (R0, the raw ratio against the limit) refers %s" % ", ".join(DEFAULT),
+          S.referred(R["naive"]) == DEFAULT, S.referred(R["naive"]))
+    mi0, mo0 = margins(R["naive"], DEFAULT)
+    check("default path's margins (inside %d, outside %d) are at least 4" % (mi0, mo0), mi0 >= 4 and mo0 >= 4)
+    check("SF3 stratified by exposure (expected times the exposed ratio %.2f): same call" % R["rr"][0],
+          S.referred(R["strat"]) == GOLD, S.referred(R["strat"]))
+    ms = margins(R["strat"], GOLD)
+    check("SF3 the stratified route's margins (%d, %d) are at least 4" % ms, min(ms) >= 4)
+    check("the exposure carries several times the risk (ratio %.2f on %d operations)" % (R["rr"][0], R["rr"][1]),
+          R["rr"][0] > 2.5 and R["rr"][1] > 150)
+    check("every window procedure is traced to its theatre scans", len(R["linked"]) ==
+          int(((P["day"] >= C.WIN0) & (P["day"] <= C.WIN1)).sum()), len(R["linked"]))
+    # ---------------- the ladder's other rungs
+    pa, f = period_adjusted(P, inf, rep)
+    check("R1 the department's own rise after the repair taken out (factor %.2f) files another set (%s)" %
+          (f, ", ".join(S.referred(pa)) or "none"), S.referred(pa) != GOLD, S.referred(pa))
+    sa, g = session_adjusted(P, inf, D)
+    check("R2 afternoon lists given their own rate (factor %.2f) files another set" % g, S.referred(sa) != GOLD,
+          S.referred(sa))
+    oh = own_history(P, inf)
+    check("R2b each consultant against their own 2022 to 2026 ratio files another set", S.referred(oh) != GOLD,
+          S.referred(oh))
+    pre = P[(P["day"] >= C.WIN0) & (P["knife"] < rep)]
+    pre_tab = {}
+    for c in C.CONSULTANTS:
+        w = pre[pre["consultant"] == c]
+        e = float(w["expected"].sum())
+        pre_tab[c] = dict(expected=e, observed=int(sum(i in inf for i in w.index)), limit=C.poisson_upper(e))
+    check("the window before the repair alone (six weeks) does not file the golden", S.referred(pre_tab) != GOLD,
+          S.referred(pre_tab))
+    # ---------------- fork rows
+    ex_tray, _ = S.trace(D, P, rep, rule="tray")
+    t2 = S.consultant_table(P, inf, ex_tray, "exclude")
+    check("SF2 exposure read on rigid containers only: same call", S.referred(t2) == GOLD, S.referred(t2))
+    ex_all, _ = S.trace(D, P, rep, rule="s3_all")
+    t3 = S.consultant_table(P, inf, ex_all, "exclude")
+    check("SF2 exposure read on every steriliser 3 load of the year: same call", S.referred(t3) == GOLD, S.referred(t3))
+    rep_day = dt.datetime.combine(rep.date(), dt.time(0, 0))
+    ex_d, _ = S.trace(D, P, rep_day)
+    check("SF11 the repair taken from the start of 12 May: same call",
+          S.referred(S.consultant_table(P, inf, ex_d, "exclude")) == GOLD)
+    q95 = lambda tab: sorted(c for c, v in tab.items() if v["observed"] > C.poisson_upper(v["expected"], 0.95))
+    check("SF4 the limit read as the 95th centile: same call and default", q95(R["gold"]) == GOLD and
+          q95(R["naive"]) == DEFAULT, (q95(R["gold"]), q95(R["naive"])))
+    # duration from anaesthetic start to leaving theatre
+    P2 = P.copy()
+    P2["minutes"] = (pd_to(P2["out_of_theatre"]) - P2["anaes"]).dt.total_seconds() / 60
+    P2["idx"] = [C.risk_index(int(a), {"Clean": 1, "Clean-contaminated": 2, "Contaminated": 3, "Dirty": 4}[w], m, k)
+                 for a, w, m, k in zip(P2["asa_class"], P2["wound_class"], P2["minutes"], P2["surveillance_category"])]
+    P2["expected"] = [C.expected_rate(k, i) for k, i in zip(P2["surveillance_category"], P2["idx"])]
+    t5 = S.consultant_table(P2, inf, exposed, "exclude")
+    check("SF5 duration read from anaesthetic start to leaving theatre: same call", S.referred(t5) == GOLD,
+          S.referred(t5))
+    inf30 = S.infections(D, P, window=False)
+    check("SF8 every infection kept whatever its day: same call",
+          S.referred(S.consultant_table(P, inf30, exposed, "exclude")) == GOLD)
+    Pr = S.procedures(D, drop_returns=False)
+    infr = S.infections(D, Pr)
+    exr, _ = S.trace(D, Pr, rep)
+    check("SF9 returns to theatre kept as procedures: same call",
+          S.referred(S.consultant_table(Pr, infr, exr, "exclude")) == GOLD)
+    Ps = S.procedures(D, seq1=False)
+    infs = S.infections(D, Ps)
+    exs, _ = S.trace(D, Ps, rep)
+    check("SF10 an add-on's second line kept as a procedure: same call",
+          S.referred(S.consultant_table(Ps, infs, exs, "exclude")) == GOLD)
+    Pb = P.copy()
+    ops = D["ops"].drop_duplicates("booking_no").set_index("booking_no")
+    Pb["consultant"] = [S.CODE_MAP.get(ops.loc[b, "booked_consultant"], ops.loc[b, "booked_consultant"])
+                        for b in Pb["booking_no"]]
+    check("SF14 the booked consultant in place of the responsible one: same call",
+          S.referred(S.consultant_table(Pb, inf, exposed, "exclude")) == GOLD,
+          S.referred(S.consultant_table(Pb, inf, exposed, "exclude")))
+    check("SF1 the raw ratio read as each consultant's own practice files the default path's four",
+          S.referred(R["naive"]) == DEFAULT and S.referred(R["naive"]) != GOLD)
+    P6 = P.copy()
+    P6["idx"] = [int(int(a) >= 3) + int({"Clean": 1, "Clean-contaminated": 2, "Contaminated": 3, "Dirty": 4}[w] >= 3)
+                 + int(m >= C.CUT_MIN[k]) for a, w, m, k in zip(P6["asa_class"], P6["wound_class"], P6["minutes"],
+                                                                P6["surveillance_category"])]
+    P6["expected"] = [C.expected_rate(k, i) for k, i in zip(P6["surveillance_category"], P6["idx"])]
+    check("SF6 a duration at the cut-point taking a point: same call",
+          S.referred(S.consultant_table(P6, inf, exposed, "exclude")) == GOLD)
+    P7 = P.copy()
+    P7["day"] = [dt.date.fromisoformat(x) for x in P7["list_date"]]
+    check("SF7 the window read on the list date: same call",
+          S.referred(S.consultant_table(P7, inf, exposed, "exclude")) == GOLD)
+    ex12, _ = S.trace(D, P, rep, aborted=True)
+    check("SF12 an item's last load read with aborted cycles included: same call",
+          S.referred(S.consultant_table(P, inf, ex12, "exclude")) == GOLD)
+    w27 = D["ops"][(D["ops"]["list_date"] >= "2027-01-01")]
+    check("SF13 no 2027 procedure carries the retired code GS-41",
+          not ((w27["responsible_consultant"] == "GS-41") | (w27["booked_consultant"] == "GS-41")).any())
+    # ---------------- shock: the golden is no interval of any one-number sort
+    win = P[(P["day"] >= C.WIN0) & (P["day"] <= C.WIN1)]
+    sorts = {"raw ratio": {c: R["naive"][c]["observed"] / R["naive"][c]["expected"] for c in C.CONSULTANTS},
+             "infections": {c: R["naive"][c]["observed"] for c in C.CONSULTANTS},
+             "afternoon share": {c: float((win[win["consultant"] == c]["session"] == "PM").mean()) for c in C.CONSULTANTS},
+             "procedures": {c: int((win["consultant"] == c).sum()) for c in C.CONSULTANTS}}
+    for k, v in sorts.items():
+        order = sorted(v, key=lambda c: -v[c])
+        pos = sorted(order.index(c) for c in GOLD)
+        check("shock: the golden is not an interval of the %s sort" % k, pos[1] - pos[0] != 1 or pos[0] not in (0, 8))
+    # ---------------- the asks: devices and separation
+    a, b = R["ask_a"], R["ask_b"]
+    check("ask A figures match figures.json", {k: v for k, v in a.items()} == fig["ask_a"])
+    check("ask B figures match figures.json", {k: v for k, v in b.items()} == fig["ask_b"])
+    pa_raw = S.ask_procedures(S.procedures(D, merge_addons=False))
+    check("ask A device: counting bookings moves at least 20 of 30 cells",
+          sum(pa_raw[k] != a[k] for k in a) >= 20, sum(pa_raw[k] != a[k] for k in a))
+    pa_codes = S.ask_procedures(S.procedures(D, map_codes=False))
+    check("ask A hazard: the 2025 code change unmerged moves GS-14's cells", all(pa_codes["GS-14 %d" % y] != a["GS-14 %d" % y]
+                                                                               for y in (2022, 2023, 2024)))
+    raw_b = cracker_infections(D)
+    check("ask B device: counting the export by its own consultant and date moves at least 20 of 30 cells",
+          sum(raw_b.get(k, 0) != b[k] for k in b) >= 20, sum(raw_b.get(k, 0) != b[k] for k in b))
+    ex_link = S.infections(D, P, link="exact")
+    b_exact = S.ask_infections(P, ex_link)
+    check("ask B device: joining on the recorded date exactly moves cells", sum(b_exact[k] != b[k] for k in b) >= 8,
+          sum(b_exact[k] != b[k] for k in b))
+    # separation: the window's rows carry neither ask device
+    o = D["ops"]
+    w27 = o[o["list_date"] >= "2027-01-01"]
+    dup = w27[w27["status"] == "Completed"].groupby(["ur_number", "theatre", "knife_to_skin"])["booking_no"].nunique()
+    check("separation: no 2027 operation is split across two bookings", int((dup > 1).sum()) == 0, int((dup > 1).sum()))
+    s27 = D["ssi"][D["ssi"]["operation_date"] >= "2025-01-01"]
+    check("separation: every surveillance record from 2025 carries its booking", s27["booking_no"].notna().all())
+    # ---------------- input gates
+    files = sorted(os.listdir(C.TARGET))
+    exts = {f.rsplit(".", 1)[1] for f in files}
+    check("input: 10 or more files (%d)" % len(files), len(files) >= 10)
+    check("input: 3 or more formats (%s)" % ", ".join(sorted(exts)), len(exts) >= 3)
+    big = max(sum(1 for _ in open(os.path.join(C.TARGET, f), encoding="utf-8")) for f in files if f.endswith(".csv"))
+    check("input: a file of 25,000 or more rows (%d)" % big, big >= 25000)
+    meta = json.load(open(os.path.join(C.TASK, "metadata.json"), encoding="utf-8"))
+    check("input: two or more distractors named in metadata.json", len(meta.get("distractors", [])) >= 2)
+    names = " ".join(files).lower()
+    check("input: no file name labels a distractor or the step", not re.search(r"distract|decoy|fault|exposure|trace",
+                                                                             names))
+    zp = os.path.join(C.TASK, "target.zip")
+    if os.path.exists(zp):
+        check("target.zip holds exactly target/", sorted(zipfile.ZipFile(zp).namelist()) == files)
+    print("%d checks, %d failed" % (N[0], len(FAILS)))
+    return 1 if FAILS else 0
+
+
+def pd_to(series):
+    import pandas as pd
+    return pd.to_datetime(series)
+
+
+def cracker_infections(D):
+    """The careful solver's reading of the export: latest record, confirmed, its own consultant code and date."""
+    s = D["ssi"].copy()
+    s["record_version"] = s["record_version"].astype(int)
+    s = s.sort_values(["infection_id", "record_version"]).drop_duplicates("infection_id", keep="last")
+    s = s[s["status"] == "Confirmed"]
+    s = s.drop_duplicates(["ur_number", "operation_date", "surveillance_category"])
+    out = {}
+    for c, d in zip(s["consultant_code"], s["operation_date"]):
+        c = S.CODE_MAP.get(c, c)
+        y = int(d[:4])
+        if 2022 <= y <= 2024:
+            out["%s %d" % (c, y)] = out.get("%s %d" % (c, y), 0) + 1
+    return out
 
 
 if __name__ == "__main__":
-    task = os.path.dirname(HERE)
-    run(os.path.join(task, "target"), os.path.join(task, "golden"), meta_path=os.path.join(task, "metadata.json"))
+    sys.exit(main())

@@ -62,3 +62,6 @@ task*/.freeze.json
 
 # Batch clone-check reports are the author's reading, not repo content
 /clone_check_report*.md
+
+# The harness's agent worktrees (one per isolated fork), runtime only
+.claude/worktrees/

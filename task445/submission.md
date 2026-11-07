@@ -1,52 +1,46 @@
-# task445 submission
-
 ## Tags
 
-**Domain:** Quantitative Finance (institutional ownership analytics from Form 13F holdings filings).  
+**Domain:** Education & Learning Sciences (item response theory and test equating: optional essay questions on a senior-certificate History paper).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**WHII, GLI, OTF, JEMS and SAF carry the crowded flag for the December 2022 quarter; AMRB, TAAV, FENN, ABBB, OLPD, HAMR and NOPR do not.**
-
-OTF clears the 80.0% line at 80.4% and FENN stays under it at 79.6%. Not the December reports in hand alone, which leave out the 129 managers OM-4 s.2 still counts. Not one change per register type pooled across the twelve names, which grows OTF's index and ETF sponsors still due by 4.5% when the filed sponsors' OTF holdings rose 10.4% with OTF's share count, and leaves OTF at 79.2%. Not each manager still due carried at its September position, which also leaves OTF under the line. Not every manager still due moved with the name or carried at its stake, which takes FENN's multi-strategy funds up with FENN's share count and FENN over the line.
+**Scale Question 6 of the 2026 History Paper 2: raise every candidate's mark on it by 2 marks before the best two essays are credited and the grade boundaries are applied.**
+For the 1,422 candidates who wrote all three essays, Question 6 was more demanding than Questions 4 and 5 taken together by 2 marks to the nearest whole mark, over the code's 1.5; read from the candidates who chose it, it looks only about half a mark harder, because those who chose it knew its topic. Questions 4 and 5 are not more demanding and are not changed.
 
 ## 2. Critical Components
 
-1. Managers with a September holdings or combination report and no December filing by 3 February 2023: **129**
-2. Index and ETF sponsors that filed both reports, change in OTF shares from September to December: **10.4%**, against **4.5%** across the twelve names
-3. December ownership of the flagged names: WHII **88.6%**, GLI **84.4%**, OTF **80.4%**, JEMS **84.8%**, SAF **91.4%**
-4. Highest unflagged December ownership: FENN **79.6%**, AMRB **76.2%**
+1. Question 6's demand against Questions 4 and 5 taken together, from the candidates who wrote all three essays: **2 marks** to the nearest whole mark, over the 1.5 line; Questions 4 and 5 are less demanding than the others.
+2. The candidates who chose Question 6 knew its topic: their question means, a Section A adjustment and each two-essay candidate's own pair all put it under the 1.5 line, so every chooser route files no scaling.
+3. Grades after Question 6 is raised by 2: A **5,732**, B **5,934**, C **7,337**, D **5,945**, E **3,561**, U **2,188**, of **30,697** candidates graded; **1,854** grades change.
 
 ## 3. Step-by-Step Solution
 
-1. Unioned SUBMISSION, COVERPAGE and INFOTABLE from the three 13F drops, keyed every report to the period on its cover page (REPORTCALENDARORQUARTER) and applied amendments by their cover page (ISAMENDMENT, AMENDMENTTYPE) in filing order, amendments filed on the same day in AMENDMENTNO order.
-2. Kept SH lines, dropped put and call lines by PUTCALL or a title of class of CALL or PUT, and read CUSIPs per OM-4 s.4 (failed check digits matched on issuer name and title).
-3. Took shares outstanding as the cover-page count with the latest as-of date on or before each period end across 10-Q, 10-Q/A and 10-K (OM-4 s.5).
-4. Applied OM-4 s.2: the managers reporting December holdings are those on file plus the 129 with a September holdings or combination report and no December filing, whose holdings are estimated.
-5. Ran the s.2 criterion on the September window at 3 November 2022, completing from June: the largest miss against September is 0.04 points for growing each index and ETF sponsor still due by the change its filed peers show in that name, every other type by its own change pooled across the twelve names, against 0.66 for each register type's change pooled across the twelve names and 1.38 for carrying each manager still due at its June position.
-6. Grew each index and ETF sponsor still due from its September position by the change in that name among the sponsors that filed both reports (OTF 10.4%), every other type by its own pooled change (flat to the first decimal), added the December reports on file and divided by the October-dated count; flag above 80.0% (OM-4 s.7).
-7. Recommendation: flag WHII, GLI, OTF, JEMS and SAF.
+1. Conformed the marking export to one final mark per candidate and essay (a senior examiner's re-mark stands), absent candidates set aside.
+2. Joined each essay booklet to its candidate's entry (a moved candidate's booklet keeps the earlier number) and placed every candidate in the region of the centre that entered them, through the centres register and the codes merged centres held before.
+3. Took the candidates who wrote all three essays (each essay marked) and, for each question, averaged each candidate's mean mark on the other two less their mark on it: Question 6 over 1.5, Questions 4 and 5 below zero.
+4. Raised every Question 6 mark by 2 (its demand to the nearest whole mark, over 1.5, no mark above 25), credited each candidate's best two essays, added Section A and applied the committee's boundaries.
+5. Counted each region's candidates who sat (an essay marked or Section A scanned) and each optional question's answers, credited or not, from the conformed marks.
 
 ## 4. Deliverable Answers
 
-### crowded_flags_2022q4.csv
+### p2_question_scaling_2026.docx
 
-1. One row per watchlist name in watchlist order, layout v4, report period 2022-12-31:
-   - WHII (649698107): December ownership 88.6%, flag Y; September ownership 85.1%
-   - GLI (759069107): December ownership 84.4%, flag Y; September ownership 81.7%
-   - OTF (050469105): December ownership 80.4%, flag Y; September ownership 78.8%
-   - AMRB (091728105): December ownership 76.2%, flag N; September ownership 74.1%
-   - TAAV (981118102): December ownership 74.3%, flag N; September ownership 75.4%
-   - JEMS (165636101): December ownership 84.8%, flag Y; September ownership 81.8%
-   - FENN (805185105): December ownership 79.6%, flag N; September ownership 81.6%
-   - ABBB (767361108): December ownership 62.3%, flag N; September ownership 59.8%
-   - OLPD (016363103): December ownership 71.1%, flag N; September ownership 69.7%
-   - SAF (331222109): December ownership 91.4%, flag Y; September ownership 88.9%
-   - HAMR (233712108): December ownership 55.2%, flag N; September ownership 52.5%
-   - NOPR (359Y60106): December ownership 67.2%, flag N; September ownership 65.5%
+1. Question 6 is scaled: every candidate's Question 6 mark is raised by 2 marks.
+2. Only Question 6 is more demanding than the other optional questions; Questions 4 and 5 are not.
+3. Chart of each optional question's demand against the 1.5 line.
+4. Grades after scaling: A 5,732, B 5,934, C 7,337, D 5,945, E 3,561, U 2,188; 1,854 grades change.
 
-### sep_quarter_bridge.png
+### history_p2_results_2026.csv
 
-1. Waterfall, twelve names combined, whole shares: information-table lines as filed 599,363,366; put and call lines -8,193,500; the other lines in reports replaced by a later amendment -50,329,359; lines matched back to their CUSIPs +6,508,236; September institutional shares 547,348,743
-2. One bar each, in that order, for the three reconciling items between the two totals, each labelled in whole shares.
+1. One row for each of the 30,697 candidates who sat, Question 6 raised by 2, the best two essays credited, the paper total and the grade (the counts above).
+
+### history_p2_entries_2026.xlsx
+
+1. Candidates who sat Paper 2, and answers to each optional question, by region:
+   - Northern Territory: sat 2,733; Question 4 2,325, Question 5 2,283, Question 6 939
+   - Queensland and Torres Strait: sat 7,685; Question 4 6,521, Question 5 6,428, Question 6 2,699
+   - Western Australia: sat 5,824; Question 4 4,926, Question 5 4,906, Question 6 2,009
+   - Pacific: sat 5,485; Question 4 4,640, Question 5 4,591, Question 6 1,924
+   - Indonesia and Timor-Leste: sat 4,082; Question 4 3,439, Question 5 3,451, Question 6 1,413
+   - Malaysia and Singapore: sat 4,888; Question 4 4,136, Question 5 4,140, Question 6 1,656

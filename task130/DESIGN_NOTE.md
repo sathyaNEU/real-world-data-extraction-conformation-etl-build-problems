@@ -1,617 +1,260 @@
-# task130: Corvane Health, the first-year contribution to its professional liability trust (architecture 4, rule 3 rework, round 3a restored with harder asks)
+# task130: Redbud Line Services' 2027 recordable injuries (architecture 6, a re-root into economics-econometrics)
 
-Private, never ships. Architecture 4, drawn 2026-10-12 as the author's fourth root for a number retired with three
-architectures spent; shipped 2026-10-12 at $784,000 (round 1); a round 2 redesign was sent back by the judge on
-2026-10-14 and round 1 restored. On 2026-10-15 the rule 3 audit read round 1 AT_RISK: funding policy 3.4 ("used as
-recorded ... no development or tail factor ... no distribution is fitted") filed the estimator by eliminating every
-rival, 3.2 read as a cost-per-FTE-year recipe, and the headline wrong answer ($4,854,000) was a contract misreading,
-not an analysis. This note is the rework of that build, kept in the same world (Corvane Health, the trust, its four
-entities and their Transition Dates, the 2027 Plan Year): the funding policy now files only the WHAT, the lag
-truncation that decided round 1 is now the default path's own construction, and the decisive step is the cost each
-window Claim carries, which this experience ties to its own report lag. The judge read this round (3a, cut fac4903f)
-DETERMINISTIC, APPROVE, Gate H analytical; the rule 3 re-audit passed it with a moderate stump. Round 3b added a second
-layer (the disclosure settlements' 2019 start) and round 3c tried to spread that start entity by entity; both are
-under `## Tried and rejected` (3b: any recent-years trim lands and 3.3 reads as whole-experience pooling; 3c: no layout
-of starts makes every common trim miss while every own-start construction converges, and the WHAT that closes Gate C
-sends the solver to the lag table). This note is round 3a restored, the call, its ladder and every golden figure as
-3a built them, with each ask's figures held by a second device the first one's crack does not clear. Reshipped
-2026-10-16 on the stage-3 pack unchanged (`target.zip` sha256 410a3ff6b4593066...): the judge DETERMINISTIC, APPROVE,
-Gate H analytical (`determinism_check_report.md`), the leak reader clean on Q1 to Q4 with Q6 analytical
-(`leak_check_report.md`), the author's known risk on stump strength accepted (`## Accepted risks`). The earlier
-architectures' records are under `## Retired` and `## Tried and rejected`; the card keeps every dead identity in
-`lineage`.
-
-Carried forward as design rules: the default path is written first and must end wrong on the data in hand; no filed
-sentence names or narrows the estimator; no figure in the pack confirms the solver's construction for free.
+Architecture 5 (Elkhorn County's third return-inspection officer) is spent at the guard window and sits in the
+card's lineage with every earlier architecture; `## Tried and rejected` keeps their record. This architecture is a
+new client domain, world and dataset under the same objective and number.
 
 ## Draw
 
-| Axis | Value |
-|---|---|
-| Card | `.claude/skills/fingerprint/cards/task130.json`, architecture v4 (rule 3 rework, edited in place 2026-10-15); `guard.py validate` clean; `guard.py heart` WARN (one finding, `people.first` Lori against task129, an older build; Lori Williams stays, she signs the data dictionary) |
-| Domain / task type | actuarial-science-insurance / pricing-ratemaking-credibility (a client domain): funding a self-insured professional liability programme's first claims-made year is pricing its cover |
-| Objective | Forecasting & Predictive Modeling: the expected cost of the Claims that will first be made against a new trust in 2027, its first Plan Year, from the system's 2016 to 2024 claims experience valued 30 September 2026 |
-| Shape | other: the contribution (one figure), then two reconciliation asks across the four entities (open claims under each expiring carrier's policies missing from its latest loss run, with our reserves on them; the covered clinician FTE the payroll paid in each of July, August and September 2026) and a chart of the second; 28 criteria before the files and rounding |
-| Decision | `quantity_figure`, answer unit `currency`: the 2027 contribution the trustees put into the trust, to the nearest $250,000 |
-| Mechanism | gap time (the trust pays only for Claims made inside its own opening window), then population (the Claims a short window catches are a different mix from the experience's average); pattern none; generators G13 (the window the decision covers) then G14 (the cost of a Claim conditioned on how soon it is made); Gate G `forecasting`; strategy `maturity_censoring` (the window censors each Claim's report lag, and the Claims it keeps carry a cost profile of their own) |
-| Layer 2 family / pattern | `field_method` (the professional liability actuary's claims-made pricing from the system's own report-lag experience); `own:claims-made-first-year-cost-conditioned-on-report-lag` |
-| Furniture | forum `trustees_or_governors`, forcing event `launch_or_rollout` (the trust launches on 1 January 2027 and takes the entities in on their anniversaries; the first contribution has to be fixed before it; moved from `vote_or_meeting`, which task128's later re-root put among this card's last three), organisation family `hospital_or_health_provider`, role family `compliance_or_audit`, context artifact `register`, calibration `none`, opening `question-first`, question form `how-much` |
-| Spine | `clinician_fte_by_month_2016-01_2025-12.csv`, the legacy payroll, 224,767 rows: one employee's paid FTE in one month on one cost centre, with the job code (two code sets, the 2020 set from July 2020), entity and status; constructed. The 2026 HCM pay lines (30,764 rows) carry Ask B |
-| Deliverables | `trust_funding_2027.xlsx` (the contribution, the entities' Transition Dates, the experience behind it, the carrier loss run check, the paid covered FTE for July to September 2026, notes), `trustees_paper_2027.pptx` (slide 1 the contribution, slide 2 the grouped chart of each entity's paid covered FTE in the three months) |
-| People | from round 1's draw (`guard.py names --geo "United States" --seed 130`): Nancy Holland (vice president, risk management and insurance; the requester; author of the premium history and the goldens), Derek White (chief financial officer; the staffing plan), Lori Williams (director of claims and litigation; the data dictionary), Walter Butler (chair of the trustees; signs the agreement and the policy). Elizabeth Nelson and Jerome Warren were dropped: no shipped file names them and Elizabeth now collides with task128 |
+- **Card:** `.claude/skills/fingerprint/cards/task130.json`, architecture v6, registered 2026-10-31T23:21:13Z on a
+  tree pulled at 23:20Z, `guard.py check` WARN only (`three_rules.strategy_risk`, answered in `## Three rules`).
+- **Pairing:** economics-econometrics x forecasting, task type discrete-choice-limited-dependent-variable-modeling
+  (labour economics: the choice a crew makes to report an injury under an incentive pay scheme). The last three
+  live builds in draw order are task445 (general-statistics, ETL), task272 (general-statistics, descriptive) and
+  task122 (human-factors, experiment-causal); none holds the domain, the decisive pattern (G12), the strategy
+  (time_semantics), the organisation family (other: a power line construction contractor), the forum
+  (customer_or_counterparty), the forcing event (audit_or_inspection), the role (compliance_or_audit) or the
+  context artifact (filed_standard).
+- **Shape:** 02, forecast across many periods (2027 quarter by quarter, crew type by crew type).
+- **Strategy:** time_semantics (F1). The record has to be read at each crew's position in its own rolling 90-day
+  recognition cycle, a service clock no file stores, estimated from every cycle the crews ran.
+- **Data-native sentence:** Redbud's recordable log is written from what each crew's foreman reports to the safety
+  office, and a crew's 90-day bonus is lost the moment it reports a recordable, so the log holds what each crew
+  chose to report at each point of its own cycle, and the cycle sits in no file.
+- **Abstraction sentence:** against the nearest build on file (task180 v4, small earthquakes lost to daytime noise
+  until new stations remove the masking) the sentence a reviewer could write for both is the genus of every
+  completeness repair ("a record short in part of a cycle, the cause removed forward"); the driving insight is not
+  shared: here the thinning is the recorder's own choice under a reward, its phase is each recorder's own rolling
+  cycle reset by its own records and its own completed counts, every event is exposed to it whatever its size, and the trap is the
+  comparison with recorders the reward never covered. No approved build carries a reward-thinned record.
+- **Sources:** synthetic throughout. Rate definitions follow 29 CFR 1904 (OSHA recordkeeping: a recordable case,
+  the 200,000-hour rate base); the client's contractor safety standard, the recognition programme and every record
+  are fictional.
 
-**Guard.** `guard.py heart task130`: WARN. The rework first tried `composition_mix` (ban.strategy against task125, and it
-would have banned task137), so the strategy stays `maturity_censoring`; the forcing event moved to `launch_or_rollout`
-(no ban on this card or on task136 to task138, checked); the driver sits at 0.40 against this slot's own round 1 driver
-and carries a differentiation line (round 1 decided on the window's truncation; here the truncation is the default and
-the decision is the cost each window Claim carries). Nearest other driver task85 at 0.07.
+## Survivor anatomy
 
-**Data-native sentence.** Corvane's Early Resolution Program meets a patient within days when the care team discloses
-serious harm and settles within weeks at tens of thousands of dollars; most other patients who ask for compensation do
-so through the program months after the care, once treatment and bills are done, and settle for a few thousand; the
-demands and suits that carry nearly all the money arrive a year or more after the incident. So the Claims a trust's
-first months can catch are the costly disclosed-harm settlements and the cheap program requests, in proportions set by
-how many days each entity has left in the year, and neither the average Claim nor the average of the Claims made within
-a year prices them.
+Actor: the deciding property is where each crew stood in its own 90-day recognition count on the day of each injury and each hour worked, and no file stores it: the case records hold the worker and the injury date, the assignment history the worker's crew for each span of days, the timesheet each crew's hours by pay period, and the count is a running relation across the three (days since 11 January 2021, the crew's last recordable injury or the end of its last completed count) that no column, code or sheet holds.
 
-**World (as built, claims seed 2077).** Corvane Health, a nonprofit health system in western Oregon: three hospitals and
-an employed medical group, about 1,800 covered clinician FTE paid in September 2026 (employed physicians and advanced
-practice clinicians in Schedule B jobs, per-diem clinicians by the shifts paid). Each entity has insured its employed
-clinicians with an annual occurrence policy on its own anniversary; the board resolved to let each run to expiry and
-move the entity into the new Corvane Professional Liability Trust, claims-made, the retroactive date equal to the
-transition date:
+Link: the signal is read through a comparison the field's recordable-rate route never asks for: each crew's recordables and hours set against its own position in its count, which needs every recordable placed on the injured worker's crew on the day (the assignment history, the crews recoded in March 2025 carried under their new codes) and every pay period's hours spread over its working days; no key, column or sentence crosses the injury record with the recognition count.
 
-- Tolliver Falls Hospital (188.0 covered FTE paid in September 2026), with Quillan Mutual since 1 January 2021 (Halberd
-  Hospital Mutual before): trust from 1 January 2027, the only full-year entity.
-- Alderwick Medical Center, the flagship (465.4), Quillan Mutual since 1 April 2019 (Corrigan Lane before): trust from
-  1 April 2027.
-- Corvane Medical Group, the clinics (1,040.6), Stoneleigh Casualty since 1 July 2019 (Westerholm before): trust from
-  1 July 2027.
-- Brennick Community Hospital (108.2, affiliated 1 July 2019), Stoneleigh Casualty since 1 October 2022 (Tallis
-  Reciprocal before): trust from 1 October 2027.
+Reflex: the field's method for the deciding quantity sits at rung 0 and files a wrong answer here: the OSHA recordable rate per 200,000 hours over the record, by unit type or pooled, carried onto the hours of the 2027 work plan, gives 176 recordables (2.46), and the trailing twelve months give 177 (2.48), both inside the 3.0 limit's 214.
 
-Seven specialty classes as Schedule B rates them. In the experience (incidents 2016 to 2024, valued 30 September 2026)
-there are 3,043 Claims, one per incident, against 13,747.1 covered FTE-years. By route (generator truth, not shipped):
-240 disclosed-harm settlements made a median of 18 days after the care; 2,527 program requests made a median of 242
-days after, 54 of them declined and followed by a suit a median of 178 days later (one Claim, made at the request); 300
-direct demands and suits made a median of 830 days after (obstetrics 1,215). The register carries no route: it shows
-the 208 Claims made within 30 days at an average of $54,543 (2027 level, 7.2 per cent of the experience's cost), the
-2,512 made in days 91 to 364 at about $8,600 (13.7 per cent), and the 277 made a year or more after at $442,614 (77.9
-per cent). The expected cost of the 2027 window is $1,263,838 (about 47 Claims at about $27,000 each against an
-experience average of $51,726).
+Back-test: the textbook route validates on the checks a safety analyst runs before trusting a rate: the recorded rate holds steady year on year (2.65, 2.44, 2.48, 2.43, 2.30 and 2.55 from 2021 to 2026), the technicians outside the programme record less than the crews (1.92 against 2.55), and the crews' days-away share of their recordables is no higher than the technicians' (26 against 30 per cent), so every under-reporting check the field knows clears the record; what separates the routes is a cut no step of the rate route makes, the record read by the day of each crew's own count.
 
-As-of date: the claims register extract runs Friday 2 October 2026, valued 30 September 2026; the HCM pay lines run
-through work month September 2026; the loss runs arrive 5 to 9 October; the pack is handed over on 12 October 2026.
+Second use: every file the decisive step reads sits in the pack for a reason of its own: the two case systems, the assignment history and the crew register carry every rung's recordables and the asks' first-aid cases by district, the timesheet every rung's hours, the work plan every rung's 2027 hours, CS-4 the estimand and the limit for every rung, the recognition programme the crews in and out of it (rung 1's comparison) and the notice the programme's end, which every rung reads as the reason 2027 is a new year; deleting the decisive step drops no file.
+
+Shock: the movement the step recovers reads as ordinary: the recorded rate sits at 2.3 to 2.7 every year, the technicians record less than the crews on lighter work, and no district, crew type, quarter or year stands out; sorted on any shipped statistic (by crew, type, district, month or year) nothing singles out the days late in a count, which no file carries.
+
+Pins: CS-4 files the WHAT in its own genre (section 4(a) and (b): the recordable injuries the contractor forecasts its field employees will record on Pinewater work in the 2027 contract year, total and by quarter, and the rate on the work plan's hours; 3.1 to 3.6 the definitions; "Pinewater does not prescribe the method"); HR-14 files its own rules (the award, the count, its start on 11 January 2021); no filed sentence names a day of the count, a window of it, a reporting rate, hiding or a reason the record might fall short (asserted on all three documents by leak.py's sweeps and read in `## Leak sweep`).
 
 ## Default path
 
-1. Read the claims register (one row per named defendant), keep the rows whose clinician is a Covered Clinician (a
-   Schedule B job in the legacy payroll in the incident month), merge each incident's claim numbers into one Claim made
-   on its earliest claim made date (trust agreement 1.3), class it by its first-named Covered Clinician (Schedule B
-   Note 2), and take incidents from 2016 to 2024 (funding policy 3.3): 3,043 Claims.
-2. Value each Claim at paid plus case reserves on its Covered Clinicians' rows and trend it at 5 per cent a year from
-   the incident year to 2027 (3.4); sum the payroll's covered paid FTE over 2016 to 2024 by class, each month one
-   twelfth of an FTE-year: 13,747.1 FTE-years.
-3. Read the claims-made window correctly: from each entity's Transition Date to 31 December 2027, only Claims made by
-   year end count, so for each day of each entity's plan exposure count the class's experience Claims per FTE-year
-   whose delay from incident to first making fits in the days left: about 47 expected Claims.
-4. Price them the way a frequency-severity build does, at each class's average trended Claim cost, and add the
-   classes.
+1. From CS-4 sections 3 to 5: the recordable injuries Redbud's field employees (crews and technicians) will record on
+   Pinewater work in 2027, total and by quarter, and the rate on the 2027 work plan's hours against the limit of 3.0.
+2. Stack the legacy EHS log (to 31 May 2024) and the case management export, keep the new system's copy of each
+   migrated case and each case's latest revision, drop first aid, linked recurrences (29 CFR 1904.6) and mutual-aid
+   work, and place each recordable on the injured worker's crew or team on the injury date.
+3. Hours worked from the timesheet: regular plus overtime, prior-period adjustments in the period they correct,
+   paid leave, holiday pay and mutual-aid hours out: 68,729,007 crew hours and 11,440,680 technician hours from 11
+   January 2021 to 27 September 2026.
+4. The recorded rate: crews 877 recordables, 2.55 per 200,000 hours; technicians 110, 1.92; by unit type from 1.42
+   (meter services) to 3.41 (vegetation crews).
+5. Check the record for under-reporting the way the field does: the technicians, outside HR-14, record less than the
+   crews, and the crews' days-away share (26 per cent) is no higher than the technicians' (30 per cent), so the
+   recognition award shows no sign of thinning the log.
+6. Carry each unit type's rate onto its 2027 plan hours: 176 recordables, a rate of 2.46, inside the limit's 214.
 
-Ends on: $2,500,000 ($2,605,268 unrounded), the window's expected Claims at each class's average Claim cost; a
-severity from the Claims made within a year gives $750,000 ($642,835), a log-linear severity curve on the delay
-$1,000,000 ($907,953), a lognormal class severity $1,500,000 ($1,530,870).
-Golden: $1,250,000 ($1,263,838 unrounded), each experience Claim's own trended cost counted for the 2027 FTE-years of
-its class with at least its own delay left before 31 December 2027, per FTE-year of its class's experience.
+Ends on: 176 recordables in 2027, a rate of 2.46 per 200,000 hours, inside the 3.0 limit
+Golden: 255 recordables in 2027, a rate of 3.57 per 200,000 hours, over the 3.0 limit
 
 ## Stump sentence
 
-A strong solver who reads the claims-made window correctly counts the Claims the 2016 to 2024 experience would make by
-31 December 2027 from each entity's Transition Date and prices them at each specialty class's average trended Claim
-cost, filing $2,500,000 (Ends on); the step that lands it there is pricing the window's Claims at the cost of all
-Claims, when the Claims made inside a first claims-made year are the disclosed-harm settlements made within weeks (about
-$54,500 each) and the program requests made months later (about $8,600 each), weighted toward the earliest because more
-of each entity's days leave room for a short delay, while the average carries the demands and suits made a year or
-more later (about $443,000 each); the cheaper refinements miss too, a within-a-year severity low ($750,000) and every
-monotone severity curve on the delay one way or the other ($1,000,000 to $2,750,000). Costing each experience Claim at
-its own delay against each entity's days in the trust gives $1,250,000.
+Carrying the record's recordable rate onto the 2027 work plan files 176 recordables and a rate of 2.46, inside the
+3.0 limit, because every crew in HR-14 earns its award after 90 days without a recordable and leaves injuries it can
+hide off the log as its count nears the award: the crews record 3.85 and 3.84 per 200,000 hours in days 0 to 14 and
+15 to 34 of their counts and 1.38 and 1.01 in days 50 to 64 and 65 to 89, while the days-away cases nobody can hide
+come in at much the same rate throughout; with the programme ending on 31 December 2026, read at the 3.84 the crews
+record where an award is far off (the technicians at their own 1.92), the 2027 plan makes 255 recordables, a rate
+of 3.57, over the limit.
 
 ## Three rules
 
-- **Task type:** actuarial-science-insurance / pricing-ratemaking-credibility, pricing the first claims-made year of a self-insured professional liability trust; the type serves Forecasting & Predictive Modeling in the taxonomy.
-- **Domain test:** the deciding quantity is the expected cost of Claims first made inside a claims-made trust's opening window, built from each entity's covered exposure through the system's own report-lag experience with each Claim's cost tied to its own lag, which is how a professional liability actuary prices a first claims-made year; the swap below breaks it.
-- **Swap:** put warranty claims and units sold in for clinicians and FTE-years and the task stops making sense: there is no claims-made trigger, retroactive date, disclosed-harm settlement, program request or late suit, so nothing makes a claim's cost depend on how soon it is reported.
-- **Layer 1:** a register with one row per named defendant (residents and contracted clinicians in it, contracted rows unpriced), requests that become suits under new claim numbers, reopened claims, a legacy payroll across the July 2020 job codes with per-diem rows at two decimals, dual appointments, transfers and unpaid leave; each mishandled leaves the call in its bin (R2, asserted one line each).
-- **Layer 2:** the field's frequency-severity reflex prices the window's expected Claims at the average Claim cost; the expert sees that this experience's cost depends on the report lag, high within weeks, low over the following months and highest after a year, and costs each window Claim at its own lag.
-- **Decisive step:** costing the 2027 window Claim by Claim, each experience Claim's own trended cost counted for the 2027 FTE-years of its class with at least its own delay left, instead of the window's count at any average or fitted severity.
-- **Not semantics:** a solver who reads the claims-made trigger, the Claim definition, Schedule A and B, the funding policy and every column correctly, and truncates every lag right, still files $2,500,000 at the class average, $750,000 at the within-a-year average or $1,000,000 on a log-linear curve.
-- **Not rule application:** the funding policy files the estimand, the two exposures, the experience period and its pooling within class, the valuation and the trend; no sentence names a severity, a lag, a curve or a weighting, and executed word for word the filed sentences give $13,000,000 or $2,500,000, never the golden (Literal reader, R3a asserted).
-- **Analyst test:** a strong analyst who dedupes the register, merges claim numbers, reads the claims-made window and counts the window's expected Claims right still prices them at the class average and files $2,500,000 ($2,605,268 on the generator's clean truth, asserted), a full bin and more above the golden $1,250,000.
-- **Estimand:** funding policy 3.1 (expected cost at 2027 level of Claims first made in the 2027 Plan Year) with trust agreement 1.3, 1.7, 2.1, 2.4 and Schedule A (claims-made from each Transition Date); the population includes Claims not yet observed (2027 incidents), projected from the experience of 3.3 on the exposures of 3.2.
-- **No decoy:** no memo, draft, briefing or stakeholder figure argues a contribution; no file states a 2027 cost, a step factor, a lag table or a severity curve; the safety events and the defence invoices are plain distractors no route reads.
-- **No certified replay:** no certified or published figure is reproduced to recover the method; the window's cost is estimated directly from the register and the payroll, and nothing in the pack confirms the construction.
-- **Lesson:** inside a first claims-made window the claims' cost is not the average claim's: when cost depends on report lag, and not monotonically, only costing each claim at its own lag prices the window; round 1's lesson (truncate the lag) is this build's default, not its answer.
+Task type: discrete-choice-limited-dependent-variable-modeling in economics-econometrics, which serves forecasting: the 2027 recordable count is forecast from a recorded count that a reporting choice under a pay incentive has thinned, the latent rate recovered where the choice exerts no pull and carried onto the hours the crews will work.
 
-## Gate G
+Domain test: the deciding quantity is the latent injury rate behind a count the crews thin by choosing not to report as a clean-record reward nears, worked the way labour economics reads behaviour under an incentive scheme: the observed outcome is the product of the latent rate and the choice to report, the choice varies with the reward at stake, and the forecast needs the rate in the stretch of each crew's own count where reporting costs nothing; the call compares the forecast with the client's limit.
 
-- **Litmus.** No. Every file is correct: the register, the payroll files, the staffing plan, the loss runs, the premium
-  history, the trust agreement and the funding policy. No stakeholder states a number the task overturns and no file
-  states the trust's 2027 cost.
-- **Primary mechanism:** `forecasting` (the correctly read past pins the 2027 window's cost only through the cost each
-  window Claim carries at its own lag).
-- **Flags:** `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
-- **Clean-data test.** On the generator's clean truth (true jobs, unrounded paid FTE, every escalation merged) the
-  default path files $2,605,358 against the golden $1,263,876, and every natural route still misses by a full bin
-  (nearest the lognormal severity, $267,054 off), asserted (R3a).
-- **Deletion test.** Delete the two distractors, the loss runs, the notice log, the premium history and the HCM pay
-  lines: the call recomputes to the dollar (asserted) and the default path is still wrong.
-- **Lens swap.** The default and the golden count the same Claims in the same window; they differ only in the cost
-  each carries, the class average against its own.
-- **No artifact ranks or prices the decision.** No shipped file states a 2027 cost, a claims-made factor, a report-lag
-  table, a severity by lag or a curve. The premium history prices occurrence cover (a mature year with carrier loads)
-  and is read only by Ask A, for the carriers' terms.
+Swap: "will the hospital's patient falls in 2027 keep it within the regulator's rate?" keeps the sentence's shape and loses its substance unless the hospital also paid each ward for every 90 falls-free days, and then the swap only proves the domain: the stump needs a reward that a unit earns by not recording, reset by its own records, which is labour economics' incentive problem and no other field's.
+
+Layer 1: two incident systems with the cases open at the 2024 migration in both, cases revised from first aid to medical treatment and from restricted work to days away, recurrences opened as cases of their own, the nurse line's interface opening a first-aid case of its own from each call beside the supervisor's report, a dated crew assignment history with workers moving between crews, thirty crews recoded at the March 2025 reorganisation, timesheet hours by pay period with paid leave, holiday pay and mutual-aid hours in their own columns, prior-period adjustments and in-system storm support on the rows of the district the crew worked in; nothing is planted and none of it moves the call (the construction is mess-neutral, asserted).
+
+Layer 2: the data's real structure under an incentive: a recorded count is what the units choose to record, so the rate it implies is the latent rate times a reporting share that changes with each unit's position in its own reward cycle, and a forecast for a year without the reward has to be read where the reward exerts no pull, not on the record's average.
+
+Decisive step: recognise that the crews' reporting falls away as each crew's own count nears its award, so rebuild every crew's count day by day from 11 January 2021 (restarting the day after a recordable to any member and after each 90th day), spread each pay period's hours over its working days, and read the crews' rate in days 0 to 34 of their counts, where the record and the days-away cases agree, onto every 2027 crew hour, with the technicians at their own recorded rate: 255 recordables, 3.57.
+
+Not semantics: every field, code and definition read correctly (the final classification, recurrences, mutual-aid work, the crew on the day, the recoded crews, hours worked as CS-4 defines them) still leaves the rate route at 176, because where each crew stood in its count is not a field: it is a relation the analyst has to see the forecast depends on and rebuild across the case records, the assignment history and the timesheet.
+
+Not rule application: no filed rule says the record falls short or names a stretch of the count to read, and CS-4 leaves the method to the contractor ("Pinewater does not prescribe the method"); executing CS-4 and HR-14 word for word with the field's rate files 176; the standing family (the early stretch read as days 0 to 19, 0 to 24, 0 to 29, 0 to 34 or 0 to 39, by crew type or pooled, from 2023 only, with counts started at each crew's first recordable, the recoded crews read as new) spreads 236 to 257, every member over the limit.
+
+Analyst test: a strong analyst who reads every field and rule correctly stacks the two case systems, keeps final classifications, drops recurrences and mutual-aid work, places each recordable on the worker's crew on the day, nets the hours CS-4 excludes and carries the 2021 to 2026 recorded rate onto the 2027 plan, files 176 recordables (2.46) inside the limit, and its two under-reporting checks (the technicians outside the programme, the days-away share) both clear the record; read at the rate the crews record early in their counts, 2027 makes 255 recordables, 3.57, and breaches it.
+
+Estimand: CS-4 section 4(a) and (b) files it: the number of recordable injuries (3.1, 29 CFR 1904.7, each case once as finally classified) Redbud's field employees (3.2, crews and technicians) will record on Pinewater work (3.3) in the 2027 contract year (1 January to 31 December), in total and for each calendar quarter, and the rate that number makes on the hours worked in Redbud's 2027 work plan (3.4, 3.5), against the limit of 3.0 (section 5); the notice files that HR-14 ends on 31 December 2026, so 2027 has no award.
+
+No decoy: nothing is planted to be caught: no memo, briefing or stakeholder states a rate, a forecast or a reason the record might be short; the notice states the programme's end and says nothing about reporting beyond its closing reminder; the good-catch reports and the subcontractors' returns are distractors named in metadata.json that rank nothing.
+
+No certified replay: no published or certified figure is reproduced: no file carries a rate by day of the count, a reporting share or a forecast, and the count is rebuilt from case dates, the assignment history and pay-period hours.
+
+Lesson: a recorded count that a unit is paid to keep low is the latent rate times the unit's choice to record, and the choice moves with the reward at stake, so a forecast for a period without the reward reads the units where the reward exerts no pull, not on the record's average; no build on file forecasts from a record thinned by its recorders' own clean-record reward.
 
 ## Readability screen
 
-Six tests per rung: 1 filed sentence names it or makes the solver ask; 2 schema (a column, key or marker); 3 a reflex
-of the opponent; 4 a control or corpus scores it; 5 the hygiene battery finds it; 6 linear (one subtraction, ratio or
-half of a reported figure). Verdict last.
-
-| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0 the claims-made window: only Claims made in 2027 from incidents after each Transition Date count | fires: trust agreement 2.1 and 2.4 and the prompt's "first made against the trust that year" | the register's incident and claim made dates | yes, once read | no | no | the count share is a ratio | readable |
-| R1 the window's expected count per day of exposure, each delay against the days left | the window is filed; the day count follows from dates | incident and made dates give each delay | yes, for an actuary who read R0 | no | no | a convolution, but the textbook one | readable |
-| R1y a severity from the Claims made within a year (or the same calendar year) | no sentence | the made date | partly: "use the severity of the claims that count" | no | no | yes (one filter) | readable |
-| F a severity curve fitted on the delay (log-log, log-linear, gamma) | no sentence | none | yes for a modeller | no | no | no | readable |
-| R3 (decisive) each window Claim at its own cost, counted for the exposure with its own delay left | no sentence names a severity, a lag, a curve or a weighting; the policy pools within class and values each Claim | no column carries a route, a lag or a severity; the register's matter type (Claim or Suit) does not separate disclosed harm from requests | no: the reflexes are the class average, the within-a-year average and a smooth curve | none ships | no | no: each Claim's cost against each entity's days by its own delay | silent |
-
-The decisive rung is silent because the link between a Claim's delay and its cost lives only in the rows: the window is
-filed and the cost of each Claim is in the register, but nothing names the three regimes (weeks, months, years), no
-column marks a disclosed-harm settlement or a program request, and only a reader who looks at cost against delay, or
-costs the window Claim by Claim instead of at a severity, sees that the window's Claims are neither average nor cheap.
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 the recorded rate by unit type, or pooled, or the trailing year, on the 2027 plan | CS-4 3.5 defines the rate | the case and hours columns | the OSHA rate carried forward | the year-on-year rates agree | the case-system stack, revisions, recurrences, mutual aid | one ratio on one plan | none | readable |
+| R1 the technicians outside HR-14 as the comparison | HR-14 section 1's table | the unit types | the treated-against-untreated reflex | the technicians record less: the record clears | none | one comparison | none | readable |
+| R2 the days-away share as the under-reporting test | none | the OSHA class | the severity-share reflex | the crews' share is no higher: the record clears | none | one share | none | readable |
+| R3 (decisive) each crew's count rebuilt day by day and the crews read in days 0 to 34 of their counts | silent: no sentence names a day of the count, a window, a reporting rate or hiding (asserted by the sweeps) | silent: no column holds a count, a cycle day or a reporting flag | silent: the field's rate takes the record as the injuries, and its two under-reporting checks clear it | silent: no file scores a reading of the count, and both of the field's checks pass on the record | silent: no duplicate, clock or key issue points at it | silent: a running count for every crew across three files, not a ratio | silent: the case systems, the assignment history, the timesheet, the plan and the three documents each serve every rung or the asks | silent |
 
 ## Semantic fork table
 
-One row per term of the main ask and per convention the computation needs. `checks.py` asserts each row (the
-alternative computed and shown to converge, or moved and closed by the sentence named).
-
-| Id | Term or convention | Golden reading | Alternative (as built) | Ruled out by |
-|---|---|---|---|---|
-| SF1 | "contribute" | the expected cost, no margin, load or expense | a 5 per cent margin: $1,250,000, same call | funding policy 3.1 and 3.5 (no provision for expenses, investment income, excess insurance or a margin); same call |
-| SF2 | "claims first made against the trust that year" | Claims made 1 January to 31 December 2027 from incidents on or after each Transition Date | every Claim from 2027 incidents whenever made (occurrence): $13,101,078 | trust agreement 2.1 and 2.4, Schedule A (claims-made, retroactive date the Transition Date) |
-| SF3 | "Claim" | all claim numbers of one incident, one Claim, first made at the earliest | each claim number apart: $1,184,886 | trust agreement 1.3; same call |
-| SF4 | "Covered Clinician" | employed physicians and APCs in Schedule B jobs | residents and fellows counted (their Claims, rows and FTE): $1,230,744 | trust agreement 1.5; same call |
-| SF5 | the cost of a Claim | indemnity and defence paid plus case reserves on its Covered Clinicians' rows | paid only $1,251,304 (same call); indemnity only $996,359 | funding policy 3.4 (indemnity and defence, paid and case reserves) |
-| SF6 | the trend base year | the incident year | the year the Claim was made: $1,255,658 | funding policy 3.4 ("from the calendar year of its Medical Incident"); same call |
-| SF7 | the experience period | incidents 2016 to 2024 | 2017 to 2024 $1,264,166; 2020 to 2024 $1,234,117 | funding policy 3.3; same call |
-| SF8 | pooling | within each specialty class | all classes pooled $1,185,857 (same call); each entity on its own experience $1,269,557 (same call) | funding policy 3.3 ("pooled within each specialty class"); same call |
-| SF9 | the exposure's start | each entity's Transition Date | every entity from 1 January: $2,610,342 | funding policy 3.2 ("month from the entity's Transition Date") and Schedule A |
-| SF10 | a month's exposure within the month | held through the month's days | mid-month $1,278,776, month end $1,145,035, calendar-day $1,267,616 (same call); all at the month's first day $1,387,788 | the staffing plan's note ("budgeted covered FTE for each month, held through the month"); the others same call |
-| SF11 | a Claim's class | the first-named Covered Clinician's payroll job in the incident month | the register's specialty text | Schedule B Note 2; converges on all 3,043 Claims (asserted) |
-| SF12 | entities and classes | four entities, seven classes | none | the staffing plan covers every pair it plans (asserted) |
-| SF13 | the day count | made on its received date; the Transition Date in; 31 December in | each one-day variant: $1,255,814 to $1,271,883 | trust agreement 1.3, 1.7, 2.1, 2.4; every variant same call |
-| SF14 | rounding | once, to the nearest $250,000 from unrounded | rounding parts first | funding policy 3.6 and the prompt |
-| SF15 | Claims with no indemnity | counted at their defence cost | left out: $1,203,453 | trust agreement 1.3 (a demand, request or suit is a Claim) and 3.4; same call |
-| SF16 | the per-Claim limit | cannot bind inside the window | capped at $2,000,000 | the largest Claim made within a year is $565,398 (asserted) |
-| SF17 | a Claim's claim numbers | amounts added | the later claim number alone: $1,262,019 | the register's amounts are per claim number (no repeated amount set, asserted); same call |
-| SF18 | per-diem payroll rows | paid FTE at their shifts | dropped: $1,270,603 | funding policy 3.2 (paid FTE); same call |
-| SF19 | a month in FTE-years | one twelfth, as each payroll month in the experience | days over 365: $1,267,616 | funding policy 3.2 (the experience's months); same call |
-| SF20 | 2025 and 2026 incidents | outside the experience | 2025 added: $1,290,409 | funding policy 3.3; same call |
-| SF21 | an escalated suit's date | the request's (the Claim's first making) | the suit's own date: $1,184,886 | trust agreement 1.3; same call (as SF3) |
-| SF22 | the experience's job codes | both code sets of Schedule B | the 2020 code set's exposure under every Claim: $2,338,918 | Schedule B (both code sets listed) |
-| SF23 | Ask A "open" | OPEN or REOPENED | OPEN alone | same answer (asserted) |
-| SF24 | Ask A "how many" | one per incident | one per claim number | no incident holds two open claim numbers (asserted) |
-| SF25 | Ask A "latest loss run" | the latest valuation, 30 September 2026 | Quillan's revision 1 of its June run, received last | its own header (valuation 30 June 2026, "replaces the run of 07/08/2026") |
-| SF26 | Ask A "under its policies with the carrier it is leaving" | Claims from incidents on or after the expiring carrier's first term | every open Claim on the coverage line | the premium history (each term's carrier) and trust agreement 2.2 |
-| SF27 | Ask A "our reserves on them" | the register's indemnity and defence reserves on our rows | with contracted rows | contracted rows carry no amounts; same answer (asserted) |
-| SF28 | Ask B paid FTE | hours paid over 173.33 | hours over 2,080 / 12 | the dictionary ("173.33 hours a month at 1.0 FTE"); same answer (asserted) |
-| SF29 | Ask B trainees | a worker paid on a resident or fellow position for that month | a trainee in any month of the quarter: the same 9 cells as S6 move | trust agreement 1.5 (a physician employed in a Schedule B job, while so employed, is a Covered Clinician; residents and fellows are not), so the test is the month (asserted) |
-| SF30 | Ask B "at the entity" | the entity of the cost centre charged | none ships | the HCM lines carry no other entity (asserted) |
-| SF31 | Ask A "missing from that carrier's latest loss run" for a suit the run carries with no insured reference | on the run: the only register suit of that entity on that date of loss, the run's row a suit | missing (references only, S6): every entity moves | the run carries the matter (its named insured, date of loss and claim type match one register suit, asserted unique for every such row); our open claims with no record on the run are the gaps |
-| SF32 | Ask B, a GME line in a work month after the position ended | not a trainee month: a TRM termination payout, no hours | a trainee month (S6): 9 cells move | the dictionary ("a termination payout carries the month it is paid") with SF29's 1.5; the worker's resident position was paid to June 2026 (asserted) |
-
-## Ladder (built, claims seed 2077; checks.py asserts every line)
-
-Every rung is a complete pipeline on the same literal estimand; ratios are to the golden, $1,263,838.
-
-| Rung | Construction | Contribution | Ratio | Rounds | Dies to |
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| R0 | a year of the experience's cost per FTE-year by class on each entity's 2027 FTE-years (no window) | $13,101,078 | 10.37 | $13,000,000 | trust agreement 2.1 and 2.4: only Claims made in 2027 count |
-| R3 window filter | the Claims whose delay is shorter than the entity's window, full cost, per FTE-year, on its FTE-years | $2,003,669 | 1.59 | $2,000,000 | a Claim from a late incident has days, not the whole window, to be made |
-| R1 default | the window's expected count (each delay against each day's days left) at each class's average cost | $2,605,268 | 2.06 | $2,500,000 | the window's Claims are not the average Claim |
-| R1m | the same at the 2016 to 2020 average | $2,839,725 | 2.25 | $2,750,000 | as R1 |
-| R1p | the same at the pooled average | $2,424,214 | 1.92 | $2,500,000 | as R1, and 3.3 |
-| R1a / R1t | the same at the average by allegation / by matter type (Claim or Suit) | $2,572,963 / $1,772,566 | 2.04 / 1.40 | $2,500,000 / $1,750,000 | neither field separates disclosed harm from requests |
-| R1g | the same at a lognormal class mean | $1,530,870 | 1.21 | $1,500,000 | the fitted mean is still all Claims' |
-| R1y | the same at the average of the Claims made within a year | $642,835 | 0.51 | $750,000 | the window weights the weeks-old Claims far more than the months-old |
-| R1c | the same at the average of the Claims made in the incident's calendar year | $954,937 | 0.76 | $1,000,000 | as R1y |
-| R1w | each entity's count at the average of its classes' Claims made within the entity's window length | $788,464 | 0.62 | $750,000 | as R1y, entity by entity |
-| F1 / F3 | log cost on log delay, by class / pooled, smeared | $2,734,706 / $2,473,911 | 2.16 / 1.96 | $2,750,000 / $2,500,000 | the cost falls and then rises with the delay |
-| F2 | log cost on the delay, by class | $907,953 | 0.72 | $1,000,000 | as F1 |
-| F4 / F5 | gamma GLM, class factors, log delay / delay | $1,577,449 / $890,065 | 1.25 / 0.70 | $1,500,000 / $1,000,000 | as F1 |
-| F6 | gamma GLM, quadratic in the delay, by class | $878,676 | 0.70 | $1,000,000 | the quadratic cannot follow the weeks |
-| B1 | half-year delay bands, each band's average cost on its window count | $935,007 | 0.74 | $1,000,000 | the first band mixes the weeks with the months |
-| R2 / R2b | the in-year cost share of a full year (prorated delay / same calendar year) on the FTE-years | $1,639,322 / $1,678,250 | 1.30 / 1.33 | $1,750,000 | a part year catches a share that falls faster than its length |
-| golden | each Claim at its own cost against the exposure with its own delay left | $1,263,838 | 1 | $1,250,000 | none |
+| SF1 | "recordable injury" | 29 CFR 1904.7, each case once as finally classified (CS-4 3.1) | first aid counted | 4,038 first-aid records against 996 recordables | CS-4 3.1: "First aid ... is not a recordable injury" (asserted) |
+| SF2 | "field employees" | crews and technicians (CS-4 3.2) | crews only | the forecast carries both (asserted) | CS-4 3.2: "whether in a crew or alone" |
+| SF3 | "Pinewater work" | mutual-aid work excluded (CS-4 3.3) | mutual-aid cases kept | 9 recordables: same call | CS-4 3.3 (asserted) |
+| SF4 | "hours worked" | regular and overtime, no paid leave, holiday pay or mutual aid (CS-4 3.4) | paid hours | a lower rate route; the golden's exposure is worked hours | CS-4 3.4 (asserted) |
+| SF5 | the 2027 hours | the work plan's 14,288,000 (CS-4 4(b)) | 2026 hours grown | none filed | CS-4 4(b): "the hours worked in the contractor's work plan" (asserted) |
+| SF6 | recurrences | not new cases (29 CFR 1904.6) | counted as cases and resets | 262.3: same call | CS-4 3.1 "counted once"; same call (asserted) |
+| SF7 | the contract year | calendar 2027 by calendar quarter | a fiscal year | none filed | CS-4 4: "1 January to 31 December" (asserted) |
+| SF8 | the stretch of the count read | days 0 to 34 | days 0 to 19, 0 to 24, 0 to 29, 0 to 39 | 257.2, 249.0, 251.3, 251.2: same call | same call (asserted for each) |
+| SF9 | crews pooled or by type | pooled | each crew type at its own early rate | 255.0: same call | same call (asserted) |
+| SF10 | exposure | each pay period's hours spread over its working days | the early share of recordables over the early share of hours, times the recorded rate | 255.0: same call | same call (asserted) |
+| SF11 | the years read | 2021 to 2026 | 2023 to 2026 only | 236.3: same call | same call (asserted) |
+| SF12 | the technicians' rate | their own recorded 1.92 | the crews' early rate on every hour | 274.5: same call | HR-14 section 1 (technicians are not in the programme); same call (asserted) |
+| SF13 | a recoded crew | one crew under two codes, its count carried over | a new crew from March 2025 | 253.1: same call | HR-14 section 4; same call (asserted) |
+| SF14 | the counts' start | 11 January 2021 for every crew (HR-14 section 3) | each crew's first recordable in the record | 253.1: same call | HR-14 section 3; same call (asserted) |
+| SF15 | quarters | each rounded separately | forced to the year's total | 60, 66, 67 and 62 add to 255 | same figures (asserted) |
+| SF16 | ask: a first-aid case | each injury once (CS-4 3.7), as the case record finally classifies it | each record a case, or one per worker and date | every cell moves | CS-4 3.7 and the export's `source` code (asserted) |
+| SF17 | ask: the window and quarters | 5 January to 27 September 2026, calendar quarters, by injury date | pay periods or posting dates | equals the truth | the prompt and CS-4 3.7 (asserted) |
+| SF18 | ask: a nurse-line case and the supervisor's case | the same injury when the supervisor's case is the worker's in the three days before the call | a one-day or two-day window | 1 and 3 of 16 cells kept | any window from three to seven days pairs the same cases (asserted) |
+| SF19 | ask: a nurse-line case with no supervisor's case | an injury of its own | dropped | equals the truth | every pairing unique, same body part and nature (asserted) |
 
-The constructions that condition the cost on the delay finely enough converge in the golden's bin (asserted): 30-day
-bands $1,261,391; bands at 30, 90, 180 and 365 days $1,265,132; at 90, 180 and 365 $1,257,941; quarters $1,250,865; at
-120 and 365 $1,189,630; a gamma spline in log delay by class $1,297,226; a quadratic in the delay on log cost by class
-$1,208,024; with the classes pooled (filed against by 3.3, same call anyway) $1,185,857 to $1,250,518.
+## Ladder
 
-- **Margins.** The nearest natural route is R1g, $267,032 (1.07 bins) above; every natural route is a full bin or more
-  away and rounds elsewhere (asserted on the pack and on the clean truth). The golden sits $13,838 from the bin's
-  centre and $111,162 from its edge.
-- **Sampling.** The golden's Poisson standard error is $75,623 (6.0 per cent; bootstrap $78,776): one sigma either way
-  rounds to $1,250,000 (asserted). 2,766 experience Claims carry the window; the largest carries 1.2 per cent of the
-  golden, the ten largest 8.5 per cent (asserted): the decisive step is sized on hundreds of Claims in each regime.
-- **Dominance.** The decisive step (R1 to the golden, $1,341,430) is 14.6 times the largest Layer 1 slip's effect on
-  the contribution (claims and exposure from July 2020 only, $91,612), asserted.
+| Rung | Route | 2027 recordables | Rate | Against the limit (214.3) |
+|---|---|---|---|---|
+| R0 | the recorded rate by unit type on the 2027 plan | 176.0 | 2.46 | inside |
+| R0b | the pooled recorded rate; the trailing twelve months | 175.9; 177.1 | 2.46; 2.48 | inside |
+| R1 | the technicians outside HR-14 (1.92) against the crews (2.55): no sign the award thins the log | 176.0 | 2.46 | inside |
+| R2 | the days-away share, crews 26 against technicians 30 per cent: no sign of under-reporting | 176.0 | 2.46 | inside |
+| Golden | each crew's count rebuilt day by day, the crews read in days 0 to 34 (3.84), the technicians at 1.92 | 255.0 | 3.57 | over |
+| Standing | days 0 to 19, 0 to 24, 0 to 29, 0 to 39; by crew type; 2023 on; counts from each crew's first recordable; recoded crews as new | 236.3 to 257.2 | 3.31 to 3.60 | over |
+
+Separation: the highest inside rung (177.1) sits 37 recordables (17 per cent) under the limit's 214.3; the lowest
+standing member (236.3) sits 22 over it (10 per cent). No route that reads the record as the injuries leaves the
+limit's side; every route that reads the crews where their counts exert no pull lands over it. The truth the
+simulation holds: the crews' true rate is 3.72 and the 2027 plan makes 247.5 recordables (3.46); 401 of the 1,278
+injuries crews had on Pinewater work from 2021 to 2026 (31.4 per cent) never reached the log.
 
 ## Closure table
 
-| # | Axis | Reading and move |
+| Axis | Reading | Move |
 |---|---|---|
-| 1 | Population | Claims first made in 2027 from incidents on or after each entity's Transition Date (trust agreement 2.1, Schedule A), members not yet observed included (2027 incidents), projected from Claims of 2016 to 2024 incidents against Covered Clinicians (3.3) |
-| 2 | Unit of account | one Claim per incident (1.3); FTE per employee-month (3.2); the contribution in dollars at 2027 level |
-| 3 | Attribution window | the Plan Year, 1 January to 31 December 2027 inclusive (1.7, 2.1, 2.4); a day off at either end moves the unrounded figure under 1 per cent, same call (SF13) |
-| 4 | As-of dating | the register extract valued 30 September 2026 (3.4); one extract ships |
-| 5 | Version basis | paid plus case reserves at the extract (3.4); no other register valuation ships |
-| 6 | Denominator | covered paid FTE-years by class, 2016 to 2024, both job code sets (3.2, Schedule B); the 2020 set alone moves the call (SF22) |
-| 7 | Weighting | each window Claim at its own cost; the class average, the within-a-year average and fitted curves are the ladder's rungs |
-| 8 | Window length | experience 2016 to 2024 (3.3); each entity's window from its Transition Date (Schedule A) |
-| 9 | Boundary inclusivity | "on or after the Retroactive Date" and "during the Plan Year", both inclusive on dates; one-day variants same call (SF13) |
-| 10 | Rounding path | the contribution rounded once to the nearest $250,000 (3.6, the prompt); ask dollars to the thousand, FTE to one decimal |
-| 11 | Tie-break | a Claim naming two Covered Clinicians takes the first-named's class (Note 2); the specialty text converges (SF11) |
-| 12 | Maturity and censoring | every experience Claim made within 365 days of its incident is in the extract (incidents to 31 December 2024, extract 30 September 2026), asserted; the window needs no later delays |
-| 13 | Order of operations | trend per Claim before summing; merge claim numbers before measuring a delay; any order of the class and day sums gives one figure |
-| 14 | Row order | the register's row order changes nothing (asserted over three shuffles) |
-| 15 | Duplicate resolution | defendant rows sum within a claim number; claim numbers of one incident add (SF17, no repeated amount set) |
-| 16 | Identity normalisation | the register's clinician ids are the payroll's employee ids (asserted every covered id found) |
-| 17 | Netting against gross | indemnity and defence add; no recovery or negative amount (asserted) |
-| 18 | Dimensional units | dollars at 2027 level; FTE-years (a payroll month one twelfth) |
-| 19 | Code and status semantics | open, closed or reopened never changes a cost (paid plus reserve); job codes through Schedule B, both sets |
-| 20 | Integerisation | none on the call; the expected count (46.87) moves under one-day variants and is not stated as a graded figure |
-| 21 | Clause scope | claims-made from each entity's own Transition Date (Schedule A); 2.2 keeps earlier incidents with the occurrence policies |
-| 22 | Forward window contents | the staffing plan covers every month of 2027 for every entity and class it plans (asserted) |
+| 1 Population | field employees, crews and technicians, on Pinewater work | filed: CS-4 3.2 and 3.3 (SF2, SF3) |
+| 2 Unit of account | a recordable case, counted once | filed: CS-4 3.1 (SF1, SF6) |
+| 3 Attribution window | calendar 2027 by quarter | filed: CS-4 4 (SF7) |
+| 4 As-of dating | the records to 27 September 2026 (the case export to 9 October) | filed: the extracts' own spans; C1 |
+| 5 Version basis | each case's latest revision | filed: CS-4 3.1 "as finally classifies it" |
+| 6 Denominator | hours worked as CS-4 defines them | filed: CS-4 3.4 (SF4) |
+| 7 Weighting | each hour and each recordable counts once | C1 |
+| 8 Window length | the whole record from 11 January 2021 | C2: from 2023 only gives the same call (SF11) |
+| 9 Boundary inclusivity | "above the limit": 3.57 against 3.0 | C1: same call either way |
+| 10 Rounding path | recordables to whole numbers, rates to two decimals, each figure rounded once | filed: the prompt (SF15) |
+| 11 Tie-break | no figure on a half | C1: asserted in checks.py |
+| 12 Maturity and censoring | cases revised after the cut are not in the record; none is needed | C1 |
+| 13 Order of operations | the counts, then the rates, then the plan | C1: the steps commute |
+| 14 Row order | none needed | C1 |
+| 15 Duplicate resolution | a migrated case once, in the new system; a recurrence not a new case | filed: CS-4 3.1; C1 (SF6) |
+| 16 Identity normalisation | a recoded crew carried under its new code | filed: HR-14 section 4 (SF13) |
+| 17 Netting against gross | prior-period adjustments in the period they correct | C1: same call |
+| 18 Dimensional units | hours and recordables per 200,000 hours | filed: CS-4 3.5 |
+| 19 Code and status semantics | FA, MT, RW and DA as 29 CFR 1904.7; the export's codes sheet | filed: the codes sheet |
+| 20 Integerisation | the forecast rounded to whole recordables | filed: the prompt |
+| 21 Clause scope | the limit applies to the plan's forecast rate | filed: CS-4 section 5 |
+| 22 Forward window contents | 2027 without HR-14: no award at stake for any crew | filed: the notice ("ends on 31 December 2026"); C2: every reading of the early stretch keeps the call (SF8 to SF14) |
 
 ## Literal reader
 
-Every shipped sentence bearing on how the contribution is computed, and what each fixes:
-
-- Prompt: "fund the expected cost of the claims first made against the trust that year, with each hospital and the
-  medical group moving into the trust on the day its occurrence policy expires": the estimand and the forcing fact.
-- Funding policy 3.1: the expected cost at the Plan Year's cost level of the Claims first made during the Plan Year.
-  3.2: exposure in FTE-years; the experience's is the paid FTE in the payroll over the experience period; the Plan
-  Year's is the staffing plan's FTE by entity, class and month from the Transition Date. 3.3: the experience is the
-  Claims from 2016 to 2024 incidents against Covered Clinicians, pooled within each class. 3.4: each Claim at paid plus
-  case reserves on its Covered Clinicians' rows at 30 September 2026, trended at 5 per cent from its incident year.
-  3.5: no loadings. 3.6: rounded once. Section 2 splits the instalments by exposure share.
-- Trust agreement 1.3 (one Claim per incident, made when first received), 1.5 (Covered Clinician), 1.6 and Schedule A
-  (Transition Dates), 1.7 (the calendar Plan Year), 2.1 and 2.4 (claims-made, incident on or after the Retroactive
-  Date, nothing made after the Plan Year), 2.2 (earlier incidents stay with the occurrence policies), 2.3 (limits),
-  Schedule B with Note 2 (classes, both code sets).
-- The staffing plan's note: "budgeted covered FTE for each month, held through the month".
-
-Executed word for word on clean data these give no estimator: they fix the population, the window, the exposures, the
-experience, its pooling and its valuation, and leave open how the window's expected cost is drawn from the experience.
-The two executions a literal reader can build from them both miss: experience cost per FTE-year on the Plan Year's
-FTE-years (3.2 with 3.4, the window dropped) $13,101,078, against 3.1's "first made during the Plan Year"; and the
-window's expected count (3.1, 2.1, Schedule A) at each class's average valued Claim (3.3, 3.4) $2,605,268, which
-satisfies every filed sentence. Neither is $1,263,838; the golden needs the analyst's choice to cost each window Claim
-at its own delay, which no sentence states (asserted as R3a and R3b).
+On paper and on the cut pack: the prompt asks how many recordable injuries Redbud's field employees will record on
+Pinewater work in 2027 and whether the rate they make on the 2027 work plan keeps Redbud within CS-4's 3.0. CS-4
+4(a) and (b) file the quantity and every term of it (3.1 to 3.5), the notice files that HR-14 ends on 31 December
+2026, and CS-4 leaves the method to the contractor. Executed word for word, the WHAT leaves open only how the 2027
+rate is estimated from the record, and the record forces it: read against each crew's own count, the crews record
+3.85 and 3.84 per 200,000 hours in its first five weeks and 1.38 and 1.01 in its last five, while the days-away cases
+come in at 0.69, 0.78 and 0.55 across the count; with no award at stake in 2027, every reading of the crews where
+their counts exert no pull lands over the limit (236 to 257). Every literal reading of a convention on the call
+(SF1 to SF15) gives the golden's call or is ruled out by a quotable sentence; every ask reading (SF16 to SF19) equals
+the world's own truth. Pass.
 
 ## Oracles
 
-None ships. No file states a 2027 cost, a share of Claims made within any period, a claims-made or step factor, a
-report-lag table, a severity by lag or a fitted curve; the funding policy carries no worked example; the premium
-history prices occurrence cover.
-
-Outside the pack, the generator's own parameters give the population truth (never shipped, `oracle.population_truth`
-in `checks.py`): the expected cost of the 2027 window from the claims world's frequencies, report lags and cost
-distributions at the 2027 cost level is $1,337,809 on 48.34 expected Claims. The golden is 0.945 of it, inside one
-standard error and in the same bin; the default path is 1.95 times it. The estimator is right, not merely filed.
+- The world's own truth: the injuries the simulation generated, recorded or not, give the crews' true rate of 3.72
+  and 247.5 recordables on the 2027 plan (3.46), over the limit; on the clean truth the easy route files 175.9,
+  inside it (asserted in checks.py, `dataset-generation` 7.1); the golden (255.0) sits 3 per cent above the truth.
+- The asks: every first-aid cell equals the world's own count of first-aid injuries on Pinewater work by district
+  and quarter, read on the records' own dates (16 of 16, asserted through the verifier's own pairing).
+- No shipped oracle: no file ties only under the golden reading; the good-catch reports and the subcontractors'
+  returns are distractors that rank nothing.
 
 ## Ask sheet
 
-**Main call's declared row population:** the register's rows for incidents from 1 January 2016 to 31 December 2024
-(every defendant row, open and closed), the legacy payroll's rows from January 2016 to December 2024, Schedule B, the
-staffing plan, the trust agreement and the funding policy. Ask A's organs are the premium history's carrier terms, the
-carriers' loss runs and the notice log, none of which the call reads, and the coverage line's meaning, which the call
-uses only to set contracted rows aside; Ask B's are the 2026 HCM pay lines, which the call never reads. Asserted: the
-call recomputes to the dollar with the runs, the notices, the premium history, the HCM lines and both distractors
-deleted, and the register's coverage line recoded to each incident's own carrier leaves the golden to the cent
-(`R2.ask_devices_off_the_call`). No ask figure reads any rung of the call: the call's figure is the contribution alone.
+Pair ceiling: 28.5 (the cracker 45.0, the mirror 12.0, on the planning weights of 38, 7 and 55)
+Mirror leakage: 0.0 per cent of the ask weight
+Measured by: generator/ceiling.py, run on the cut pack
 
-**Ask A. For each entity, whether any of our open claims under its policies with the carrier it is leaving is missing
-from that carrier's latest loss run and, if so, how many and our reserves on them** (4 answers, 4 counts, 4 reserve
-totals; counts whole, reserves to the nearest thousand dollars). Golden: Tolliver Falls none; Alderwick 4, $839,000;
-the medical group 5, $16,000; Brennick none.
-- H18 home: the trust covers no incident before a Transition Date (trust agreement 2.1, 2.2), so every open matter
-  under an expiring carrier's policies stays with that carrier; the reconciliation is the audit trail of the trust's
-  retroactive boundary, and the call does not turn on it.
-- Construction: open claims (OPEN or REOPENED) on each entity's coverage line, one per incident, from incidents on or
-  after the first day of the expiring carrier's unbroken run of terms in the premium history, not found on that
-  carrier's run valued 30 September 2026 by insured reference (claim numbers; RMN notice numbers through the notice log;
-  a suit under its earlier claim number) or, for a suit the run carries with no insured reference, by entity, date of
-  loss and claim type.
-- Primary device (D2, an attribute at the wrong vintage): the claims system holds each entity's current programme line
-  on every defendant row, carrier code first (QM-TFH on a 2015 Tolliver Falls suit), so the coverage line reads as
-  "insured by Quillan" or "by Stoneleigh" on claims that Halberd's, Corrigan Lane's, Westerholm's or Tallis's
-  occurrence policies insure. Those claims are on no run of the expiring carrier and read as missing. Open claims
-  under a former carrier: Tolliver Falls 1, Alderwick 2, the medical group 9, Brennick 2 (at least one each,
-  asserted). The tells sit in other files: the runs' own policy periods begin at each carrier's first term, the
-  premium history dates every term's carrier, and the notice log names the carrier each notice went to. Nothing
-  narrates the changes of carrier; the dictionary describes the field as "the entity insurance programme line the
-  claims system holds for this defendant".
-- Second device (D7, the true key elsewhere): the occurrence policies ask the insured clinician to forward a summons at
-  once, and a carrier opens its file from the clinician's copy, which carries no Corvane reference. Each entity has
-  one open suit the clinician sent straight to the carrier (Tolliver Falls IR-2024-05617, Alderwick IR-2024-01224, the
-  medical group IR-2022-02986, Brennick IR-2026-04266), each the only register incident of its entity on its date of
-  care, on the run with a blank insured reference; closed ones sit beside them on both carriers' runs (two each,
-  asserted), so a blank reference is no marker. Matched by reference, each open one reads as missing, so a response
-  that cracks the carrier era still files Tolliver Falls 1 ($436,000), Alderwick 5 ($954,000), the medical group 6
-  ($140,000) and Brennick 1 ($132,000): every count, every reserve total and both "none" answers wrong. The tell is
-  the run row itself (named insured, date of loss, claim type, open with the carrier's reserves); nothing narrates it.
-- Hazards: HA1 (D7) noticed matters carried under their RMN notice numbers; HA2 (D7, the prior-id chain) an escalated
-  suit carried under its request's claim number; HA3 (D2) Quillan's revision 1 of its June run, received 9 October,
-  after the September run of 6 October; HA4 (D3) Stoneleigh strips punctuation from references; HA5 (D5) claims naming
-  only contracted clinicians carry the CONTRACT line and are insured by the clinicians' own groups.
-- True gaps: claims received from Thursday 24 September 2026 go to the carriers in the 2 October report (Alderwick 3,
-  the medical group 4), and two program requests settled in house were never reported (Alderwick's IR-2026-00766, the
-  medical group's IR-2025-06129); Tolliver Falls and Brennick have none, so "none" is a graded answer.
-- Path (7 files, 17 columns): the register, the premium history, the two Quillan runs, the Stoneleigh run, the notice
-  log, the data dictionary; `claim_no`, `incident_no`, `incident_date`, `prior_claim_no`, `status`, `coverage_line`,
-  `matter_type`, `entity_at_incident`, `indemnity_reserve`, `defense_reserve`, the runs' insured reference, policy
-  period, named insured, date of loss, claim type and valuation date, the premium history's carrier and term.
-- Stops (asserted): S1, the cracker's (every open claim on the coverage line, every reference matched): 2 ($447,000), 7
-  ($1,009,000), 15 ($842,000), 3 ($192,000); S6 (the carrier era applied, the run matched by its references alone): 1
-  ($436,000), 5 ($954,000), 6 ($140,000), 1 ($132,000); S2 (notice numbers unmatched): 6, 17, 23, 2; S3 (claim numbers
-  matched one by one, suits not through their earlier number): Tolliver Falls 3 ($275,000), Alderwick 9 ($1,206,000),
-  the medical group 21 ($1,424,000); S4 (the June revision read as latest): Tolliver Falls 4, Alderwick 22; S5 (by
-  entity of care, contracted claims in): Tolliver Falls 4, Alderwick 6, Brennick 1.
-- Lazy delta: S1 wrong on 8 of 8 figures and on both "none" answers; S6, the first device cracked, the same.
-- Realism: health systems move their clinician programmes between carriers on anniversaries; a claims system that
-  holds a programme line per entity carries the current one on converted claims; a carrier converting a notice keeps
-  its first reference; a corrected run re-sent after the next quarter's is routine.
+One ask, sixteen graded cells: for each district, the first-aid cases its field employees had on Pinewater work from
+5 January to 27 September 2026 in each calendar quarter and in all (H18 home: `recordables_forecast_2027.xlsx`,
+sheet "2026 by district"). It reads rows the call never reads (every first-aid record, the nurse line's cases among
+them) and no device sits on a recordable, an hour or a count.
 
-**Ask B. The covered clinician FTE the payroll paid at each entity in July, August and September 2026** (12 figures,
-FTE to one decimal). Golden: Tolliver Falls 188.6, 187.1, 188.0; Alderwick 464.5, 463.6, 465.4; the medical group
-1,037.1, 1,036.8, 1,040.6; Brennick 105.5, 106.7, 108.2.
-- H18 home: the staffing plan's 2027 FTE, the exposure the contribution is costed on, was built from these positions;
-  the figures are the plan's starting point as the payroll paid it (an input's reconciliation), shown to the trustees
-  beside the contribution; the call reads only the plan.
-- Construction: the HCM lines for the three work months; covered job profiles through the crosswalk into Schedule B;
-  the hours on every line of each covered position (regular, per-diem shifts, paid time off; stipend and leave lines
-  carry none) over 173.33; the entity of the line's cost centre; a worker paid on a resident or fellow position for the
-  month is not a Covered Clinician that month (trust agreement 1.5), so the additional position he holds is left out;
-  a termination payout (TRM, no hours) on a resident or fellow position after it has ended is no month of training.
-- Primary device (D5, a category crossed by label): since the HCM go-live, residents and fellows in their later years
-  hold an additional paid position for moonlighting shifts (0.2 FTE, nocturnist and after-hours profiles JP-20182,
-  JP-20162 and JP-20191, pay group PHYS, at their own or a sister entity's cost centre); 18 such positions, 3 to 6 at
-  every entity in every month (asserted). The crosswalk maps the profile to a covered code and the position looks like
-  any attending's; the tell is the same worker id on a GME line in the same month, and the rule is 1.5. Nothing
-  narrates moonlighting.
-- Second device (D5, a repair right for one population only): residents and fellows finish on 30 June, and the System
-  hired nine of its June 2026 graduates into attending vacancies that opened from July to September (Tolliver Falls's
-  three emergency medicine posts, Alderwick's hospitalist post and two emergency posts, the medical group's two family
-  medicine posts and a cardiology post), each under his own employee id; HCM pays each ended position a TRM
-  termination payout with no hours in a later pay run, the graduates' in July, August or September. The first
-  device's natural crack (a worker with any GME line in the month is a trainee that month) takes each graduate's
-  attending hours out of his payout month: Tolliver Falls 187.8, 186.3, 187.6; Alderwick 463.6, 462.6, 464.4; the
-  medical group 1,036.7, 1,036.1, 1,039.7 (S6, every Tolliver Falls, Alderwick and medical group cell). TRM lines
-  follow every position that ended in 2026 (138 lines: 112 on covered positions, 22 on resident and fellow positions,
-  asserted), so the code is no marker; the dictionary dates a payout to the month it is paid. Brennick made no
-  physician hire from July to September and keeps the first device alone.
-- Hazards: HB1 per-diem clinicians with fte 0.00 and their shifts on PDM lines; HB2 paid time off on its own line; HB3
-  one line per earning code repeating the position's FTE (stipend and leave lines with no hours); HB4 unpaid leave;
-  HB5 fellows' clinical-sounding profiles ("Physician, Cardiology Fellow") that the crosswalk maps to GME; HB6 part
-  months for starters and leavers.
-- Path (6 files, 11 columns): the HCM extract, the crosswalk, the cost centre directory, the trust agreement (1.5,
-  Schedule B), the data dictionary, the extract log; `worker_id`, `position_id`, `work_month`, `earning_code`, `hours`,
-  `fte`, `job_profile_code`, `job_profile`, `cost_centre`, the crosswalk's `legacy_job_code`, the directory's
-  `entity_code`.
-- Stops (asserted on all 12 figures unless stated): S1, the cracker's (moonlighting positions kept): 189.8, 188.3,
-  189.2; 465.1, 464.2, 466.0; 1,037.7, 1,037.4, 1,041.2; 106.7, 107.9, 109.4. S6 (any GME line that month, payouts
-  included): 9 of 12 off, as above. S2 (the fte column once a position): 11 of 12 off. S3 (regular hours only): every
-  figure 7 to 9 per cent low. S4 (the fte column on every line): every figure 1.5 to 1.8 times. S5 (per-diem clinicians
-  left out): every figure 1.1 to 4.3 FTE low.
-- Lazy delta: S1 wrong on 12 of 12; S6, the first device cracked, wrong on 9 of 12.
-- Realism: residents moonlight on paid shifts, and an HCM pays them through an additional job under the shift's
-  profile while the legacy payroll paid such shifts as an earning on the trainee's own job; per-diem physicians are
-  paid by the shift with no scheduled FTE; a health system with its own programs hires some of each June's graduates,
-  and HCM settles an ended position in a later pay run.
+| Ask | Primary device | Golden | The cracker's figures | Cracker |
+|---|---|---|---|---|
+| A, first-aid cases by district and quarter (12 cells) | D1: the nurse line's interface opens a first-aid case of its own from each call, dated the day of the call, beside the supervisor's case of the same injury; 58 per cent of calls come one to three days after the injury, so the duplicate check on worker and injury date pairs only the same-day calls, and the next-day ones stay two injuries (and a nurse-line case beside a recordable stays a first-aid case) | Blue Ridge 36, 44, 19; Piedmont 38, 34, 32; Lakes 45, 46, 30; Coastal 52, 51, 33 | every cell high by 3 to 16 | miss |
+| B, first-aid cases by district, 5 January to 27 September (4 cells) | D1, the same pairing summed over the window | 99, 104, 121, 136 | 125, 123, 140, 161 | miss |
+| Full includer (stress row): every nurse-line case paired with the supervisor's case of its worker in the three days before its call | the golden handling | 16 of 16 | the cracker's 0 of 16 | miss |
 
-**Hazard table**
-
-| Hazard | Root cause | Moves | Per-ask delta (asserted as built) |
-|---|---|---|---|
-| HA1 notice references | carriers keep a noticed matter's first reference | Ask A | S2 against the golden: 6, 17, 23, 2 against 0, 4, 5, 0 |
-| HA2 escalation chain | a suit after a request opens a new claim number | Ask A (and the call's merge, same call there) | S3: Tolliver Falls, Alderwick, the medical group |
-| HA3 re-issued June run | Quillan corrected and re-sent its June valuation | Ask A | Tolliver Falls 0 to 4, Alderwick 4 to 22 |
-| HA4 reference formats | the carriers' own formats | Ask A | every Stoneleigh match |
-| HA5 contracted claims | the clinicians' own groups insure them | Ask A | Tolliver Falls 0 to 4 |
-| HB1 per-diem | shift pay with no scheduled FTE | Ask B | S5 on 12 of 12; S2 on 11 of 12 |
-| HB2 paid time off | the 2026 HCM's line grain | Ask B | S3 on 12 of 12 |
-| HB3 line grain | one line per earning code | Ask B | S4 on 12 of 12 |
-| HB7 termination payouts | HCM settles every ended position in a later pay run | Ask B (with the second device) | S6 on 9 of 12; none on covered leavers' figures (no hours) |
-
-**The cracker sheet.** The cracker filed the golden contribution, ran the hygiene battery (keys unique, exact
-duplicates, every join from the register and the HCM lines matched, no fan-out, counts tied), read the dictionary and
-executed every filed rule. Every ask row misses:
-
-| Ask figures | The cracker's path | What keeps it wrong | Cracker result |
-|---|---|---|---|
-| Ask A, 4 counts and 4 reserve totals | open claims on each coverage line, one per incident, matched to the latest valuation by reference, notices through the log, suits through `prior_claim_no` | the coverage line holds the current programme on claims the former carriers insure, and a suit the clinician sent the carrier has no reference on the run | miss |
-| Ask A, "none" for Tolliver Falls and Brennick | as above | each has an open claim under its former carrier and a suit with no reference, so the cracker answers yes | miss |
-| Ask B, 12 FTE figures | paid hours over 173.33 on every covered position by cost centre, per-diem by shifts, paid time off in, GME profiles out | residents' additional moonlighting positions sit under attending profiles | miss |
-| Slide 2, the chart's 12 values | the same figures | as Ask B | miss |
-
-The cracker keeps the "yes" for Alderwick and the medical group, where a grader scores it apart from the count, and
-slide 2's structure (a chart of each entity's FTE in the three months).
-
-**The single-crack sheet.** The strongest response lands the call and cracks the most obvious device of an ask, each
-the natural way:
-
-| Ask figures | The device cracked | What still keeps it wrong | Result |
-|---|---|---|---|
-| Ask A, 4 counts, 4 reserve totals, 2 "none" answers | the carrier era, read from the premium history and the runs' policy periods | each entity's open suit on the run with no insured reference reads as missing (S6) | miss |
-| Ask B, Tolliver Falls, Alderwick and medical group figures (9) | moonlighting, a worker with a GME line that month taken out | the June graduates' payout lines take their attending months out (S6) | miss |
-| Ask B, Brennick's 3 figures | moonlighting | nothing: Brennick hired no graduate | hit |
-
-Mirror leakage: 11 per cent of the ask weight (the mirror, off the call, lands Ask A on S1 or S4 and Ask B on S1 or S2,
-and keeps the same two "yes" answers and the chart's structure).
-
-**Pair arithmetic.** Planning weights: recommendation and components 38 (the contribution 30, the two experience
-components 8), instruction following 7, asks 55 over 27 criteria (Ask A 12, Ask B 12, slide 2's chart 3), 2.04 each.
-The cracker keeps the two "yes" answers and two chart criteria, 4 of 27: C = 38 + 7 + 8.1 = 53.1. The mirror keeps the
-components (r = 8), the two "yes" answers and one chart criterion: S = 8 + 7 + 6.1 = 21.1. The pair, C with S, is 37.1.
-- The strongest cracks Ask A's carrier era: Ask A still misses, it keeps the same 4: 53.1, and with the mirror 37.1.
-- The strongest cracks the moonlighting device the natural way: it adds Brennick's 3 cells, 7 of 27: 59.3, and with
-  the mirror 40.2.
-- Both top responses on the call, no device cracked: 53.1 (49.1 if the rubric folds each "whether" into its count);
-  one cracking a single device of either ask: 53.1 to 56.2.
-- The floor with both on the call is 45 (the contribution, the two components and instruction following) before any
-  ask, so no ask can hold that pair at or under 40; the hardened asks keep both responses off every Ask A figure and 9
-  of the 12 Ask B figures until each cracks two devices of one ask.
-
-Pair ceiling: 37.1
-
-If the generated rubric folds each "whether" into its count, the cracker keeps only the chart's structure and the pair
-falls to about 35; recomputed from the generated rubric when it exists.
-
-## Pins
-
-| Pin | Authority | What it fixes | Never says |
-|---|---|---|---|
-| Trust agreement 1.3 (Claim) | 2, the trust's governing contract | one Claim per incident, first made at the earliest, program requests included | anything about delay or cost |
-| Trust agreement 2.1, 2.4 and Schedule A | 2 | claims-made from each entity's Transition Date, nothing made after the Plan Year | how a window is priced |
-| Funding policy 3.1 to 3.6 | 1, the trustees' policy | the estimand, the two exposures, the experience period and its pooling within class, valuation, trend, no loadings, rounding once | a severity, a delay, a curve, a weighting, a development or tail factor |
-| Schedule B | 2 | covered jobs and classes, both legacy code sets, class by the first-named clinician | FTE totals |
-| The staffing plan's note | 3, Finance's plan | each month's FTE held through the month; per-diem at budgeted average FTE | how exposure is weighted |
-| The data dictionary | 5, semantics only | each field's meaning; 173.33 hours a month at 1.0 FTE; a termination payout carries the month it is paid | any device, any route, any carrier change, any graduate or clinician-reported suit |
-
-## Prompt
-
-`prompt.txt`, 881 characters, `voice-check.py` PASS: the call with its unit and the forcing fact (each entity moving in
-on its occurrence policy's expiry), the workbook with Ask A ("whether any ... and, if so", no presupposition, H23) and
-Ask B (the FTE "the payroll paid", which fixes paid FTE against the position's scheduled FTE), the deck with slide 2's
-chart named, and the rounding once at the close (the contribution to the nearest $250,000, a budget-scale figure the
-trustees set). The call sentence is round 1's word for word; the entity and class breakdowns, which rode on the call,
-are gone.
+The one-day pairing window keeps 1 of 16 cells and the two-day window 3 of 16 (stress rows); any window from three
+to seven days pairs the same cases (asserted). Hazards: case revisions (first aid to medical treatment, handled by
+the cracker), the migrated cases, recurrences, mutual-aid work, nurse-line calls after the window's end, the crew on
+the day for a technician or a worker who changed crews. Accepted risk: the layer stands on one device, so a response
+that pairs the nurse line's cases with a window of three days or more keeps every cell.
 
 ## Build record
 
-- Claims seed 2077 (`build.py`), from a search of seeds 2000 to 2239 on the final claims world (escalation at 2.2 per
-  cent of requests): 9 of 240 passed every criterion (each of the 19 routes the search measured a full bin off and rounding elsewhere, every
-  converging construction in the golden's bin, the golden at least 1.25 standard errors inside its bin, an open claim
-  under a former carrier at every entity, "none" for one entity and missing claims for at least two); 2077 was built
-  and checked first and kept, 2095 and 2154 (nearer the bin's centre) are the fallbacks. The payroll world, documents
-  and Ask B use their own fixed streams (seed 1301012).
-- The call: $1,250,000 (unrounded $1,263,838; Poisson SE $75,623). Experience: 3,043 Claims on 13,747.1 covered
-  FTE-years. Asks: A as above; B as above.
-- Round 3a restored on 2026-10-16 from 265e1ed: the rebuild of the restored generator reproduced the judged cut
-  (target.zip fac4903f, 190 of 190 checks) before any change. The hardening then touched only the asks' evidence: the
-  three loss runs (a blank insured reference on each entity's open clinician-reported suit and on two closed suits per
-  carrier, `carrier.mark_clinician_reported`), the HCM pay lines (138 TRM payouts with no hours; nine June graduates
-  in July to September vacancies under their own ids, `world._graduates`, no position added, so the claims stream,
-  the legacy payroll and the 2027 plan are as built), the dictionary (the TRM code, the payout's month) and the extract
-  log's row count. The register is byte-identical, and the call, the ladder and every golden figure are unchanged to
-  the cent.
-- Gates at stage 3: `checks.py` 204 of 204 (the three-rules block R1 to R3c, every natural route a full bin off and every converging construction in the bin on the pack and on the clean truth, one sigma, dominance, the population-truth oracle, SF1 to SF32, the asks' stops including S6 for each new device, the no-reference suits unique, never a gap and with closed twins, the TRM payouts on every ended position, the graduates trained to June, fairness and convergences, separation, distractor deletion, realism, H5, H9, H16); `verify.py` (its own code path, bundle only, the no-reference match and the month trainee test included) matches every golden figure; two builds byte-identical (target/, golden/, metadata.json, figures.json, target.zip: 17 members, sha256 410a3ff6b4593066e58f58bc84a39785185ee84e476f503c9a74e7254fc462eb); `figures_check.py` exit 0 (32 figures); `precut.py` exit 0 (49 checks, 0 WARN); `voice-check.py` PASS (881 characters, the prompt 3a's); `leak.py --asof 2026-10-12` REVIEW with no LEAK (lines below); `guard.py validate` clean (186 cards), `heart` WARN (Lori against task129, an older build; this slot's lineage drivers differentiated), `surface` one promoted pair (task102, on the card axes only, answered by the card's differentiation line); the scrub audit clean on target/ and golden/; H4 and H7 (the archive's 17 members equal the pack by content), H11 (one submission.md, one prompt.txt).
-- Stage 4 on this cut (410a3ff6), 2026-10-16: the judge (`determinism_check_report.md`; earlier rounds kept as
-  `determinism_check_report_round1.md`, `_round2.md`, `_round3a.md` on cut fac4903f and `_round3b.md`) returned
-  DETERMINISTIC, APPROVE, no fix, Gate H analytical, every figure reproduced: $1,263,838 rounding to $1,250,000, the
-  missing claims Alderwick 4 / $839,000, the medical group 5 / $16,000, Tolliver Falls and Brennick none, and all twelve
-  FTE cells. Its two thin spots are under `## Accepted risks`. The leak reader on the same cut: Q1 to Q4 clean, Q6
-  analytical, every REVIEW line harmless, funding policy 3.6 echoing the prompt's rounding harmless; its ask readings
-  (the latest loss run as the latest valuation, the claim-key join, OPEN or REOPENED counted per Claim, paid FTE as
-  hours/173.33) each governed by the shipped files, as the judge confirmed. `leak.py --asof 2026-10-12` re-run before
-  the read was appended: REVIEW, no LEAK, the same lines as above. The ship rebuild into scratch matched target/ file
-  for file, the archive's 17 members match target/ by content, and `verify.py` and `figures_check.py` (32 figures)
-  pass. Nothing under target/ moved after the cut.
-- Leak review: REVIEW, no LEAK, one line per REVIEW:
-  - Sweep 3, the call's distinctive words in the agreement, the policy and the dictionary: those files name the
-    trust and Corvane Health; none states a contribution or any 2027 figure.
-  - Sweep 4, stump-paragraph nouns in the funding policy (record, register, experience, exposure, carries, report) and
-    the dictionary (register, carries, report): each document's own terms for the register it values or describes,
-    the exposure it defines and the month a payout carries; no sentence names a severity, a delay, a curve or a
-    weighting.
-  - Sweep 6, entity names beside numbers in the agreement's schedules, the Quillan runs, the staffing plan, the
-    cost centre directory and the premium history: dates, policy numbers, job codes, claim amounts, FTE and
-    premiums; none ranks the entities on the contribution.
-  - Sweep 9, 2027 dates in the premium history: the end dates of the 2026 policy terms.
+- World seed 130624 (`generator/world.py`); `generator/sim.py` simulates every crew and technician day from 28
+  September 2020 to 27 September 2026 (HR-14 Revision 2 starts every count on 11 January 2021); `generator/pack.py`,
+  `docs.py` and `distract.py` cut the pack; `generator/make.py` builds it, writes the goldens, metadata.json and
+  figures.json, runs `checks.py` (65 assertions) and `verify.py` (an independent pandas recomputation of the forecast
+  and the sixteen first-aid cells, its own seven-day pairing), builds a second time into a scratch folder, compares
+  target/ and golden/ byte for byte, and cuts target.zip. Rebuild: `python3 task130/generator/make.py`.
+- Pack: 12 files in four formats (CSV, XLSX, PDF, DOCX); the timesheet is the largest file (152,804 rows);
+  distractors `good_catch_reports_2025-2026.csv` and `subcontractor_monthly_safety_2026.csv`, named in metadata.json;
+  every workbook, PDF and document carries its own created and modified stamps.
+- target.zip: 12 members, 1,850,230 bytes, sha256 325d048a28a5d9eec3ef0ef13e370214e64c415754c9d36fe456bd5a2d5f7bdf.
+- Gates on the final cut: precut.py exit 0 (61 checks, 0 WARN); figures_check.py PASS (80 figures); voice-check.py
+  PASS (659 characters); leak.py REVIEW, no LEAK (two lines, ruled below); `guard.py surface` exit 0 (four pairs
+  promoted on card axes or corpus-percentile surface alone: task166, task133, task196, task180, each answered by the
+  card's differentiation lines; people Samantha Galvan, Jerome Warren, Norma Hinton and Sergio Phillips, all on the
+  card); `guard.py heart` WARN (`three_rules.strategy_risk` only, answered by the analyst test; nearest card task149
+  at 0.10, differentiated).
+- Ceiling on the cut pack (`generator/ceiling.py`): the cracker and the mirror keep 0 of 16 ask cells; pair 28.5.
 
-## Pre-ship check
+## Leak sweep
 
-1. Domain: the task is a professional liability actuary's pricing of a claims-made trust's first year, the expected
-   cost of the Claims first made inside each entity's opening window, from the system's own report lags with each
-   Claim's cost tied to its own lag; with another field's nouns the trigger, the retroactive dates, the disclosed-harm
-   settlements, the program requests and the late suits have nothing to attach to.
-2. Real work, nothing planted: a defendant-grain register with escalations under new claim numbers and contracted rows
-   unpriced, a legacy payroll across the July 2020 job codes with per-diem rows, dual appointments, transfers and
-   unpaid leave, HCM pay lines at earning-code grain with residents' moonlighting positions, two carriers' runs in their
-   own layouts with a June run re-issued after September's, a notice log, a premium history across a change of carrier
-   at each entity; each from the system's or the carriers' own systems, none on the decisive step (R2 asserted).
-3. The flip is a method choice: each window Claim at its own cost against the exposure with its own delay left; every
-   rule in the pack is read the same on both paths, and the window's truncation is on both.
-4. The analyst test holds: the window's count at the class average files $2,500,000, at the within-a-year average
-   $750,000, on a log-linear curve $1,000,000, on a lognormal mean $1,500,000; only each Claim at its own cost files
-   $1,250,000 (R3a on the clean truth, asserted).
-5. One defensible answer: the policy files the WHAT, every fork row is asserted (SF1 to SF30), every converging
-   construction rounds to $1,250,000, and one standard error either way does too; the judge on the shipped cut
-   returned DETERMINISTIC, APPROVE with every graded figure reproduced (bins of 15 to 91 days, no class pooling,
-   unmerged claim numbers, every defendant valued and trend from the claim year all round to $1,250,000), its thinnest
-   spot the month-start exposure ($1,387,788, closed by the staffing plan's "held through the month", Accepted risks).
-6. No decoy: no file states a 2027 cost, a factor, a lag table or a curve; no memo, draft or voice argues a figure; the
-   two distractors are plain.
-7. Nothing hidden and recovered: no certified figure pins the method; the window is estimated on the record, and the
-   generator's population truth agrees with the golden inside one standard error.
-8. A new lesson: inside a first claims-made window the claims' cost is neither the average claim's nor the average of
-   the claims made within a year, when cost depends on the report lag non-monotonically (`guard.py heart` WARN, Lori
-   against an older build only).
-9. The 10/10 rules re-read against the built pack: the decisive step is still analytical (the judge's Gate H and the
-   leak reader's Q6 both read it so from outside the design), and the mess (the defendant-grain register, the July
-   2020 job codes, the carriers' layouts, the re-issued June run, the HCM earning codes) is still only Layer 1.
-
-## Accepted risks
-
-Accepted by the author at the reship of 2026-10-16 and not acted on, because each fix would move the pack after the
-judge and the reader read it:
-
-- Stump strength is moderate, per the rule 3 re-audits: the field's claims-made step factor on loss dollars, applied
-  to the occurrence pure premium and convolved over each entity's days left, is the golden's own construction, so a
-  strong solver who takes the dollar-weighted step factor lands $1,250,000 without seeing the lag-cost link.
-- Both of the top two may land the call. With both on it the pair is about 53 (53.1), or 49 (49.1) if the rubric
-  folds each "whether" into its count; a response on the call banks 45 before any ask, so 40 with both on the call is
-  out of the asks' reach. The asks' second devices hold the pair at 37.1 to 40.2 only while one response misses the
-  call.
-- The strengthenings were tried and failed (`## Tried and rejected`, rounds 3b and 3c): 3b's recent-years trim lands
-  and 3.3 reads as whole-experience pooling; 3c's spread starts leave either the trims or the own-start constructions
-  in the golden's bin. The author chose to ship 3a with the harder asks.
-- The judge's thin spot on the main call: placing each month's FTE at the month's first day gives $1,387,788, which
-  rounds to $1,500,000 (the golden's unrounded $1,263,838 sits about 8.8 per cent below the $1,375,000 rounding
-  boundary); the staffing plan's "budgeted covered FTE for each month, held through the month" closes it
-  and policy 3.2 licenses the daily reading (SF10).
-- The judge's thin spot on Ask B: paid FTE read from the position `fte` field instead of hours/173.33 moves cells
-  (Alderwick July 467.3, Brennick September 106.0); the dictionary's hours "paid on the line" at 173.33 hours to
-  1.0 FTE make hours the literal reading (SF28), and the asks are free of the main-call bar.
-
-## Retired
-
-task130 was retired on 2026-10-11 with its third architecture spent (`build-pipeline`, Retirement), and put back in
-the author's wave 1 on 2026-10-12 as a fourth root ("re-root: retired"). Every card stays filed so none of the earlier
-architectures is drawn again.
-
-- v1 failed on the portal on 2026-10-10: both top models filed the golden.
-- v2 failed on the portal on 2026-10-11, and its hardening loop 1 was a Template of task73's world ten at the clone
-  pre-flight.
-- v3, the regression-to-the-mean baseline (an untreated cohort selected the same way a year earlier, trended), was
-  cracked by the in-house solver in round 1: it filed the golden $4,060 PMPM and every tier figure in about four
-  minutes (proxy 100). The pins that closed v3's forks (the any-list Risk Tier, the cancelled RFP, the bid list's
-  programme year) pointed at the method, and the renewal letter's plan totals verified the solver's claims netting.
-- Hardening loop 1 measured every candidate deeper rung on the shipped pack and found none forced, fork-free and
-  moving the call; the only levers left were planting a rung or deleting the pins that close forks.
+- Sweep 3, `pinewater_contractor_safety_standard_cs4.pdf` carries most of the call's distinctive words: harmless.
+  The standard is the governing document and defines every term the call uses (recordable injury, field employee,
+  Pinewater work, the rate per 200,000 hours, the 3.0 limit); it states no figure, no forecast and no method.
+- Sweep 9, `payroll_calendar_2021-2027.csv` carries pay periods after the setting: harmless. A payroll calendar is
+  published ahead for the year it covers; it holds period dates only, no hours, cases or outcomes.
 
 ## Tried and rejected
 
@@ -919,3 +562,102 @@ Round 3a restored, the asks hardened (2026-10-16):
 - A second carrier for allied health, or a gap inside an expiring carrier's run of terms, for Ask A: rejected, the
   world's carrier histories stay as built, and two carriers left at once read two ways against "the carrier it is
   leaving".
+
+Architecture 5 draw (2026-10-31), each screened on paper and set aside before any code:
+
+- Theatre list overrun cancellations under 2027 lists booked to full session time (each case's position and the
+  booked time before it): the client domain is task482's, a live batch 1 re-root, and task301's note already screened
+  theatre cancellations sized by a start standard.
+- High-tide flood days for 2027 from the published tide table and the surge record (coastal climate extremes): the
+  2027 nodal factor sits with 2022 to 2026's, so replaying the recent observed high waters at 2027's mean sea level
+  lands, and the tide-plus-surge decomposition is the field's reflex once a tide table ships.
+- A fund's redemptions read from each holding's gain or loss against its own purchase price (behavioural finance):
+  the effect needs a V-shaped or break-even selling schedule whose specification spreads wider than the call's
+  margin, and the disposition effect is the field's named reflex.
+- Burial ground capacity with reopened graves forecast from the stock of part-used double graves (municipal
+  service demand): the stock model and a trend in the reopening share differ only in curvature, too thin for a call.
+- Ozone exceedance days under a low-emission zone read from the weekday-weekend contrast: NOx titration is the
+  field's named reflex, and no physical-environmental forecasting task type carries air quality.
+- Parole grants read by each hearing's position since the board's last break: the field's best-known result, primed
+  by the session schedule change that would force it.
+- A low-emission zone's charge revenue by each plate's entry frequency, and a reopened line's ridership by each
+  card's choice during the closure: composition on a derived property, and the behavioural response follows from
+  the forcing event on its face.
+- This world's first variant, the 2027 districts passing to first-year inspectors read at earlier appointees'
+  first-year criterion (and the same variant with driving examiners and retests): tenure is a hire date one join
+  away on the roster, the reflex death recorded in task182 (service-length standardisation reaching the golden slate
+  20 of 20), task202 (C4) and task171 (the screeners' new-hire cohort); replaced by the pair's visit history, which no
+  roster or column holds.
+
+Architecture 5 build (2026-10-31):
+
+- Permits renumbered at the March 2024 migration with a crosswalk in the permit register: rejected at the build, the
+  renumbering split every pair's history at the migration for a solver who missed the crosswalk, a Layer 1 item that
+  moved the call; permits keep their numbers across the migration and the crosswalk column is gone.
+- The draw's calibration (threshold 800, about two fifths of 2027's inspections first visits, a first visit marked
+  about two and a half times as often as a fourth): rejected on the prototype; the redraw on drive time made far fewer
+  first visits than two fifths and the call's margins were thin; the retirees moved to districts 2 and 4, the base
+  rates were lowered and the first- and second-visit terms raised, the threshold became the team's own capacity (two
+  officers at 270), and the asks took more device mass (the paper era to the end of August, later keying, more
+  closed-premises calls, more reports per incident).
+- A routine inspection made while a return sequence was still open at the permit: removed, a district holds the next
+  routine inspection until the returns close, as a program does.
+- Asks A and C over every return made in 2026: restricted to 2026 routine inspections, since a December 2025
+  inspection's January 2026 return reads two ways against the asking sentence.
+- Day-sheet matching on a narrow window: widened to 1 to 20 days before the stamp, the earliest unused line first,
+  through 15 September 2026, since the late keying of the paper era's last weeks fell outside it.
+- Overlapping complaint incidents at one permit: removed, starts are drawn in order and an incident never opens
+  inside another.
+- The forecast to the nearest 50: rejected at the build. The crossed standing family (rates from 2021, 2022 or 2023
+  onward, classes 0, 1, 2+ or 0, 1, 2, 3+, every visit or routine visits only, any or a 36-month count, cell rates or
+  a main-effects logistic) spans 675.7 to 730.2, across the 725 edge, so the forecast is graded to the nearest 100,
+  the precision the record carries; every member sits in the 700 bin at least 19.8 from an edge (asserted at an
+  eighth of a bin, the single-axis members at a quarter).
+- The memo's "not how most of 2027's inspections will be made": false, first and second visits are 42 per cent of the
+  schedule; rewritten to the record's first-visit share against the schedule's, both asserted. Its "an inspector
+  making a first visit": true only on the record from 2019; rewritten to no earlier inspection of the establishment
+  on the record since January 2019.
+- SF5 asserted only as the golden's own visit types, and R2 carried only by fork rows: SF5 now prices the reading it
+  names (closed-premises calls counted as visits, 695.7, same bin), and the Layer 1 readings carry their own R2
+  labels.
+- The card's decisive pattern G14 with strategy forecast_method_backtest, and the organisation local_government:
+  blocked at stage 3 by `guard.py heart` against task156 v2, registered at 18:27Z, 38 minutes before this draw and not
+  yet in this tree at the draw's check (ban.pattern, ban.strategy, test.same_puzzle, test.same_driver,
+  ban.org_family). The decisive step is a mix shift with the cell rates holding, the labels task175 carries for a
+  chance held within a class and carried to a new mix (G6, composition_mix), and the organisation moves to a state
+  department of health's county office in a fictional state (government_agency), as states that run their county
+  health units do; the mechanism, the data and every graded figure stay as built.
+- The redraw to G6 with composition_mix and a state agency in a fictional state, set out in the line above:
+  abandoned before any file changed. task181 v6, filed at 20:04Z, carries G6 as its decisive pattern, so G6 bans
+  either way (in this card's window once it is filed anew, or this card in task181's window if it is edited in
+  place at 19:05Z), and the state agency answered only the organisation ban. The card was revised instead to the
+  decisive gap it argues best (time, Gap 1: the measurement backward, the decision forward, which every easy rung
+  shares) and filed anew; the world, the mechanism and every graded figure are unchanged.
+
+Architecture 6 draw (2026-10-31):
+
+- Architecture 5 (Elkhorn County's third return-inspection officer, the unsatisfactory rate stationary in each
+  inspector's visit number): passed two determinism passes (DETERMINISTIC, APPROVE; the reports kept as
+  determinism_check_report_arch5.md and determinism_check_report_arch5_pass2.md), but its draw repeated task156 v2's
+  decisive pattern G14, strategy forecast_method_backtest and organisation family local_government inside the
+  three-build window. The draw's check ran before task156's card reached the tree, and re-registering the card only
+  moved the window, which later moved back; the guard forbids waiting for the window to move or relabelling a card,
+  so the build re-roots.
+- This draw's first card (human-factors-ergonomics, human-reliability-assessment, strategy causal_design, shape 07,
+  organisation family utility_or_infrastructure): redrawn before registration, when task122 v3's card reached the tree
+  holding the domain, the strategy, the shape and the organisation family; the world and the mechanism moved to
+  economics-econometrics (the reporting choice under an incentive pay scheme), strategy time_semantics, shape 02.
+- Insurance claims hidden under a no-claims discount until standard protection removes the incentive: set aside at
+  the draw, actuarial-science-insurance is this slot's v3 and v4 domain (claims-frequency-severity was v3's task type).
+- A wind farm's weather-window waiting time, a vial-sharing drug budget, a storage cluster's retention plateau, a
+  hotel's duplicate bookings, a loyalty scheme's expiry bunching and an employer-change hazard: weighed and not
+  taken (the field's simulation is the golden, a withheld pooling rule, a weak domain fit, composition, task134 v2's
+  surge-filled clock and task179's other-body lift respectively).
+
+Architecture 6 (2026-11-01):
+
+- The CS-4 4(c) district table as the ask layer (each district's recordables, hours worked, recordable rate and crews' rate), with the timesheet row's work district and the case record's location as the devices: rejected at the ceiling, the careful solver who lands the call has already placed every case on the worker's crew on the day and executes CS-4 3.6 by mapping each crew to its register district, so both devices are readings it never makes and the honest cracker keeps every cell.
+- The HR-14 awards and their dollars by district: rejected, a group-by on the payroll export's crew and milestone columns with its reversal lines netted, kept whole by both sheets.
+- The payroll extract as the counts' anchors: dropped with the awards ask, since a file read by the decisive step alone announces it (readability test 7); every count now runs from HR-14 Revision 2's start on 11 January 2021, which the programme document files.
+- A payroll crew code that is the member's current crew (an awards device): rejected earlier in this architecture, it planted false anchors on the members' new crews and moved the call to 2.85.
+- Each recurrence's outcome and days carried onto its original case (29 CFR 1904.6) as the ask device: rejected, eight recurrences of 2026-window cases leave whole districts' cells unmoved.

@@ -1,79 +1,60 @@
-"""Write task130/metadata.json from the built pack."""
-import json
+"""metadata.json: what the task decides, the deliverables, the distractors and each file's provenance. It names the
+decision and never the method."""
 import os
-import sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import common as K   # noqa: E402
+import pack as P
 
-TASK = os.path.dirname(HERE)
+DISTRACTORS = ("nearmiss", "subs")
 SOURCES = {
-    K.REGISTER: "Risk management claims register extract: every clinician named on a claim number, valued 30 September 2026",
-    K.PAYROLL: "Legacy payroll history: paid FTE by employee, month and cost centre for employed clinicians, residents, fellows and psychologists, January 2016 to December 2025",
-    K.HCM: "HCM pay lines for clinicians, one row per worker, position, work month and earning code, January to September 2026",
-    K.CROSSWALK: "HCM job profiles mapped to the legacy job codes they replaced",
-    K.DIRECTORY: "General ledger cost centre directory: company, entity and department",
-    K.PLAN: "2027 staffing plan: covered clinician FTE by entity, specialty class and month",
-    K.AGREEMENT: "Corvane Professional Liability Trust Agreement as executed (extract: definitions, coverage, claims administration, Schedules A and B)",
-    K.POLICY: "Trust funding policy as adopted by the Trustees",
-    K.QM_SEP: "Quillan Mutual loss run for Tolliver Falls Hospital and Alderwick Medical Center, valued 30 September 2026",
-    K.QM_JUN: "Quillan Mutual loss run valued 30 June 2026, revision 1 issued 9 October 2026",
-    K.SC_SEP: "Stoneleigh Casualty loss run for Corvane Medical Group and Brennick Community Hospital, valued 30 September 2026",
-    K.NOTICES: "Precautionary notices risk management sent to the carriers, 2012 to September 2026",
-    K.SAFETY: "Patient safety event reports, January 2019 to September 2026",
-    K.PREMIUMS: "Clinician occurrence policies by entity and term, 2016 to 2026: carrier, policy number, period, rated FTE and premium",
-    K.INVOICES: "Defence panel invoices received for service from July to September 2026",
-    K.DICTIONARY: "Data dictionary for the risk management extracts",
-    K.EXTRACT_LOG: "Extract log: each file's system, date, row count and preparer",
+    "legacy": "Redbud EHS case log (legacy system), January 2021 to 31 May 2024, one row per case revision",
+    "cases": "Redbud case management export, 1 June 2024 to 9 October 2026: the cases migrated open, the supervisors' reports and the nurse line's cases",
+    "assign": "HR crew and team assignment history, September 2020 to September 2026",
+    "register": "Crew and technician team register as of 29 September 2026, with the March 2025 recodes",
+    "hours": "Payroll timesheet hours by unit and biweekly pay period, 11 January 2021 to 27 September 2026",
+    "calendar": "Payroll calendar of biweekly pay periods, 2021 to 2027",
+    "plan": "2027 work plan hours by district, unit type and quarter, from Pinewater's 2027 work release",
+    "standard": "Pinewater EMC Contractor Safety Performance Standard CS-4, Revision 3 (effective 1 January 2026)",
+    "programme": "Redbud HR-14 Crew Safety Recognition Programme, Revision 2 (effective 11 January 2021)",
+    "notice": "Redbud notice of 2 October 2026 ending HR-14 on 31 December 2026",
+    "nearmiss": "Field good-catch (near-miss) reports, January 2025 to September 2026",
+    "subs": "Subcontractors' monthly safety returns, January to September 2026",
 }
+DATES = {"standard": "2025-12-08", "programme": "2021-01-04", "notice": "2026-10-02", "plan": "2026-10-15",
+         "register": "2026-09-29", "cases": "2026-10-12"}
 
 
-def rows_of(path):
-    if path.endswith(".csv"):
-        with open(path, encoding="utf-8") as fh:
-            return sum(1 for _ in fh) - 1
-    return None
-
-
-def write(target, out_path):
+def metadata(target, counts):
+    def rows_of(p):
+        return (sum(1 for _ in open(p, encoding="utf-8")) - 1) if p.endswith(".csv") else None
     files = []
-    for f in sorted(os.listdir(target)):
-        p = os.path.join(target, f)
-        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                      "source": "Constructed: " + SOURCES[f], "date": "2026-10-12",
-                      "license": "CC0-1.0 (original work, constructed for this task)"})
+    for k, f in sorted(P.FILES.items(), key=lambda x: x[1]):
+        pth = os.path.join(target, f)
+        rows = rows_of(pth)
+        if rows is None and k in ("cases", "register"):
+            rows = counts.get(k)
+        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(pth), "rows": rows,
+                      "source": "Constructed: " + SOURCES[k], "date": DATES.get(k, "2026-10-16"),
+                      "license": "CC BY 4.0 (original work, constructed for this task)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
-    meta = {
+    return {
         "task": "task130",
-        "title": "The 2027 contribution to Corvane Health's new claims-made professional liability trust",
-        "domain": "Actuarial Science & Insurance",
-        "subdomain": "pricing-ratemaking-credibility (first-year funding of a self-insured claims-made professional "
-                     "liability trust at an Oregon health system)",
-        "stated_inputs": [],
+        "title": "Redbud Line Services: 2027 recordable injuries on Pinewater work",
+        "domain": "Economics & Econometrics",
+        "task_type": "discrete choice and limited dependent variable modeling",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "other: the contribution, then two reconciliation asks across four entities (open claims under "
-                        "each expiring carrier's policies missing from its latest loss run, with reserves; paid covered "
-                        "clinician FTE in each of three months) and a chart of the second",
-        "as_of": "2026-10-12",
-        "deliverables": list(K.DELIVERABLES),
-        "distractor_files": list(K.DISTRACTORS),
+        "decision": "how many recordable injuries Redbud's field employees will record on Pinewater work in 2027, "
+                    "and whether the rate they make on the 2027 work plan stays within CS-4's limit of 3.0",
+        "as_of": "2026-10-16",
+        "deliverables": ["safety_plan_recordables_2027.docx", "recordables_forecast_2027.xlsx",
+                         "recordables_by_quarter_2027.png"],
+        "distractor_files": [P.FILES[k] for k in DISTRACTORS],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
-                     "origin": "constructed for this task by task130/generator/build.py (seeded, deterministic) around "
-                               "a fictional Oregon health system (Corvane Health), its hospitals, medical group, trust, "
-                               "carriers and people; no real organisation, person, patient or claim is depicted.",
-                     "date": "2026-10-12", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-12",
-        "generator": "task130/generator/build.py",
+                     "origin": "constructed for this task by task130/generator/make.py (seeded, deterministic) around a "
+                               "fictional Georgia power line contractor, a fictional electric membership corporation "
+                               "and fictional people; every record and figure is invented. Rate definitions follow "
+                               "29 CFR 1904.",
+                     "date": "2026-10-16", "license": "CC BY 4.0 (original work)"}],
         "files": files,
     }
-    with open(out_path, "w") as fh:
-        json.dump(meta, fh, indent=2)
-        fh.write("\n")
-    return meta
-
-
-if __name__ == "__main__":
-    write(os.path.join(TASK, "target"), os.path.join(TASK, "metadata.json"))

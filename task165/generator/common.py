@@ -25,7 +25,6 @@ SURVEYOR = "Tessaline Geomatics Inc."
 CONTRACTOR = "Kettlewood Road Services"
 PEOPLE = {
     "winter_manager": "Doris Wilkerson",   # manager, winter operations: the winter maintenance plan
-    "telematics": "Mary Huynh",            # fleet telematics analyst: the exports and the data dictionary
     "transit_planner": "Kristin Gonzalez",  # QRT service planning: the frequent network street list
     "director": "Andre Nixon",             # director of roads: approves the division's plan and procedures
 }

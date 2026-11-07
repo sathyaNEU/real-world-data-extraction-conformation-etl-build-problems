@@ -1,37 +1,80 @@
 {
  "task": "task231",
- "status": "SHIPPED",
- "domain": "survey-research-official-statistics",
+ "status": "PAUSED",
+ "domain": "physical-environmental-sciences / sensor-calibration-measurement (client physical-environmental-sciences)",
  "objective": "data-quality-monitoring",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-13",
- "stump": "Counting every non-returning firm without a business-register closure as still trading puts five regions under 55 per cent (Capital, Harbour, Islands, Border and Western Uplands) and the other seven under 58, so the default sends five regions into the reminder-call extension and seven onto the email reminder; the step that lands it there is taking the register as it stands for the round's in-scope population when most firms that closed before 1 September are not yet on it, and the closure share of the round's non-returners read from rounds old enough for the register to have recorded their closures leaves only Capital and Harbour for the extension and Islands and Western Uplands for the email.",
- "architecture": 1,
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-11-01",
+ "stump": "A competent analyst judges each withheld air-temperature reading against the hour's elevation-adjusted neighbours, the lapse rate refitted across the network each hour, counts a reading as right only where it sits within the check's tolerance of that line, and re-tunes only the deepest-pooling basin floors; the step that lands there is reading a basin floor against stations outside its own basin's cold pool, so the floors of the shallower basins, whose still-night readings agree with the other stations in their own pool, keep withholding more than 2 per cent of their winter hours unremarked.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-13"
+  "date": "2026-11-01",
+  "note": "62 checks, no FAIL or WARN; pair ceiling 28.5 measured by generator/ceiling.py"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-13 (no LEAK; five REVIEW lines answered in the design note)",
-  "reader": "clean 2026-10-13 (no decisive-step sentence, no ranking file; Christmas-close realism catch fixed)"
+  "leak_py": "REVIEW 2026-11-01 on target.zip e7332860: two answer-figure coincidences in the ESS export (adjacent fields read across a comma), three generic-vocabulary lines, two station lists in the register and the pre-season sheet; each ruled harmless in the design note",
+  "reader": "pending: brief at scratchpad/task231_stage4_leak_brief.md, copy at scratchpad/leak-task231/"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, repeat.question_form)",
-  "nearest": "0.08 task134"
+  "guard_check": "WARN 2026-11-01 on the registered card (overuse.org_family government_agency; repeat.gate_g against task125 v4; test.same_driver_older differentiated against task309)",
+  "heart": "WARN 2026-11-01 (overuse.org_family government_agency; repeat.gate_g against task125 v4)",
+  "surface": "2026-11-01: three promoted pairs (task229, task245, task309), each answered under the card's differentiation; no people finding after the renames"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task231/determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": "pending at stage 4"
  },
  "returned": [],
- "resume": "shipped; waiting on the portal",
+ "resume": "stage 4, architecture 2: spawn the isolated leak reader (medium) on scratchpad/leak-task231/ with scratchpad/task231_stage4_leak_brief.md, and the determinism judge (medium) on task231 at target.zip e7332860, both in the background; append the reader's answers to leak_check_report.md under ## Solver's-eye read and rule each REVIEW line; fix every finding in the generator in one pass (python3 task231/generator/make.py rebuilds, then runs checks.py and verify.py), re-judge a FIX_NOW once; then stage 5: golden-realism and reduce-house-fixes on the two goldens, every gate re-run on the final cut (make.py, precut.py, voice-check.py, leak.py --asof 2027-05-18, figures_check.py, guard.py heart and surface), target.zip from the final rebuild, the ledger row, SHIPPED",
  "approved": null,
- "delivered": "2026-10-13",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "source_note": "re-root into a new world (the Sawyer Divide Highway District's road weather stations, which stations' air-temperature spatial test is re-tuned before winter 2027/28); architecture 1 spent",
+ "lineage_v1": {
+  "status": "SHIPPED",
+  "domain": "survey-research-official-statistics",
+  "objective": "data-quality-monitoring",
+  "stump": "Counting every non-returning firm without a business-register closure as still trading puts five regions under 55 per cent (Capital, Harbour, Islands, Border and Western Uplands) and the other seven under 58, so the default sends five regions into the reminder-call extension and seven onto the email reminder; the step that lands it there is taking the register as it stands for the round's in-scope population when most firms that closed before 1 September are not yet on it, and the closure share of the round's non-returners read from rounds old enough for the register to have recorded their closures leaves only Capital and Harbour for the extension and Islands and Western Uplands for the email.",
+  "architecture": 1,
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-13"
+  },
+  "leak": {
+   "leak_py": "REVIEW 2026-10-13 (no LEAK; five REVIEW lines answered in the design note)",
+   "reader": "clean 2026-10-13 (no decisive-step sentence, no ranking file; Christmas-close realism catch fixed)"
+  },
+  "duplicate_check": {
+   "heart": "WARN (repeat.gate_g, repeat.question_form)",
+   "nearest": "0.08 task134"
+  },
+  "judge": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "report": "task231/determinism_check_report.md"
+  },
+  "delivered": "2026-10-13",
+  "fate": "retired 2026-10-31 at the batch 1 audit: shipped 10-13 with no portal result; survivor anatomy absent, pair ceiling unmeasured (precut FAIL), a count the data hold in the prompt, three files that describe the data (leak.py LEAK); the judge report kept as determinism_check_report_arch1.md"
+ },
+ "history": [
+  {
+   "date": "2026-11-01",
+   "event": "DRAWN: architecture 2, physical-environmental-sciences / sensor-calibration-measurement x data quality monitoring, registered 2026-11-01T00:33:44Z"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "PAUSED at stage 3: the main call built and gated (checks.py 75 of 75, verify.py 13 of 13, two byte-identical builds, figures_check 162 of 162, voice-check PASS); the re-tune set SD-118, SD-122, SD-131, SD-147, SD-204, SD-211, SD-226, SD-318; the asks measured at a pair ceiling of 82.9 and go back to stage 2"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "PAUSED at the stage 4 hand-off: every free gate green on target.zip e7332860 (two byte-identical builds, checks.py 86 of 86, verify.py with no failure, figures_check 39 of 39, precut 62 PASS, voice-check PASS, leak.py REVIEW ruled, heart WARN, surface's three promoted pairs answered on the card); the re-tune set SD-118, SD-122, SD-131, SD-147, SD-204, SD-211, SD-226, SD-318; the asks are section and network totals riding a shop spare and a replaced head in every section, pair ceiling 28.5"
+  }
+ ]
 }

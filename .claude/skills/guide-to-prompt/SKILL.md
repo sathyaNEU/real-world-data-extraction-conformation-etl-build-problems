@@ -122,8 +122,10 @@ returned named the prompt's shell (how many, a workbook with a count-once side t
 N), not its nouns: 182 of 186 prompts on file run question, deliverable, side table, chart, rounding. So the shell is
 drawn with the world. Take the question's form from the decision (a count asks how many, a pick which, a gate whether,
 an amount how much, a date when); lead the second sentence with the deliverable, the rule, the date or the use rather
-than "Put ... in" every time; put a rounding inside its asking sentence where the asks spec allows it rather than
-"Give ... to the nearest" last every time; vary the deliverable set and the chart's species. `voice-check.py` holds
+than "Put ... in" every time; keep the rounding in the last sentence (the gate fails it anywhere else) but open that
+sentence on the figures it governs ("Shares are per cents to one decimal", "The seasonal tonnage is to the nearest
+100 t") rather than "Give ... to the nearest" every time; vary the deliverable set and the chart's species, a chart
+carried inside a paper or memo PDF instead of a bare PNG beside a workbook. `voice-check.py` holds
 corpus quotas (no question form over 30 per cent of prompts on file, no second-sentence opener, rounding opener or
 deliverable set over 20 per cent) as a WARN the build answers at the role level, never at the verb, and the batch
 report prints the shares. A re-root redraws the shell with the world (`stumping` Part 6).

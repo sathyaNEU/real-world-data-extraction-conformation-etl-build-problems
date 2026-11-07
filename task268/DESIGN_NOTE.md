@@ -1,171 +1,338 @@
-# task268 design note
+# task268 design note: Corcally's Roastery 2027 sampling, the rival brand whose buyer homes least often already buy the Roastery
 
-Architecture 4, re-rooted 2026-10-28 after architecture 3's send-back (the portal's determinism round failed it with both judges, and the re-judge after the WHAT repair returned SEND_BACK: plain Kaplan-Meier a rule-compliant reading, the class-carried estimator filed nowhere; the rejected list below). Corriven Insurance, a motor insurer in England and Wales, puts its 2027 telematics pilot in the two sales regions whose private-car policies had the highest claim frequency in accident year 2025, while the 2025 claims that claims-management companies notify months and years after the accident are still arriving.
+Architecture 5, a re-root drawn 2026-10-31 in Descriptive & Distribution Analysis (the number's objective), client domain
+Marketing & Consumer Research, task type segmentation-market-structure. Architectures 1 to 4 are in the card's lineage and in
+`## Leak check
+
+`leak.py --asof 2027-01-13` on the cut pack: REVIEW, no LEAK. Each REVIEW line, ruled in this thread:
+- The brief carries four words of the committed call ("2027 Roastery sampling ... homes"): it is the brief that sets the
+  decision and names no brand. Harmless.
+- The merchant agreement carries "online, settlement, terminal" and the Rewards terms "online, member, members": the
+  agreement's own schedule and settlement clauses and the scheme's own card clauses; neither names a home, a shared card
+  or a match. Harmless.
+- The deal log and the product master name the brands beside numbers (funding per multibuy, shelf prices): neither ranks
+  the rivals on overlap. Harmless.
+- The online export's `generated` stamp read as a generator's word: renamed `exported_at`.
+
+## Duplicate check
+
+`guard.py heart` on the cut pack: WARN (three_rules.strategy_risk, answered by `Analyst test:`; the older same-puzzle and
+same-driver notes against task131 v1 and task264 differentiated on the card). `guard.py surface` promoted two pairs for
+the author's adjudication: task267 (back to back: the gap label and a pick in common; its driver reweights a screened
+population's checked members by their checking rate, nothing here does) and task264 (the same-driver signature, already
+differentiated). Personas in the pack: Alix Fennell only, on the card.
+
+## Tried and rejected`.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task268.json`, architecture v4, registered 2026-10-28 at WARN; architectures 1 to 3 in its lineage with their fates. Labels redrawn before the design was cut, each to the honest key rather than the passing one: Gate G `method_or_model_selection` (two defensible developments, the right one pinned by validation, the vocabulary's own definition; `forecasting`, "a forecast the correctly read past does not pin", does not describe a design whose closed years pin the development, so it was withdrawn); strategy `forecast_method_backtest` (the library's F6: method selection on honest history, a regime making the natural fit wrong), after `composition_mix` met `ban.strategy` against task270 v11; gap `rule` then `population` (F6's legal gap 4: no file states the development grouping and a filed criterion selects it; the notified-claims file is not the claims population); decisive generator G16 (method selection), with G6 (the notifying mix shifted) and G13 (claims arrive after the year closes) behind it; forum `line_manager_or_team` (the chief underwriting officer owns the pilot, set its terms and decides its regions himself; the motor portfolio actuary's paper goes to him), after `executive_team` met `ban.forum` against task270 v11 and `committee_or_panel`, a pricing committee, met it against task464 when that card re-registered during stage 3; context artifact planning_thread; forcing event purchase_order_or_contract (the telematics supplier's order names the regions). Similarity differentiated on the card: task80, task127 v3, task138 v1, task145, task160, task181, task185, task194 v3, task271 v4, task446 v2, task457 v1. WARNs answered: overuse.objective (the number's objective is fixed); repeat.gate_g and overuse.gate_g (method selection is the field's own question here, which development the record entitles; the batch varies elsewhere: actuarial, a motor insurer, a committee, a supplier order, xlsx and pptx); repeat.question_form (the call names regions).
-2. Pairing: Actuarial Science & Insurance / claims-frequency-severity / Descriptive & Distribution Analysis. The field's own quantity decides: each region's claim frequency for a closed accident year, the claims notified and the claims incurred but not yet notified, per earned car-year, the not-yet-notified part developed from report-lag factors and validated on closed accident years.
-3. Niche: a motor insurer's 2025 private-car claim frequency by sales region, where injury claims that claims-management companies notify arrive months and years after the accident (inside the three-year limitation period) and one region's 2025 injury claims came through those companies far more often than before.
-4. Call and shape: the two regions that host the 2027 telematics pilot (ranked_slate_under_cap, cap two, question form which); shape 01, each region's 2025 frequency, the two chosen and the gap to the third.
-5. The library's warning on G16, "an enumerable model class behind a shipped back-test is an answer key" (task38), is met in the design rather than argued: the passing grouping is not a column of the claims extract. The extract's notified-by field says only that a representative notified the claim; the representative's firm type (solicitor practice or claims-management company) is on the representatives register, joined by the representative's reference. Every grouping the extract's own columns offer (region, head of claim, notified-by, cover) fails the back-test on accident year 2022.
-6. Data-native sentence: a claims-management company notifies an injury claim months or years after the accident, a solicitor sooner and a policyholder within days, so a year's claim count grows long after it closes and how much it still has to grow depends on who is notifying its claims; Pennine's 2025 injury claims came through claims-management companies about three times as often as its earlier years', so its own past development, the head-of-claim split or the notified-by field leaves out most of what is still to come.
-7. The design target, measured at stage 2 on the prototype: the default path names Mersey and Severn; the golden, developed by the representative's firm type, names Mersey and Pennine; the back-test the reserving standard files (re-run on accident year 2022 from its position at the same age with the closed years before it) refutes every grouping the extract's columns offer and keeps the firm-type split, and every development that passes it names the same pair at the same printed frequencies. task127 v3 and this slot's architecture 3 died at the judge because nothing filed selected the method; here the standard files the selection criterion in general terms and never names the grouping.
-8. People, drawn with `guard.py names --geo uk --seed 268`: Carol Thorpe (motor portfolio actuary, the requester), Damian Warren (chief underwriting officer, owns the pilot and decides its regions), Iain Ali (claims director). Lorraine, Gerald and Paula from the same draw set aside (each first name in an older build).
+- **Card.** `.claude/skills/fingerprint/cards/task268.json`, architecture v5, `guard.py check` WARN (three_rules.strategy_risk
+  on grain_or_unit, answered by `Analyst test:`), differentiation filed against task131 v1, task126, task114, task179 and
+  task264; nearest drivers 0.08 (task116) and under.
+- **Pairing.** marketing-consumer-research / segmentation-market-structure / descriptive-distribution; marketing has carried
+  no descriptive build. The market-structure measure is the duplication of purchase between brands' buyer bases: of the homes
+  that bought a rival brand in 2026, the share that also bought Corcally's Roastery, the chain's own-label coffee.
+- **Decision.** Corcally's (a family-owned grocery chain in a Midlands market town, Drumsallagh, and its hinterland) sends
+  its 2027 Roastery sampling to the homes of one rival coffee brand, the rival whose 2026 buying homes least often also
+  bought the Roastery. Retrospective by design: the brief reads the closed calendar year 2026, the last full year of
+  purchases, and the sampling runs in 2027.
+- **The quantity.** For each rival brand, the share of its 2026 buying homes that also bought the Roastery, a home counting as
+  a buyer when any of its members bought the brand at Corcally's in 2026, in a store or online.
+- **Data-native sentence.** Corcally's Rewards issues a card to each adult member and pools nothing, the online shop keeps its
+  own accounts, and the only record that two cards, or a card and an online account, belong to one home is that they pay with
+  the same bank card, which shows as a shared card token in the acquirer's settlement file; partners split the coffee
+  aisle (one buys capsules, the other the Roastery), so card by card the capsule brand's buyers look untouched by the
+  Roastery while home by home they mostly already buy it.
+- **Abstraction sentence (nearest approved builds).** task126 and task114 rebuild a counting unit from records a second system
+  groups (dockets into applications by a credit class; bookings into meetings by invitees and badges); this build rebuilds the
+  buying unit from member records that share nothing but a payment instrument in a third system, and the decided quantity is
+  a duplication of purchase between brands. A reviewer holding task131 v1 (card-randomised offers, household interference)
+  would say both turn on cards in one household: task131 v1 had the membership on file as a key and an experiment to read;
+  here there is no household key and no experiment.
+- **Shape.** 14, cuts of a distribution per segment: for each rival its buying homes, those also buying the Roastery and
+  the share (seven rivals, 21 figures), the call, its share, the runner-up and the gap (4), the deck's chart (5 named
+  parts), the two files (2), and two asks off the call's rows: the loose coffee the Drumsallagh counter sold of each guest
+  roaster by quarter (12) and the multibuy funding each supplier owes by quarter (24). 68 criteria before the rubric's
+  own instruction lines.
+- **Strategy.** grain_or_unit, gate method_or_model_selection, generators G10 (what is one real-world buying unit), G2, G6;
+  gap population; Layer 2 estimand_identification.
+- **Sources (one line each).** The client's segmentation-market-structure card 4 (switching judged against share-based
+  expectation) is the field's method this build keeps at rung 1 and reads at the card; task131 v1 (household interference,
+  landed on the portal because the membership key sat on file) is why this build ships no household key; task120 v1 (a
+  solver union-found households through a dependents schedule one join away) is why the link here is a shared payment card
+  in a file kept for card-acceptance reconciliation, never a household or member field.
 
 ## Default path
 
-1. Read the pilot terms: the two sales regions whose private-car policies had the highest claim frequency in accident year 2025 host the pilot; frequency is every claim from a 2025 accident, notified by 30 September 2026 or not, counted as the Reserving Standard counts claims, per 100 car-years earned in 2025, the claims not yet notified estimated as the Standard provides (terms 2, 3).
-2. Earned car-years by region from the pricing mart's 2025 sheet (private cars): Mersey 61,870.01, Pennine 40,590.00, Wessex 38,140.00, Fenland 23,910.00, Severn 47,230.00.
-3. The 2025 claims notified to 30 September 2026 by region (Mersey 5,297, Pennine 2,991, Wessex 2,681, Fenland 1,374, Severn 3,713), then the claims not yet notified by the Standard's development on the whole private-car book (3.1, 3.2): the closed years' final counts over their counts at 21 months, pooled, or by head of claim, or by the claims system's notified-by field.
-4. The two highest frequencies host: pooled Mersey 8.9, Severn 8.1, Pennine 7.6; by head Severn 8.1, Pennine 7.7; by notified-by Severn 8.1, Pennine 7.8. Where the analyst runs the Standard's back-test (3.3), every one of these fails it on Wessex (8.54, 7.85 and 6.78 per cent short), and the analyst who stops at the least-failing development, or sets the back-test aside as a one-off 2022 wave in one region, still files the same pair.
+1. Read `coffee_till_lines_2026.csv`, map each PLU to its brand through `product_master_coffee.xlsx` (folding the three
+   spellings of a brand into one), keep the 2026 lines of the eight brands' packs presented on a Rewards card, and drop
+   the cards `rewards_cards_2026.csv` types as store cards.
+2. Fold each replaced card into its successor through the register's `replaced_by`, so a member is one buyer.
+3. Add the online shop's delivered orders from `online_orders_2026.json` (each order's final version, by delivery date)
+   as each account's purchases.
+4. Build the duplication of purchase table at the loyalty programme's customer unit, the field's method: for each rival,
+   the members and accounts that bought it, those that also bought the Roastery, and the share.
+5. Read the lowest share. Nordhavn's capsule buyers seldom buy the Roastery, which reads as the capsule format's
+   partition from ground coffee, and the analyst files it.
 
-Ends on: Mersey and Severn
-Golden: Mersey and Pennine
+- **Ends on:** Nordhavn, the rival whose buying cards least often also bought the Roastery.
+- **Golden:** Oro Rosso, the rival whose buying homes least often also bought the Roastery.
 
 ## Stump sentence
 
-The default path completes each region's 2025 claims still to be notified with the whole book's development, pooled, by head of claim or by the notified-by field, and names Mersey and Severn, because claims-management companies notify injury claims months and years after the accident and Pennine's 2025 injury claims came through them about five times as often as in any closed year at the same age (119 against 18 to 30 at 21 months); developed by the representative's firm type, the only split that reproduces accident year 2022 in every region within the Standard's two per cent, Pennine's 2025 frequency is 8.2 against Severn's 8.0, and Pennine is second.
+A competent analyst builds the duplication of purchase table on the Rewards card, the chain's customer unit, and names
+Nordhavn, whose capsule buyers are mostly a home's second card while the home's other member buys the Roastery on their
+own; assembled from the Rewards cards and online accounts that pay with one bank card in Faircourt's settlement file, a
+match no key offers, homes put Oro Rosso lowest and Nordhavn mid-table.
 
 ## Three rules
 
-Task type: Actuarial Science & Insurance, `claims-frequency-severity`: each region's claim frequency for a closed accident year, the claims incurred but not yet notified completed by development on claim-count triangles, the development basis validated against the most recent closed accident year.
-Domain test: the deciding quantity is each region's ultimate 2025 claim count per earned car-year, notified claims plus those incurred but not yet notified; the field develops counts with report-lag factors on groups whose lags are stable and back-tests the basis on closed years, and the lag here is carried by who notifies the claim, a claims-management company notifying injury claims near the three-year limitation period; swap the nouns and there is no notification route, no limitation period and no accident-year development for the call to rest on.
-Swap: with hospital admissions for claims and wards for regions the sentences still parse, but an admission is recorded when it happens: there is no population of events that exist before anyone reports them, no route that reports them years late and no closed year whose final count tests a completion, so the task stops being one.
-Layer 1: the claims-system migration of 3 July 2023 (claims notified before it carry a legacy CL reference beside the new one and a notification date, the new system a UTC timestamp, in one column); the pricing mart's change of layout (2019 to 2022 sheets in the old mart's region codes R1 to R5, product and cover codes and vehicle-days, 2023 to 2025 in names and car-years); vans in the claims extract and the exposure beside the private cars; open accident years 2023, 2024 and 2026 in the extract beside the years the call reads. Each named with its system and asserted neutral in `checks.py` (R2).
-Layer 2: `field_method`, own:claim-count-development-by-notifying-route: the development basis is chosen by the out-of-sample back-test the Standard files, and the only basis that passes it splits the representatives' claims by firm type, a split no column of the claims extract carries.
-Decisive step: build each claim's notifying route from the notified-by field and, for claims a representative notified, the firm type the representatives table gives that representative; measure the whole book's 21-months-to-final factors by route on the closed years 2019 to 2022; re-run that basis on accident year 2022 from 30 September 2023 with 2019 to 2021 (every region within 1.1 per cent) after pooled, head-of-claim and notified-by developments fail it (8.54, 7.85 and 6.78 per cent short in Wessex); apply it to each region's 2025 notified claims.
-Not semantics: every field, code and definition read correctly (the notified-by values, the firm types, the heads of claim, the valuation age, the closed years, the earned car-years) leaves the pooled, head-of-claim and notified-by developments on Mersey and Severn; no definition says that claims-management companies notify late or that a basis should split by firm type, and the firm type is a plain attribute of a firm.
-Not rule application: the Standard files the outcome (the not-yet-notified claims estimated by development on the whole book) and an acceptance test, never the grouping; executing every filed rule leaves the analyst holding three failed developments and no instruction where the lag lives, and the split that passes is found only by asking which route's claims arrive late and building it through the representatives table.
-Analyst test: a strong analyst who reads every filed rule, builds the 2025 earned car-years and completes each region's 2025 claims with the whole book's development, pooled, by head of claim or by the notified-by field, names Mersey and Severn (Severn 8.1 against Pennine 7.6 to 7.8); executed on the generator's clean truth in `checks.py` R3a.
-Estimand: terms 2 to 5 of telematics_pilot_terms_2027.pdf and the Standard's 2.1 to 3.3: claims from accidents in 2025 under private-car policies in each sales region (2025 drawing, risk postcode district), notified by the end of 30 September 2026 or not, each claimant's claim under each head from one accident counted once, nil claims included, per 100 car-years earned in 2025 (the pricing mart), the not-yet-notified estimated by a whole-book development that reproduces 2022 within two per cent, to one decimal; the two highest host.
-No decoy: nothing is planted to be caught: no memo, earlier frequency study, report or stakeholder figure states a region's frequency or ranks the regions, the Standard names no grouping and no wrong one, and the representatives table, the claims extract and the exposure are the systems' own records.
-No certified replay: no shipped figure is a frequency, an ultimate count or a development factor, so the method cannot be recovered by reproducing a published number; the closed years' final counts are the claims themselves, which every route reads alike.
-Lesson: where a count is completed from a reporting lag, the lag belongs to whoever reports, and a unit whose reporters changed cannot be completed from its own history or from any grouping that blends the reporters; the closed year that a past shift disturbed is the test that says which grouping carries the lag.
+- **Task type:** segmentation-market-structure (marketing-consumer-research), serving descriptive-distribution: the
+  duplication of purchase between the brands' buyer bases is the market-structure table a segmentation analyst reads.
+- **Domain test:** the deciding quantity is each rival's duplication with the Roastery at the household buying unit, the
+  share of the rival's buying homes that also bought the Roastery, read the way the duplication of purchase law reads
+  brand overlap in a household panel; the field's estimator is that table built on the unit that buys for one cupboard.
+- **Swap:** "whose 2026 patient households least often also used the hospital's own clinic": a patient's visits are
+  their own and nothing is split between members' cards, so the household unit changes nothing and the call no longer
+  turns on how the buying unit is assembled; the swap breaks the task.
+- **Layer 1:** four systems with four identifiers (the tills' Rewards card, the online shop's account, the register's
+  member, Faircourt's card reference); settlement in UTC against Irish till time and settled one or two banking days on;
+  a Lisgarvan terminal replaced in May; lost cards replaced under new numbers; store cards swiped for shoppers without
+  one; brand names spelt three ways; online orders amended before cut-off and some cancelled; refunds on later receipts.
+  None decides the call.
+- **Layer 2:** estimand identification, the population a duplication table must count: the buying unit is the home,
+  which the records hold only as Rewards cards and online accounts that settle on one bank card; the table on cards
+  files Nordhavn, on homes Oro Rosso.
+- **Decisive step:** recognising that the coffee repertoire belongs to the home and is split between its members'
+  personal cards, and rebuilding each home as the cards and online accounts that pay with one bank card, which needs
+  every till transaction matched to its settlement row on terminal, time and amount before the overlap is read.
+- **Not semantics:** every field can be read correctly (the register types each card as a member's or a store's, the
+  terms say a card is one member's, the card reference is a payment card) and the table built on members still files
+  Nordhavn; the homes are in no field and appear only when card references are compared across two systems' rows.
+- **Not rule application:** no filed rule assembles a home: the brief files the unit (a home, anyone in it) and the
+  terms that a card is a member's, and the construction is the analyst's. Enumerated family (card, member, member and
+  account, homes from store cards only, homes from cards and accounts; store cards kept or dropped; the settlement clock
+  converted or not; a link on one, two or three shared payments): Nordhavn at 14.6 to 16.5, Westquay at 25.6 and Oro
+  Rosso at 39.0 to 41.1 per cent on the cut pack, three calls. Standing family (every route that assembles homes from
+  cards and accounts, drops the store cards and converts the clock or matches on the day): one call and identical
+  figures, Oro Rosso 39.9, the thresholds converging (asserted).
+  The ruling-out is quiet: the terms' personal-card clause and the brief's "anyone in it", neither naming a payment.
+- **Analyst test:** with every file conformed and every rule read, the strong analyst builds the duplication of
+  purchase table on Rewards members and online accounts as the customer unit and files Nordhavn as the least
+  overlapped rival, when Nordhavn's capsule buyers are mostly the second card in a home whose other member buys the
+  Roastery on their own card.
+- **Estimand:** `roastery_sampling_brief_2027.docx`: for each rival, the share of the homes that bought it in 2026
+  (anyone in the home buying a pack on a Corcally's Rewards card in one of the three stores or through the home's online
+  shop account, an online order on its delivery date, 1 January to 31 December 2026) that also bought Corcally's
+  Roastery packs in 2026, compared across the rivals.
+- **No decoy:** nothing is planted to be caught: no memo, draft, briefing or stakeholder figure argues for Nordhavn or
+  any rival; the brand tracker (a distractor) reports claimed brand use, never an overlap; the store cards and the
+  replaced cards are the register's own records; no block is copied and no rule is hidden.
+- **No certified replay:** no certified or published figure is reproduced to recover the method; nothing in the pack
+  ties only under the golden.
+- **Lesson:** a duplication table is only as good as its buying unit: loyalty cards are people while the cupboard is
+  the home's, and where the scheme holds no household the home is rebuilt from evidence the business keeps for another
+  reason, the payments it settles, before brands are compared; no build on file rebuilds a buying unit from a shared
+  payment instrument through a settlement match.
+
+## Survivor anatomy
+
+- **Actor:** the deciding property is the home a card belongs to, and no file has a column for it: the register holds
+  cards and members (no household, address or account link), the online shop holds accounts, Faircourt holds card
+  references; the home is a relation between rows of three systems.
+- **Link:** read through a match no key offers: a till transaction carries no settlement reference, so each is matched
+  to its Faircourt row on terminal (through the merchant agreement's terminal schedule), time (UTC against Irish time)
+  and amount, and cards sharing a card reference are one home; online orders join on their order number. No sentence
+  invites it: the brief names homes, never payments.
+- **Reflex:** the field's method, the duplication of purchase table, built on the programme's customer (the member, or
+  member and account) files Nordhavn at rung 1, its low overlap reading as the capsule format's partition.
+- **Back-test:** the textbook route validates: on members the table shows the pattern a category analyst expects (the
+  rivals' overlaps with the Roastery close to one level, the capsule brand partitioned off), every member count ties
+  to the register, and nothing in the pack contradicts a member being a buyer.
+- **Second use:** every file the decisive step reads has its own reason: Faircourt's file carries the Drumsallagh
+  counter's card payments, without which the counter ask cannot tell a sold label from a re-weighed one; the merchant
+  agreement's terminal schedule places the counter's terminal; the till lines, online orders and register carry the
+  call's purchases and the store and replaced cards.
+- **Shock:** the movement reads as ordinary: on members Nordhavn's low overlap is the capsule partition and Oro Rosso
+  sits mid-table; Oro Rosso is not the extreme of any shipped column or simple statistic (buyers, price, pack size,
+  supplier funding, the tracker's claimed use), asserted.
+- **Pins:** the WHAT is filed once, in the brief, in the Roastery team's own genre (homes, anyone in them, the three
+  stores and the online shop, 2026 by delivery date); the terms file that a card is one member's; no filed sentence
+  names a payment card, the settlement file, a match or a threshold, and deleting any one filed sentence leaves the home
+  the unit (the terms alone make a card a person) without handing over how it is built.
 
 ## Readability screen
 
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0 the 2025 claims notified to 30 September 2026 per car-year | none (the terms count claims not yet notified) | the claims extract | count what has arrived | none | none | one count a region | readable |
-| R1 (the default path) the whole book's development, pooled | the Standard 3.1 and 3.2 | accident and notification dates | one completion factor | none | none | one factor | readable |
-| R2 the development by head of claim | none | head_of_claim | develop injury and damage apart | none | none | a group-by on head | readable |
-| R3 the development by the notified-by field | none | notified_by | develop by the field the extract carries | none | none | a group-by on notified_by | readable |
-| (decisive) the development by notifying route, the representatives' claims split by firm type through the representatives table, chosen by the 2022 back-test | the back-test (3.3) names no grouping; no file says who notifies late | no column carries the firm type; it is joined from the representatives table | none: the reflexes are R1 to R3 | none: no figure in the pack ties under the route split alone | none | a join, a group-by and a re-run of a closed year | silent |
+| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | 7 Organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 baskets: share of the rival's transactions that also carry the Roastery | no | no | fires (a basket view) | no | no | no | no | readable |
+| R1 members and accounts as buyers, the duplication table | no | fires (the card column) | fires (the field's method) | no | no | no | no | readable |
+| R2 homes from store cards through the settlement match, online orders left out or accounts kept apart | no | no | no | no | no | no | no | silent |
+| R3 (decisive) homes from cards and online accounts through the settlement match | no: the brief names homes, never payments | no: no key joins a till row to a settlement row | no: the field's table is built on its panel's or programme's unit | no: no control scores homes | no: no duplicate, clock or rescind repair builds a home | no | no: the settlement file carries the counter ask | silent |
 
 ## Semantic fork table
 
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | claims arising from 2025 accidents | every claim on a 2025 accident date, notified or not | notified claims only | Mersey and Severn (R0) | terms 3 ("whether or not they had been notified") |
-| SF2 | a claim | one claimant's claim under one head from one accident (policy, car, accident date, head, claimant number) | one row of the extract | the same pair, the same figures | the Standard 2.1; no 2019 to 2022 or 2025 private-car accident carries two rows for one claimant and head (C1, asserted) |
-| SF3 | nil claims | counted | dropped | the same pair; another set of figures | terms 3 and the Standard 2.1 ("including claims closed without payment") |
-| SF4 | the region of a claim | the 2025 drawing of the risk postcode district | the region the claim was handled in | the same pair | terms 4; every claim's district is in the 2025 drawing (asserted) |
-| SF5 | private cars | product PC | every product | the same pair; another set of figures | terms 3 and 4 ("Vans ... are outside the pilot") |
-| SF6 | notified by the end of 30 September 2026 | the UK date of notification | the UTC date of the timestamp | the same pair, the same figures | C1: no claim of the years read is notified in the hour after midnight UK time on a valuation date that changes a position (asserted) |
-| SF7 | the valuation age | 21 months: 30 September of the following year | the accident's own age in days | the same pair | the Standard 2.2 |
-| SF8 | the closed years | 2019 to 2022 | 2020 to 2022 | the same pair, the same figures | the Standard 2.3 and 3.1; same call |
-| SF9 | the factor | the closed years' final counts over their counts at 21 months, taken together | the average of each year's ratio | the same pair, the same figures | same call (asserted) |
-| SF10 | the development's grouping | the notifying route (firm type for representatives), or any route-based split | pooled, head of claim, notified-by, representative, region | Mersey and Severn under every one | the Standard 3.3: each fails the 2022 back-test by 6.8 to 8.6 per cent in Wessex; region-level factors are also against 3.2 |
-| SF11 | the route-based family | the route split | route by head, claims-management against the rest, simple-average factors | the same pair, the same printed figures | same call (asserted, `checks.py` FAMILY) |
-| SF12 | earned car-years | the pricing mart's 2025 sheet, private cars | a car count at a date | the same pair | terms 3 ("the pricing mart's earned exposure") |
-| SF13 | one decimal, and the gap | each frequency rounded to one decimal; the gap from the unrounded frequencies | the gap of the rounded figures | the same 0.2 | same call (asserted) |
-| SF14 | a tie in the top two | none: Pennine leads Severn by 0.18 | | the same pair | same call |
-| SF15 | the region of a car on 30 September 2026 (the ask) | its risk district on that date, the latest address change effective on or before it | the district on the in-force row | another set of figures | the change log: the in-force row carries the district at the term's start (every policy with an address change shows the pre-change district) |
-| SF16 | the cover of a car on 30 September 2026 (the ask) | the latest cover change effective on or before it | the cover on the in-force row, or every change applied whatever its date | another set of figures | the change log: the in-force row carries the cover at the term's start (every policy with a cover change shows the pre-change cover), and a change effective after 30 September had not happened that day |
+| SF1 | home | the people living together, held as the cards and accounts that pay with one bank card | a Rewards card or member as the home | Nordhavn | the terms: "Each card is issued to one member"; the brief: a home buys when "anyone in it" bought |
+| SF2 | bought a brand | a pack on any of the home's Rewards cards in a store, or on its online account | store-card or anonymous lines put to a home through the match | same call (asserted) | the brief: "on a Corcally's Rewards card ... or through the home's online shop account" |
+| SF3 | the Roastery | Corcally's Roastery packs | the counter's loose coffee counted | same call | the counter sells guest roasters only (asserted) |
+| SF4 | rival | the seven other brands in the product master, spellings folded | each spelling a brand | same call (asserted) | the master: the spellings share a supplier and range |
+| SF5 | 2026 | Irish date on the tills; online orders by delivery date | UTC date; order date | same call and figures (asserted) | the brief's delivery-date clause |
+| SF6 | online order | the delivered final version | every version; cancelled orders counted | same call and figures (asserted) | the export's status field |
+| SF7 | store cards | dropped | kept as a member | same call, figures move (asserted) | the register's card type and the terms' member-prices clause |
+| SF8 | replaced cards | folded into the successor | kept apart | same call and figures at the home (asserted) | the register's replaced_by; one member pays with one bank card |
+| SF9 | a shared payment | one shared payment links | two or three needed | same call and identical figures (asserted) | convergence |
+| SF10 | the settlement clock | UTC converted to Irish time | read as Irish time | same call, figures move (asserted) | the column name and the agreement: times are UTC |
+| SF11 | terminal schedule | by its dates | the current terminal only | same call (asserted) | the schedule's installed and removed dates |
+| SF12 | an online account no card shares | a home of its own | dropped | same call (asserted) | the brief: a home buying online is a home |
+| SF13 | refunds | a refunded pack still bought | refunded packs removed | same call and figures (asserted) | convergence |
+| SF14 | the share | the rival's buying homes as denominator | the Roastery's homes as denominator | Westquay | the prompt: "whose 2026 buying homes least often also bought" |
+| SF15 | rounding | whole per cent from counts; gap from unrounded shares | rounding first | same figures (mid-bin asserted) | convergence |
+| SF16 | tie-break | none needed | none | same call | margins of 1.15 or more asserted |
+| SF17 | a label the counter sold (the deck's loose coffee) | a label paid for, by card at the counter or in cash at a checkout | every label printed, the voided re-weighs included | every cell moves | the board: labels not paid for by closing are void |
+| SF18 | the card match | the one set of labels printed in the 25 minutes before the payment whose prices, with any board accessories, make its amount | a wider or narrower window, a consumption order, an accessories-only reading | same figures (asserted unique from 20 to 35 minutes before and 3 to 10 after, whichever labels other payments took, and strictly up to the payment away from scale 2's block; no amount an accessory sum) | the board: within 25 minutes of weighing |
+| SF19 | the cash match | the one label printed earlier that day at the till line's price | the 150 minutes before | same figures (asserted unique over the day and the 150 minutes) | the board: pay there the same day |
+| SF20 | scale 2's re-dated block | shifted by the offset that lines its card-paid labels up with their payments | any offset within ten minutes | same quarters (asserted) | none needed |
+| SF21 | scale 2's weights | grams | kilograms as printed | scale 2's labels move a thousandfold | the log's own figures (hundreds against scale 1's fractions), asserted |
+| SF22 | the accessories in a counter sale | the fewest that close the amount (no sale took more than two) | any number up to four | same figures under the fewest-accessories reading (asserted unique in every payment); a free count of three or four reads some sales two ways | parsimony, the board's accessories at their prices |
 
 ## Ladder
 
-| Rung | Construction | Named | What kills it |
+| Rung | Construction | Winner | Its share, next and margin (the cut pack, seed 263) |
 |---|---|---|---|
-| R0 | the claims notified to 30 September 2026 per car-year | Mersey 8.6, Severn 7.9 (Pennine 7.4) | terms 3: the claims not yet notified count |
-| R1 | the whole book's 21-month development, pooled (the default path) | Mersey 8.9, Severn 8.1 (Pennine 7.6) | the back-test: 2022 Wessex 8.54 per cent short |
-| R2 | the development by head of claim | Mersey 8.9, Severn 8.1 (Pennine 7.7) | 2022 Wessex 7.85 per cent short |
-| R3 | the development by the notified-by field | Mersey 8.9, Severn 8.1 (Pennine 7.8) | 2022 Wessex 6.78 per cent short: the representatives blend solicitors with claims-management companies |
-| R3b | by representative, or each region's own development | Mersey and Severn | 2022 Wessex 8.58 and 7.87 per cent short; a representative first seen in 2022 has no history, and 3.2 puts every region on the whole book's factors |
-| golden | the development by notifying route, the representatives split by firm type | Mersey 8.9, Pennine 8.2; Severn 8.0, Wessex 7.3, Fenland 5.9; gap 0.2 | |
+| R0 | baskets: the rival's transactions also carrying the Roastery | Nordhavn | 0.8 against Westquay 1.0 per cent, a basket view nobody files |
+| R1 | the duplication table on cards; on members | Nordhavn | 14.7 against Westquay 23.2, x1.57; 14.6 against 23.7, x1.62 |
+| R1 (default path) | the duplication table on members and online accounts (the field's method) | Nordhavn | 16.5 against Westquay 23.7, x1.43 |
+| R2 | homes from store cards through the match; online left out | Westquay | 25.6 against Oro Rosso 32.1, x1.25 |
+| R2 | the same with online accounts kept apart | Westquay | 25.6 against Oro Rosso 33.9, x1.32 |
+| R3 (decisive) | homes from cards and online accounts through the match | Oro Rosso | 39.9 against Nordhavn 48.7, x1.22; Halloran's third at 51.1 |
+| hazards | store cards kept; the clock read as Irish time; unlinked accounts dropped; store-card and anonymous lines put to homes | Oro Rosso in every one | 40.0, 39.0, 39.7, 41.1: the call holds, the figures move only where a shipped sentence rules the reading out |
 
-Every route-based development names the same pair at the same printed figures (route, route by head, claims-management against the rest, simple-average factors), and every one passes the back-test within 1.1 per cent (`checks.py` FAMILY).
+- **Position and dominance:** each rung names its own brand and dies to one shipped fact (R1 to the terms' personal
+  cards; R2 to the brief's online clause); every correction walks one way (towards homes) and only R3 reverses
+  Nordhavn; margins of 1.15 or more at every rung are asserted in `checks.py` on the cut pack, with Oro Rosso's share
+  0.15 or more from its rounding edge.
+- **Pricing sequence.** 1 Residue: how the buying unit is built from cards and accounts, a method, not a knob (the link
+  thresholds converge). 2 The move: from the default path to R3 Nordhavn rises 32.2 points (16.5 to 48.7) and Oro Rosso
+  10.4 (29.5 to 39.9), against a ceiling of every card in a home merging (the true homes, unseen by any file: Nordhavn 73.3, Oro Rosso 48.9, still the lowest). 3 The
+  one-group-by route is R1 (group the lines by card or member), Nordhavn; nothing affine in a shipped column reaches
+  Oro Rosso. 4 The standard error of Oro Rosso's share on 1,857 homes is 1.1 points; the gap of 8.8 points is eight of
+  them. 5 The lever is structural (the unit), not a variance. 7 Subsets: online accounts alone name Kinvara Hills, heavy
+  buyers' cards Nordhavn. 8 Reflex sweep as code: cards, members, members and accounts, heavy cards, online accounts
+  alone, the reverse duplication (Westquay) and baskets, none Oro Rosso (asserted in `checks.py`).
 
 ## Closure table
 
-| # | Axis | Reading and closure |
+| Axis | Reading | Closure |
 |---|---|---|
-| 1 | Population | every claim on a 2025 accident under a private-car policy, notified or not (terms 3); claims not yet notified estimated (Standard 3) |
-| 2 | Unit of account | one claimant's claim under one head from one accident (Standard 2.1); C1, no accident of the read years carries two rows for one claimant and head |
-| 3 | Attribution window | accident date in 2025; accident dates are dates, no clock |
-| 4 | As-of dating | notified by the end of 30 September 2026, UK time (terms 3); the extract taken 1 October |
-| 5 | Version basis | one row a claim; migrated claims carry both references, counted once |
-| 6 | Denominator | the pricing mart's 2025 earned car-years for private cars (terms 3) |
-| 7 | Weighting | the closed years' counts taken together (SF9); the simple average gives the same figures |
-| 8 | Window length | the closed years 2019 to 2022 (Standard 2.3, 3.1); 2020 to 2022 gives the same figures (SF8) |
-| 9 | Boundary inclusivity | within two per cent; the passing family at 1.1 or under, every other development at 6.8 or over |
-| 10 | Rounding path | frequencies unrounded to the ranking, one decimal shown; the gap from unrounded figures, equal to the rounded difference |
-| 11 | Tie-break | none needed: 0.18 between second and third |
-| 12 | Maturity and censoring | the claims not yet notified are the estimand's own, developed (the decisive step); closed years final (2.3) |
-| 13 | Order of operations | count by the 2.1 rule, then develop, then divide; dividing first gives the same figures |
-| 14 | Row order | none: counts |
-| 15 | Duplicate resolution | the 2.1 count; no duplicates in the years the call reads (C1, asserted) |
-| 16 | Identity normalisation | the representatives table's own reference; every representative on a claim is in it (asserted) |
-| 17 | Netting against gross | none: counts |
-| 18 | Dimensional units | claims per 100 car-years; the 2025 sheet in car-years (the older sheets' vehicle-days are not read) |
-| 19 | Code and status semantics | notified-by values, firm types and heads in plain words; closed nil is a status, counted (SF3) |
-| 20 | Integerisation | none |
-| 21 | Clause scope | terms 2 to 5 and the Standard 2 and 3 scope the call; terms 4 and 6 scope the ask |
-| 22 | Forward window contents | the pilot is placed on the last closed accident year's frequency (terms 2); not forward-looking |
+| 1 Population | homes with a 2026 pack of a rival on a Rewards card or online account | WHAT in the brief |
+| 2 Unit of account | the home (cards and accounts on one bank card) | WHAT in the brief; terms' personal cards |
+| 3 Attribution window | a purchase in 2026 by Irish date, online by delivery date | WHAT in the brief; C1 asserted |
+| 4 As-of dating | the register at the extract date, every 2026 card | C1: replacements fold either way |
+| 5 Version basis | online orders' final delivered version | C1 asserted |
+| 6 Denominator | the rival's buying homes | the prompt's wording |
+| 7 Weighting | none: each home counts once | WHAT in the brief |
+| 8 Window length | the calendar year | WHAT |
+| 9 Boundary inclusivity | 1 January to 31 December inclusive | WHAT |
+| 10 Rounding path | counts exact, share rounded once | C1 mid-bin asserted |
+| 11 Tie-break | none needed | margins asserted |
+| 12 Maturity and censoring | none: the year is closed | n/a, same call |
+| 13 Order of operations | assemble homes, then read brands | C1: the reverse order is not defined |
+| 14 Row order | none | same call |
+| 15 Duplicate resolution | a line once; versions once | C1 asserted |
+| 16 Identity normalisation | the three brand spellings folded | the master's supplier and range; asserted |
+| 17 Netting against gross | refunds do not remove a purchase | C1 asserted |
+| 18 Dimensional units | homes, a count; share in per cent | WHAT |
+| 19 Code and status semantics | store cards out, cancelled orders out | the register's type; the export's status; C1 |
+| 20 Integerisation | homes whole, shares whole per cent | the prompt |
+| 21 Clause scope | the counter outside the brief | the brief; C1 (guest roasters only) |
+| 22 Forward window contents | the 2027 sampling reads 2026 only | WHAT (retrospective by design) |
 
 ## Literal reader
 
-Executed word for word, the terms file each region's 2025 claims, notified or not, counted by the Standard, per 100 car-years the mart earned in 2025, the two highest hosting; the Standard files the development on the whole book's closed years from 21 months to final and refuses any basis that misses 2022's final count in a region by more than two per cent. A literal reader who tries the developments the extract offers finds each refused, and one that passes must split the representatives by the firm type the representatives table carries; every passing basis tried names Mersey and Pennine at 8.9 and 8.2 with Severn 8.0, so the reading lands on the golden. The readings the text leaves open (SF6 to SF9, SF11, SF13) converge on the same figures (C1, asserted).
+Executed word for word (the brief's homes with anyone in them, on Rewards cards in the three stores and online
+accounts, the terms' one-member cards, packs of the eight brands, 2026 by Irish date and delivery date), the only
+executable home is the group of cards and accounts that settle on one bank card; a card as the home violates the
+terms, dropping an online-only home or adding store-card lines violates the brief, and thresholds, replacement folding,
+refunds, versions and cancellations converge (asserted in `checks.py`). Re-run on the cut pack (seed 263): every licensed
+reading prints Oro Rosso at 40 and Nordhavn at 49; the readings that move a figure (the clock read as Irish time,
+anonymous receipts put to homes) each violate a quoted sentence. Passes.
 
 ## Oracles
 
-The 2022 back-test is the only check that separates the developments, and it is the Standard's own test, run on the claims themselves; nothing in the pack ties only under the golden. The closed years' final counts are every route's same numbers. The ask has no control: the change log is its only evidence, and no total, report or summary in the pack reconciles to its golden (the pricing mart's exposure stops at 2025).
+- The register's card counts tie to the member table on the wrong path and to the home table's cards on the right one:
+  no oracle.
+- The counter's card takings do not tie to the labels under any handling (accessories rung on the same terminal), and
+  the counter lines on the tills are one label each: no control total arbitrates ask A.
+- The deal log's funding per multibuy and the till's saving lines tie to nothing outside the pack: no supplier claim is
+  shipped, so ask B has no control.
+- The census households file and the brand tracker (distractors) confirm nothing on either path.
 
 ## Ask sheet
 
-The ask, the supplier's order: private cars on cover on 30 September 2026 by region and by cover, COMP, TPFT and TPO (15 figures, whole cars). H18 home: the order the terms place by cover (6), for the device the pilot offers. Primary: D2, an attribute at the wrong vintage: policy admin's in-force file carries each policy's risk district and cover as they stood at the term's start, and the address and cover changes since are in the change log by effective date. Hazards: substituted cars (off-cover rows), cancellations, changes dated after 30 September (processed in advance), policies with two changes. Path: in-force file, change log, region drawing (3 files, 14 columns). Stops: the in-force row as it stands (cracker), every change applied whatever its date (mirror), the golden. Realism: a warehouse term table snapshots the risk at the term's start and takes mid-term changes in a separate transactions table. The remedy is a reconstruction, the state on one day rebuilt from an event log, with one correct form (Part 1.0b).
+**Ask A.** The loose coffee the Drumsallagh counter sold of each guest roaster in each quarter of 2026, kilograms to one
+decimal (three roasters by four quarters, 12 figures).
+- H18 home: a qualifier on the call's reach: the counter runs outside Rewards, so the deck sizes, roaster by roaster,
+  the coffee the brief's homes cannot see.
+- Use: the Roastery team's view of the specialty coffee sold beside it.
+- Primary 1 (D4, absence across systems): a label printed and re-weighed is binned, and only the second label is paid;
+  a label is sold only if a counter card payment (Faircourt, the counter terminal, UTC) or a counter line on a till
+  (cash) pays it, and the card payment also carries accessories keyed on the terminal, so it is matched as labels plus
+  accessories from the counter's price board.
+- Primary 2 (D8, a clock): scale 2's clock reset to 1 January after a power cut in April and ran from there until a
+  service visit; its labels for those days carry January dates, out of step with their own label numbers, and only the
+  payments date them.
+- Hazards: scale 2 exports its weight in grams, scale 1 in kilograms; the settlement clock in UTC (shared with the call).
+- Files and columns: `counter_scale_labels_2026.csv` (label, scale, printed, roaster, coffee, weight, price per kg,
+  price), `faircourt_settlement_2026.parquet` (terminal, time, amount), `faircourt_merchant_agreement_2026.pdf` (the
+  counter's terminal), `coffee_till_lines_2026.csv` (the counter PLU lines), `coffee_counter_price_board_2026.pdf`
+  (accessory prices): five files, 14 columns.
+- Stops: every label (re-weighs counted, all figures high); labels matched but the reset left in January (Q1 high, Q2
+  low); the reset fixed but re-weighs kept; labels matched to card payments only, the cash half dropped (all low).
+- Pin test: the asking sentence pins sold coffee, the roaster, the quarter and kilograms; the devices sit in which rows
+  are sales and which date a sale carries, neither named.
+- Realism: a weighed-goods counter with two scales of different firmware, a standalone card terminal and cash paid at
+  the main tills is how a grocer's specialty counter runs.
 
-Main population zero-counts: the in-force file and the change log are read by no step of the call, and the call reads no 2026 row (asserted in `checks.py` SEP).
+**Ask B.** The multibuy funding each supplier owes Corcally's for each quarter of 2026, counting every multibuy a
+customer got, by the quarter it was sold in, whole euros (six supplier accounts by four quarters, 24 figures).
+- H18 home: a second measure per candidate: what each rival's supplier put into its 2026 multibuys at Corcally's.
+- Use: the quarterly funding claims the buying team raises.
+- Primary 1 (D7, the key elsewhere): on a deal's first days at one store the tills missed the multibuy; the service desk
+  later refunded the saving as a multibuy adjustment line on another receipt whose note cites the original receipt, and
+  the funding belongs to the deal and the quarter of that original sale.
+- Primary 2 (D1, opposite meanings): a refund that breaks a multibuy rings a saving reversal with the same promotion
+  code and the opposite sign, so a count of saving lines adds a multibuy that was taken back.
+- Hazards: a deal revised mid-run with a new funding rate from its effective date (written in the deal log); the till
+  ran one deal three days past its end at one store (outside the deal's dates, unfunded); Bellvale's deals were agreed
+  with its distributor until 30 June and with Bellvale Foods from 1 July while the master names the current supplier.
+- Files and columns: `multibuy_deals_2026.xlsx` (deal, supplier, brand, PLUs, mechanic, start, end, funding, version,
+  effective from), `coffee_till_lines_2026.csv` (PLU, promotion code, value, note, date), `product_master_coffee.xlsx`
+  (brand, supplier): three files, 13 columns.
+- Stops: saving lines counted, adjustments ignored (all low where a miss happened); adjustments dated on their own
+  receipt (quarter shifted); reversals counted as savings (high); the current supplier for Bellvale's first half.
+- Pin test: the asking sentence pins every multibuy a customer got and the quarter it was sold in; the devices sit in
+  which records are one multibuy and which date it carries.
 
-| Ask figure | Golden | Cracker | Mirror | Cracker verdict |
-|---|---|---|---|---|
-| A Mersey COMP | 44,743 | 45,282 | 44,670 | miss |
-| A Mersey TPFT | 11,434 | 11,113 | 11,469 | miss |
-| A Mersey TPO | 4,925 | 4,900 | 4,935 | miss |
-| A Pennine COMP | 30,213 | 30,542 | 30,204 | miss |
-| A Pennine TPFT | 7,051 | 6,760 | 7,068 | miss |
-| A Pennine TPO | 2,831 | 2,778 | 2,835 | miss |
-| A Wessex COMP | 30,001 | 30,437 | 29,972 | miss |
-| A Wessex TPFT | 5,746 | 5,468 | 5,760 | miss |
-| A Wessex TPO | 2,037 | 1,965 | 2,042 | miss |
-| A Fenland COMP | 19,421 | 19,623 | 19,415 | miss |
-| A Fenland TPFT | 3,243 | 3,051 | 3,257 | miss |
-| A Fenland TPO | 1,003 | 973 | 1,008 | miss |
-| A Severn COMP | 36,590 | 36,841 | 36,567 | miss |
-| A Severn TPFT | 7,448 | 7,024 | 7,483 | miss |
-| A Severn TPO | 2,919 | 2,848 | 2,920 | miss |
+**Separation.** Zero device or hazard rows in the call's row population (the eight brands' packs on Rewards cards and
+online accounts): the counter labels, counter lines, accessory payments, adjustment and reversal lines sit outside it,
+counted from the shipped rows in `checks.py`; the call is unchanged when every ask device is deleted.
 
-Mirror leakage: 0.0 per cent of the ask figures (the mirror keeps 0 of 15)
-Pair ceiling: 28.5 (the cracker on the call keeps 0 of 15 ask figures, the mirror off it 0)
-Measured by: generator/cracker.py on the cut pack (target.zip of the final Linux build)
+| Cracker (lands the call, runs the battery, executes every filed rule, reads every helper) | Ask A | Ask B |
+|---|---|---|
+| The cracker: labels deduplicated, grams fixed, deal revisions and windows applied, reversals netted | miss | miss |
+| The full includer: every device it can find handled, the silent one left | miss | miss |
 
-## Build record
+| Measured on the cut pack (seed 263) | Ask A kept | Ask B kept |
+|---|---|---|
+| the cracker | 0 of 12 | 0 of 20 |
+| the mirror (stops at R1; card payments matched, till lines left; adjustments on their own date) | 0 of 12 | 4 of 20 |
+| the full includer (scale 2's block left where its clock put it; one multibuy per adjustment line) | 3 of 12 | 4 of 20 |
 
-- Generator: `task268/generator` (common, world, pack, docs, analysis, deliver, writeup, cracker, checks, verify, build, postprocess), seed 5 with the tuned waves and Severn's own-damage rate in `world.DEFAULT_P`. Built in the pinned linux/amd64 image `t268-build`; the Mac build is byte-identical to it file for file.
-- Pack: 11 files in 4 formats (csv, xlsx, pdf, txt); the claims extract 138,245 rows, the in-force file 248,648, the change log 32,264. Distractors in `metadata.json`: the supplier's quotation and the aggregator report, each deleted with every golden figure unchanged (`checks.py` GATE).
-- Free gates on target.zip md5 9f49c3af653b4216ab1af1381d9d0dbe: `checks.py` 78 assertions, 0 failed (R1 to R3c, SF1 to SF16, FAMILY, SEP, R2 LAYER1, H25 with pypdf strict and pdftotext); `verify.py` PASS from the bundle alone; two byte-identical builds; `figures_check.py` 84 of 84; `leak.py` REVIEW; `precut.py` 53 checks, 0 FAIL, 0 WARN; `guard.py heart` WARN (nearest driver task169 v2 at 0.08); `guard.py surface` people clean; the producer audit clean on target and golden.
-- The `leak.py` REVIEW lines, ruled here: the thread file is the organisation's own correspondence (the reader rules it too); the two answer-figure hits are substrings across a comma in the claims extract (a date followed by a pence amount, "...-30,213.28" and "...-16,359.47"), not figures; the stump-vocabulary hits are the Standard's own words for its development and back-test (it names no grouping, no route and no firm type), the terms' estimand and the thread's logistics, each harmless.
-- Repairs made during the build: a number plate whose random letters spelled an AI vendor's initialism (barred deterministically, no draw moved); the supplier's name, which matched a real company's 2025 rebrand, and the claims-management firms' generic names, renamed (H21); a deck sentence that said most of Pennine's claims were still to come, replaced by the computed shares (10.1 against 1.9 to 4.0 per cent); the head-of-claim back-test miss of 7.8496 per cent, on a rounding edge, kept out of the write-up and shown to two decimals in the goldens.
-
-- Stage 4, first pass on target.zip md5 4b0343b25e5747494d1f7e2ef1acf918 (`determinism_check_report_pass6.md`): NOT_DETERMINISTIC, SEND_BACK on the 2026 claims ask alone; the call, its five frequencies and gap and the cars on cover reproduced exactly and uniquely forced, Gate G method_or_model_selection (analytical_non_defect, no surface-read dependency), Gate H pass, pass, analytical. The ask was retired (the rejected list) and the leak reader re-run on the changed thread, terms and prompt; one re-judge on md5 9f49c3af653b4216ab1af1381d9d0dbe: DETERMINISTIC, APPROVE, every graded figure reproduced from a fresh unzip and the cars on cover to the car; Gate G method_or_model_selection, analytical_non_defect, no surface-read dependency; Gate H pass, pass, analytical; a second route split built independently (claims-management companies against the rest) converged on the same rounded figures. The leak reader's re-read: no decisive-step sentence, question 6 an analytical choice.
-
-## Pre-ship check
-
-- Rule 1, the domain: the deciding quantity is an ultimate claim count per earned car-year, completed by development on claim-count triangles and validated on a closed accident year; the noun swap loses the notification route, the limitation period and the development (the Swap line).
-- Rule 2, two layers: Layer 1 is the migration's mixed notification formats and legacy references, the mart's layout change, the vans and the open years, each asserted neutral (R2 LAYER1, SF5, SF6); Layer 2 is the development basis the back-test selects. Cleaning every file leaves the default path on Mersey and Severn (R3a on the clean truth).
-- Rule 3, the decisive step: an analytical choice, which grouping carries the lag, selected by the Standard's filed test and found only by building the notifying route through the representatives table; no plant, no withheld rule against a stated one (the Standard names no grouping), no field reading (the firm type is a plain attribute), no executed procedure (executing every filed rule leaves three failed developments).
-- The ask rests on the change log against the in-force file's term-start attributes; it reads no row the call reads (SEP), and the cracker misses all fifteen figures.
+- **Mirror leakage:** 21.9 per cent of ask weight (the best response off the call keeps 7 of 32 ask figures).
+- **Pair ceiling:** 34.5 (the cracker keeps 0 of 32 ask figures, the best miss 7 of 32).
+- **Measured by:** `generator/ceiling.py` on the cut pack (seed 263), run by the build after every change.
 
 ## Tried and rejected
 
@@ -211,3 +378,16 @@ Measured by: generator/cracker.py on the cut pack (target.zip of the final Linux
 - Region-level development as the default, with no filed selection criterion, rejected at the draw: task127 v3 and this slot's architecture 3 died at the judge for leaving the method open. The Standard files the back-test in general terms and puts regional estimates on the whole book's factors (3.2), so each region's own development is against the text as well as failing 2022.
 - A Severn own-damage rate at its first value and a Pennine wave of 0.55 per 100 car-years, measured on the prototype on 2026-10-28: the route split itself named Mersey and Severn (Pennine 8.03 against 8.25). The wave became 0.85 per 100 car-years and Severn's own-damage rate 7 per cent lower; seed 5 is the first of six where every route-based development prints the same five figures and the back-test separates at 1.1 against 6.8 per cent.
 - Ask B (private-car claims notified on 2026 accidents by region, injury against the rest, the online notification journey's abandoned first records as its device), retired at stage 4 on 2026-10-28: the determinism judge's first pass found the call and Ask A uniquely forced and Ask B open, because no shipped file says the abandoned record is the phoned claim and the Standard's 2.1 ("every claim notified counts once, including claims closed without payment") reads literally for counting it. The device cannot be both determinate and silent: identity filed or carried on the row, the careful solver executes 2.1 and the cracker keeps the ask; left unfiled, it is a fork. The twins were taken out of the world (2026 rows only, no figure of the call moved) and the ask layer became the cars on cover by all three covers, the reconstruction the judge confirmed.
+- Architecture 4 (a motor insurer's 2027 telematics pilot regions, the claims not yet notified developed by notifying route, the route built by joining each claim's representative to the representatives table), spent 2026-10-31 on the learning loop's paper screen: the route sits one join away (the notified-by field and the representatives table) and development by notification channel is the reserving field's own refinement, so the decisive rung was a reflex; the slot moves to marketing-consumer-research (segmentation-market-structure), a new world, dataset, generator and prompt shell.
+- Marketing draws screened on paper before this one, 2026-10-31: excess duplication judged over shoppers whose stores stock both brands (task281's note: filing the co-availability population is rule application, leaving it unfiled forks the call); a receipt-scanning panel whose submissions rise in a brand's bonus weeks (the correction needs a submission model, so the estimator family is open); a sub-panel's cross-media duplication applied to the full panel (one consistency check of the sub-panel's TV reach against the full panel's lands it); an exposure crediting quirk in the as-run log (reading what a record means, data semantics); mystery-shopper audits inflated by detection (the calibration against the CCTV census is the natural data-fusion reflex and reaches the golden).
+- The bank-card reference carried on the till lines themselves (a card alias beside the Rewards card on every row), set aside at stage 2 on 2026-10-31: a self-join on a column of the main file is the one line of code the survivor anatomy's Link test refuses, so the card reference lives only in Faircourt's settlement file, reached by a match on terminal, time and amount.
+- A card acceptance cost by store and quarter as the settlement file's own ask, set aside at stage 2 on 2026-10-31: the cost belongs to another owner (finance) and the organisation already has it on Faircourt's monthly statements (H18); the settlement file's second use is the counter's card payments instead.
+- The Roastery's own loose beans at the counter, set aside the same day: a home buying them would open a fork on what buying the Roastery means; the counter sells guest roasters only.
+- A link standing on any single shared payment, measured on the prototype on 2026-10-31: with one in three couples' links resting on one or two shared payments, a reading that needs two or three moved Oro Rosso's share by six points and named Nordhavn at three; a home's shared card is now a habit (used three times or more by each card it links, the weaker uses falling back to the member's own card), so one, two and three shared payments build the same homes.
+- Counter labels matched only to card payments, set aside the same day: the counter's card takings would tie to the sold labels (an oracle for both devices); cash customers pay at the main tills and the counter terminal also takes accessories, so no total ties.
+- Seeds 1 to 81 and 101 to 266 screened on the in-memory world on 2026-10-31 for every rung's winner and margin (1.15, the decisive 1.2), the runner-up a point clear of third, every share off its rounding edge (the call and runner-up by 0.15), the gap rounding alike from unrounded and rounded shares, link thresholds identical, online accounts alone never naming the call, both asks' figures off their edges and the cracker missing every ask figure: seeds 263 and 276 passed; 263 kept (its one-line adjustment stop keeps 4 of 20 against 276's 11).
+- The counter's card terminal as the only way to pay, and a scale clock reset in April, set aside in the stage 3 build on 2026-10-31: with no cash route the counter's takings tied to the sold labels, and a two-week April reset moved only three cells; cash labels now go to the main tills, the reset runs 22 June to 14 July across the second and third quarters, and the funding rates are odd cents so no quarter sits on a half euro.
+- Multibuy deals whose cheapest pair cost less than the deal price, found in the stage 3 build: a pair of Cafetto Original 200g at 14.98 against a two-for-15.00 deal produced negative savings; every deal now lists packs of one price.
+- The counter's matching left to windows the pack never stated (stage 4 judge, FIX_NOW): 122 card sales read two ways at
+  one total and 114 cash lines had two same-priced labels; the board now files the 25 minutes, the same day and the
+  void at closing, and the generator re-weighs any label that allows a second reading under any window near them.

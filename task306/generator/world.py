@@ -1,141 +1,349 @@
-"""The cars of the five platforms and their packs, in integer days since 1970: new registrations in the Netherlands,
-used imports arriving every month (before and after the register's date), each pack's life drawn from its published
-curve, warranty replacements by the OEM, out-of-warranty replacements by a Voltwerk refurbished pack, and the cars that
-failed outside the OEM warranty abroad and so were never imported. Same draws, same order as the scratch prototype."""
+"""task306 architecture 4: Wealdmoor Investment Management's systematic equity desk.
+
+The world: a UK equity universe traded on the London market (large, mid and small caps), its daily market data,
+three backtested candidate strategies whose trades the research team logged at each rebalance, and the desk's four
+live strategies' orders and fills, whose cost follows a square-root impact law in each order's share of the stock's
+daily traded value. Everything is drawn from fixed seeds; nothing reads the clock."""
+import datetime as dt
+import math
+
 import numpy as np
-import pandas as pd
 
-import params as P
-
-YD = 365.25
-AGES = np.arange(0, 21).astype(float)
-REF = 5
-
-
-def D(s):
-    return int(np.datetime64(s, "D").astype(np.int64))
-
-
-def day(d):
-    return int(np.datetime64(d, "D").astype(np.int64))
-
-
-def date(i):
-    return np.datetime64(int(i), "D").astype(object)
-
-
-SNAP, Y0, Y1, END = day(P.SNAP), day(P.Y0), day(P.Y1), day(P.END)
-
-
-def Fw(a, eta, beta):
-    return 1 - np.exp(-(np.maximum(a, 0) / eta) ** beta)
-
-
-def tables():
-    """the published curves: cumulative share of packs failed by whole year of pack age, four decimals"""
-    T = [np.round(Fw(AGES, P.PLAT[n][5], P.PLAT[n][6]), 4) for n in P.NAMES]
-    T.append(np.round(Fw(AGES, *P.REFURB), 4))
-    return T
-
-
-def world(seed=P.SEED_WORLD):
-    rs = np.random.default_rng(seed)
-    T = tables()
-
-    def draw(c, n):
-        u = rs.random(n)
-        t = T[c]
-        i = np.clip(np.searchsorted(t, u), 1, len(t) - 1)
-        lo, hi = t[i - 1], t[i]
-        return np.where(u >= t[-1], AGES[-1] + 1, AGES[i - 1] + (u - lo) / np.maximum(hi - lo, 1e-12))
-
-    PL, FU, NL, IM = [], [], [], []
-    for pi, name in enumerate(P.NAMES):
-        y_launch, peak, imp_m, imp_age, age_sd, eta, beta = P.PLAT[name]
-        for y in range(y_launch, 2027):
-            if y < 2026:
-                n = int(peak * min(1.0, 0.25 + 0.25 * (y - y_launch)) * rs.uniform(0.9, 1.1))
-            else:
-                n = int(peak * 0.5 * rs.uniform(0.9, 1.1))
-            d = D("%d-01-01" % y) + rs.integers(0, 365 if y < 2026 else 181, n)
-            PL.append(np.full(n, pi)); FU.append(d); NL.append(d); IM.append(np.zeros(n, bool))
-        months = pd.date_range("%d-01-01" % y_launch, "2027-12-01", freq="MS").values.astype("datetime64[D]").astype(np.int64)
-        cnt = rs.poisson(imp_m, len(months))
-        reg = np.repeat(months, cnt) + rs.integers(0, 28, cnt.sum())
-        age = np.clip(rs.normal(imp_age, age_sd, cnt.sum()), max(1.5, imp_age - 2.2 * age_sd), imp_age + 2.2 * age_sd)
-        fu = reg - np.round(age * YD).astype(np.int64)
-        keep = fu >= D("%d-01-01" % y_launch)
-        PL.append(np.full(keep.sum(), pi)); FU.append(fu[keep]); NL.append(reg[keep]); IM.append(np.ones(keep.sum(), bool))
-    plat = np.concatenate(PL); fu = np.concatenate(FU); nl = np.concatenate(NL); imp = np.concatenate(IM)
-    n = len(plat)
-    exit_d = nl + np.round(np.minimum(rs.exponential(P.EXIT_MEAN, n), 60.0) * YD).astype(np.int64)
-    war = np.array([P.WARRANTY[x] for x in P.NAMES], float)
-    start = fu.copy(); curve = plat.copy(); oem_end = fu + np.round(war[plat] * YD).astype(np.int64)
-    vw_end = np.full(n, -10 ** 9)
-    horizon = np.where(nl <= SNAP, SNAP, nl)
-    alive = np.ones(n, bool); active = np.ones(n, bool)
-    EI, ED, EC, EP = [], [], [], []
-    for _ in range(10):
-        idx = np.where(active)[0]
-        if not len(idx):
-            break
-        life = np.empty(len(idx))
-        for c in np.unique(curve[idx]):
-            m = curve[idx] == c
-            life[m] = draw(c, m.sum())
-        fd = start[idx] + np.round(life * YD).astype(np.int64)
-        done = fd > horizon[idx]
-        active[idx[done]] = False
-        j = idx[~done]; f = fd[~done]
-        out = (f < nl[j]) & (f >= oem_end[j])            # failed outside the OEM warranty abroad: never imported
-        alive[j[out]] = False; active[j[out]] = False
-        j, f = j[~out], f[~out]
-        under = f < oem_end[j]
-        vw = (curve[j] == REF) & (f < vw_end[j])
-        cover = np.where(under, 0, np.where(vw, 1, 2))   # 0 OEM warranty, 1 Voltwerk warranty, 2 paid
-        EI.append(j); ED.append(f); EC.append(cover); EP.append(curve[j].copy())
-        start[j] = f
-        curve[j] = np.where(under, plat[j], REF)
-        vw_end[j] = np.where(under, vw_end[j], f + int(round(P.VW_WARRANTY * YD)))
-    keep = alive & ((nl > SNAP) | (exit_d > SNAP))
-    ev = pd.DataFrame({"i": np.concatenate(EI), "d": np.concatenate(ED), "cover": np.concatenate(EC),
-                       "failed_curve": np.concatenate(EP)})
-    W = dict(plat=plat, fu=fu, nl=nl, imp=imp, start=start, curve=curve, oem_end=oem_end, keep=keep, alive=alive,
-             exit_d=exit_d, T=T)
-    return W, ev
+SEED = 30604
+AUM = 400_000_000.0                 # the new capital, GBP
+K_IMPACT = 0.85                     # impact = K * daily vol * sqrt(participation)
+ORDER_START = 63                    # the desk's live orders run from 1 April 2025, each with a full 60-session history
+HIGH_P_SHARE = {"L": 0.02, "M": 0.0, "S": 0.0}   # the share of a band's orders that are event trades
+HIGH_P_RANGE = (0.03, 0.40)         # their participation, log-uniform
+ORDER_VALUE = {"L": 0.0025, "M": 0.005, "S": 0.005}   # a live order's median value, a share of its band's median ADV
+THIN = {"S": (100, 0.15e6, 0.45), "M": (52, 0.6e6, 0.45)}  # each band's thinly traded names: count, ADV median, log-sd
+LIQ_BETA = 0.10                     # a book's order in a name scales with the name's liquidity to this power
+ORDER_SD = 0.6                      # the log spread of a book's order sizes
+DORMANT = 12                        # the least liquid small caps, which no book of the firm trades
+P_CAP = 0.70                        # the desk does not take more than about this share of a stock's day
+NOISE_K = 0.10                      # an order's shortfall noise, times daily vol
+ESG_REASONS = ["Thermal coal", "Controversial weapons", "Tobacco production", "UN Global Compact breach"]
+TIERS = {
+    # n, price pence (lo, hi), ADV GBP (median, log-sd), daily vol bps (centre), half-spread bps (lo, hi)
+    "L": dict(n=100, px=(350, 4200), adv=(120e6, 0.50), vol=130.0, hs=(2.9, 3.1)),
+    "M": dict(n=260, px=(180, 2400), adv=(22e6, 0.45), vol=175.0, hs=(8.3, 8.7)),
+    "S": dict(n=320, px=(25, 620), adv=(8e6, 0.40), vol=235.0, hs=(24.5, 25.5)),
+}
+START, END = dt.date(2025, 1, 2), dt.date(2026, 11, 30)
+BANK_HOLIDAYS = {dt.date(2025, 1, 1), dt.date(2025, 4, 18), dt.date(2025, 4, 21), dt.date(2025, 5, 5),
+                 dt.date(2025, 5, 26), dt.date(2025, 8, 25), dt.date(2025, 12, 25), dt.date(2025, 12, 26),
+                 dt.date(2026, 1, 1), dt.date(2026, 4, 3), dt.date(2026, 4, 6), dt.date(2026, 5, 4),
+                 dt.date(2026, 5, 25), dt.date(2026, 8, 31)}
+CANDIDATES = [
+    # code, name, tier, holdings, rebalance ("M" monthly, "Q" quarterly), names swapped a rebalance, gross alpha
+    ("SCM", "UK Smaller Companies Momentum", "S", 160, "M", 18, 0.0505),
+    ("MCV", "UK Mid Cap Value", "M", 70, "Q", 10, 0.0302),
+    ("LCQ", "UK Large Cap Quality", "L", 45, "Q", 6, 0.0184),
+]
+LIVE = [
+    # code, name, tiers it trades, AUM GBP, orders a month (approximate)
+    ("INC", "UK Equity Income", ("L",), 320e6, 120),
+    ("MCG", "UK Mid Cap Growth", ("M",), 170e6, 150),
+    ("SMC", "UK Smaller Companies", ("S",), 48e6, 170),
+    ("DYN", "UK Dynamic", ("L", "M", "S"), 130e6, 160),
+]
+BROKERS = ["Orchard Lane Securities", "Calder Row Brokers", "Brightwater Execution", "Hythe Street Markets"]
+GBP_BROKER = "Hythe Street Markets"            # reports fill prices in pounds; every other broker in pence
+FAILOVER_DAYS = [dt.date(2026, 2, 11), dt.date(2026, 3, 19), dt.date(2026, 5, 13), dt.date(2026, 6, 24),
+                 dt.date(2026, 1, 8), dt.date(2026, 2, 25), dt.date(2026, 3, 5), dt.date(2026, 4, 9),
+                 dt.date(2026, 5, 27), dt.date(2026, 6, 10), dt.date(2026, 7, 29), dt.date(2026, 8, 20),
+                 dt.date(2026, 9, 3), dt.date(2026, 10, 7), dt.date(2026, 10, 28), dt.date(2026, 11, 25),
+                 dt.date(2026, 8, 6), dt.date(2026, 9, 16), dt.date(2026, 10, 21), dt.date(2026, 11, 18),
+                 dt.date(2026, 1, 21), dt.date(2026, 4, 22), dt.date(2026, 7, 15), dt.date(2026, 11, 4)]
+DYN_CODE_CHANGE = dt.date(2026, 7, 1)          # UK Dynamic moves to a new account code
+DYN_OLD_REUSED = dt.date(2026, 8, 17)          # the old code is given to the transition account
+RESENT_DAY = dt.date(2026, 6, 9)               # the OMS re-sent the day's fills after an outage
+W_REUSE = DYN_OLD_REUSED
 
 
-def p_due(T, start, curve, oem_end, at_risk_from, survived_to, y0=Y0, y1=Y1, cond=True):
-    """chance the pack fitted on `start` fails in [max(y0, at_risk_from, oem_end), y1), given it works at survived_to"""
-    out = np.zeros(len(start))
-    for c in np.unique(curve):
-        m = curve == c
-        lo = np.maximum(np.maximum(y0, at_risk_from[m]), oem_end[m])
-        a0 = (lo - start[m]) / YD; a1 = (y1 - start[m]) / YD; a_s = (survived_to[m] - start[m]) / YD
-        F = lambda a: np.interp(a, AGES, T[c])
-        num = np.maximum(F(a1) - F(a0), 0)
-        out[m] = np.where(a1 > a0, num / (np.maximum(1 - F(a_s), 1e-9) if cond else 1.0), 0.0)
+def rng(tag):
+    h = 0
+    for ch in "task306:" + tag:
+        h = (h * 131 + ord(ch)) % (2 ** 32)
+    return np.random.default_rng((SEED * 7919 + h) % (2 ** 32))
+
+
+def trading_days():
+    d, out = START, []
+    while d <= END:
+        if d.weekday() < 5 and d not in BANK_HOLIDAYS:
+            out.append(d)
+        d += dt.timedelta(days=1)
     return out
 
 
-def lots(fc, total=P.SLOTS, lot=P.LOT):
-    """largest remainder: whole lots of each share first, the lots left to the largest remainders; the margin is the
-    gap between the last remainder that took a lot and the first that did not"""
-    s = sum(fc.values())
-    raw = {k: total * v / s / lot for k, v in fc.items()}
-    b = {k: int(np.floor(x)) for k, x in raw.items()}
-    rem = total // lot - sum(b.values())
-    order = sorted(raw, key=lambda k: -(raw[k] - b[k]))
-    for k in order[:rem]:
-        b[k] += 1
-    r = sorted([raw[k] - np.floor(raw[k]) for k in raw], reverse=True)
-    margin = r[rem - 1] - r[rem] if 0 < rem < len(r) else 1.0
-    return {k: v * lot for k, v in b.items()}, float(margin), raw
+SYL = ["ash", "brack", "cal", "der", "fen", "gar", "hal", "ingle", "kes", "lan", "mor", "nor", "oak", "pen", "quar",
+       "rav", "sel", "thorn", "ul", "ver", "wey", "yar", "ald", "bel", "corr", "dun", "elm", "fal", "glen", "harl"]
+END_ = ["ton", "ford", "ley", "wick", "mere", "stone", "field", "bridge", "worth", "dale", "holm", "gate", "wood",
+        "brook", "more"]
+KIND = {"L": ["Group", "Holdings", "plc", "International"], "M": ["Group", "Holdings", "plc", "Industries"],
+        "S": ["Holdings", "plc", "Group", "Technologies", "Resources"]}
+SECTORS = ["Industrials", "Financials", "Consumer Discretionary", "Consumer Staples", "Health Care", "Technology",
+           "Energy", "Basic Materials", "Real Estate", "Utilities", "Telecommunications"]
+SEDOL_CH = "BCDFGHJKLMNPQRSTVWXYZ0123456789"
 
 
-def later_truth(W):
-    """the arrivals after the register's date: each at the pack it arrives with, at risk from its arrival"""
-    keep = W["keep"]
-    later = np.where(keep & (W["nl"] > SNAP))[0]
-    p = p_due(W["T"], W["start"][later], W["curve"][later], W["oem_end"][later], W["nl"][later], W["nl"][later])
-    return {P.NAMES[k]: float(p[W["plat"][later] == k].sum()) for k in range(len(P.NAMES))}
+def sedol_check(body):
+    w = [1, 3, 1, 7, 3, 9]
+    tot = 0
+    for c, wt in zip(body, w):
+        v = int(c) if c.isdigit() else ord(c) - 55
+        tot += v * wt
+    return str((10 - tot % 10) % 10)
+
+
+def isin_for(sedol):
+    body = "GB00" + sedol
+    digits = "".join(str(int(c, 36)) for c in body)
+    tot, dbl = 0, True
+    for ch in reversed(digits):
+        n = int(ch)
+        if dbl:
+            n *= 2
+            if n > 9:
+                n -= 9
+        tot += n
+        dbl = not dbl
+    return body + str((10 - tot % 10) % 10)
+
+
+def universe():
+    r = rng("universe")
+    out, names, sedols = [], set(), set()
+    for tier, p in TIERS.items():
+        for i in range(p["n"]):
+            while True:
+                nm = (SYL[int(r.integers(0, len(SYL)))] + END_[int(r.integers(0, len(END_)))]).capitalize()
+                nm = nm + " " + KIND[tier][int(r.integers(0, len(KIND[tier])))]
+                if nm not in names:
+                    names.add(nm)
+                    break
+            while True:
+                body = "B" + "".join(SEDOL_CH[int(r.integers(0, len(SEDOL_CH)))] for _ in range(5))
+                sd = body + sedol_check(body)
+                if sd not in sedols:
+                    sedols.add(sd)
+                    break
+            px = float(math.exp(r.uniform(math.log(p["px"][0]), math.log(p["px"][1]))))
+            adv = float(p["adv"][0] * math.exp(r.normal(0, p["adv"][1])))
+            vol = float(p["vol"] * r.uniform(0.97, 1.03))
+            hs = float(r.uniform(*p["hs"]))
+            out.append(dict(sedol=sd, isin=isin_for(sd), name=nm, tier=tier, sector=SECTORS[int(r.integers(0, 11))],
+                            px0=px, adv=adv, vol=vol, hs=hs))
+    # each of the two lower bands carries a tail of thinly traded names
+    rt = rng("thin")
+    for tier, (n, med, sd) in THIN.items():
+        band = [s for s in out if s["tier"] == tier]
+        for k in rt.permutation(len(band))[:n]:
+            band[int(k)]["adv"] = float(med * math.exp(rt.normal(0, sd)))
+    return out
+
+
+def dormant(univ):
+    """The least liquid small caps: no portfolio of the firm and no candidate trades them."""
+    smalls = sorted([s for s in univ if s["tier"] == "S"], key=lambda s: (s["adv"], s["sedol"]))
+    return {s["sedol"] for s in smalls[:DORMANT]}
+
+
+def esg_list(univ):
+    """The firm's ESG exclusion list: each excluded issuer, why, and the date its exclusion took effect. Every entry
+    predates the rebalance log and the desk's orders, so no portfolio of the firm trades an excluded name in them."""
+    r = rng("esg")
+    rd = rng("esg-dates")
+    pick = sorted(univ, key=lambda s: s["sedol"])
+    out = []
+    for k in r.permutation(len(pick))[:23]:
+        s = pick[int(k)]
+        reason = ESG_REASONS[int(r.integers(0, 4))]
+        eff = dt.date(2019, 1, 7) + dt.timedelta(days=int(rd.integers(0, 6 * 365 - 30)))
+        out.append(dict(sedol=s["sedol"], isin=s["isin"], name=s["name"], reason=reason, effective=eff))
+    return out
+
+
+def market(univ, days):
+    """Daily closes (pence) and volumes (shares); a few of the least liquid small caps consolidate their shares ten
+    to one."""
+    r = rng("market")
+    cons = {}
+    dm = dormant(univ)
+    smalls = sorted([s for s in univ if s["sedol"] in dm], key=lambda s: s["sedol"])
+    for k in r.permutation(len(smalls))[:8]:
+        cons[smalls[int(k)]["sedol"]] = days[int(r.integers(60, len(days) - 60))]
+    month_end = set()
+    for i, d in enumerate(days):
+        if i + 1 == len(days) or days[i + 1].month != d.month:
+            month_end.add(d)
+    rows = {}
+    for s in univ:
+        px = s["px0"]
+        series = []
+        for d in days:
+            px *= math.exp(float(r.normal(-0.5 * (s["vol"] / 1e4) ** 2, s["vol"] / 1e4)))
+            bump = 1.35 if d in month_end else 1.0
+            value = s["adv"] * math.exp(float(r.normal(-0.5 * 0.22 ** 2, 0.22))) * bump
+            shown_px = px
+            if s["sedol"] in cons and d >= cons[s["sedol"]]:
+                shown_px = px * 10.0
+            shares = int(round(value / (shown_px / 100.0)))
+            series.append((d, shown_px, shares, value))
+        rows[s["sedol"]] = series
+    return rows, cons, month_end
+
+
+def adv20_and_vol(series, i):
+    """Average daily traded value over the 20 sessions before day i, and the daily volatility over the 60."""
+    lo = max(0, i - 20)
+    vals = [series[j][3] for j in range(lo, i)]
+    adv = sum(vals) / len(vals)
+    lo = max(1, i - 60)
+    rets = []
+    for j in range(lo, i):
+        a, b = series[j - 1][1], series[j][1]
+        if abs(b / a - 10.0) < 0.5:          # a consolidation day: the price jumps tenfold, no return
+            continue
+        rets.append(math.log(b / a))
+    vol = float(np.std(rets, ddof=1)) * 1e4 if len(rets) > 5 else None
+    return adv, vol
+
+
+def cost_bps(s, participation, vol_bps):
+    return s["hs"] + K_IMPACT * vol_bps * math.sqrt(participation)
+
+
+def candidates(univ, days, month_end):
+    """Each candidate's rebalances from January 2025 to November 2026 as the backtest logged them: the weight it
+    traded in each stock (buys and sells), at its own rebalance dates."""
+    out = {}
+    q_end = [d for d in sorted(month_end) if d.month in (3, 6, 9, 12)]
+    excluded = {e["sedol"] for e in esg_list(univ)}
+    for code, name, tier, hold, freq, swap, alpha in CANDIDATES:
+        r = rng("cand-" + code)
+        floor = {"S": 5e6, "M": 12e6, "L": 0.0}[tier]       # the strategy's liquidity screen
+        pool = sorted([s for s in univ if s["tier"] == tier and s["adv"] >= floor and s["sedol"] not in excluded],
+                      key=lambda s: s["sedol"])
+        dates = sorted(month_end) if freq == "M" else q_end
+        held = list(r.permutation(len(pool))[:hold])
+        w = {int(k): 1.0 / hold for k in held}
+        trades = []
+        for d in dates:
+            # drift: each holding's weight wanders between rebalances, and the rebalance trades it back
+            drift = {k: v * math.exp(float(r.normal(0, 0.04 if freq == "M" else 0.06))) for k, v in w.items()}
+            tot = sum(drift.values())
+            drift = {k: v / tot for k, v in drift.items()}
+            out_k = [int(x) for x in r.permutation(sorted(w))[:swap]]
+            free = [k for k in range(len(pool)) if k not in w]
+            in_k = [int(free[int(x)]) for x in r.permutation(len(free))[:swap]]
+            new = {k: 1.0 / hold for k in w if k not in out_k}
+            for k in in_k:
+                new[k] = 1.0 / hold
+            for k in sorted(set(drift) | set(new)):
+                dw = new.get(k, 0.0) - drift.get(k, 0.0)
+                if abs(dw) > 1e-6:
+                    trades.append(dict(strategy=code, date=d, sedol=pool[k]["sedol"], isin=pool[k]["isin"],
+                                       weight=round(dw, 6)))
+            w = new
+        out[code] = trades
+    return out
+
+
+def live_orders(univ, mkt, days, month_end):
+    """The desk's live orders 2025 and 2026: each an order of one account in one stock on one day, its arrival mid,
+    its size against the stock's 20-session traded value, and the shortfall it paid."""
+    r = rng("orders")
+    excluded = {e["sedol"] for e in esg_list(univ)} | dormant(univ)
+    by_tier = {t: sorted([s for s in univ if s["tier"] == t], key=lambda s: s["sedol"]) for t in TIERS}
+    live_tier = {t: [s for s in by_tier[t] if s["sedol"] not in excluded] for t in TIERS}
+    idx = {d: i for i, d in enumerate(days)}
+    orders = []
+    oid = 4_100_000
+    for code, name, tiers, aum, per_month in LIVE:
+        for d in days:
+            i = idx[d]
+            if i < ORDER_START:
+                continue
+            n = int(r.poisson(1.5 * per_month / 21.0 * (3.0 if d in month_end else 1.0)))
+            for _ in range(n):
+                tier = tiers[int(r.integers(0, len(tiers)))]
+                s = live_tier[tier][int(r.integers(0, len(live_tier[tier])))]
+                adv, vol = adv20_and_vol(mkt[s["sedol"]], i)
+                u = r.random()
+                if u < HIGH_P_SHARE[tier]:
+                    part = float(math.exp(r.uniform(math.log(HIGH_P_RANGE[0]), math.log(HIGH_P_RANGE[1]))))
+                else:
+                    # the book's order is sized in pounds; its share of the day is large where the stock is thin
+                    med = TIERS[tier]["adv"][0]
+                    value = float(math.exp(r.normal(math.log(ORDER_VALUE[tier] * med * (s["adv"] / med) ** LIQ_BETA),
+                                                    ORDER_SD)))
+                    part = value / adv
+                if part > P_CAP:
+                    part = P_CAP * math.exp(-float(r.exponential(0.25)))
+                value = part * adv
+                px_close_prev = mkt[s["sedol"]][i - 1][1]
+                arrival = px_close_prev * math.exp(float(r.normal(0, 0.004)))
+                qty = max(1, int(round(value / (arrival / 100.0))))
+                value = qty * arrival / 100.0
+                part = value / adv
+                true_cost = cost_bps(s, part, vol)
+                noise = float(r.normal(0, NOISE_K * vol * (0.6 + math.sqrt(min(part, 0.6)))))
+                side = 1 if r.random() < 0.5 else -1
+                hh = int(r.integers(8, 15))
+                mm = int(r.integers(0, 60))
+                oid += int(r.integers(1, 40))
+                orders.append(dict(order_id="WM%d" % oid, account=code, sedol=s["sedol"], tier=tier, date=d,
+                                   hh=hh, mm=mm, side=side, qty=qty, arrival=arrival, adv=adv, vol=vol, part=part,
+                                   cost=true_cost + noise, cancelled=False, filled=qty))
+    # the Severnvale pension transition, run on the old UK Dynamic account code once it was free: block orders
+    tr = rng("transition")
+    for d in days:
+        if not (W_REUSE <= d <= dt.date(2026, 11, 13)):
+            continue
+        i = idx[d]
+        for _ in range(int(tr.poisson(5))):
+            u = tr.random()
+            tier = "L" if u < 0.65 else "M"
+            s = live_tier[tier][int(tr.integers(0, len(live_tier[tier])))]
+            adv, vol = adv20_and_vol(mkt[s["sedol"]], i)
+            part = float(math.exp(tr.uniform(math.log(0.02), math.log(0.20 if tier == "L" else 0.30))))
+            arrival = mkt[s["sedol"]][i - 1][1] * math.exp(float(tr.normal(0, 0.004)))
+            qty = max(1, int(round(part * adv / (arrival / 100.0))))
+            part = qty * arrival / 100.0 / adv
+            oid += int(tr.integers(1, 40))
+            orders.append(dict(order_id="WM%d" % oid, account="TRN", sedol=s["sedol"], tier=tier, date=d,
+                               hh=int(tr.integers(8, 15)), mm=int(tr.integers(0, 60)),
+                               side=1 if tr.random() < 0.5 else -1, qty=qty, arrival=arrival, adv=adv, vol=vol,
+                               part=part, cost=cost_bps(s, part, vol) +
+                               float(tr.normal(0, NOISE_K * vol * (0.6 + math.sqrt(min(part, 0.6))))),
+                               cancelled=False, filled=qty))
+    # cancelled orders: a tenth of the orders stop part filled
+    for o in orders:
+        if r.random() < 0.06:
+            o["cancelled"] = True
+            o["filled"] = max(1, int(o["qty"] * r.uniform(0.25, 0.9)))
+    # block orders: where UK Dynamic wants the same stock on the same side as another live book that day, the desk
+    # places one order on its block account and allocates the fills after the trade
+    bl = rng("blocks")
+    by_tier_dyn = {t: by_tier[t] for t in TIERS}
+    out = []
+    for o in orders:
+        if o["account"] in ("INC", "MCG", "SMC") and not o["cancelled"] and bl.random() < 0.16 \
+                and o["date"] not in FAILOVER_DAYS:
+            s = next(x for x in by_tier_dyn[o["tier"]] if x["sedol"] == o["sedol"])
+            q2 = max(1, int(o["qty"] * bl.uniform(0.3, 0.9)))
+            qty = o["qty"] + q2
+            part = qty * o["arrival"] / 100.0 / o["adv"]
+            oid += int(bl.integers(1, 40))
+            noise = float(bl.normal(0, NOISE_K * o["vol"] * (0.6 + math.sqrt(min(part, 0.6)))))
+            if part > P_CAP:                 # too large a share of the day to combine: each book trades its own
+                out.append(o)
+                continue
+            out.append(dict(o, order_id="WM%d" % oid, account="BLOCK", qty=qty, filled=qty, part=part,
+                            cost=cost_bps(s, part, o["vol"]) + noise, alloc=[(o["account"], o["qty"]), ("DYN", q2)]))
+        else:
+            out.append(o)
+    out.sort(key=lambda o: (o["date"], o["hh"], o["mm"], o["order_id"]))
+    return out

@@ -1,313 +1,275 @@
 {
- "count": 7,
- "count_word": "Seven",
+ "count": 5,
+ "count_word": "Five",
+ "threshold": "5.0",
  "qualifying": [
   {
-   "lid": "T13",
-   "name": "Thornacre Regional",
-   "lead_kg": 22
+   "nr": "5802",
+   "name": "Tverrvika",
+   "vacant": 38,
+   "share": "7.3"
   },
   {
-   "lid": "A71",
-   "name": "Ambrell County Airport",
-   "lead_kg": 21
+   "nr": "5803",
+   "name": "Hesteby",
+   "vacant": 63,
+   "share": "6.4"
   },
   {
-   "lid": "L08",
-   "name": "Lanthorne Field",
-   "lead_kg": 16
+   "nr": "5805",
+   "name": "Solmoen",
+   "vacant": 28,
+   "share": "6.5"
   },
   {
-   "lid": "U44",
-   "name": "Umber Creek Airport",
-   "lead_kg": 15
+   "nr": "5807",
+   "name": "Ørnevik",
+   "vacant": 31,
+   "share": "8.2"
   },
   {
-   "lid": "W33",
-   "name": "Wickrow Airfield",
-   "lead_kg": 14
-  },
-  {
-   "lid": "O16",
-   "name": "Orrin Flats Airport",
-   "lead_kg": 14
-  },
-  {
-   "lid": "F37",
-   "name": "Fennick Airpark",
-   "lead_kg": 14
+   "nr": "5809",
+   "name": "Fjordeid",
+   "vacant": 30,
+   "share": "5.4"
   }
  ],
- "first_below": {
-  "lid": "P05",
-  "name": "Pellow Municipal",
-  "lead_kg": 11
- },
- "threshold_kg": "12.5",
- "fields": [
+ "municipalities": [
   {
-   "lid": "T13",
-   "name": "Thornacre Regional",
-   "county": "Varnell",
-   "lead_kg": 22
+   "nr": "5801",
+   "name": "Brekkevoll",
+   "counted": "1,640",
+   "vacant": 66,
+   "share": "4.0",
+   "qualifies": false
   },
   {
-   "lid": "A71",
-   "name": "Ambrell County Airport",
-   "county": "Corrisan",
-   "lead_kg": 21
+   "nr": "5802",
+   "name": "Tverrvika",
+   "counted": "520",
+   "vacant": 38,
+   "share": "7.3",
+   "qualifies": true
   },
   {
-   "lid": "L08",
-   "name": "Lanthorne Field",
-   "county": "Halwick",
-   "lead_kg": 16
+   "nr": "5803",
+   "name": "Hesteby",
+   "counted": "980",
+   "vacant": 63,
+   "share": "6.4",
+   "qualifies": true
   },
   {
-   "lid": "U44",
-   "name": "Umber Creek Airport",
-   "county": "Varnell",
-   "lead_kg": 15
+   "nr": "5804",
+   "name": "Kvernhaug",
+   "counted": "860",
+   "vacant": 33,
+   "share": "3.8",
+   "qualifies": false
   },
   {
-   "lid": "W33",
-   "name": "Wickrow Airfield",
-   "county": "Halwick",
-   "lead_kg": 14
+   "nr": "5805",
+   "name": "Solmoen",
+   "counted": "430",
+   "vacant": 28,
+   "share": "6.5",
+   "qualifies": true
   },
   {
-   "lid": "O16",
-   "name": "Orrin Flats Airport",
-   "county": "Ostrey",
-   "lead_kg": 14
+   "nr": "5806",
+   "name": "Ravnsund",
+   "counted": "740",
+   "vacant": 34,
+   "share": "4.6",
+   "qualifies": false
   },
   {
-   "lid": "F37",
-   "name": "Fennick Airpark",
-   "county": "Corrisan",
-   "lead_kg": 14
+   "nr": "5807",
+   "name": "Ørnevik",
+   "counted": "380",
+   "vacant": 31,
+   "share": "8.2",
+   "qualifies": true
   },
   {
-   "lid": "P05",
-   "name": "Pellow Municipal",
-   "county": "Halwick",
-   "lead_kg": 11
+   "nr": "5808",
+   "name": "Langgrav",
+   "counted": "1,120",
+   "vacant": 36,
+   "share": "3.2",
+   "qualifies": false
   },
   {
-   "lid": "S27",
-   "name": "Saltry Field",
-   "county": "Ostrey",
-   "lead_kg": 11
+   "nr": "5809",
+   "name": "Fjordeid",
+   "counted": "560",
+   "vacant": 30,
+   "share": "5.4",
+   "qualifies": true
   },
   {
-   "lid": "K58",
-   "name": "Kestrel Ridge Airpark",
-   "county": "Corrisan",
-   "lead_kg": 11
-  },
-  {
-   "lid": "T61",
-   "name": "Tavish Aero Field",
-   "county": "Corrisan",
-   "lead_kg": 11
-  },
-  {
-   "lid": "G42",
-   "name": "Graylow Municipal",
-   "county": "Ostrey",
-   "lead_kg": 10
-  },
-  {
-   "lid": "N26",
-   "name": "Norwick Field",
-   "county": "Ostrey",
-   "lead_kg": 10
-  },
-  {
-   "lid": "H52",
-   "name": "Hollin Gap Airport",
-   "county": "Varnell",
-   "lead_kg": 9
-  },
-  {
-   "lid": "D19",
-   "name": "Dunmarsh Airport",
-   "county": "Varnell",
-   "lead_kg": 9
-  },
-  {
-   "lid": "W85",
-   "name": "Wenmore Airport",
-   "county": "Corrisan",
-   "lead_kg": 9
-  },
-  {
-   "lid": "C66",
-   "name": "Cobbett Airport",
-   "county": "Corrisan",
-   "lead_kg": 8
-  },
-  {
-   "lid": "Y02",
-   "name": "Yarrow Bend Strip",
-   "county": "Varnell",
-   "lead_kg": 6
-  },
-  {
-   "lid": "Z14",
-   "name": "Zellner Field",
-   "county": "Halwick",
-   "lead_kg": 6
-  },
-  {
-   "lid": "L29",
-   "name": "Lissom Field",
-   "county": "Halwick",
-   "lead_kg": 6
-  },
-  {
-   "lid": "M09",
-   "name": "Marsh Hollow Field",
-   "county": "Ostrey",
-   "lead_kg": 4
-  },
-  {
-   "lid": "R31",
-   "name": "Ravelle Field",
-   "county": "Varnell",
-   "lead_kg": 4
-  },
-  {
-   "lid": "B48",
-   "name": "Brannoch Airstrip",
-   "county": "Halwick",
-   "lead_kg": 3
-  },
-  {
-   "lid": "D73",
-   "name": "Dellow Strip",
-   "county": "Ostrey",
-   "lead_kg": 2
+   "nr": "5810",
+   "name": "Snøholt",
+   "counted": "790",
+   "vacant": 37,
+   "share": "4.7",
+   "qualifies": false
   }
  ],
- "counted": {
-  "unrecorded": "23,376",
-  "never_recorded": "338",
-  "per_airplane": "69.2"
+ "lowest_qualifying": {
+  "name": "Fjordeid",
+  "share": "5.4"
  },
- "never_recorded": {
-  "T13": "33",
-  "A71": "26",
-  "U44": "65",
-  "W33": "58",
-  "O16": "62",
-  "P05": "1",
-  "S27": "0",
-  "K58": "2",
-  "T61": "1",
-  "N26": "9",
-  "H52": "11",
-  "W85": "18",
-  "C66": "11",
-  "Y02": "22",
-  "Z14": "8",
-  "L29": "9",
-  "M09": "8",
-  "R31": "4",
-  "B48": "5",
-  "D73": "3"
+ "highest_below": {
+  "name": "Snøholt",
+  "share": "4.7"
  },
- "towers": [
-  {
-   "lid": "HWK",
-   "name": "Halwick Municipal",
-   "ops": "17,600",
-   "lead_kg": 22
-  },
-  {
-   "lid": "CRV",
-   "name": "Corrisan Valley Regional",
-   "ops": "9,900",
-   "lead_kg": 18
-  },
-  {
-   "lid": "OSY",
-   "name": "Ostrey Field",
-   "ops": "19,400",
-   "lead_kg": 23
-  },
-  {
-   "lid": "VNL",
-   "name": "Varnell County Airport",
-   "ops": "12,200",
-   "lead_kg": 16
-  },
-  {
-   "lid": "KTY",
-   "name": "Kesterly Field",
-   "ops": "13,600",
-   "lead_kg": 16
-  },
-  {
-   "lid": "DMR",
-   "name": "Dunmore Municipal",
-   "ops": "7,900",
-   "lead_kg": 13
-  }
- ],
+ "totals": {
+  "counted": "8,020",
+  "vacant": "396",
+  "persons": "13,599"
+ },
+ "vacant_registered": "118",
+ "lived_unregistered": "557",
+ "vacant_median_kwh": "20.5",
+ "lived_median_kwh": "19.5",
  "rivals": {
-  "capture_pct": "82",
-  "capture_set": [
-   "Ambrell County Airport",
-   "Fennick Airpark",
-   "Kestrel Ridge Airpark",
-   "Lanthorne Field",
-   "Pellow Municipal",
-   "Saltry Field",
-   "Thornacre Regional",
-   "Tavish Aero Field"
-  ],
-  "capture_in": [
-   "Kestrel Ridge Airpark",
-   "Pellow Municipal",
-   "Saltry Field",
-   "Tavish Aero Field"
-  ],
-  "capture_out": [
-   "Orrin Flats Airport",
-   "Umber Creek Airport",
-   "Wickrow Airfield"
-  ],
-  "training_set_count": 9,
-  "training_in": [
-   "Kestrel Ridge Airpark",
-   "Norwick Field",
-   "Pellow Municipal",
-   "Saltry Field",
-   "Tavish Aero Field"
-  ],
-  "school_pct": "86",
-  "other_pct": "73"
+  "register_count": 10,
+  "floor_low": "1",
+  "floor_high": "10",
+  "register_and_profile": [
+   "Hesteby"
+  ]
  },
- "unrecorded_g": "1.625",
- "stated": {
-  "clauses": [
-   "method 2.1",
-   "method 3.2",
-   "method 4.2",
-   "method 4.3",
-   "method 4.4",
-   "guidelines 2.2"
-  ],
-  "year": "2026",
-  "round": "2027"
+ "cut": "0.5",
+ "age_bands": {
+  "under": "18",
+  "upper": "66",
+  "over": "67"
  },
- "capture_low": {
-  "name": "Dunmarsh Airport",
-  "pct": "56"
- },
- "capture_high": {
-  "name": "Lanthorne Field",
-  "pct": "99"
- }
+ "renumbered": 197,
+ "ask_a": [
+  {
+   "nr": "5801",
+   "name": "Brekkevoll",
+   "under_18": "115",
+   "age_18_66": "1,748",
+   "age_67": "636"
+  },
+  {
+   "nr": "5802",
+   "name": "Tverrvika",
+   "under_18": "86",
+   "age_18_66": "670",
+   "age_67": "227"
+  },
+  {
+   "nr": "5803",
+   "name": "Hesteby",
+   "under_18": "106",
+   "age_18_66": "1,122",
+   "age_67": "425"
+  },
+  {
+   "nr": "5804",
+   "name": "Kvernhaug",
+   "under_18": "80",
+   "age_18_66": "907",
+   "age_67": "281"
+  },
+  {
+   "nr": "5805",
+   "name": "Solmoen",
+   "under_18": "72",
+   "age_18_66": "516",
+   "age_67": "215"
+  },
+  {
+   "nr": "5806",
+   "name": "Ravnsund",
+   "under_18": "57",
+   "age_18_66": "875",
+   "age_67": "301"
+  },
+  {
+   "nr": "5807",
+   "name": "Ørnevik",
+   "under_18": "86",
+   "age_18_66": "462",
+   "age_67": "189"
+  },
+  {
+   "nr": "5808",
+   "name": "Langgrav",
+   "under_18": "141",
+   "age_18_66": "1,342",
+   "age_67": "503"
+  },
+  {
+   "nr": "5809",
+   "name": "Fjordeid",
+   "under_18": "78",
+   "age_18_66": "716",
+   "age_67": "228"
+  },
+  {
+   "nr": "5810",
+   "name": "Snøholt",
+   "under_18": "128",
+   "age_18_66": "936",
+   "age_67": "351"
+  }
+ ],
+ "ask_b": [
+  {
+   "nr": "5801",
+   "name": "Brekkevoll",
+   "held": "133"
+  },
+  {
+   "nr": "5802",
+   "name": "Tverrvika",
+   "held": "17"
+  },
+  {
+   "nr": "5803",
+   "name": "Hesteby",
+   "held": "149"
+  },
+  {
+   "nr": "5804",
+   "name": "Kvernhaug",
+   "held": "80"
+  },
+  {
+   "nr": "5805",
+   "name": "Solmoen",
+   "held": "27"
+  },
+  {
+   "nr": "5806",
+   "name": "Ravnsund",
+   "held": "141"
+  },
+  {
+   "nr": "5807",
+   "name": "Ørnevik",
+   "held": "23"
+  },
+  {
+   "nr": "5808",
+   "name": "Langgrav",
+   "held": "136"
+  },
+  {
+   "nr": "5809",
+   "name": "Fjordeid",
+   "held": "86"
+  },
+  {
+   "nr": "5810",
+   "name": "Snøholt",
+   "held": "58"
+  }
+ ]
 }

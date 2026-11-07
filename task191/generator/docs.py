@@ -1,175 +1,116 @@
-"""The platform's own capacity framework, quality standard, dictionary and bulletin."""
-import os
+"""The governing texts: the alert handling procedure (PDF) and the BSA/AML officer's planning thread (EML)."""
+from email.message import EmailMessage
+from email.utils import format_datetime
+import datetime as dt
 
-from reportlab import rl_config
-rl_config.invariant = 1
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_JUSTIFY
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import mm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.lib.pagesizes import LETTER
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
-import world as W
-
-SS = getSampleStyleSheet()
-BODY = ParagraphStyle("b", parent=SS["BodyText"], fontName="Times-Roman", fontSize=9.5, leading=13,
-                      alignment=TA_JUSTIFY, spaceAfter=5)
-H1 = ParagraphStyle("h1", parent=SS["Heading1"], fontName="Times-Bold", fontSize=13, spaceAfter=8)
-H2 = ParagraphStyle("h2", parent=SS["Heading2"], fontName="Times-Bold", fontSize=10.5, spaceAfter=4,
-                    spaceBefore=8)
-SMALL = ParagraphStyle("s", parent=BODY, fontSize=8, leading=10.5)
-CELL = ParagraphStyle("c", fontName="Times-Roman", fontSize=8, leading=10)
-CELLB = ParagraphStyle("cb", fontName="Times-Bold", fontSize=8, leading=10)
-TBL = TableStyle([("GRID", (0, 0), (-1, -1), 0.3, colors.Color(0.45, 0.45, 0.45)),
-                  ("BACKGROUND", (0, 0), (-1, 0), colors.Color(0.90, 0.90, 0.88)),
-                  ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                  ("LEFTPADDING", (0, 0), (-1, -1), 3), ("RIGHTPADDING", (0, 0), (-1, -1), 3),
-                  ("TOPPADDING", (0, 0), (-1, -1), 1.6), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.6)])
+import common as C
 
 
-def wrap(rows):
-    return [[Paragraph(str(c), CELLB if i == 0 else CELL) for c in row] for i, row in enumerate(rows)]
+def _styles():
+    base = ParagraphStyle("b", fontName="Helvetica", fontSize=9.6, leading=13.2, spaceAfter=5)
+    return {"t": ParagraphStyle("t", parent=base, fontName="Helvetica-Bold", fontSize=13.5, leading=17, spaceAfter=3),
+            "s": ParagraphStyle("s", parent=base, fontSize=8.4, leading=11, textColor=colors.HexColor("#4b5560")),
+            "h": ParagraphStyle("h", parent=base, fontName="Helvetica-Bold", fontSize=10.4, leading=14, spaceBefore=7,
+                                spaceAfter=3),
+            "p": base}
 
 
-def _doc(path, title):
-    return SimpleDocTemplate(path, pagesize=A4, title=title, author="", subject="", creator="",
-                             leftMargin=18 * mm, rightMargin=18 * mm, topMargin=18 * mm,
-                             bottomMargin=18 * mm)
+def procedure_pdf(path):
+    st = _styles()
+    blocks = [
+        ("t", "AML Alert Handling Procedure"),
+        ("s", "Kestrel Pay, Inc. Financial Crimes Compliance. Procedure FCC-07, version 4.2, effective 1 February 2026. "
+              "Owner: BSA/AML Officer. Applies to alerts raised by the transaction monitoring system on consumer wallets, "
+              "merchant accounts and cards."),
+        ("h", "1. Purpose"),
+        ("p", "This procedure sets out how alerts raised by the transaction monitoring system are reviewed, escalated, "
+              "investigated and, where suspicion is established, reported to FinCEN in a suspicious activity report "
+              "(SAR) under 31 CFR 1022.320."),
+        ("h", "2. Monitoring runs"),
+        ("p", "The monitoring system runs each night after the payment ledger closes for the business day, which ends at "
+              "22:00 Eastern time. Each alert carries the run that raised it; a run belongs to the business day it "
+              "monitors. When a run is repeated because its input was incomplete, the repeated run raises the day's "
+              "alerts again, and analysts close the second copies as duplicates."),
+        ("h", "3. Triage"),
+        ("p", "An analyst in the triage pool reviews each alert within seven calendar days of the run, using the "
+              "customer's profile, the activity behind the alert and earlier alerts and cases. The analyst closes the "
+              "alert when the activity is explained, or escalates it, and the escalation opens an investigation in the "
+              "financial crimes case manager. An alert on a customer who already has an open investigation is added to "
+              "that investigation when it is escalated, and opens no investigation of its own."),
+        ("h", "4. Investigations"),
+        ("p", "Investigations are worked in the financial crimes case manager by the investigation teams. The "
+              "investigator gathers account, device and counterparty information, may send the customer a request for "
+              "information, and refers the case to the Financial Intelligence Unit when the activity may be suspicious. "
+              "Investigations aim at a decision within 90 days of escalation; the Investigations Manager may extend an "
+              "investigation where counterparties, merchants or other institutions must be traced."),
+        ("h", "5. The SAR decision"),
+        ("p", "The Financial Intelligence Unit decides whether the activity is suspicious. When it is, the initial report "
+              "is drafted, passes the SAR quality review and is filed within 30 calendar days of that determination; "
+              "the case closes when the SAR is filed. When it is not, the case closes with no SAR and the reasons "
+              "recorded."),
+        ("h", "6. Continuing activity and corrections"),
+        ("p", "Where the customer remains active, the account is reviewed 90 days after a SAR, and a continuing activity "
+              "report on the investigation, covering the activity since the previous report, is filed within 120 days "
+              "of the previous report. A filed report found to contain an error is corrected by a new filing that cites "
+              "the report it corrects and covers the same activity."),
+        ("h", "7. Quality assurance"),
+        ("p", "The Quality Assurance team samples closed alerts and closed cases each month and reports its findings to "
+              "the BSA/AML Officer."),
+        ("h", "8. Records"),
+        ("p", "Alerts, runs, cases and filings are kept for five years from the filing or the closure."),
+    ]
+    doc = SimpleDocTemplate(path, pagesize=LETTER, leftMargin=0.9 * inch, rightMargin=0.9 * inch, topMargin=0.8 * inch,
+                            bottomMargin=0.8 * inch, title="AML Alert Handling Procedure FCC-07", author="Kestrel Pay",
+                            creator="Kestrel Pay", producer="Kestrel Pay", invariant=1)
+    story = []
+    for k, v in blocks:
+        story.append(Paragraph(v, st[k]))
+        if k == "s":
+            story.append(Spacer(1, 6))
+    doc.build(story)
+    C.scrub_pdf(path, "D:20260122143000-05'00'", "D:20260129101500-05'00'")
 
 
+THREAD = """Miguel,
+
+The 2027 tuning set goes to the executive risk meeting on 18 November, and the independent AML review opens on 11 January, so the paper needs to be settled before the meeting.
+
+As we agreed in March, a scenario goes into the year's tuning when its productivity over the twelve months to 30 September falls below 3 per cent. Productivity is the share of the alerts a scenario raised in those twelve months that end in a SAR. An alert belongs to the business date of the run that raised it, and it ends in a SAR when the investigation it was escalated into, or added to, files one; the continuing activity reports and the corrections that follow a SAR do not count again. Every alert raised in the twelve months counts, those still in triage or under investigation when the figures are drawn included, by how they will end. An alert closed as a duplicate of another is not an alert of its scenario, and a scenario replaced during the year is read together with its replacement in every figure we give by scenario.
+
+Leah's team ran the case manager export first thing this morning, and the monitoring tables run to last night's run.
+
+Thanks,
+Katherine Cobb
+BSA/AML Officer
+Kestrel Pay, Inc.
+
+-----Original message-----
+From: Leah Berg
+Sent: Friday, October 30, 2026 4:12 PM
+To: Katherine Cobb
+Subject: RE: 2027 tuning set
+
+Katherine, the export will be in the shared folder by 7am Monday, with Sunday night's run in the monitoring tables.
+
+Leah
+"""
 
 
-def framework(target):
-    path = os.path.join(target, "network_capacity_framework.pdf")
-    d = _doc(path, "Network capacity framework")
-    f = [Paragraph("%s: network capacity framework" % W.PLATFORM, H1),
-         Paragraph("Issue 6, approved by the board, 14 October 2026. Parts 1, 2, 3 and 6 and the "
-                   "annexes are not reproduced in this extract.", SMALL),
-         Paragraph("Part 4 Interconnect capacity", H2),
-         Paragraph("4.1 The capacity committee decides each quarter whether to fund an "
-                   "interconnect augment. The decision is taken on the reporting quarter that has "
-                   "closed, and the reporting quarters are the calendar quarters.", BODY),
-         Paragraph("4.2 An augment is funded on an interconnect whose evening shortfall is larger "
-                   "than the shortfall the network's own record shows the measurement produces "
-                   "without congestion. The shortfall of an interconnect in an evening window is the "
-                   "figure the delivered quality standard defines, and the figure the decision is "
-                   "taken on is the largest any interconnect in service at the quarter end shows in "
-                   "any evening window of the quarter.", BODY),
-         Paragraph("4.3 The evening windows the planning desk reports on are 19:00 to 19:59, 20:00 "
-                   "to 20:59 and 21:00 to 21:59, each in local time, and an evening is the local "
-                   "calendar date its windows begin on.", BODY),
-         Paragraph("4.4 An evening on which the network operations team had booked work inside an "
-                   "evening window on that interconnect is not evidence of congestion there, and the "
-                   "planning desk leaves those evenings out.", BODY),
-         Paragraph("4.5 One augment is funded in a quarter, or none.", BODY),
-         Paragraph("Part 5 Incidents", H2),
-         Paragraph("5.1 The service restoration standard is four hours from the time an incident was "
-                   "opened to the time service was restored. The time service was restored is the "
-                   "time the duty engineer records, which is not the time the ticket was closed, and "
-                   "an incident for which no restoration time was recorded is not counted as "
-                   "restored inside the standard.", BODY),
-         Paragraph("5.2 Every incident carries a recorded cause, and the dictionary says which "
-                   "causes sit outside the platform.", BODY),
-         Paragraph("Part 7 Peering commitments", H2),
-         Paragraph("7.1 A peering or transit agreement is billed on the ninety-fifth percentile of "
-                   "the quarter's five-minute samples of the traffic the platform sends the peer, "
-                   "which is the 1,296th highest sample of the quarter, taken over the peer's "
-                   "traffic and not over one port of it.", BODY),
-         Paragraph("7.2 The commitment a peer is billed on is the commitment the platform and the "
-                   "peer have both accepted and that is in force on the last day of the quarter, "
-                   "and an amendment the peer has not accepted is not billed on. Where the "
-                   "quarter's percentile is above the commitment, the overage "
-                   "is the excess in whole megabits a second, after the percentile is taken to the "
-                   "nearest whole megabit, at the agreement's own rate. A peer the "
-                   "platform exchanges traffic with settlement free is billed nothing and carries "
-                   "no commitment.", BODY)]
-    d.build(f)
-    return path
-
-
-def standard(target):
-    path = os.path.join(target, "delivered_quality_standard.pdf")
-    d = _doc(path, "Delivered quality standard")
-    f = [Paragraph("%s: delivered quality standard" % W.PLATFORM, H1),
-         Paragraph("Streaming quality engineering, issue 11. How the client telemetry is reduced to "
-                   "the figures the planning desk and the bulletin use.", SMALL),
-         Paragraph("The minute value", H2),
-         Paragraph("The client reports the bitrate it was delivered for each session. The minute "
-                   "value for an interconnect is the median of those bitrates across the sessions "
-                   "the interconnect carried in that minute, in kilobits a second, and it is the "
-                   "only value the standard reduces further.", BODY),
-         Paragraph("A band median", H2),
-         Paragraph("The median of a band is the median of the band's minute values. The reference "
-                   "band is 12:00 to 14:59 local time, which the platform uses because demand there "
-                   "is a fraction of the evening's on every interconnect.", BODY),
-         Paragraph("The shortfall", H2),
-         Paragraph("The shortfall of an interconnect in an evening window is the median of the "
-                   "reference band for that interconnect on that date, less the median of the "
-                   "evening window, in kilobits a second. A positive shortfall is bitrate the "
-                   "evening did not deliver and the reference band did.", BODY),
-         Paragraph("What the standard does not define", H2),
-         Paragraph("The standard reduces telemetry. It does not say what a shortfall is to be "
-                   "compared against, which is the planning desk's own work under the capacity "
-                   "framework.", BODY)]
-    d.build(f)
-    return path
-
-
-def dictionary(target):
-    path = os.path.join(target, "telemetry_dictionary.pdf")
-    d = _doc(path, "Telemetry dictionary")
-    rows = [["Field", "Meaning"],
-            ["measured_at_utc", "the minute the client telemetry is stamped with, in UTC. The "
-                                "framework's windows are local time, and the Netherlands moves to "
-                                "summer time on the last Sunday in March"],
-            ["port_code", "the interconnect port as the record carried it when it was written; the "
-                          "interconnect register carries the port it now is"],
-            ["sessions", "the sessions the port carried in the minute"],
-            ["median_kbps, p10_kbps", "the minute value the delivered quality standard defines, and "
-                                      "the tenth percentile of the same bitrates"],
-            ["rebuffer_events", "the rebuffers the clients on that port reported in the minute"],
-            ["evening_date_local, window_from", "the daily rollup's own evening and window, already "
-                                                "in local time"],
-            ["evening_median_kbps, reference_median_kbps", "the two band medians the daily rollup "
-                                                           "keeps; the pipeline keeps minute rows "
-                                                           "for ninety days and these for two years"],
-            ["minutes_scheduled, minutes_captured", "what the collector was due to record and what "
-                                                    "it did record"],
-            ["out_mbps, in_mbps", "the edge's five-minute traffic samples, in megabits a second"],
-            ["build_version, build_ref", "the client version string the session reports, and the "
-                                         "build the release log identifies by its own reference and "
-                                         "its rollout dates"],
-            ["cause_category", "the recorded cause of an incident. Access network, transit provider, "
-                               "customer premises, and power or facility sit outside the platform. "
-                               "Origin service, packager, edge cache, client application and "
-                               "configuration change sit inside it"],
-            ["service_restored_at_utc", "the time the duty engineer recorded service as restored, "
-                                        "which only some incidents carry"]]
-    f = [Paragraph("%s: telemetry and operations dictionary" % W.PLATFORM, H1),
-         Paragraph("The fields of the extracts the data platform hands over.", SMALL)]
-    t = Table(wrap(rows), colWidths=[46 * mm, 128 * mm])
-    t.setStyle(TBL)
-    f.append(t)
-    d.build(f)
-    return path
-
-
-def bulletin(target, series):
-    """the platform's own published quarterly quality series, platform wide and by nothing else"""
-    path = os.path.join(target, "published_quarterly_quality_report.pdf")
-    d = _doc(path, "Quarterly quality report")
-    rows = [["Quarter", "Median delivered bitrate, kbps", "Sessions, millions",
-             "Rebuffer rate, per cent"]] + series
-    f = [Paragraph("%s: quarterly quality report" % W.PLATFORM, H1),
-         Paragraph("Published for subscribers and partners. Figures are platform wide across all "
-                   "access networks and are not broken down by interconnect.", SMALL)]
-    t = Table(wrap(rows), colWidths=[30 * mm, 56 * mm, 44 * mm, 44 * mm])
-    t.setStyle(TBL)
-    f.append(t)
-    f.append(Spacer(1, 4 * mm))
-    f.append(Paragraph("The platform reports the median delivered bitrate across every session it "
-                       "served in the quarter. Quarter on quarter movement reflects the mix of "
-                       "titles, devices and access networks as much as the network itself.", BODY))
-    d.build(f)
-    return path
+def thread_eml(path):
+    m = EmailMessage()
+    m["From"] = "Katherine Cobb <kcobb@kestrelpay.com>"
+    m["To"] = "Miguel Swanson <mswanson@kestrelpay.com>"
+    m["Cc"] = "Leah Berg <lberg@kestrelpay.com>"
+    m["Subject"] = "RE: 2027 tuning set"
+    m["Date"] = format_datetime(dt.datetime(2026, 11, 2, 7, 52, 41, tzinfo=dt.timezone(dt.timedelta(hours=-5))))
+    m["Message-ID"] = "<20261102125212.4471@kestrelpay.com>"
+    m.set_content(THREAD)
+    with open(path, "wb") as f:
+        f.write(bytes(m))
+    C.set_mtime(path)

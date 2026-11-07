@@ -1,183 +1,132 @@
 {
  "task": "task482",
- "title": "Two-sided risk track elections, 2027",
- "setting": "A fictional clinically integrated network of thirteen independent primary care practices in Wisconsin and its three commercial payers: the network, the practices, the payers and the people are fictional, and every record is synthetic.",
- "as_of": "2026-10-16",
- "deliverables": [
-  "two_sided_track_elections_2027.xlsx",
-  "practice_cost_vs_benchmark_2026.png"
- ],
- "distractor_files": [
-  "target/kbp_medicare_advantage_attribution_2026.xlsx",
-  "target/lpn_quality_composite_2025.csv",
-  "target/mlh_care_coordination_remittance_2026.csv",
-  "target/KBP_CCF_REMIT_2026.xlsx",
-  "target/pmh_ccf_payments_2026.csv"
- ],
- "stated_inputs": [
-  "250,000"
- ],
+ "architecture": 16,
+ "setting": "2027-01-28",
  "files": [
   {
-   "file": "KBP_ATTRIBUTION_PY2025F_PY2026R10.xlsx",
-   "source": "Kesselcrest Benefit Partners, value-based partner attribution (fictional, synthetic records)",
-   "date": "2026-10-06",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "name": "brackwell_electricity_hh_2026.csv",
+   "role": "distractor",
+   "source": "synthetic: the electricity supplier's half-hourly settlement data for the works' import meter",
+   "date": "2027-01-11",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "KBP_CCF_REMIT_2026.xlsx",
-   "source": "Kesselcrest Benefit Partners, care coordination remittances (fictional, synthetic records)",
-   "date": "2026-10-14",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "name": "brackwell_gas_invoices_2026.pdf",
+   "role": "evidence",
+   "source": "synthetic: the gas supplier's VAT invoices by meter-read period, with calorific values",
+   "date": "2027-01-10",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "KBP_CLAIMS_LPN_20261009.txt",
-   "source": "Kesselcrest Benefit Partners, partner claims extract (fictional, synthetic records)",
-   "date": "2026-10-09",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 159442
+   "name": "brackwell_heat_treatment_oven_t1_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the solution and ageing oven's batch log",
+   "date": "2027-01-18",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "KBP_ELIG_LPN_20261009.txt",
-   "source": "Kesselcrest Benefit Partners, partner eligibility extract (fictional, synthetic records)",
-   "date": "2026-10-09",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 9289
+   "name": "brackwell_homogenizing_furnace_h1_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the homogenizing furnace's load log",
+   "date": "2027-01-18",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "kbp_medicare_advantage_attribution_2026.xlsx",
-   "source": "Kesselcrest Benefit Partners, Medicare Advantage provider attribution (fictional, synthetic records)",
-   "date": "2026-07-16",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "name": "brackwell_melting_furnace_logs_2026.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the casthouse and foundry melting furnaces' charge logs as kept by the works office",
+   "date": "2027-01-19",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "lpn_board_resolution_2026-07.pdf",
-   "source": "Larrowbrook Physician Network, Board Resolution 2026-11 (fictional, synthetic records)",
-   "date": "2026-07-24",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "name": "brackwell_plant_asset_register.xlsx",
+   "role": "distractor",
+   "source": "synthetic: the works' plant asset register with rated inputs",
+   "date": "2026-09-22",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "lpn_master_patient_index.csv",
-   "source": "Larrowbrook Physician Network, master patient index extract (fictional, synthetic records)",
-   "date": "2026-10-13",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 29583
+   "name": "brackwell_production_lots_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the inspection system's export of production lots and results",
+   "date": "2027-01-15",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "lpn_payer_feed_field_guide.txt",
-   "source": "Larrowbrook Physician Network, payer performance analytics, feed field guide (fictional, synthetic records)",
-   "date": "2026-10-13",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 66
+   "name": "brackwell_scr2_data_package.eml",
+   "role": "evidence",
+   "source": "synthetic: the supplier's cover email for its 2026 data package",
+   "date": "2027-01-21",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "lpn_performance_standard_2026.pdf",
-   "source": "Larrowbrook Physician Network, Performance Standard for Commercial Members (fictional, synthetic records)",
-   "date": "2025-12-16",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "name": "brackwell_scrap_goods_in_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the scrap goods-in register",
+   "date": "2027-01-08",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "lpn_primary_care_roster_2026-10.xlsx",
-   "source": "Larrowbrook Physician Network, credentialing, primary care roster (fictional, synthetic records)",
-   "date": "2026-10-01",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "name": "brackwell_shift_roster_2026.csv",
+   "role": "distractor",
+   "source": "synthetic: the casthouse and foundry crew roster",
+   "date": "2025-12-15",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "lpn_quality_composite_2025.csv",
-   "source": "The three payers' 2025 quality measure results for the network's practices (fictional, synthetic records)",
-   "date": "2026-05-29",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 242
+   "name": "brackwell_site_gas_meter_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the gas supplier's 15-minute interval export for the works' one site meter",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "mlh_attribution_runs_py2025_py2026.csv",
-   "source": "Merrinlake Health Plan, attribution runs (fictional, synthetic records)",
-   "date": "2026-10-07",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 25009
+   "name": "brackwell_weighbridge_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the works' weighbridge export, one row per weighing",
+   "date": "2027-01-08",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "mlh_care_coordination_remittance_2026.csv",
-   "source": "Merrinlake Health Plan, care coordination remittance detail (fictional, synthetic records)",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 454
+   "name": "brackwell_works_weather_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the works' roof weather station, daily summary",
+   "date": "2027-01-05",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "mlh_eligibility_2025_2026.csv",
-   "source": "Merrinlake Health Plan, partner eligibility extract (fictional, synthetic records)",
-   "date": "2026-10-07",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 16729
+   "name": "velden_2027_calloff_schedule.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the car maker's 2027 call-off schedule for the supplier",
+   "date": "2026-12-14",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "mlh_tcoc_claims_2025-01_2026-09.csv",
-   "source": "Merrinlake Health Plan, value-based partner claims extract (fictional, synthetic records)",
-   "date": "2026-10-07",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 283413
-  },
-  {
-   "file": "payer_completion_factors_2026-09.csv",
-   "source": "The three payers' completion factors, Performance Standard Appendix C (fictional, synthetic records)",
-   "date": "2026-10-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 24
-  },
-  {
-   "file": "payer_em_fee_schedules_2026.xlsx",
-   "source": "Larrowbrook Physician Network, managed care contracting, payer fee schedule excerpts (fictional, synthetic records)",
-   "date": "2026-01-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "payer_settlement_statements_py2025.pdf",
-   "source": "The three payers' performance year 2025 shared savings statements (fictional, synthetic records)",
-   "date": "2026-06-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "pmh_attribution_py2025_py2026.csv",
-   "source": "Pemberglen Mutual Health, attribution runs (fictional, synthetic records)",
-   "date": "2026-10-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 7278
-  },
-  {
-   "file": "pmh_ccf_payments_2026.csv",
-   "source": "Pemberglen Mutual Health, care coordination payments (fictional, synthetic records)",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 671
-  },
-  {
-   "file": "pmh_members_2026-10-12.csv",
-   "source": "Pemberglen Mutual Health, partner member coverage (fictional, synthetic records)",
-   "date": "2026-10-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 5032
-  },
-  {
-   "file": "pmh_partner_claims_2026-10-12.json",
-   "source": "Pemberglen Mutual Health, value-based partner claims (fictional, synthetic records)",
-   "date": "2026-10-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "qualifying_primary_care_services.csv",
-   "source": "Larrowbrook Physician Network, Performance Standard Appendix A (fictional, synthetic records)",
-   "date": "2025-12-11",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 25
+   "name": "velden_scr2_supplier_carbon_requirement.pdf",
+   "role": "evidence",
+   "source": "synthetic: the car maker's supplier carbon requirement, Revision 2",
+   "date": "2025-12-08",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   }
+ ],
+ "distractors": [
+  "brackwell_electricity_hh_2026.csv",
+  "brackwell_plant_asset_register.xlsx",
+  "brackwell_shift_roster_2026.csv"
+ ],
+ "distractor_reasons": {
+  "brackwell_electricity_hh_2026.csv": "electricity is not fuel the works burned (SCR-2 section 2), so it carries no direct emissions",
+  "brackwell_plant_asset_register.xlsx": "rated burner inputs say what a burner can fire, not the gas it burned; SCR-2 takes billed energy",
+  "brackwell_shift_roster_2026.csv": "crew rotations say who was on shift, not what the processes burned"
+ },
+ "stated_inputs": [
+  "0.235",
+  "0.18296",
+  "1.02264",
+  "2.83"
+ ],
+ "deliverables": [
+  "velden_low_carbon_premium_2027.docx",
+  "brackwell_scr2_figures_2026.csv"
  ]
 }

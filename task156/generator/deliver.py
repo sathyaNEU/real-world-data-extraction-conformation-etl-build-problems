@@ -1,7 +1,6 @@
-"""The goldens, from the shipped files only: moderation_pool_2027.xlsx (each site's 2027 need, the request and its
-distance from finance's envelope, the three tables, the reviewer pools behind the need and the chart's monthly
-figures), council_pool_request_2027.pptx (the request slide and the monthly hours chart), submission.md and
-generator/figures.json (every figure the write-up states, as it states it)."""
+"""The golden deliverables, figures.json and submission.md, every figure computed from target/ by estim.py and asks.py.
+
+    deliver.main(target, golden_dir, figures_path, submission_path)"""
 from __future__ import annotations
 
 import io
@@ -9,674 +8,362 @@ import json
 import os
 
 import numpy as np
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-from openpyxl.utils import get_column_letter
 
-import calc as C
-import common as K
+import asks as AK
+import estim as E
 import postprocess as PP
 
-XLSX = "moderation_pool_2027.xlsx"
-PPTX = "council_pool_request_2027.pptx"
-AUTHOR = "Moderation Operations"
-CREATED = "2026-10-13T14:10:00Z"
-MODIFIED = "2026-10-14T20:36:00Z"
-NAME = {s: K.SITE[s]["name"] for s in K.SITES}
-MONTHS_ALL = C.HIST_MONTHS + C.FWD_MONTHS                  # 2024-01 .. 2027-12
-SAT_CUT = 5                                                 # per cent routed: the inbox outran the volunteers
-ENV_MONTH = K.ENVELOPE_2027 * K.FTE_HOURS / 12.0
-ACTUAL_YEARS = (2024, 2025, 2026)                           # 2026: January to September, the months closed
-TENURE_BANDS = ((0, 12, "First year"), (12, 24, "Second year"), (24, 36, "Third year"), (36, 48, "Fourth year"),
-                (48, C.NT, "Fifth year and later"))
-YEAR_LABEL = {2024: "2024", 2025: "2025", 2026: "January to September 2026"}
+F_XLSX = "ps03_ngaio_road_connection_2027.xlsx"
+F_DOCX = "council_report_ngaio_road_2027.docx"
+F_PNG = "replay_overflows_2004-2023.png"
 
 
-def fmt(x, dp=0):
-    v = K.round_half_up(x, dp)
-    return format(v, ",.%df" % dp) if dp > 0 else format(int(v), ",")
+def rnd(x):
+    return int(np.floor(x + 0.5))
 
 
-def pct(x):
-    return fmt(x, 1)
-
-
-# ------------------------------------------------------------------------------------------------- the figures
 def compute(target):
-    X = C.compute(target)
-    D = X.D
-    M = C.MIDX
-    lo, hi = M[(2024, 9)], M[(2026, 8)]
-    ex = sum(D.exits[s][lo:hi + 1].sum() for s in K.SITES)
-    risk = sum(D.R[s][lo:hi + 1].sum() for s in K.SITES)
-    X.exit_net = ex / risk                   # the open pool's overall lapse rate, a rival's input, never the golden's
-    X.R_sep26 = {s: int(D.R[s][M[(2026, 9)]]) for s in K.SITES}
-    X.young = {s: int((C.active_at(D, s, C.M_SEP26) < 12).sum()) for s in K.SITES}
-    X.invited = int(sum(D.joins[s][M[(2026, 9)]] for s in K.SITES))
-    X.grants_2026 = int(sum(D.joins[s][M[(2026, 1)]:M[(2026, 8)] + 1].sum() for s in K.SITES))
-    X.pool = {s: C.project_pool(D, s) for s in K.SITES}
-    X.bands = []
-    for a, b, label in TENURE_BANDS:
-        X.bands.append((label, D.ev[a:b].sum() / D.rk[a:b].sum(), int(D.rk[a:b].sum()), int(D.ev[a:b].sum())))
-    idx27 = [k for k, (y, m) in enumerate(C.FWD_MONTHS) if y == 2027]
-    X.idx27 = idx27
-    X.pool_jun27 = {s: X.pool[s][C.FWD_MONTHS.index((2027, 6))] for s in K.SITES}
-    X.pool_mean27 = sum(X.pool[s][idx27].mean() for s in K.SITES)
-    X.plan27, X.flags27, X.inbox27, X.cap27, X.routed27, X.short = {}, {}, {}, {}, {}, {}
-    for s in K.SITES:
-        items, flag = C.ratios(D, s)
-        per_q = sum(items.values())
-        plan_fwd = np.array([D.outlook[s][m - 10] if y == 2026 else D.plan[s][m - 1] for (y, m) in C.FWD_MONTHS])
-        A = plan_fwd * per_q
-        cap = X.pool[s] * D.pace
-        share = np.maximum(D.floor, 1 - cap / A)
-        X.plan27[s] = D.plan[s].sum()
-        X.flags27[s] = flag * D.plan[s].sum()
-        X.inbox27[s] = A[idx27].sum()
-        X.cap27[s] = cap[idx27].sum()
-        X.routed27[s] = (A * share)[idx27].sum()
-        X.short[s] = [C.FWD_MONTHS[k] for k in range(len(C.FWD_MONTHS)) if cap[k] < A[k]]
-    # the sites by where their volunteer cover stands: short already in 2026, short from the forecast, covered
-    w26 = slice(M[(2026, 1)], M[(2026, 9)] + 1)
-    share26 = {s: D.rout_all[s][w26].sum() / D.ent_all[s][w26].sum() for s in K.SITES}
-    X.already = [s for s in K.SITES if share26[s] > 2 * D.floor]
-    X.newly = [s for s in K.SITES if s not in X.already and any(y == 2027 for y, m in X.short[s])]
-    X.covered = [s for s in K.SITES if not X.short[s]]
-    assert sorted(X.already + X.newly + X.covered) == sorted(K.SITES)
-    X.newly_from = min(min(X.short[s]) for s in X.newly)
-    X.share26 = share26
-    X.monthly = {s: np.concatenate([X.hist_hours[s], X.fwd_hours[s]]) for s in K.SITES}
-    X.actual_year = {}
-    for y in ACTUAL_YEARS:
-        idx = [i for i, (yy, m) in enumerate(C.HIST_MONTHS) if yy == y]
-        X.actual_year[y] = sum(X.hist_hours[s][idx].sum() for s in K.SITES)
+    G = E.golden(target)
+    V = E.validation(target)
+    A = AK.ask_a(target)
+    B = AK.ask_b(target)
+    X = dict(G=G, V=V, A=A, B=B)
+    M = G["model"]
+    X["fig"] = dict(
+        existing=rnd(G["existing"]["mean"]), with_sub=rnd(G["with_sub"]["mean"]), upgrade=rnd(G["with_upgrade"]["mean"]),
+        existing_exact=G["existing"]["mean"], with_sub_exact=G["with_sub"]["mean"], upgrade_exact=G["with_upgrade"]["mean"],
+        naive=rnd(G["naive_sub"]["mean"]), naive_exact=G["naive_sub"]["mean"], g=round(M["g"], 1), a=rnd(M["a"]),
+        b=round(M["b"], 1), ls_meter_med=round(G["lsub_meter_median"], 1), ls_replay_med=round(G["lsub_replay_median"], 1),
+        ls_max=rnd(G["lsub_meter_max"]), v_cond=round(V[("conditioned", "high river weeks", "bias")], 1) + 0.0,
+        v_single=rnd(V[("single", "high river weeks", "bias")]),
+        v_cond26=abs(round(V[("conditioned", "2026", "bias")], 1)) + 0.0,
+        v_single26=round(V[("single", "2026", "bias")], 1) + 0.0,
+        total_ex=int(G["existing"]["per_year"].sum()), total_sub=int(G["with_sub"]["per_year"].sum()),
+        total_up=int(G["with_upgrade"]["per_year"].sum()), meter_logged=sum(G["existing"]["meter"]))
+    X["a"] = {k: rnd(v) for k, v in A.items()}
+    X["b"] = {k: rnd(v) for k, v in B.items()}
     return X
 
 
-def names(codes):
-    n = [NAME[s] for s in codes]
-    return n[0] if len(n) == 1 else ", ".join(n[:-1]) + " and " + n[-1]
-
-
-# ------------------------------------------------------------------------------------------------- the workbook
-THIN = Side(style="thin", color="A3ABB5")
-HEAD = PatternFill("solid", fgColor="DCE3EA")
-TOT = PatternFill("solid", fgColor="F1F4F7")
-
-
-def _head(ws, row, cols, widths=None, height=None):
-    for c, v in enumerate(cols, 1):
-        cell = ws.cell(row=row, column=c, value=v)
-        cell.font = Font(bold=True)
-        cell.fill = HEAD
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-        cell.border = Border(bottom=THIN)
-    if widths:
-        for c, w in enumerate(widths, 1):
-            ws.column_dimensions[get_column_letter(c)].width = w
-    if height:
-        ws.row_dimensions[row].height = height
-
-
-def _title(ws, title, lines, merge_to):
-    ws["A1"] = title
-    ws["A1"].font = Font(bold=True, size=13)
-    for k, t in enumerate(lines):
-        c = ws.cell(row=2 + k, column=1, value=t)
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.merge_cells("A%d:%s%d" % (2 + k, merge_to, 2 + k))
-        ws.row_dimensions[2 + k].height = 15 * (1 + len(t) // 120)
-
-
+# ---------------------------------------------------------------------------------------------------- workbook
 def write_xlsx(path, X):
-    D = X.D
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Font, PatternFill
+    f = X["fig"]
+    G = X["G"]
     wb = Workbook()
+    bold = Font(bold=True)
+    head = PatternFill("solid", fgColor="DDE4EA")
+    title = Font(bold=True, size=13)
+
+    def header(ws, row, cols, widths=None):
+        for i, c in enumerate(cols, start=1):
+            cell = ws.cell(row=row, column=i, value=c)
+            cell.font = bold
+            cell.fill = head
+            cell.alignment = Alignment(wrap_text=True, vertical="top")
+        if widths:
+            for i, w in enumerate(widths):
+                ws.column_dimensions[chr(65 + i)].width = w
+
     ws = wb.active
-    ws.title = "Need 2027"
-    _title(ws, "The nine sites need %d paid moderator FTE in 2027, %d above finance's envelope" % (X.request, X.gap), [
-        "Need as the charter defines it (section 4): the hours the paid team will spend in 2027 on each site's moderator "
-        "flags and on the community review items no volunteer has reviewed 72 hours after they entered the inbox, each "
-        "at the 2027 handle-time standard. One FTE is 1,600 hours; each site to the nearest whole FTE; the request is "
-        "the sum of the nine.",
-        "Exports pulled 8 October 2026, data through 30 September 2026; questions from the 2027 question plan issued "
-        "18 September 2026. Method and sources on the Notes sheet."], "H")
-    _head(ws, 5, ["Site", "Questions planned, 2027", "Moderator flags handled, 2027", "Review inbox items, 2027",
-                  "Volunteer review capacity, 2027", "Items reaching the paid team, 2027", "Paid review hours, 2027",
-                  "Need (FTE)"], [24, 13, 13, 13, 14, 14, 13, 9], 45)
-    r = 6
-    for s in K.SITES:
-        vals = [NAME[s], round(X.plan27[s]), round(X.flags27[s]), round(X.inbox27[s]), round(X.cap27[s]),
-                round(X.routed27[s]), round(X.need_h[s]), X.need_round[s]]
-        for c, v in enumerate(vals, 1):
-            cell = ws.cell(row=r, column=c, value=v)
-            if 2 <= c <= 7:
-                cell.number_format = "#,##0"
-        r += 1
-    tot = ["Network", round(sum(X.plan27.values())), round(sum(X.flags27.values())), round(sum(X.inbox27.values())),
-           round(sum(X.cap27.values())), round(sum(X.routed27.values())), round(sum(X.need_h.values())), X.request]
-    for c, v in enumerate(tot, 1):
-        cell = ws.cell(row=r, column=c, value=v)
-        cell.font = Font(bold=True)
-        cell.fill = TOT
-        cell.border = Border(top=THIN)
-        if 2 <= c <= 7:
-            cell.number_format = "#,##0"
-    r += 2
-    for k, v, bold in (("Council request for 2027 (FTE), the sum of the nine site needs", X.request, True),
-                       ("Finance envelope for 2027 (FTE)", K.ENVELOPE_2027, False),
-                       ("Request above the envelope (FTE)", X.gap, True),
-                       ("Pool funded for 2026 (FTE)", K.POOL_2026, False)):
-        a = ws.cell(row=r, column=1, value=k)
-        ws.merge_cells("A%d:G%d" % (r, r))
-        b = ws.cell(row=r, column=8, value=v)
-        a.font = Font(bold=bold)
-        b.font = Font(bold=bold)
-        r += 1
-    ws.freeze_panes = "B6"
-    ws.page_setup.orientation = "landscape"
-    ws.page_setup.fitToWidth = 1
-    ws.sheet_properties.pageSetUpPr.fitToPage = True
+    ws.title = "Recommendation"
+    ws["A1"] = "PS03 would overflow about %d times a year with Ngaio Road connected: hold the connection to the 2029 upgrade" % f["with_sub"]
+    ws["A1"].font = title
+    ws["A2"] = "Consent AUTH-2024-0418 conditions 6 to 8: wet weather overflows at EO-03, the 2004 to 2023 hourly record replayed each day as it occurred"
+    header(ws, 4, ["Case", "Overflows in the 20 years", "Average a year", "Average a year (whole)", "Limit (condition 6)"],
+           [46, 16, 14, 14, 14])
+    rows = [("PS03 catchment as connected now", f["total_ex"], f["existing_exact"], f["existing"]),
+            ("With Ngaio Road at full development (260 dwellings)", f["total_sub"], f["with_sub_exact"], f["with_sub"]),
+            ("With Ngaio Road, after the 1,100 m3 storage upgrade", f["total_up"], f["upgrade_exact"], f["upgrade"])]
+    for i, (c, t, m, w) in enumerate(rows, start=5):
+        ws.cell(row=i, column=1, value=c)
+        ws.cell(row=i, column=2, value=t)
+        ws.cell(row=i, column=3, value=m).number_format = "0.00"
+        ws.cell(row=i, column=4, value=w)
+        ws.cell(row=i, column=5, value=2)
+    ws["A9"] = "Recommendation: hold the Ngaio Road connection until the PS03 storage upgrade is commissioned (programme: June 2029)."
+    ws["A9"].font = bold
+    ws["A10"] = ("For comparison, one response per millimetre of rain fitted on the 2024 to 2026 meter, with the meter's own dry "
+                 "weather flow, gives %.2f a year with the subdivision; it misses the June 2025 high-river weeks by %d L/s "
+                 "on average when they are held out." % (f["naive_exact"], f["v_single"]))
+    ws["A11"] = "Pumping capacity 112.0 L/s (2023 drawdown test) and 350 m3 to the weir crest (station data sheet, rev 4)."
 
-    w2 = wb.create_sheet("Reviewer pools")
-    _title(w2, "The %s reviewers active in September 2026 average about %s a month in 2027: the newest leave fastest" % (
-        fmt(sum(X.R_sep26.values())), fmt(X.pool_mean27, -2)), [
-        "Active reviewers made at least one review in the month (reviewer roster). Review access has been by invitation "
-        "only since 1 September 2026 (operations handbook), so a site's pool now only shrinks. Each reviewer is carried "
-        "forward on the monthly stop rate the roster shows at their tenure (months since access was granted), every "
-        "reviewer at about %d reviews a month, the pace reviewers keep when the inbox outruns them." % K.round_half_up(
-            D.pace)], "F")
-    _head(w2, 4, ["Site", "Active reviewers, September 2026", "Of whom granted access in the previous twelve months",
-                  "Active reviewers expected, June 2027", "Active reviewers expected, December 2027",
-                  "Months short of the inbox, October 2026 to December 2027"], [24, 14, 17, 14, 14, 17], 58)
-    r = 5
-    for s in K.SITES:
-        vals = [NAME[s], X.R_sep26[s], X.young[s], round(X.pool_jun27[s]), round(X.pool[s][-1]), len(X.short[s])]
-        for c, v in enumerate(vals, 1):
-            cell = w2.cell(row=r, column=c, value=v)
-            if 2 <= c <= 5:
-                cell.number_format = "#,##0"
-        r += 1
-    tot = ["Network", sum(X.R_sep26.values()), sum(X.young.values()), round(sum(X.pool_jun27.values())),
-           round(sum(X.pool[s][-1] for s in K.SITES)), None]
-    for c, v in enumerate(tot, 1):
-        cell = w2.cell(row=r, column=c, value=v)
-        cell.font = Font(bold=True)
-        cell.fill = TOT
-        cell.border = Border(top=THIN)
-        cell.number_format = "#,##0" if 2 <= c <= 5 else "General"
-    r += 2
-    w2.cell(row=r, column=1, value="Monthly stop rate by tenure, all nine sites, January 2024 to August 2026").font = \
-        Font(bold=True)
-    r += 1
-    _head(w2, r, ["Tenure", "Reviewer-months at risk", "Stops", "Stop rate a month"])
-    for label, rate, risk_, stops in X.bands:
-        r += 1
-        w2.cell(row=r, column=1, value=label)
-        w2.cell(row=r, column=2, value=risk_).number_format = "#,##0"
-        w2.cell(row=r, column=3, value=stops).number_format = "#,##0"
-        w2.cell(row=r, column=4, value=K.round_half_up(100 * rate, 1)).number_format = '0.0"%"'
-    w2.cell(row=r + 2, column=1, value="A reviewer is at risk from the first month the platform's record (January 2024 "
-            "on) shows them active to their last review; a stop is the last review of a reviewer whose access lapsed. "
-            "The projection uses the rate for each month of tenure; the bands summarise it.")
-    w2.merge_cells("A%d:F%d" % (r + 2, r + 2))
-    w2.row_dimensions[r + 2].height = 30
-    w2.cell(row=r + 2, column=1).alignment = Alignment(wrap_text=True, vertical="top")
-    w2.freeze_panes = "B5"
+    ws2 = wb.create_sheet("Replay by year")
+    ws2["A1"] = "Overflows concentrate in the years the terrace water table stood high (2008, 2011, 2017)"
+    ws2["A1"].font = title
+    header(ws2, 3, ["Year", "As connected now", "With Ngaio Road", "With Ngaio Road and the upgrade"], [10, 18, 18, 30])
+    for i, y in enumerate(range(2004, 2024)):
+        ws2.cell(row=4 + i, column=1, value=y)
+        ws2.cell(row=4 + i, column=2, value=int(G["existing"]["per_year"][i]))
+        ws2.cell(row=4 + i, column=3, value=int(G["with_sub"]["per_year"][i]))
+        ws2.cell(row=4 + i, column=4, value=int(G["with_upgrade"]["per_year"][i]))
+    ws2.cell(row=24, column=1, value="Total").font = bold
+    for c, k in ((2, "total_ex"), (3, "total_sub"), (4, "total_up")):
+        ws2.cell(row=24, column=c, value=f[k]).font = bold
 
-    w3 = wb.create_sheet("Flag response")
-    slow = [s for s in K.SITES if all(X.ask_a[(s, m)] < 95.0 for m in (7, 8, 9))]
-    _title(w3, "Moderator flags answered within 24 hours, July to September 2026: %s answered fewer" % names(slow), [
-        "Share of the flags raised in the month (UTC) that a paid moderator first acted on within 24 hours of the flag "
-        "being raised, by the flag service standard. Flags the platform closed because the post was deleted are left "
-        "out. First action from the decision-review log where a decision was reviewed, otherwise the moderator tool."],
-        "D")
-    _head(w3, 4, ["Site", "July 2026", "August 2026", "September 2026"], [24, 12, 12, 14])
-    for k, s in enumerate(K.SITES):
-        w3.cell(row=5 + k, column=1, value=NAME[s])
-        for j, m in enumerate((7, 8, 9)):
-            c = w3.cell(row=5 + k, column=2 + j, value=K.round_half_up(X.ask_a[(s, m)], 1))
-            c.number_format = '0.0"%"'
-
-    w4 = wb.create_sheet("Hours worked")
-    grew = [s for s in K.SITES if X.ask_b[(s, 3)] > 1.3 * X.ask_b[(s, 2)]]
-    _title(w4, "Hours worked by each site's paid moderators, 2026: %s rose in the third quarter, when six moderators "
-               "moved to them" % names(grew), [
-        "Approved WFM shift lines (a corrected week's superseded lines left out). Each shift to the site the moderator "
-        "worked for on that shift, from the HR assignment history, and to the quarter in which it started, on Toronto "
-        "time."], "D")
-    _head(w4, 4, ["Site", "Q1 2026", "Q2 2026", "Q3 2026"], [24, 12, 12, 12])
-    for k, s in enumerate(K.SITES):
-        w4.cell(row=5 + k, column=1, value=NAME[s])
-        for j, q in enumerate((1, 2, 3)):
-            c = w4.cell(row=5 + k, column=2 + j, value=int(K.round_half_up(X.ask_b[(s, q)])))
-            c.number_format = "#,##0"
-
-    w5 = wb.create_sheet("Questions vs 2022")
-    order = sorted(K.SITES, key=lambda s: X.ask_c[s])
-    assert all(35 < X.ask_c[s] < 45 for s in order[:2]) and all(70 < X.ask_c[s] < 80 for s in order[-2:])
-    _title(w5, "Questions asked January to September 2026 as a percentage of the same months of 2022: %s kept about two "
-               "fifths, %s about three quarters" % (names(order[:2]), names(order[-2:])), [
-        "Each question once, in the month it was first asked (UTC), on the site it is on today, as the posts warehouse "
-        "counts. 2026 from the warehouse. 2022 from the old review system's workbook, which counted a question moved "
-        "between sites at both sites: each move in the migration log puts the question on the site it moved to, in the "
-        "month it was asked. Graphics & Shaders questions are in Game Development."], "B")
-    _head(w5, 4, ["Site", "January to September 2026 as % of 2022"], [24, 20], 30)
-    for k, s in enumerate(K.SITES):
-        w5.cell(row=5 + k, column=1, value=NAME[s])
-        c = w5.cell(row=5 + k, column=2, value=K.round_half_up(X.ask_c[s], 1))
-        c.number_format = '0.0"%"'
-
-    w6 = wb.create_sheet("Monthly hours")
-    _title(w6, "Paid review hours by month and site, January 2024 to December 2027 (the deck's chart)", [
-        "Paid review hours as the operations handbook defines them: each moderator flag a paid moderator handled and each "
-        "community item routed to the team, at the handle-time standard in force for its year (close votes 5.0 minutes "
-        "to December 2026, 2.0 from January 2027), in the month the flag was raised or the item entered the inbox, UTC. "
-        "Actual to September 2026; forecast from October 2026 on the question plan and its outlook."], "M")
-    _head(w6, 4, ["Month", "Basis"] + [NAME[s] for s in K.SITES] + ["Network", "2027 envelope"],
-          [10, 9] + [11] * 9 + [10, 10], 45)
-    for i, (y, m) in enumerate(MONTHS_ALL):
-        row = 5 + i
-        w6.cell(row=row, column=1, value="%s %d" % (K.MON3[m], y))
-        w6.cell(row=row, column=2, value="Actual" if (y, m) <= (2026, 9) else "Forecast")
-        tot = 0
-        for j, s in enumerate(K.SITES):
-            v = int(K.round_half_up(X.monthly[s][i]))
-            tot += X.monthly[s][i]
-            w6.cell(row=row, column=3 + j, value=v).number_format = "#,##0"
-        w6.cell(row=row, column=12, value=int(K.round_half_up(tot))).number_format = "#,##0"
-        w6.cell(row=row, column=13, value=int(K.round_half_up(ENV_MONTH))).number_format = "#,##0"
-    row = 5 + len(MONTHS_ALL) + 1
-    for y in ACTUAL_YEARS:
-        idx = [i for i, (yy, m) in enumerate(C.HIST_MONTHS) if yy == y]
-        a = w6.cell(row=row, column=1, value="Actual, %s" % YEAR_LABEL[y])
-        a.font = Font(bold=True)
-        for j, s in enumerate(K.SITES):
-            c = w6.cell(row=row, column=3 + j, value=int(K.round_half_up(X.hist_hours[s][idx].sum())))
-            c.number_format = "#,##0"
-        c = w6.cell(row=row, column=12, value=int(K.round_half_up(X.actual_year[y])))
-        c.number_format = "#,##0"
-        c.font = Font(bold=True)
-        row += 1
-    w6.freeze_panes = "C5"
-
-    w7 = wb.create_sheet("Notes")
-    w7.column_dimensions["A"].width = 24
-    w7.column_dimensions["B"].width = 112
-    notes = [
-        ("Need", "The charter's definition (section 4): each site's moderator flags a paid moderator handles and its "
-                 "community review items that reach the paid team in 2027, each at the 2027 handle-time standard, in "
-                 "FTE of 1,600 hours, each site to the nearest whole FTE. The request is the sum of the nine site needs."),
-        ("How items reach the team", "Every community item goes first to the site's volunteer reviewers and reaches "
-                                     "the paid team when no volunteer has reviewed it 72 hours after it entered the "
-                                     "inbox (charter, section 3). So a site's routed items are what its inbox brings "
-                                     "beyond what its reviewers can review, not a fixed share of its inbox."),
-        ("Questions", "The 2027 plan by site and month (question_plan_2027.xlsx, Plan 2027). October to December 2026 "
-                      "from the plan's Outlook sheet, used only for the chart."),
-        ("Inbox items and flags", "Each site's review inbox items by type and its handled flags per question asked, "
-                                  "January 2024 to September 2026 (the inbox export's 8 October pull, the moderator "
-                                  "tool's daily summary and the posts warehouse), times its planned questions."),
-        ("Reviewer pace", "About %d reviews a month per active reviewer: volunteer reviews over active reviewers in "
-                          "the %d site-months, 2021 to September 2026, in which more than %d per cent of the items "
-                          "entering the inbox reached the paid team (the old review system's workbook to 2023; the "
-                          "inbox export and the reviewer roster from 2024). When the inbox runs dry, reviewers review "
-                          "only what arrives, so those months show the work, not the pace." % (
-                              K.round_half_up(D.pace), D.n_sat, SAT_CUT)),
-        ("Reviewer pools", "Review access has been by invitation only since 1 September 2026 and nobody was invited "
-                           "in September, so the 2027 pool is the September 2026 pool, shrinking. Reviewers stop at very "
-                           "different rates by tenure: about %d per cent a month in their first year, under one per cent "
-                           "from their fourth (the stop-rate table on the Reviewer pools sheet, every reviewer counted "
-                           "from the month the roster first shows them active, so those granted before 2024 enter at "
-                           "their tenure then). Each reviewer is carried on the rate for their own tenure month by month. "
-                           "The pool's overall lapse rate of the last two years, about %d per cent a month, was the rate "
-                           "of a pool still taking in newcomers; carried into a closed pool it would overstate 2027's "
-                           "losses." % (K.round_half_up(100 * X.bands[0][1]), K.round_half_up(100 * X.exit_net))),
-        ("Items reaching the team", "Each month, the inbox items beyond the pool's capacity. Where a pool has room to "
-                                    "spare, the %.1f per cent of items no volunteer picks up (the routed share in "
-                                    "site-months with fewer than one item in 60 routed), as now on %s." % (
-                                        100 * D.floor, names(X.covered))),
-        ("Pricing", "2027 standards: flag 9.0 minutes, close vote 2.0, first post 4.0, low quality 3.5, suggested edit "
-                    "2.0, each routed item at its site's mix of inbox items. The chart's history and its October to "
-                    "December 2026 months at the standards in force to December 2026 (close vote 5.0)."),
-        ("Where cover runs out", "%s have sent the paid team only the items no volunteer picks up since January 2024; at the "
-                                 "pace and the pools above, they fall short of the inbox from %s %d and in most "
-                                 "months of 2027. %s are short already. %s stay covered through 2027." % (
-                                     names(X.newly), K.MONTH_NAMES[X.newly_from[1]], X.newly_from[0],
-                                     names(X.already), names(X.covered))),
-        ("Flag response", "The flag service standard's measure: the share of a site's flags raised in the month, on UTC, "
-                          "that a paid moderator first acted on within 24 hours, flags the platform closed because the "
-                          "post was deleted left out of both counts. The flag "
-                          "export's handled time is when the flag was last marked handled, which a decision review "
-                          "moves; the decision-review log keeps the first action. Flags raised on 15 August are in "
-                          "both parts of the export and are counted once."),
-        ("Hours worked", "Approved WFM lines only. The WFM export shows each moderator's current site on every line; "
-                         "six moderators changed site in July and August 2026, so each shift goes to the site the HR "
-                         "assignment history has for its start day. Infrastructure & DevOps appears in WFM as Ops & "
-                         "Cloud."),
-        ("Questions vs 2022", "The old statistics job counted a question on every site it was posted to, so a moved "
-                              "question counted on its first site in the month it was asked and again on its new site "
-                              "in the month it moved (question count standard). Comparisons are on the warehouse's basis: "
-                              "the migration log puts each moved question on the site it moved to, in the month it was "
-                              "asked, once."),
-        ("Paid review hours", "The deck's chart, as the operations handbook defines them: each moderator flag a paid "
-                              "moderator handled and each community item routed to the team, at the standard in force "
-                              "for its year, in the month the flag was raised or the item entered the inbox (UTC); not "
-                              "the hours worked on the WFM lines."),
+    ws3 = wb.create_sheet("Inflow model")
+    ws3["A1"] = "Infiltration runs with the sewer length below the water table, which the meter years kept short"
+    ws3["A1"].font = title
+    header(ws3, 3, ["Quantity", "Value", "Unit"], [64, 12, 26])
+    M = G["model"]
+    items = [
+        ("Infiltration for each km of PS03 sewer below the water table", f["g"], "L/s per km"),
+        ("Fast response to rain (triangle, %g h to peak, %d h base)" % M["sf"], f["a"], "m3 per mm"),
+        ("Slow response, scaled by the km below the water table (%g h to peak, %d h base)" % M["ss"], f["b"], "m3 per mm per km"),
+        ("Sewer below the water table, median day, 2024 to October 2026", f["ls_meter_med"], "km"),
+        ("Sewer below the water table, median day, 2004 to 2023", f["ls_replay_med"], "km"),
+        ("Sewer below the water table, highest day (June 2025 and 2008 alike)", f["ls_max"], "km"),
+        ("Held out, June 2025 high-river weeks: mean error, this model", f["v_cond"], "L/s"),
+        ("Held out, June 2025 high-river weeks: mean error, one response per mm", f["v_single"], "L/s"),
+        ("Held out, 2026: mean error, this model", f["v_cond26"], "L/s"),
+        ("Held out, 2026: mean error, one response per mm", f["v_single26"], "L/s"),
     ]
-    _head(w7, 1, ["Item", "Note"])
-    for i, (k, v) in enumerate(notes, 2):
-        w7.cell(row=i, column=1, value=k).font = Font(bold=True)
-        c = w7.cell(row=i, column=2, value=v)
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-        w7.cell(row=i, column=1).alignment = Alignment(vertical="top")
-        w7.row_dimensions[i].height = 15 * (1 + len(v) // 108)
+    for i, (q, v, u) in enumerate(items, start=4):
+        ws3.cell(row=i, column=1, value=q)
+        ws3.cell(row=i, column=2, value=v)
+        ws3.cell(row=i, column=3, value=u)
+    ws3["A15"] = ("Fitted on the SCADA's good hours, 1 January 2024 to 31 October 2026, the hours at the weir crest set aside; the "
+                  "held-out checks refit each model without the weeks scored.")
+
+    ws4 = wb.create_sheet("Water use per dwelling")
+    ws4["A1"] = "Residential use per dwelling peaks each summer quarter at about 450 to 480 litres a day"
+    ws4["A1"].font = title
+    header(ws4, 3, ["Quarter", "Litres per dwelling per day"], [14, 26])
+    for i, (k, v) in enumerate(X["a"].items(), start=4):
+        ws4.cell(row=i, column=1, value=k)
+        ws4.cell(row=i, column=2, value=v)
+    ws4["A16"] = ("Water Metering and Billing Policy section 4; dwellings dated from their code compliance certificates, so a "
+                  "quarter counts only the dwellings that stood in it.")
+
+    ws5 = wb.create_sheet("Other stations 2024-2025")
+    ws5["A1"] = "PS02 and PS05 overflowed more than twice in both years; three emergency overflows a year across the network"
+    ws5["A1"].font = title
+    header(ws5, 3, ["Station", "Year", "Wet weather overflows", "Spill hours"], [10, 8, 22, 12])
+    r = 4
+    for s in AK.STATIONS_B:
+        for y in AK.YEARS_B:
+            ws5.cell(row=r, column=1, value=s)
+            ws5.cell(row=r, column=2, value=y)
+            ws5.cell(row=r, column=3, value=X["b"]["%s %d overflows" % (s, y)])
+            ws5.cell(row=r, column=4, value=X["b"]["%s %d spill hours" % (s, y)])
+            r += 1
+    r += 1
+    for y in AK.YEARS_B:
+        ws5.cell(row=r, column=1, value="Network emergency overflows %d" % y).font = bold
+        ws5.cell(row=r, column=3, value=X["b"]["network %d emergency overflows" % y])
+        r += 1
+    for w, cell in ((ws2, "A4"), (ws3, "A4"), (ws4, "A4"), (ws5, "A4")):
+        w.freeze_panes = cell
+    wn = wb.create_sheet("Notes")
+    notes = [
+        "Prepared by Three Waters, Network Operations, for the report to the Council meeting of 10 December 2026.",
+        "Overflows: wet weather overflows at the engineered overflow points as discharge permit AUTH-2024-0418 "
+        "condition 3 defines them; discharges less than 24 hours apart are one overflow.",
+        "Replay: condition 7, every hour of the KRC 1187 rainfall record from 1 January 2004 to 31 December 2023, each day "
+        "as it occurred, with the terrace bore's level for the day; averages are the twenty years' overflows over twenty.",
+        "Ngaio Road: 260 dwellings at the Code of Practice's 2.7 persons and 200 litres a person a day, through Table 5.2.",
+        "Station: 112.0 L/s with both pumps (drawdown test, 7 November 2023) and 350 m3 from the duty start to the weir "
+        "crest; the upgrade adds a 1,100 m3 tank below the crest.",
+        "Water use: Water Metering and Billing Policy section 4; meters supplying residential rating units only.",
+        "Other stations: the overflow monitors' own clock (NZST); emergency overflows are those that began during an "
+        "outage on the station's supply.",
+        "Figures are computed unrounded and rounded once for reporting.",
+    ]
+    wn.column_dimensions["A"].width = 120
+    for i, t in enumerate(notes, start=1):
+        wn.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
     wb.save(path)
-    PP.normalize_ooxml(path, AUTHOR, AUTHOR, CREATED, MODIFIED, excel=True)
+    PP.normalize_ooxml(path, "Network Operations", "Network Operations", "2026-11-05T01:12:00Z", "2026-11-12T04:36:00Z",
+                       excel=True, title="PS03 Ngaio Road connection assessment 2027")
 
 
-# ------------------------------------------------------------------------------------------------- the chart
-# categorical slots in fixed order (validated adjacent, light surface); the ninth band repeats slot 1 with a texture
-SLOTS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948", "#2a78d6"]
-INK, INK2, MUTED, GRID, AXIS = "#0b0b0b", "#52514e", "#898781", "#e1e0d9", "#c3c2b7"
-
-
+# ---------------------------------------------------------------------------------------------------- chart
 def chart_png(X):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    from matplotlib import font_manager
-    from matplotlib.patches import Patch
-    for f in ("/usr/share/fonts/truetype/crosextra/Carlito-Regular.ttf",
-              "/usr/share/fonts/truetype/crosextra/Carlito-Bold.ttf"):
-        font_manager.fontManager.addfont(f)
-    plt.rcParams["font.family"] = "Carlito"
-    plt.rcParams["hatch.linewidth"] = 1.1
-    plt.rcParams["svg.hashsalt"] = "task156"
-    n = len(MONTHS_ALL)
-    xs = np.arange(n)
-    ys = [X.monthly[s] for s in K.SITES]
-    fig = plt.figure(figsize=(12.4, 5.15), dpi=150)
-    ax = fig.add_axes([0.065, 0.13, 0.74, 0.83])
-    k0 = MONTHS_ALL.index((2026, 10))
-    ax.axvspan(k0 - 0.5, n - 0.5, color="#f2f1ec", zorder=0, lw=0)
-    polys = ax.stackplot(xs, ys, colors=SLOTS, edgecolor="white", linewidth=0.7, zorder=2)
-    polys[-1].set_hatch("////")
-    top = sum(ys)
-    ymax = 1000 * np.ceil(top.max() / 1000.0 + 1.0)
-    ax.axhline(ENV_MONTH, color=INK, lw=1.5, ls=(0, (5, 3)), zorder=4)
-    ax.text(0.3, ENV_MONTH + ymax * 0.012, "2027 envelope: %d FTE, %s hours a month" % (K.ENVELOPE_2027,
-            fmt(ENV_MONTH)), fontsize=10.5, color=INK, va="bottom", ha="left", zorder=5)
-    i27 = MONTHS_ALL.index((2027, 1))
-    yb = ymax * 0.905
-    ax.plot([i27 - 0.4, n - 0.6], [yb, yb], color=INK2, lw=1.0, zorder=5)
-    for xx in (i27 - 0.4, n - 0.6):
-        ax.plot([xx, xx], [yb, yb - ymax * 0.02], color=INK2, lw=1.0, zorder=5)
-    ax.text((i27 - 0.4 + n - 0.6) / 2, yb + ymax * 0.012, "2027: %d FTE of need" % X.request, ha="center",
-            va="bottom", fontsize=10.5, color=INK, fontweight="bold", zorder=6)
-    ax.text(k0 - 0.2, ymax * 0.975, "Actual", fontsize=10, color=INK2, ha="right", va="top")
-    ax.text(k0 + 0.2, ymax * 0.975, "Forecast", fontsize=10, color=INK2, ha="left", va="top")
-    ax.set_xlim(-0.5, n - 0.5)
-    ax.set_ylim(0, ymax)
-    ticks = [k for k, (y, m) in enumerate(MONTHS_ALL) if m in (1, 4, 7, 10)]
-    ax.set_xticks(ticks)
-    ax.set_xticklabels(["%s\n%d" % (K.MON3[m], y) if m == 1 else K.MON3[m] for (y, m) in
-                        [MONTHS_ALL[k] for k in ticks]], fontsize=9.5, color=INK2)
-    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, p: format(int(v), ",")))
-    ax.tick_params(axis="y", labelsize=9.5, colors=INK2, length=0)
-    ax.tick_params(axis="x", length=3, color=AXIS)
-    ax.set_ylabel("Paid review hours a month", fontsize=10.5, color=INK2)
-    ax.grid(axis="y", color=GRID, lw=0.7, zorder=1)
-    ax.set_axisbelow(True)
-    for sp in ("top", "right", "left"):
-        ax.spines[sp].set_visible(False)
-    ax.spines["bottom"].set_color(AXIS)
-    handles = []
-    for s, col in reversed(list(zip(K.SITES, SLOTS))):
-        h = Patch(facecolor=col, edgecolor="white", hatch="////" if s == K.SITES[-1] else None, label=NAME[s])
-        handles.append(h)
-    ax.legend(handles=handles, frameon=False, fontsize=10, loc="upper left", bbox_to_anchor=(1.01, 1.0),
-              title="Site (top band first)", title_fontsize=10, alignment="left", handlelength=1.6,
-              handleheight=1.1, labelspacing=0.55)
+    G = X["G"]
+    f = X["fig"]
+    yrs = np.arange(2004, 2024)
+    fig, ax = plt.subplots(figsize=(10.5, 5.2), dpi=110)
+    ax.bar(yrs - 0.2, G["existing"]["per_year"], width=0.4, color="#9aa6b2", label="PS03 as connected now")
+    ax.bar(yrs + 0.2, G["with_sub"]["per_year"], width=0.4, color="#1f4e79", label="With Ngaio Road (260 dwellings)")
+    ax.axhline(2, color="#c0392b", lw=1.6, ls="--")
+    ax.text(2018.55, 2.25, "Consent limit: 2 a year on average", color="#c0392b", fontsize=9)
+    ax.set_xticks(yrs)
+    ax.set_xticklabels([str(y) for y in yrs], rotation=45, fontsize=8.5)
+    ax.set_ylabel("Wet weather overflows at EO-03")
+    ax.set_title("PS03 replayed through 2004 to 2023: %.1f a year with Ngaio Road against a limit of 2" % f["with_sub_exact"],
+                 fontsize=11.5, loc="left")
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.legend(frameon=False, fontsize=9, loc="upper right")
+    fig.text(0.01, 0.01, "Consent AUTH-2024-0418 condition 7; inflow model fitted on the 2024 to 2026 SCADA record. Rauwhero "
+             "District Council, Network Operations.", fontsize=7.5, color="#555555")
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
     buf = io.BytesIO()
-    fig.savefig(buf, format="png", dpi=150, metadata={"Software": None})
+    fig.savefig(buf, format="png", metadata={"Software": None})
     plt.close(fig)
     return buf.getvalue()
 
 
-# ------------------------------------------------------------------------------------------------- the deck
-def write_pptx(path, X, png):
-    from pptx import Presentation
-    from pptx.dml.color import RGBColor
-    from pptx.enum.text import PP_ALIGN
-    from pptx.util import Inches, Pt
-
-    ink = RGBColor(0x1F, 0x23, 0x29)
-    grey = RGBColor(0x52, 0x51, 0x4E)
-    council = RGBColor(0x3B, 0x4A, 0x6B)
-    pale = RGBColor(0xEE, 0xF0, 0xF3)
-    white = RGBColor(0xFF, 0xFF, 0xFF)
-    prs = Presentation()
-    prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
-
-    def text(sl, x, y, w, h, paras, align=None):
-        tb = sl.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        for k, (t, size, bold, col) in enumerate(paras):
-            p = tf.paragraphs[0] if k == 0 else tf.add_paragraph()
-            p.text = t
-            p.font.size, p.font.bold = Pt(size), bold
-            p.font.color.rgb = col
-            p.font.name = "Calibri"
-            if align is not None:
-                p.alignment = align
-            if k:
-                p.space_before = Pt(8)
-        return tb
-
-    def footer(sl, n):
-        text(sl, 0.6, 7.02, 10.0, 0.3, [("Millrind moderation operations  |  2027 paid moderation pool request  |  "
-                                         "October 2026", 9.5, False, grey)])
-        text(sl, 11.9, 7.02, 0.8, 0.3, [(str(n), 9.5, False, grey)], align=PP_ALIGN.RIGHT)
-
-    # slide 1: the request
-    s1 = prs.slides.add_slide(prs.slide_layouts[6])
-    text(s1, 0.6, 0.4, 12.1, 1.3, [
-        ("Request %d paid moderator FTE for 2027" % X.request, 32, True, ink),
-        ("%d FTE above finance's 2027 envelope of %d FTE (%d FTE funded for 2026)" % (
-            X.gap, K.ENVELOPE_2027, K.POOL_2026), 18, False, grey)])
-    rows = len(K.SITES) + 2
-    shape = s1.shapes.add_table(rows, 2, Inches(0.6), Inches(1.95), Inches(4.6), Inches(0.37 * rows))
-    tbl = shape.table
-    tbl.first_row, tbl.horz_banding = True, False
-    tbl.columns[0].width, tbl.columns[1].width = Inches(3.3), Inches(1.3)
-    cells = [("Site", "2027 need (FTE)")] + [(NAME[s], str(X.need_round[s])) for s in K.SITES] + \
-            [("Request", str(X.request))]
-    for i, (a, b) in enumerate(cells):
-        for j, v in enumerate((a, b)):
-            c = tbl.cell(i, j)
-            c.text = v
-            c.fill.solid()
-            c.fill.fore_color.rgb = council if i == 0 else (pale if i == rows - 1 else white)
-            p = c.text_frame.paragraphs[0]
-            p.font.size = Pt(13)
-            p.font.name = "Calibri"
-            p.font.bold = i in (0, rows - 1)
-            p.font.color.rgb = white if i == 0 else ink
-            if j == 1:
-                p.alignment = PP_ALIGN.RIGHT
-    paras = [
-        ("Why the need rises", 17, True, ink),
-        ("Every community review item goes to the volunteer reviewers first and reaches the paid team only when no "
-         "volunteer has reviewed it in 72 hours. A reviewer clears about %d items a month when the inbox outruns "
-         "the pool." % K.round_half_up(X.D.pace), 14, False, ink),
-        ("Review access has been by invitation only since 1 September 2026, so the pools only shrink. The newest "
-         "reviewers leave fastest (about %d per cent a month in their first year, under one per cent from their "
-         "fourth): the %s reviewers active in September 2026 average about %s a month in 2027." % (
-             K.round_half_up(100 * X.bands[0][1]), fmt(sum(X.R_sep26.values())), fmt(X.pool_mean27, -2)), 14, False,
-         ink),
-        ("%s, which have sent the paid team almost nothing since January 2024, run short of reviewers from %s %d. %s "
-         "are short already; %s stay covered." % (names(X.newly), K.MONTH_NAMES[X.newly_from[1]], X.newly_from[0],
-                                                 names(X.already), names(X.covered)), 14, False, ink),
-        ("Priced at the 2027 standards (close votes at 2.0 minutes, down from 5.0), the nine sites need %d FTE." %
-         X.request, 14, False, ink),
-    ]
-    text(s1, 5.75, 1.9, 7.0, 4.6, paras)
-    text(s1, 0.6, 6.42, 12.1, 0.5, [(
-        "Need as the council charter defines it (section 4), on the 2027 question plan of 18 September 2026; one FTE "
-        "is 1,600 hours. Data through 30 September 2026, pulled 8 October 2026. Workings: %s." % XLSX,
-        10.5, False, grey)])
-    footer(s1, 1)
-
-    # slide 2: the chart
-    s2 = prs.slides.add_slide(prs.slide_layouts[6])
-    text(s2, 0.6, 0.3, 12.1, 1.2, [
-        ("2027 needs %d FTE of paid review hours against an envelope of %d" % (X.request, K.ENVELOPE_2027), 26, True,
-         ink),
-        ("Paid review hours a month by site, at the handle-time standards in force (close votes at 2.0 minutes from "
-         "January 2027, 5.0 before). The rise through 2027 is volunteer cover running out on more sites.", 14, False,
-         grey)])
-    s2.shapes.add_picture(io.BytesIO(png), Inches(0.55), Inches(1.5), width=Inches(12.2))
-    text(s2, 0.6, 6.6, 12.1, 0.4, [(
-        "Moderator flags handled and community items reaching the paid team. Actual to September 2026; forecast from "
-        "October 2026 on the question plan and each site's reviewer pool. Monthly figures: %s, Monthly hours." % XLSX,
-        10.5, False, grey)])
-    footer(s2, 2)
-    buf = io.BytesIO()
-    prs.save(buf)
-    with open(path, "wb") as fh:
-        fh.write(buf.getvalue())
-    PP.normalize_ooxml(path, AUTHOR, AUTHOR, CREATED, MODIFIED, title="2027 paid moderation pool request")
+# ---------------------------------------------------------------------------------------------------- report
+def write_docx(path, X, png):
+    import docx
+    from docx.shared import Cm, Pt
+    f = X["fig"]
+    d = docx.Document()
+    st = d.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    d.add_heading("Ngaio Road subdivision: connection to the PS03 Riverbank Road wastewater catchment", level=1)
+    t = d.add_table(rows=0, cols=2)
+    for k, v in (("To", "Council, meeting of 10 December 2026"), ("From", "Three Waters, Network Operations"),
+                 ("Date", "13 November 2026"), ("File", "RM26-0187; AUTH-2024-0418; 3W-2029-04")):
+        row = t.add_row().cells
+        row[0].text = k
+        row[1].text = v
+    sec = d.sections[0]
+    sec.footer.paragraphs[0].text = "Rauwhero District Council | Report to Council | Ngaio Road wastewater connection"
+    d.add_heading("Recommendation", level=2)
+    d.add_paragraph("That the Council defer the connection of the Ngaio Road subdivision (RM26-0187) to the public "
+                    "wastewater network until the PS03 storage upgrade (project 3W-2029-04) is commissioned, and decline "
+                    "the applicant's request to connect stage 1 from March 2027.")
+    d.add_heading("Why", level=2)
+    d.add_paragraph(
+        "Condition 8 of the network discharge permit AUTH-2024-0418 lets the Council accept a connection of 50 or more "
+        "dwellings only while the overflow frequency at the receiving station, assessed under condition 7, stays within "
+        "two wet weather overflows a year. Run through every hour of the 2004 to 2023 record, each day as it occurred, "
+        "PS03 overflows %d times in the twenty years as connected now (about %d a year) and %d times with Ngaio Road at "
+        "full development (about %d a year). With the upgrade's 1,100 m3 of storage the station overflows %d times in "
+        "the twenty years (about %d a year), inside the limit." % (f["total_ex"], f["existing"], f["total_sub"],
+                                                                  f["with_sub"], f["total_up"], f["upgrade"]))
+    d.add_paragraph(
+        "The station's own record since 2024 (two overflows, both in 2026) understates this. Most of what reaches PS03 in a "
+        "wet winter is groundwater entering the terrace sewers, and it rises by about %.1f L/s for every kilometre of "
+        "sewer below the water table. In 2024 to 2026 the water table stood low: on the median day only %.1f km of sewer "
+        "lay below it, against %.1f km over 2004 to 2023. The June 2025 high river put about %d km under water, as the "
+        "wettest weeks of 2008 and 2017 did, which is how the effect can be measured on the meter." % (
+            f["g"], f["ls_meter_med"], f["ls_replay_med"], f["ls_max"]))
+    d.add_paragraph(
+        "A model with one response per millimetre of rain and the meter's own dry weather flow reproduces the two 2026 "
+        "overflows and gives about %d a year with the subdivision, but it misses the June 2025 high-river weeks by %d L/s "
+        "on average when they are held out of its fit, where the model above is within %.1f L/s." % (
+            f["naive"], f["v_single"], abs(f["v_cond"])))
+    d.add_picture(io.BytesIO(png), width=Cm(16.5))
+    d.add_paragraph("Overflows are counted as condition 3 of the permit counts them: discharges less than 24 hours "
+                    "apart are one overflow. The station's figures are 112.0 L/s with both pumps and 350 m3 of storage "
+                    "below the weir (data sheet revision 4).")
+    d.add_heading("Supporting figures", level=2)
+    d.add_paragraph("Residential water use in the PS03 catchment ran between %d and %d litres per dwelling per day in "
+                    "2024 to 2026 (by quarter, in the assessment workbook), against the Code of Practice's design flow of "
+                    "540 litres a dwelling." % (min(X["a"].values()), max(X["a"].values())))
+    em = [X["b"]["network %d emergency overflows" % y] for y in AK.YEARS_B]
+    d.add_paragraph("Across the network's other stations, PS02 and PS05 recorded more than two wet weather overflows in "
+                    "both 2024 and 2025; the network had %d emergency overflows in 2024 and %d in 2025 (power failures). "
+                    "Station by station figures are in the workbook." % (em[0], em[1]))
+    d.add_heading("Next steps", level=2)
+    d.add_paragraph("Advise the applicant of the deferral and the upgrade programme; bring the upgrade's concept design "
+                    "to the Infrastructure Committee; reassess the connection under condition 8 when the tank is "
+                    "commissioned.")
+    d.save(path)
+    PP.normalize_docx(path, "Network Operations", "Network Operations", "2026-11-09T20:10:00Z", "2026-11-13T02:55:00Z", 5,
+                      188, seed="report", title="Ngaio Road connection report", company="Rauwhero District Council")
 
 
-# ------------------------------------------------------------------------------------------------- the write-up
-def site_list(vals):
-    return ", ".join("%s %d" % (NAME[s], vals[s]) for s in K.SITES[:-1]) + " and %s %d" % (
-        NAME[K.SITES[-1]], vals[K.SITES[-1]])
+# ---------------------------------------------------------------------------------------------------- figures and write-up
+def figures(X):
+    f = X["fig"]
+    return dict(
+        call=dict(with_sub=f["with_sub"], existing=f["existing"], upgrade=f["upgrade"], limit=2, naive=f["naive"],
+                  meter_logged=f["meter_logged"], with_sub_exact="%.2f" % f["with_sub_exact"]),
+        components=dict(g=f["g"], ls_meter_med=f["ls_meter_med"], ls_replay_med=f["ls_replay_med"], ls_max=f["ls_max"],
+                        v_cond=f["v_cond"], v_single=f["v_single"]),
+        steps=dict(a=f["a"], b=f["b"], qp="112.0", store=350, dwellings=260, occ="2.7", lpd=200, upgrade_m3="1,100",
+                   total_ex=f["total_ex"], total_sub=f["total_sub"], total_up=f["total_up"], hours72=72,
+                   v_cond26=f["v_cond26"], v_single26=f["v_single26"], dry_years="24", wet_hours=24, replay_years=20,
+                   table="5.2"),
+        answers=dict(ask_a=X["a"], ask_b=X["b"]))
 
 
 def submission(X):
-    D = X.D
-    pace = int(K.round_half_up(D.pace))
-    first = int(K.round_half_up(100 * X.bands[0][1]))
-    s = []
-    s += ["## Tags", "",
-          "**Domain:** Product Analytics (retention, cohort and lifetime value modeling: a Q&A platform's volunteer "
-          "reviewers as a retained-user cohort that has stopped taking in members, carried forward on survival by "
-          "tenure, times the activity a retained reviewer delivers, seen only where work outran the pool).",
-          "**Analytical objective:** Forecasting & Predictive Modeling.", ""]
-    s += ["## 1. Final Recommendation", "",
-          "**The council should request %d paid moderator FTE for 2027, %d above finance's %d-FTE envelope: %s.**" % (
-              X.request, X.gap, K.ENVELOPE_2027, site_list(X.need_round)),
-          "Items reach the paid team only when the volunteers fall short, and since review access became "
-          "invitation-only on 1 September 2026 each site's pool only shrinks, fastest among its newest reviewers, so "
-          "the network's %s active reviewers of September 2026 average about %s a month in 2027 and %s fall short of "
-          "their inbox after routing almost nothing since January 2024. Not the pool's overall lapse rate of the last "
-          "two years carried forward, which was the rate of a pool still taking in newcomers and overstates how fast a "
-          "closed pool loses reviewers; not the new reviewers of the last year carried on, which the invitation-only "
-          "rule ended; not a tenure curve that counts every reviewer from the day access was granted, which reads the "
-          "roster's survivors as whole cohorts; and not the last twelve months' paid hours per question carried onto "
-          "the plan, which prices only what those sites routed while their pools covered the inbox." % (
-              fmt(sum(X.R_sep26.values())), fmt(X.pool_mean27, -2), names(X.newly)), ""]
-    s += ["## 2. Critical Components", "",
-          "1. A volunteer reviewer completes about **%d** reviews a month when the inbox outruns the site's pool, "
-          "measured in the site-months in which more than %d per cent of entering items reached the paid team." % (
-              pace, SAT_CUT),
-          "2. The network's **%s** reviewers active in September 2026 average about **%s** active reviewers a month "
-          "in 2027, each carried on the stop rate of their own tenure with no new reviewers." % (
-              fmt(sum(X.R_sep26.values())), fmt(X.pool_mean27, -2)),
-          "3. %s fall short of their inbox in 2027, joining %s; %s stay covered." % (
-              names(X.newly), names(X.already), names(X.covered)), ""]
-    s += ["## 3. Step-by-Step Solution", "",
-          "1. Stacked review_queues_monthly_2021-2023.xlsx (old site names through site_register.csv) with "
-          "review_inbox_daily_2024-01-01_2026-09-30.csv and the active reviewers in reviewer_roster_2026-10-08.csv: "
-          "over the site-months in which more than %d per cent of entering items were routed to moderation, volunteer "
-          "reviews over active reviewers give about %d reviews a month." % (SAT_CUT, pace),
-          "2. In reviewer_roster_2026-10-08.csv, counted each reviewer from the first month the platform shows them "
-          "active (January 2024 for those granted earlier, at their tenure then) to their last review, and divided "
-          "stops by reviewer-months at each month of tenure since access was granted, January 2024 to August 2026: "
-          "about %d per cent a month in the first year, under one per cent from the fourth." % first,
-          "3. Carried each of the %s reviewers active in September 2026 on that rate from their own tenure, with no new "
-          "reviewers since access became invitation-only on 1 September 2026 (moderation_operations_handbook_2026.pdf) "
-          "and none invited in September: about %s active a month on average in 2027." % (
-              fmt(sum(X.R_sep26.values())), fmt(X.pool_mean27, -2)),
-          "4. At about %d reviews a reviewer a month against the inbox of each month of 2027 (the questions in "
-          "question_plan_2027.xlsx times the site's inbox items per question since January 2024), routed the items "
-          "beyond that capacity to the paid team (where a pool has room, the %.1f per cent no volunteer picks up), "
-          "priced them and each site's handled flags per question since January 2024 "
-          "(modtool_flag_summary_daily_2024-01-01_2026-09-30.csv) at handle_time_standards_2027.pdf, and divided by the "
-          "charter's 1,600 hours, each site to the nearest whole FTE: %d FTE, %d above the %d-FTE envelope in "
-          "finance_envelope_2027_paid_moderation.pdf." % (pace, 100 * D.floor, X.request, X.gap, K.ENVELOPE_2027),
-          "5. For the 24-hour flag response, counted each flag once across the two parts of the moderator tool's "
-          "export, left out the post-deleted closures and took the first action from "
-          "flag_decision_reviews_2026-07_to_2026-09.csv where a decision was reviewed (flag_service_standard.pdf): the "
-          "shares in table 4 of the deliverable answers.",
-          "6. For the hours worked, kept the approved lines of wfm_shift_lines_2026-01-01_2026-09-30.csv and put each "
-          "shift on the site moderator_site_assignments.csv gives for its start day, in the quarter it started on "
-          "Toronto time (moderation_operations_handbook_2026.pdf): the totals in table 5.",
-          "7. For the questions, restated January to September 2022 on the warehouse's basis "
-          "(question_count_standard_2024.pdf) from review_queues_monthly_2021-2023.xlsx, its March 2023 rerun "
-          "replacing May to August, and question_moves_2021-2023.csv, with Graphics & Shaders in Game Development: the "
-          "percentages in table 6.", ""]
-    s += ["## 4. Deliverable Answers", "", "### %s" % XLSX, "",
-          "1. 2027 need by site, whole FTE:"]
-    for site in K.SITES:
-        s.append("   - %s: %d" % (NAME[site], X.need_round[site]))
-    s += ["2. Council request for 2027: %d FTE." % X.request,
-          "3. Above finance's %d-FTE envelope by %d FTE." % (K.ENVELOPE_2027, X.gap),
-          "4. 24-hour flag response by site and month:"]
-    for site in K.SITES:
-        s.append("   - %s: July 2026 %s%%, August 2026 %s%%, September 2026 %s%%" % (
-            NAME[site], pct(X.ask_a[(site, 7)]), pct(X.ask_a[(site, 8)]), pct(X.ask_a[(site, 9)])))
-    s.append("5. Hours each site's paid moderators worked:")
-    for site in K.SITES:
-        s.append("   - %s: Q1 2026 %s hours, Q2 2026 %s hours, Q3 2026 %s hours" % (
-            NAME[site], fmt(X.ask_b[(site, 1)]), fmt(X.ask_b[(site, 2)]), fmt(X.ask_b[(site, 3)])))
-    s.append("6. January to September 2026 questions as a percentage of January to September 2022:")
-    for site in K.SITES:
-        s.append("   - %s: %s%%" % (NAME[site], pct(X.ask_c[site])))
-    s += ["", "### %s" % PPTX, "",
-          "7. Slide 1 states the request: %d paid moderator FTE for 2027, %d above the %d-FTE envelope, with each "
-          "site's need." % (X.request, X.gap, K.ENVELOPE_2027),
-          "8. Slide 2 charts the network's monthly paid review hours, as the operations handbook defines them, from "
-          "January 2024 to December 2027, one stacked band per site, the forecast from October 2026 shaded, with "
-          "finance's envelope drawn across at %s hours a month (%d FTE); the plotted months are on the workbook's "
-          "Monthly hours sheet." % (fmt(ENV_MONTH), K.ENVELOPE_2027), ""]
-    return "\n".join(s)
+    f = X["fig"]
+    a = X["a"]
+    b = X["b"]
+    L = []
+    L += ["## Tags", "", "**Domain:** Physical and environmental sciences (hydrology and flood frequency).",
+          "**Analytical objective:** Forecasting and predictive modelling.", ""]
+    L += ["## 1. Final Recommendation", "",
+          "**Hold the Ngaio Road connection until the PS03 storage upgrade is commissioned: replayed through 2004 to 2023 "
+          "each day as it occurred, PS03 overflows about %d times a year with the subdivision, above the consent's limit "
+          "of 2.**" % f["with_sub"],
+          "Not the station's own record of %d overflows since 2024, nor one response per millimetre fitted on the meter "
+          "(about %d a year): both carry the meter's low water table into years when it stood far higher. After the "
+          "upgrade the station overflows about %d a year with the subdivision." % (f["meter_logged"], f["naive"],
+                                                                                  f["upgrade"]), ""]
+    L += ["## 2. Critical Components", "",
+          "1. PS03's dry weather infiltration rises by **%.1f L/s** for each kilometre of its sewer below the water table." % f["g"],
+          "2. The median day had **%.1f km** of sewer below the water table in 2024 to 2026 against **%.1f km** in 2004 to "
+          "2023, with about **%d km** at the wettest in both." % (f["ls_meter_med"], f["ls_replay_med"], f["ls_max"]),
+          "3. The station overflows about **%d** times a year as connected now, **%d** with Ngaio Road and **%d** with "
+          "Ngaio Road after the upgrade." % (f["existing"], f["with_sub"], f["upgrade"]),
+          "4. Held out of each fit, the June 2025 high-river weeks are missed by **%d L/s** on average by one response "
+          "per millimetre and by **%.1f L/s** by the conditioned model." % (f["v_single"], f["v_cond"]), ""]
+    L += ["## 3. Step-by-Step Solution", "",
+          "1. Averaged the SCADA export's good 15-minute inflow into UTC hours, setting aside hours with the wet well at the "
+          "weir crest, beside the climate station's hourly rain (archive NZST hour ending, 2026 provisional 15-minute UTC).",
+          "2. Turned bore 72_1043's depth below its measuring point into the water level and, against the asset "
+          "register's PS03 in-service mains, into each day's kilometres of sewer below it: medians %.1f km (2024 to 2026) "
+          "and %.1f km (2004 to 2023)." % (f["ls_meter_med"], f["ls_replay_med"]),
+          "3. Fitted the dry hours (no rain in the previous 72 hours) as a weekly domestic pattern plus %.1f L/s per km below "
+          "the water table, then the rest as a fast rain response (%d m3 per mm) and a slow one scaled by those kilometres "
+          "(%.1f m3 per mm per km)." % (f["g"], f["a"], f["b"]),
+          "4. Refitted both models without the June 2025 high-river weeks and scored them there and on 2026: mean errors "
+          "%.1f and %.1f L/s for the conditioned model, %d and %.1f L/s for one response per millimetre." % (
+              f["v_cond"], f["v_cond26"], f["v_single"], f["v_single26"]),
+          "5. Ran the model through every hour of 2004 to 2023, each day with its own water table, at the data sheet's 112.0 "
+          "L/s and 350 m3, counting overflows under consent condition 3: %d in 20 years as connected now, %d with the "
+          "subdivision's 260 dwellings at the code of practice's 2.7 persons, 200 litres and Table 5.2, %d after adding "
+          "the upgrade's 1,100 m3." % (f["total_ex"], f["total_sub"], f["total_up"]),
+          "6. Water use per dwelling per the billing policy's section 4, each rating unit's dwellings dated by the building "
+          "consents' code compliance certificates rather than carried back from the 31 October 2026 rating snapshot.",
+          "7. Other stations from the monitors' own NZST message times, each serial placed by the monitor installation "
+          "history, an overflow emergency where it began inside an outage at any ICP the council's electricity site list "
+          "gives the station's address.",
+          "8. With the subdivision the replay averages %.2f overflows a year against condition 6's limit of 2, so condition "
+          "8 bars the connection until the upgrade, which brings it to about %d." % (f["with_sub_exact"], f["upgrade"]), ""]
+    L += ["## 4. Deliverable Answers", "", "### ps03_ngaio_road_connection_2027.xlsx", "",
+          "1. Average wet weather overflows a year over the consent's 2004 to 2023 replay, whole numbers:",
+          "   - Without the subdivision: %d" % f["existing"],
+          "   - With the subdivision: %d" % f["with_sub"],
+          "   - With the subdivision after the upgrade: %d" % f["upgrade"],
+          "2. Residential water use per dwelling per day, litres:"]
+    for k, v in a.items():
+        L.append("   - %s: %d" % (k, v))
+    L.append("3. Other stations' wet weather overflows and spill hours (whole hours):")
+    for s in AK.STATIONS_B:
+        for y in AK.YEARS_B:
+            L.append("   - %s %d: %d overflows, %d spill hours" % (s, y, b["%s %d overflows" % (s, y)],
+                                                                    b["%s %d spill hours" % (s, y)]))
+    L.append("4. Network emergency overflows: 2024: %d; 2025: %d" % (b["network 2024 emergency overflows"],
+                                                                    b["network 2025 emergency overflows"]))
+    L += ["", "### council_report_ngaio_road_2027.docx", "",
+          "1. Recommends deferring the Ngaio Road connection until the PS03 storage upgrade is commissioned, with the three "
+          "replay figures (about %d, %d and %d a year) and the chart." % (f["existing"], f["with_sub"], f["upgrade"]),
+          "", "### replay_overflows_2004-2023.png", "",
+          "1. Bars for each year 2004 to 2023, PS03 as connected now and with Ngaio Road, the consent limit of 2 drawn "
+          "across, titled with the %.1f a year the subdivision brings." % f["with_sub_exact"], ""]
+    return "\n".join(L)
 
 
-def figures(X):
-    D = X.D
-    return {
-        "call": {"request_fte": X.request, "envelope_fte": K.ENVELOPE_2027, "above_envelope_fte": X.gap,
-                 "need_fte": {NAME[s]: X.need_round[s] for s in K.SITES}},
-        "components": {"reviews_a_month": int(K.round_half_up(D.pace)), "saturation_cut_pct": SAT_CUT,
-                       "reviewers_sep_2026": fmt(sum(X.R_sep26.values())),
-                       "active_a_month_2027": fmt(X.pool_mean27, -2),
-                       "newly_short": [NAME[s] for s in X.newly], "already_short": [NAME[s] for s in X.already],
-                       "covered": [NAME[s] for s in X.covered]},
-        "steps": {"never_picked_up_pct": "%.1f" % (100 * D.floor), "fte_hours": int(K.FTE_HOURS),
-                  "first_year_stop_pct_a_month": int(K.round_half_up(100 * X.bands[0][1])),
-                  "newly_short_from": "%s %d" % (K.MONTH_NAMES[X.newly_from[1]], X.newly_from[0])},
-        "answers": {
-            "need_fte": {NAME[s]: X.need_round[s] for s in K.SITES},
-            "ask_a_pct": {"%s %s 2026" % (NAME[s], K.MONTH_NAMES[m]): pct(X.ask_a[(s, m)])
-                          for s in K.SITES for m in (7, 8, 9)},
-            "ask_b_hours": {"%s Q%d 2026" % (NAME[s], q): fmt(X.ask_b[(s, q)]) for s in K.SITES for q in (1, 2, 3)},
-            "ask_c_pct": {NAME[s]: pct(X.ask_c[s]) for s in K.SITES},
-            "chart_envelope_hours_a_month": fmt(ENV_MONTH),
-        },
-    }
-
-
-def main(target, golden, fig_path, sub_path, B=None):
+def main(target, golden, fig_path, sub_path):
     os.makedirs(golden, exist_ok=True)
     X = compute(target)
-    write_xlsx(os.path.join(golden, XLSX), X)
+    write_xlsx(os.path.join(golden, F_XLSX), X)
     png = chart_png(X)
-    write_pptx(os.path.join(golden, PPTX), X, png)
-    with open(sub_path, "w", encoding="utf-8") as fh:
-        fh.write(submission(X))
-    with open(fig_path, "w", encoding="utf-8") as fh:
-        json.dump(figures(X), fh, indent=2)
-        fh.write("\n")
+    open(os.path.join(golden, F_PNG), "wb").write(png)
+    write_docx(os.path.join(golden, F_DOCX), X, png)
+    json.dump(figures(X), open(fig_path, "w"), indent=2)
+    open(sub_path, "w").write(submission(X))
     return X

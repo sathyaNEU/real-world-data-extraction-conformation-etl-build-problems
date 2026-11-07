@@ -1,171 +1,238 @@
-"""An independent reader of the shipped bundle: it knows figures.json and target/ and nothing else."""
-import datetime as dt
+"""The independent verifier: reads only target/ (and the goldens it checks), on its own code path (pandas and an
+Aalen-Johansen estimate of each scenario's SAR and no-SAR incidence by alert age, where the generator reads a
+look-up of older alerts), and recomputes the call, both asks and the figures every golden carries.
+
+    python3 task191/generator/verify.py
+"""
+import email
 import json
 import os
+import re
+import subprocess
+import sys
+import zipfile
 
+import numpy as np
 import pandas as pd
 
-K = [0]
-STANDARD_HOURS = 4
-OUTSIDE = ("access network", "transit provider", "customer premises", "power or facility")
-RANK = 1296
-WINDOWS = ("19:00", "20:00", "21:00")
-BAND = (19, 22)
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+T = os.path.join(TASK, "target")
+G = os.path.join(TASK, "golden")
+FAILS = []
 
 
-def ok(cond, msg):
-    K[0] += 1
-    if not cond:
-        raise AssertionError("verify: " + msg)
+def check(label, ok, detail=""):
+    print(("PASS  " if ok else "FAIL  ") + label + ("" if ok else "   " + str(detail)))
+    if not ok:
+        FAILS.append(label)
 
 
-def run(target, figures):
-    K[0] = 0
-    fig = json.load(open(figures, encoding="utf-8"))
-    rd = lambda n: pd.read_csv(os.path.join(target, n), dtype=str, keep_default_na=False)
-    rollup = rd("evening_quality_daily.csv")
-    panel = rd("panel_throughput_minutes.csv")
-    register = rd("interconnect_register.csv")
-    maint = rd("maintenance_windows.csv")
-    edge = rd("edge_traffic_5min.csv")
-    commit = rd("peering_commitments.csv")
-    amend = rd("commitment_amendments.csv")
-    sess = rd("client_sdk_sessions.csv")
-    reb = rd("rebuffer_events_daily.csv")
-    inc = rd("incident_log.csv")
-    res = rd("incident_restoration_extract.csv")
-    man = rd("telemetry_handover_inventory.csv")
-    rel = json.load(open(os.path.join(target, "sdk_release_log.json"), encoding="utf-8"))
+def eastern(ts):
+    """UTC timestamps to US Eastern wall-clock time (pandas' own zone rules, not the generator's)."""
+    return ts.dt.tz_localize("UTC").dt.tz_convert("America/New_York").dt.tz_localize(None)
 
-    ok(len(panel) >= 25000, "the panel holds %d rows" % len(panel))
-    ok(int(man.loc[man["extract"] == "panel_throughput_minutes.csv",
-                   "rows_handed_over"].iloc[0]) == len(panel),
-       "the handover inventory disagrees on the panel")
 
-    # the interconnect in service at the quarter end, for every code the records carry
-    live = {r.port_code for r in register.itertuples()
-            if r.status == "in service" and r.port_type != "transit"}
-    now = {r.port_code: r.current_port_code for r in register.itertuples()
-           if r.current_port_code in live}
-    ok(len(set(now.values())) == 7, "%d interconnects resolve" % len(set(now.values())))
+def read():
+    D = {}
+    D["runs"] = pd.read_csv(os.path.join(T, "tm_monitoring_runs_2025-07_2026-10.csv"), dtype=str)
+    D["alerts"] = pd.read_csv(os.path.join(T, "tm_alerts_2025-07_2026-10.csv"), dtype=str, keep_default_na=False)
+    D["sars"] = pd.read_csv(os.path.join(T, "sar_filings_2025-07_2026-10.csv"), dtype=str, keep_default_na=False)
+    D["cases"] = json.load(open(os.path.join(T, "fcm_cases_export_2026-11-02.json"), encoding="utf-8"))
+    cat = pd.read_excel(os.path.join(T, "tm_scenario_catalogue_2026.xlsx"), sheet_name=0, dtype=str).fillna("")
+    D["catalogue"] = cat
+    msg = email.message_from_bytes(open(os.path.join(T, "tuning_2027_thread.eml"), "rb").read())
+    D["thread"] = msg.get_payload(decode=True).decode("utf-8")
+    D["thread_date"] = msg["Date"]
+    D["procedure"] = subprocess.run(["pdftotext", "-layout", os.path.join(T, "aml_alert_handling_procedure_2026.pdf"), "-"],
+                                    capture_output=True, text=True).stdout
+    return D
 
-    booked = set()
-    for r in maint.itertuples():
-        if int(r.window_to[:2]) > BAND[0] and int(r.window_from[:2]) < BAND[1]:
-            booked.add((now.get(r.port_code, r.port_code), r.work_date_local))
-    ok(len(booked) >= 9, "%d booked evenings reach an evening window" % len(booked))
 
-    d = rollup[rollup["port_code"].isin(now)].copy()
-    d["line"] = [now[x] for x in d["port_code"]]
-    d["s"] = pd.to_numeric(d["reference_median_kbps"]) - pd.to_numeric(d["evening_median_kbps"])
-    d = d[[(a, b) not in booked for a, b in zip(d["line"], d["evening_date_local"])]]
+def filed(D):
+    """The filed WHAT, read from the thread and the procedure (positive controls on each document's extractor)."""
+    th = re.sub(r"\s+", " ", D["thread"])
+    pr = re.sub(r"\s+", " ", D["procedure"])
+    floor = re.search(r"falls below (\d+) per cent", th)
+    check("thread: the floor is read from the planning thread", floor is not None and floor.group(1) == "3", floor)
+    check("thread: the window is the twelve months to 30 September", "twelve months to 30 September" in th)
+    check("thread: every alert counts by how it will end", "by how they will end" in th)
+    check("thread: duplicates are not alerts of their scenario", "closed as a duplicate of another is not an alert" in th)
+    check("thread: the alert belongs to its run's business date", "business date of the run that raised it" in th)
+    check("thread: dated the morning of the extract", "02 Nov 2026" in D["thread_date"], D["thread_date"])
+    check("procedure: the business day ends at 22:00 Eastern", "22:00 Eastern" in pr)
+    check("procedure: an alert added to an open investigation opens none of its own", "opens no investigation of its own" in pr)
+    check("procedure: a continuing activity report covers the activity since the previous report",
+          "covering the activity since the previous report" in pr)
+    check("procedure: a correction cites the report it corrects and covers the same activity",
+          "cites the report it corrects and covers the same activity" in pr)
+    return float(floor.group(1)) if floor else 3.0
 
-    this = d[d["reporting_quarter"] == "2027Q1"]
-    prior = d[d["reporting_quarter"] != "2027Q1"]
-    w = this.loc[this["s"].idxmax()]
-    ok(int(w["s"]) == fig["decided_shortfall_kbps"], "the decided shortfall")
-    ok(w["line"] == fig["decided_port"], "the decided interconnect")
-    ok(w["evening_date_local"] == fig["decided_evening"], "the decided evening")
-    ok(w["window_from"] == fig["decided_window"], "the decided window")
-    by_q = prior.groupby("reporting_quarter")["s"].max().sort_values(ascending=False)
-    ok(int(by_q.iloc[0]) == fig["flip_shortfall_kbps"], "the flip figure")
-    ok(by_q.index[0] == fig["flip_quarter"], "the quarter the record comes from")
-    ok(int((by_q > int(w["s"])).sum()) + 1 == fig["rank_of_nine"], "the rank of nine")
-    ok(fig["call"] == ("none" if int(w["s"]) <= int(by_q.iloc[0]) else w["line"]), "the call")
-    for qq, v in fig["quarterly_worst_kbps"].items():
-        ok(int(by_q[qq]) == int(v), "the worst window of %s" % qq)
 
-    # the grid the deliverable carries
-    seen = 0
-    for line, gl in this.groupby("line"):
-        for win, gw in gl.groupby("window_from"):
-            r = gw.loc[gw["s"].idxmax()]
-            want = fig["grid"]["%s %s" % (line, win)]
-            ok(int(r["s"]) == want["worst_kbps"], "the grid at %s %s" % (line, win))
-            ok(r["evening_date_local"] == want["evening"], "the grid evening at %s %s" % (line, win))
-            seen += 1
-    ok(seen == 21, "the grid holds %d cells" % seen)
+def alerts_frame(D):
+    cat = D["catalogue"]
+    rep = {r["scenario_code"]: r["replaced_by"] for _, r in cat.iterrows() if r["replaced_by"]}
+    check("catalogue: one replacement, XB-HRJ by XB-HRJ2", rep == {"XB-HRJ": "XB-HRJ2"}, rep)
+    back = {v: k for k, v in rep.items()}
+    a = D["alerts"].copy()
+    a["scenario"] = a["scenario_code"].map(lambda s: back.get(s, s))
+    bd = dict(zip(D["runs"]["run_id"], D["runs"]["business_date"]))
+    a["bdate"] = pd.to_datetime(a["run_id"].map(bd))
+    a["gen"] = pd.to_datetime(a["created_at_utc"].str.replace("Z", ""))
+    a["tclosed"] = pd.to_datetime(a["triage_closed_at_utc"].str.replace("Z", "").replace("", None))
+    cases = pd.DataFrame([{k: c[k] for k in ("case_id", "status", "disposition", "decided_at", "opened_at")}
+                          for c in D["cases"]["cases"]])
+    cases["decided"] = pd.to_datetime(cases["decided_at"].str.replace("Z", ""))
+    a = a.merge(cases[["case_id", "status", "disposition", "decided"]], how="left", on="case_id")
+    esc = a["triage_outcome"] == "ESC"
+    a["event"] = 0
+    a.loc[a["triage_outcome"] == "NSA", "event"] = 2
+    a.loc[esc & (a["status"] == "CLOSED") & (a["disposition"] == "SAR filed"), "event"] = 1
+    a.loc[esc & (a["status"] == "CLOSED") & (a["disposition"] == "No SAR"), "event"] = 2
+    a["end"] = a["tclosed"].where(a["triage_outcome"] == "NSA", a["decided"])
+    x = pd.Timestamp("2026-11-02 11:00:00")
+    a.loc[a["event"] == 0, "end"] = x
+    a["t"] = (a["end"] - a["gen"]).dt.total_seconds() / 86400.0
+    a["age"] = (x - a["gen"]).dt.total_seconds() / 86400.0
+    a = a[a["triage_outcome"] != "DUP"]
+    check("every escalated alert of the export has its investigation in the case export",
+          int((esc & a["status"].isna()).sum()) == 0)
+    return a
 
-    # the panel's own medians agree with the rollup for the quarter it covers
-    p = panel.copy()
-    p["t"] = pd.to_datetime(p["measured_at_utc"].str[:19])
-    p["v"] = pd.to_numeric(p["median_kbps"])
-    off = p["t"].dt.date.map(lambda x: 2 if x >= dt.date(2027, 3, 28) else 1)
-    p["local"] = p["t"] + pd.to_timedelta(off, unit="h")
-    p["lday"] = p["local"].dt.date.astype(str)
-    p["lh"] = p["local"].dt.hour
-    p["line"] = [now.get(x, x) for x in p["port_code"]]
-    checked = 0
-    for (line, day, hr), gg in p[p["lh"].isin([19, 20, 21])].groupby(["line", "lday", "lh"]):
-        if checked >= 60:
-            break
-        row = rollup[(rollup["evening_date_local"] == day) &
-                     (rollup["window_from"] == "%02d:00" % hr) &
-                     (rollup["port_code"].isin([k for k, v in now.items() if v == line] + [line]))]
-        if len(row) != 1:
-            continue
-        ok(abs(gg["v"].median() - float(row["evening_median_kbps"].iloc[0])) <= 1.0,
-           "the panel and the rollup disagree at %s %s %02d" % (line, day, hr))
-        checked += 1
-    ok(checked >= 40, "only %d window medians were cross checked" % checked)
 
-    # A1
-    ports = {}
-    for r in register.itertuples():
-        if r.status == "in service":
-            ports.setdefault(r.peer, []).append(r.port_code)
-    billed = {r.peer: (float(r.commitment_mbps), float(r.rate_eur_per_mbps))
-              for r in commit.itertuples() if r.basis == "billed"}
-    ok(len(billed) == 7, "%d peers are billed" % len(billed))
-    ok(any(r.basis == "settlement free" for r in commit.itertuples()),
-       "no peer is marked settlement free")
-    for a in amend.itertuples():
-        if a.status.startswith("accepted") and a.effective_from <= "2027-03-31" and a.peer in billed:
-            billed[a.peer] = (float(a.commitment_mbps_after), billed[a.peer][1])
-    e = edge.copy()
-    e["m"] = pd.to_numeric(e["out_mbps"])
-    for peer, (c, rate) in billed.items():
-        own = e[e["port_code"].isin(ports.get(peer, []))]
-        per = own.groupby("sampled_at_utc")["m"].sum().sort_values(ascending=False)
-        p95 = int(round(float(per.iloc[RANK - 1])))
-        want = fig["a1_peers"][peer]
-        ok(p95 == want["percentile_mbps"], "A1 percentile at %s" % peer)
-        ok(int(round(c)) == want["commitment_mbps"], "A1 commitment at %s" % peer)
-        ok(int(round(max(0, p95 - int(round(c))) * rate)) == want["overage_eur"],
-           "A1 overage at %s" % peer)
+def aalen_johansen(t, e):
+    """Cumulative incidence of event 1 and the overall event-free survival, right-continuous step functions."""
+    df = pd.DataFrame({"t": t, "e": e}).sort_values("t")
+    times = np.sort(df.loc[df["e"] > 0, "t"].unique())
+    n_at = len(df) - np.searchsorted(np.sort(df["t"].values), times, side="left")
+    d1 = df[df["e"] == 1].groupby("t").size().reindex(times, fill_value=0).values
+    d = df[df["e"] > 0].groupby("t").size().reindex(times, fill_value=0).values
+    S, F1 = 1.0, 0.0
+    s_out, f_out = [], []
+    for k in range(len(times)):
+        F1 += S * d1[k] / n_at[k]
+        S *= 1.0 - d[k] / n_at[k]
+        s_out.append(S)
+        f_out.append(F1)
+    return times, np.array(s_out), np.array(f_out)
 
-    # A2
-    s = sess.copy(); s["n"] = pd.to_numeric(s["sessions"])
-    rb = reb.copy(); rb["n"] = pd.to_numeric(rb["sessions_with_rebuffer"])
-    for b in rel["builds"]:
-        sel = s[(s["build_version"] == b["build_version"]) &
-                (s["session_date_local"] >= b["rolled_out_from"]) &
-                (s["session_date_local"] <= b["rolled_out_to"])]
-        rs = rb[(rb["build_version"] == b["build_version"]) &
-                (rb["session_date_local"] >= b["rolled_out_from"]) &
-                (rb["session_date_local"] <= b["rolled_out_to"])]
-        want = fig["a2_builds"][b["build_ref"]]
-        ok(int(sel["n"].sum()) == want["sessions"], "A2 sessions at %s" % b["build_ref"])
-        ok(round(100.0 * int(rs["n"].sum()) / int(sel["n"].sum()), 1) == want["rebuffered_pct"],
-           "A2 rebuffer share at %s" % b["build_ref"])
 
-    # A3
-    rest = {r.incident_ref: r.service_restored_at_utc for r in res.itertuples()}
-    for m in (1, 2, 3):
-        key = "2027-%02d" % m
-        g = inc[inc["opened_at_utc"].str[:7] == key]
-        inside = 0
-        for r in g.itertuples():
-            t = rest.get(r.incident_ref)
-            if not t:
-                continue
-            a = dt.datetime.strptime(r.opened_at_utc, "%Y-%m-%dT%H:%M:%SZ")
-            b = dt.datetime.strptime(t, "%Y-%m-%dT%H:%M:%SZ")
-            if (b - a).total_seconds() <= STANDARD_HOURS * 3600:
-                inside += 1
-        want = fig["a3_incidents"][key]
-        ok(len(g) == want["opened"], "A3 opened in %s" % key)
-        ok(inside == want["restored_inside_standard"], "A3 inside the standard in %s" % key)
-        ok(int(g["cause_category"].isin(OUTSIDE).sum()) == want["cause_outside_platform"],
-           "A3 causes outside in %s" % key)
-    return K[0]
+def productivity(a, floor):
+    year = a[(a["bdate"] >= "2025-10-01") & (a["bdate"] <= "2026-09-30")]
+    out = {}
+    for code, g in year.groupby("scenario"):
+        allg = a[a["scenario"] == code]
+        times, S, F1 = aalen_johansen(allg["t"].values, allg["event"].values)
+        F1_inf = F1[-1]
+        und = g[g["event"] == 0]
+        idx = np.searchsorted(times, und["age"].values, side="right") - 1
+        s_a = np.where(idx >= 0, S[np.clip(idx, 0, None)], 1.0)
+        f_a = np.where(idx >= 0, F1[np.clip(idx, 0, None)], 0.0)
+        p = np.where(s_a > 0, (F1_inf - f_a) / np.maximum(s_a, 1e-12), 1.0)
+        out[code] = 100.0 * (int((g["event"] == 1).sum()) + float(p.sum())) / len(g)
+    return out
+
+
+def ask_a(D, a):
+    al = D["alerts"]
+    al = al[al["case_id"] != ""].copy()
+    cat = D["catalogue"]
+    back = {r["replaced_by"]: r["scenario_code"] for _, r in cat.iterrows() if r["replaced_by"]}
+    al["scenario"] = al["scenario_code"].map(lambda s: back.get(s, s))
+    cases = pd.DataFrame([{"case_id": c["case_id"], "opened_at": c["opened_at"]} for c in D["cases"]["cases"]])
+    m = cases.merge(al, left_on=["case_id", "opened_at"], right_on=["case_id", "triage_closed_at_utc"], how="left")
+    op = pd.to_datetime(m["opened_at"].str.replace("Z", ""))
+    m["edate"] = eastern(op).dt.normalize()
+    m = m[(m["edate"] >= "2025-10-01") & (m["edate"] <= "2026-09-30")]
+    check("ask A: each investigation opened in the year has exactly one opening alert in the export",
+          m["alert_id"].notna().all() and not m["case_id"].duplicated().any())
+    m["q"] = m["edate"].dt.year.astype(str) + " Q" + ((m["edate"].dt.month - 1) // 3 + 1).astype(str)
+    return m.groupby(["scenario", "q"]).size().to_dict()
+
+
+def ask_b(D):
+    s = D["sars"].copy()
+    s["filed"] = pd.to_datetime(s["filed_at_utc"].str.replace("Z", ""))
+    s = s.sort_values(["filed", "bsa_id"])
+    period = {r.bsa_id: (r.activity_start, r.activity_end) for r in s.itertuples()}
+    kind = {}
+    for cid, g in s.groupby("case_id", sort=False):
+        last_end = None
+        for k, r in enumerate(g.itertuples()):
+            if r.prior_bsa_id and r.prior_bsa_id not in period:
+                kind[r.bsa_id] = "older chain"
+                last_end = r.activity_end
+            elif not r.prior_bsa_id and k == 0:
+                kind[r.bsa_id] = "initial"
+                last_end = r.activity_end
+            elif r.prior_bsa_id and period[r.prior_bsa_id] == (r.activity_start, r.activity_end):
+                kind[r.bsa_id] = "correction"
+            else:
+                kind[r.bsa_id] = "continuing" if r.activity_start > last_end else "unclear"
+                last_end = max(last_end, r.activity_end)
+    s["kind"] = s["bsa_id"].map(kind)
+    s["edate"] = eastern(s["filed"])
+    w = s[(s["edate"] >= "2026-01-01") & (s["edate"] < "2026-11-01")]
+    check("ask B: every 2026 filing is an initial report, a continuing activity report or a correction",
+          set(w["kind"]) <= {"initial", "continuing", "correction"}, sorted(set(w["kind"])))
+    w = w[w["kind"] != "correction"]
+    w["m"] = w["edate"].dt.strftime("%Y-%m")
+    return w.groupby(["m", "kind"]).size().to_dict()
+
+
+def goldens(fig):
+    import openpyxl
+    from docx import Document
+    wb = openpyxl.load_workbook(os.path.join(G, "tm_alert_figures_2026.xlsx"), data_only=True)
+    ws = wb["Investigations by quarter"]
+    rows = {r[0]: r[1:] for r in ws.iter_rows(min_row=2, values_only=True)}
+    q = ["2025 Q4", "2026 Q1", "2026 Q2", "2026 Q3"]
+    ok = all(list(rows[(c + " / XB-HRJ2") if c == "XB-HRJ" else c]) == [fig["ask_investigations"][c][k] for k in q]
+             for c in fig["ask_investigations"])
+    check("golden workbook: investigations by quarter equal figures.json", ok)
+    ws2 = wb["SARs filed 2026"]
+    vals = [tuple(r) for r in ws2.iter_rows(min_row=2, values_only=True)]
+    ok = [(v[1], v[2]) for v in vals] == [(fig["ask_sars"][m]["initial"], fig["ask_sars"][m]["continuing"])
+                                          for m in sorted(fig["ask_sars"])]
+    check("golden workbook: SARs by month equal figures.json", ok)
+    doc = Document(os.path.join(G, "tuning_scenarios_2027.docx"))
+    txt = "\n".join(p.text for p in doc.paragraphs)
+    check("golden paper: names every scenario going into the tuning", all(c in txt for c in fig["call"]["tuning"]))
+    tab = doc.tables[0]
+    yes = sorted(r.cells[0].text for r in tab.rows[1:] if r.cells[5].text == "Yes")
+    check("golden paper: the table marks exactly the tuning set", yes == fig["call"]["tuning"], yes)
+    with zipfile.ZipFile(os.path.join(G, "tuning_scenarios_2027.docx")) as z:
+        check("golden paper: carries its chart", any(n.startswith("word/media/") for n in z.namelist()))
+
+
+def main():
+    fig = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
+    D = read()
+    floor = filed(D)
+    a = alerts_frame(D)
+    prod = productivity(a, floor)
+    call = sorted(c for c, v in prod.items() if v < floor)
+    check("call: the Aalen-Johansen reading files the golden tuning set", call == fig["call"]["tuning"], call)
+    check("call: every scenario's productivity within 0.35 points of the generator's",
+          all(abs(prod[c] - fig["productivity"][c]) < 0.35 for c in prod),
+          {c: round(prod[c] - fig["productivity"][c], 3) for c in prod})
+    check("call: each scenario at least half a point from the floor",
+          min(abs(v - floor) for v in prod.values()) >= 0.5, min(abs(v - floor) for v in prod.values()))
+    dec = {c: 100.0 * int((g["event"] == 1).sum()) / int((g["event"] > 0).sum())
+           for c, g in a[(a["bdate"] >= "2025-10-01") & (a["bdate"] <= "2026-09-30")].groupby("scenario")}
+    check("ladder R0: the decided-alert reading files the default answer",
+          sorted(c for c, v in dec.items() if v < floor) == sorted(fig["call"]["tuning"] + fig["traps"]))
+    A_ = ask_a(D, a)
+    q = ["2025 Q4", "2026 Q1", "2026 Q2", "2026 Q3"]
+    ok = all(A_.get((c, k), 0) == fig["ask_investigations"][c][k] for c in fig["ask_investigations"] for k in q)
+    check("ask A: investigations by quarter recompute", ok)
+    B_ = ask_b(D)
+    ok = all(B_.get((m, k), 0) == fig["ask_sars"][m][k] for m in fig["ask_sars"] for k in ("initial", "continuing"))
+    check("ask B: SARs by month recompute", ok)
+    goldens(fig)
+    print("verify: %d failed" % len(FAILS))
+    return 1 if FAILS else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

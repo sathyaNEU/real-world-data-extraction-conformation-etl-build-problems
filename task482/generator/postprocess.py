@@ -4,20 +4,7 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "Larrowbrook Physician Network"
-# each office file's owner and saved stamps in the fiction (UTC)
-OWNERS = {
-    "kbp_attr": dict(creator="KBP Value-Based Reporting", last_by="KBP Value-Based Reporting", created="2026-10-05T21:14:00Z",
-                     modified="2026-10-06T13:02:00Z", company="Kesselcrest Benefit Partners"),
-    "kbp_ccf": dict(creator="KBP Provider Payments", last_by="KBP Provider Payments", created="2026-01-14T15:40:00Z",
-                    modified="2026-10-14T16:22:00Z", company="Kesselcrest Benefit Partners"),
-    "ma": dict(creator="KBP Medicare Partner Reporting", last_by="KBP Medicare Partner Reporting", created="2026-07-15T12:05:00Z",
-               modified="2026-07-16T14:31:00Z", company="Kesselcrest Benefit Partners"),
-    "roster": dict(creator="LPN Credentialing", last_by="LPN Credentialing", created="2024-12-02T15:12:00Z",
-                   modified="2026-10-01T19:47:00Z"),
-    "fees": dict(creator="LPN Managed Care Contracting", last_by="LPN Managed Care Contracting", created="2026-01-08T16:20:00Z",
-                 modified="2026-01-12T18:03:00Z"),
-}
+COMPANY = "Brackwell Alloys Ltd"
 
 
 def _x(s):
@@ -361,8 +348,8 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
 
 def normalize_pdf(path, created, modified):
     """created, modified: the in-fiction stamps as PDF dates of the invariant date's length, D:YYYYMMDDHHMMSS+HH'MM'
-    (the info dictionary carries the creation date before the modification date). The library's banners are blanked
-    and its sequential font-subset tags (AAAAAA+, AAAAAB+) become the six-letter tags other producers write, each
+    (the info dictionary carries the creation date before the modification date). The library's header comment and Producer stay as written;
+    its sequential font-subset tags (AAAAAA+, AAAAAB+) become the six-letter tags other producers write, each
     substitution at equal length so the cross-reference offsets hold."""
     import hashlib
     b = open(path, "rb").read()
@@ -370,8 +357,6 @@ def normalize_pdf(path, created, modified):
     inv = b"D:20000101000000+00'00'"
     assert len(created) == len(modified) == len(inv) and b.count(inv) == 2
     b = b.replace(inv, created, 1).replace(inv, modified, 1)
-    for banner in (b"ReportLab Generated PDF document (opensource)", b"ReportLab generated PDF document -- digest (opensource)"):
-        b = b.replace(banner, b" " * len(banner))
     tags = {}
     for m in re.finditer(rb"/([A-Z]{6})\+([A-Za-z0-9-]+)", b):
         key = m.group(0)
@@ -380,5 +365,5 @@ def normalize_pdf(path, created, modified):
             tags[key] = b"/" + bytes(65 + x % 26 for x in h[:6]) + b"+" + m.group(2)
     for old, new in tags.items():
         b = re.sub(re.escape(old) + rb"(?![A-Za-z0-9-])", new, b)
-    assert len(b) == n and b"ReportLab" not in b and b"reportlab" not in b and b"AAAAAA+" not in b
+    assert len(b) == n and b"(unspecified)" not in b and b"AAAAAA+" not in b
     open(path, "wb").write(b)

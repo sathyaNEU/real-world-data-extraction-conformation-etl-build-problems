@@ -1,192 +1,227 @@
-# task474 design note: a port authority's 2027 air-corridor designations (architecture 6)
+# task474 design note: an awarding body's pass mark across a test-vendor change (architecture 7)
 
-Architecture 6, drawn 2026-10-20 in the architecture 5 world after architecture 5 (class-specific expansion factors)
-was spent at stage 4. Earlier architectures' sections are retired; their lessons stand in Tried and rejected.
+Architecture 7, drawn 2026-10-31 after architecture 6 (the port authority's air-corridor designations) was spent at
+its repair. Earlier architectures' sections are retired; their lessons stand in Tried and rejected.
 
 ## Draw
 
-- **Pairing.** Client domain physical-environmental-sciences, task type emissions-inventory, objective Data
-  Extraction & Conformation (ETL): three count programmes' short classification counts, the state's continuous count
-  stations, the link register, the emission rate table and the terminals' gate transaction exports are conformed into
-  one link-level on-road NOx inventory for the program year.
-- **Decision.** How many, and which, of the fourteen roadway links around the terminals the port authority designates
-  for its 2027 Air Corridor Program: a link whose program-year (October 2025 to September 2026) on-road NOx per mile is
-  at or above the line. Forward facing: the designations fund 2027 work from the year just closed.
-- **The quantity.** Each link's program-year vehicle-miles by class times the class's NOx rate, per mile.
-- **Data-native sentence.** Each link is counted for two weekdays and the year's miles come from expanding the count
-  with factors measured at the state's classifying stations, which is right for roads carrying general traffic; the
-  trucks on the three terminal access roads are the terminal's own drays, coming and going with its vessel calls,
-  which no state station sees, so an access road counted in a busy week or a quiet one is carried into the year at
-  that week's level, and only the terminal's own gate record measures its count days against its year.
-- **Default path.** The traffic monitoring guide's expansion, class by class with the classifying stations' monthly
-  and day-of-week factors, on every link.
-- **Golden.** The same on every road carrying general traffic; on the three access roads, the combination trucks
-  expanded by the ratio of the terminal's average daily gate visits over the year to its visits on the count days.
-- **Shape.** 07, a grid: fourteen links' verdicts, plus the asks' figures, the count, the set and the memo's chart.
-- **Guard.** WARN (domain, objective and Gate G overuse); nearest task452 v1 at 0.06.
+- **Card:** `.claude/skills/fingerprint/cards/task474.json`, architecture v7, guard PASS (differentiated against
+  task196, task202, task449, task466 and task480), registered 2026-10-31 after a fetch of main.
+- **Pairing.** Client domain education-learning-sciences, task type item-response-theory-test-equating (which serves
+  Data Extraction & Conformation), objective Data Extraction & Conformation (ETL): two test vendors' result exports
+  and the awarding body's candidate register are conformed into one candidate-level record of every sitting, and the
+  conformed record carries the old paper's standard onto the new paper.
+- **Niche.** Heatwise Qualifications, an English awarding body owned by the installer trade associations, examines the
+  theory paper of its Heat Pump Installer Certificate. Until 31 March 2026 Brindle Assessment ran the paper at test
+  centres and reported a scaled score from 0 to 100, the pass standard 65. From 1 April 2026 Harrowgate Testing runs a
+  new 60-question paper, online-proctored or at its test sites, scored by raw mark. Results for the new paper are held
+  until the Board sets its pass mark at the 4 November 2026 meeting, from the sittings to 30 September.
+- **Decision.** The raw pass mark on the new paper, applied to the held 2026 results and to every 2027 sitting.
+  Forward facing: the mark governs the coming year's sittings.
+- **The quantity.** The raw mark on the new paper that holds the old standard: Assessment Policy AP-3 files it as the
+  lowest raw mark that no larger share of an equivalent group of candidates reaches than reaches 65 on Brindle's scale.
+- **Data-native sentence.** The only candidates measured on both papers are the ones who failed the old paper and sat
+  the new one, and every candidate who sits a second time gains on the first sitting, as the old paper's own retakes
+  show; the first-time candidates on either side of the switch are not one cohort, since experienced gas engineers
+  started coming through the standard route in autumn 2025 and the summer sittings always bring a stronger mix than
+  the winter ones, so only the cross-switch candidates, read against the old paper's retakers matched on their first
+  score, give an equivalent group.
+- **Default path.** Hold the old paper's first-time pass rate of the same months a year earlier on the new paper's
+  first-time candidates.
+- **Golden.** The cross-switch candidates' pass rate on a second old sitting, read from the 2021 to 2025 retakers with
+  the same first scores, set on their new-paper raw marks.
+- **Shape.** 15, fields conformed to one schema: every 2026 sitting conformed to one record, plus the asks' figures,
+  the pass mark and the paper's chart.
+- **Shell.** Question form what; deliverables pdf and csv; forum the Board of Directors, forcing event its meeting,
+  organisation family a member body, all clear of the last three builds.
+- **Personas.** Laura Kay (Head of Qualifications), Alan Clayton (Chief Examiner), from `guard.py names --geo "United
+  Kingdom" --seed 474`.
 
 ## Default path
 
-1. Read the rules: every link in the register; a link's program-year NOx is the vehicle-miles each class traveled
-   on it from 1 October 2025 to 30 September 2026 times the class's rate in the 2026 table, per mile; designate at
-   5.00 tonnes per mile or more.
-2. Conform the three count programmes' files to each link's two count days by class, and the stations' hourly
-   records to daily totals by class.
-3. Expand every link's count to an annual average daily volume class by class with the classifying stations'
-   monthly and day-of-week factors (the traffic monitoring guide's method), multiply by 365 and the class rates.
+1. Read AP-3: the new paper's pass mark is the lowest raw mark that no larger share of an equivalent group reaches
+   than reaches 65 on Brindle's scale.
+2. Conform the two exports through the register (Brindle's SAT rows, Harrowgate's cleared and released marks once per
+   sitting, UK dates) and take each candidate's first sitting.
+3. Take the first-time candidates of April to September 2025 on Brindle's paper as the equivalent group of the
+   first-time candidates of April to September 2026 on Harrowgate's (the same months a year apart, the awarding
+   body's way of holding a pass rate through a paper change), and set the mark where the 2026 share falls to the
+   2025 share at 65.
 
-Ends on: L01, L03, L05 and L06 designated
-
-Golden: L03, L05 and L14 designated
+Ends on: 40
+Golden: 38
 
 ## Stump sentence
 
-The default path expands every link's two-weekday count class by class with the classifying stations' factors and
-designates L01, L03, L05 and L06; the combination trucks on the three terminal access roads are the terminals' own
-drays, which rise and fall with the vessel calls that no state station sees, and Terminal Way and Cargo Drive were
-counted in busy weeks while Pell Road was counted in a quiet one, so only carrying those roads' trucks to the year by
-each terminal's own daily gate record designates L03, L05 and L14.
+The default path gives Harrowgate's 2026 first-time candidates the pass rate Brindle's paper gave the 2025 first-time
+candidates in the same months and files a pass mark of 40; the step that lands it there is reading a change in the
+cohort as a change in the paper, when experienced gas engineers have come through the standard route since the autumn
+of 2025 and the only candidates measured on both papers, the ones who failed Brindle's and sat Harrowgate's next, carry
+a second-sitting gain that Brindle's own resits measure, so the mark that holds 65 is 38.
 
 ## Three rules
 
-Task type: Physical & Environmental Sciences, emissions-inventory, which the taxonomy tags for ETL: conforming three count programmes' short classification counts, the state's continuous count stations, the link register and the terminals' daily gate reports into a link-level on-road NOx inventory the program designates on.
+Task type: item-response-theory-test-equating (Education & Learning Sciences), which serves Data Extraction & Conformation: two vendors' results conformed to one record and the old scale's standard carried onto the new paper.
+Domain test: the quantity that decides is the raw mark on the new paper equivalent to 65 on the old scale, an equating function the field estimates from a linking design, here the candidates measured on both papers once the gain every second sitting carries is removed; swap the nouns for a hospital's or a utility's and there is no instrument change, no pass standard and no retest gain, and the task stops reading the same.
+Swap: "What dose on the new infusion pump matches the old pump's 65?" has no candidates who sat twice and no second-sitting gain to remove, and "which tariff holds the old bill" has no measured proficiency, so the task does not read the same with another field's nouns.
+Layer 1: two vendors' exports keyed by their own candidate numbers and tied to board numbers only through the register, candidates who re-registered after a lapse under a second board number, Brindle's ABS and VOID bookings beside SAT rows, Harrowgate's held records beside their releases and its no-show and voided records, UTC timestamps against UK dates, day-month-year against ISO dates and Brindle's rotating forms on one scale; each is what the systems that hold it produce and none is placed to be caught.
+Layer 2: estimation_fit, the linking design: an equivalent group has to be found, the first-time cohorts on either side of the switch are not one (the gas engineers since autumn 2025, the stronger summer mix), and the candidates measured on both carry the retest gain, so their second-sitting pass rate on the old paper has to be estimated from Brindle's own resits matched on the first score.
+Decisive step: estimating, from Brindle's resits of first-sitting fails in 2021 to 2025 matched on the first score, the share of the cross-switch candidates who would have reached 65 on a second Brindle sitting, and setting the mark where their Harrowgate marks give that share.
+Not semantics: reading every field and AP-3 correctly still leaves the equivalent group to choose, and no column marks a gas engineer, a retest gain or a cohort; the first-time cohorts, the side-by-side pairs and the unmatched resits all read every field right and file 40, 41 and 37.
+Not rule application: AP-3 files the estimand (an equivalent group's share at 65) and no clause says which group is equivalent or how its old-paper share is found; executing the filed rule on any group files whatever that group gives, and only the resit record matched on the first score rules the other groups out.
+Analyst test: a strong analyst conforms both exports through the register, reads AP-3 correctly, holds the 2025 first-time pass rate on the 2026 first-time candidates and files 40; every field is read and every rule executed, and the mark is wrong because the 2026 cohort is stronger than the 2025 one and the candidates measured on both papers carry a second-sitting gain.
+Estimand: ap3_pass_marks_and_standards.pdf section 2: the lowest raw mark on Harrowgate's paper that no larger share of an equivalent group of candidates reaches than reaches 65 on Brindle's scale, an equivalent group being one whose proficiency would be the same whichever paper it sat; population, the paper's candidates; window, Harrowgate's sittings from 1 April to 30 September 2026; unit, the raw mark; comparison, the share at 65.
+No decoy: nothing is planted to be caught; no memo, draft, provisional mark or vendor recommendation argues any group or any mark, the held results carry no result, and the item statistics and the survey decide nothing.
+No certified replay: no certified or published figure reproduces any linking route; no file carries a pass rate, an equating table or a recommended mark.
+Lesson: an equivalent group for a paper change is the one whose proficiency is the same on both papers, which first-time cohorts a year apart are not when the intake moves, and which candidates measured twice are only after the retest gain the old paper's own resits measure is removed; no build on file teaches the retest gain in a linking sample.
 
-Domain test: the quantity that decides the call is each link's program-year NOx per mile, worked as an on-road emissions inventory works vehicle-miles: short counts expanded to annual traffic by temporal factors; the field's step here is recognising that a road whose trucks are generated by one facility follows that facility's activity, not the reference stations' calendar, and expanding its count by the facility's own activity record.
+## Survivor anatomy
 
-Swap: "which clinics' annual visits per room exceed the line, expanding a two-day sample with the network's weekly and seasonal factors" loses the step: nothing ties one clinic's visits to an outside schedule that the reference clinics never see, while here each access road's trucks are the terminal's drays and follow its vessel calls, which its gate counts record day by day.
-
-Layer 1: three count programmes' exports in different layouts (DOT hourly wide, county 15-minute sheets, consultant hourly by lane with UTC offsets); station records in local standard time beside counts in local time; detector outage days; volume-only stations beside classifying ones; trucks still in a terminal yard at midnight leaving the next day, so in and out differ by day; each the agency's or terminal's own export, each asserted neutral on the call (checks.py R2).
-
-Layer 2: estimation_fit. The methodological choice is what expands a short count on a road served by one generator: the reference stations' class factors, or the generator's own activity on the count days against its year.
-
-Decisive step: carrying the combination trucks on the three terminal access roads to the year by the ratio of each terminal's average daily gate trucks over the program year to its gate trucks on the count days, instead of by the state stations' monthly and day-of-week factors.
-
-Not semantics: every field read correctly (class groups, hour ending, standard time, the register's terminal access column, trucks_in and trucks_out) still leaves the class-factor expansion on the wrong set; no field or sentence says the access roads' trucks follow the gates, the daily records show it.
-
-Not rule application: rule 2.2 files the outcome (vehicle-miles by class times the class rates), the window, the classes and the unit; no rule or note says how a count is expanded or that the gate reports bear on it, and executing every stated rule with the traffic monitoring guide's class factors files L01, L03, L05 and L06.
-
-Analyst test: a strong analyst who reads every field and rule correctly and expands every count class by class with the classifying stations' factors designates L01, L03, L05 and L06 designated (the default path's Ends on); only expanding the access roads' trucks by their terminals' gate records designates L03, L05 and L14.
-
-Estimand: rules 2.1 to 2.3 (air_corridor_program_rules_2027.pdf) file the population (every link in the register), the outcome (NOx from on-road vehicles, vehicle-miles by class times the 2026 table's class rate), the window (1 October 2025 to 30 September 2026), the unit (metric tonnes per mile of link) and the comparison (5.00 or more).
-
-No decoy: nothing is planted to be caught; every count, station record and gate report is the traffic the generator drove, no factor table, AADT estimate, memo or earlier list ships, and no document mentions factors, vessel calls or the gates' bearing on the roads.
-
-No certified replay: no certified or published figure is reproduced to recover the method; the expansion for the access roads comes from the terminals' own daily gate counts.
-
-Lesson: a short count on a road whose traffic one facility generates follows that facility's activity, which no reference station measures; expanding it with reference-station factors, however class-specific, keeps the count week's level, and the facility's own activity record carries it to the year. No build on file expands a sample at a single-generator site by the generator's own record.
+Actor: the deciding property, how much a second sitting reads above a first, has no column; it shows only as the difference between a resitter's two Brindle scores, and the cohort's change shows only as Brindle's first-time pass rate rising on an unchanged paper from the autumn of 2025.
+Link: the comparison that finds the mark sets the cross-switch candidates beside Brindle's own resitters of 2021 to 2025 with the same first score, different people tied by no key, and no sentence invites it; the register's keys invite only the side-by-side pairs.
+Reflex: the field's way of holding a standard through a paper change at an awarding body, the pass rate of the same months a year earlier carried onto the new paper's first-time candidates, is rung 0 and files 40.
+Back-test: the textbook route validates on the record: Brindle's first-time pass rate held between 45.9 and 47.3 per cent in every year from 2021 to 2025, so any year-apart comparison on the old paper would have held the standard until the scheme's intake arrived.
+Second use: every file the decisive step reads has its own reason to be in the pack: Brindle's export is the results record, Harrowgate's the new paper's, the register ties the candidates, AP-3 files the standard and the resit rules, and the notice dates the switch.
+Shock: the golden sits below every first-time route, 38 against 40 on both the year-apart and the adjacent halves and 40 on their difference, and the obvious repair, the resits without matching, overshoots to 37; no route the cohorts allow lands on it.
+Pins: the WHAT sits in AP-3 (the estimand, the group's definition, the window of held results) and no filed sentence names a retest gain, matching, the gas engineers or a cohort (asserted, L1); deleting AP-3 section 2 unforces the call and that section names no step.
 
 ## Readability screen
 
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0, the count times 365 (eleven links) | rule 2.2 "in those twelve months": fires | count dates: fires | none | none | none | one product | readable |
-| R1, all-vehicle factors (ten links) | none | station hours: fires | the guide's volume factors: fires | none | none | a ratio | readable |
-| R2, class factors on every link, the default path (L01, L03, L05, L06) | none | class groups: fires | the guide's class factors: fires | none | none | a ratio | readable |
-| R2b, the gate record on one access road alone (three wrong sets) | none | the register's access column: fires | none | none | none | a ratio | readable |
-| G (decisive), every access road's trucks by its terminal's gate record (three links) | no clause ties the roads to the gates | no column holds a factor | no guide expands by a facility's own record | none | none | none | silent |
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 0 first-time pass rate a year earlier | AP-3 section 2 is the estimand | first sittings by date | the awarding body's reflex | none refutes it | the battery runs it | one share and one cut | none | readable |
+| 1 the half before the switch | none | first sittings by date | a careful variant | none | yes | one share and one cut | none | readable |
+| 2 the cross-switch candidates side by side | none | the register's keys | the common-candidate link | none | yes | one linear link | none | readable |
+| 3 the resits unmatched | none | resits by date | a psychometrician's repair | none | yes | one share | none | readable |
+| 4 (decisive) the resits matched on the first score | none names a gain, matching or a cohort | no column holds a gain | not the reflex | Brindle's resits are the bench, matched by first score | no battery item | not affine in a shipped column | the resit record is the results export itself | silent |
 
 ## Semantic fork table
 
 | SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | program year | 1 October 2025 to 30 September 2026, 365 days | a calendar year | not the rule's window | rule 2.2 |
-| SF2 | vehicle classes | FHWA 1-3, 4-7, 8-13 | two classes (cars, trucks) | same call: the rates table's three groups are the rules' three (asserted) | rule 2.2 |
-| SF3 | the 2026 emission rate table | the one calendar year in the file | none | same call (asserted) | the table |
-| SF4 | 5.00 tonnes or more | at or above, unrounded | rounded to the tenth | same call (asserted) | rule 2.3 |
-| SF5 | per mile | NOx over length, reducing to daily volume times 365 times the rate | VMT summed then divided | same call (asserted) | rule 2.2 |
-| SF6 | directions | both summed | one direction | not the link's traffic | the counts carry both |
-| SF7 | a terminal's gate trucks on a day | trucks_in | trucks_out or their mean | same call (asserted) | the gate reports |
-| SF8 | the files the call reads | counts, stations, register, rates, gate reports | the NO2 monitors, the 311 complaints, the registry | same call (asserted) | rule 2 |
+| SF1 | an equivalent group | a group whose proficiency is the same whichever paper it sat | any group of candidates | the routes differ (40, 41, 37) | AP-3 section 2's definition; asserted |
+| SF2 | reaches 65 | at or above 65 | above 65 | not the filed reading | AP-3 section 2 ("reaches 65"); asserted |
+| SF3 | the lowest raw mark no larger share reaches | the lowest mark whose share is at or under the group's share at 65 | the mark whose share is nearest | same call (asserted) | AP-3 section 2 |
+| SF4 | the resit history | first-sitting fails from 2021 to 2025 | from 2020, from 2023, or to March 2026 | same call (asserted under each) | none needed |
+| SF5 | matching on the first score | each first score | bands of two or five points | same call (asserted) | none needed |
+| SF6 | the resits read | the resit of a first sitting | every resit | same call (asserted) | none needed |
+| SF7 | a sitting | a SAT row or a cleared or released mark, once per sitting | ABS, VOID, held, no-show or voided records, or a held record and its release twice | moves the asks, not the call | AP-3 section 4; asserted |
+| SF8 | the date of a remote sitting | the UK local date | the UTC date | same call (asserted) | the export's Z suffix |
+| SF9 | a candidate | a person: board numbers sharing surname, initials and date of birth | each board number | same call (asserted); moves the asks | the register (one person, two numbers) |
+| SF10 | first sitting and resitting in the asks | a person's first sat sitting on either paper | a board number's first | moves 18 of 18 and 10 of 10 figures (asserted) | the register and AP-3 section 4 |
+| SF11 | the months and years | UK calendar months of 2026 to September; calendar years by the sitting's date | other calendars | not the filed reading | the prompt; asserted |
 
 ## Ladder
 
-Built figures, read from the cut pack by `generator/checks.py` (tonnes of on-road NOx per mile, program year, against
-5.00).
+| Rung | Construction | Files | Dies to |
+|---|---|---|---|
+| 0 | the 2025 first-time pass rate of April to September carried onto the 2026 first-time candidates | 40 | Brindle's first-time pass rate for October 2025 to March 2026 sat 5 points above the same half a year earlier on the unchanged paper, as the gas engineers came through the standard route |
+| 1 | the half before the switch (October 2025 to March 2026) carried onto April to September 2026 | 40 | the summer sittings draw a stronger mix every year (Brindle's first-time pass rate in April to September sat 4 to 6 points above the October to March before it in every year from 2020 to 2024) |
+| 1b | the year-apart route corrected by the winter halves' shift | 40 | the gas engineers' share kept rising through 2026, so the winter shift understates the summer's |
+| 2 | the cross-switch candidates' two results side by side (a linear link) | 41 (the judge's variant against the 47.2 per cent first-time share gives 36; both off 38) | every second sitting reads higher, as Brindle's resitters show |
+| 3 | Brindle's resits of first-sitting fails, unmatched, carried onto the cross-switch candidates | 37 | the 2025 resit rules (a free resit for 55 to 64 within six weeks, six months' wait under 55) changed which first scores reach the new paper |
+| 4 (decisive) | the resits matched on the first score, their share at 65 carried onto the cross-switch candidates | 38 | the golden |
 
-- **R0, the count times 365 (eleven links).** No expansion.
-- **R1, all-vehicle factors (ten links).** Trucks expanded at the all-vehicle weekday level.
-- **R2, class factors on every link, the default path (L01, L03, L05, L06).** L01 5.37, L06 5.34 over the line, L14
-  4.53 under. Dies to the gate reports: Berth 20 and Pacific Gateway handled 1.56 and 1.59 times their average day on
-  the count days and Berth 40 0.97 times, where the stations' combination-truck weekday factor carries about 1.25.
-- **R2b, the gate record on one access road alone.** Each leaves the other two on R2's verdict.
-- **G (L03 6.18, L05 5.46, L14 5.40; L01 4.55, L06 4.45 the access roads below).** The true program-year NOx
-  (every day known, generator only) designates the same three.
-- **Margins:** every one of the 50 family members (cell or separate station factors, plain or AASHTO averages, car
-  factors from the classifying stations or from all, the gate ratio of means or mean of ratios, trucks in, out or
-  both, groups by road type, class weekday factors with all-vehicle monthly) at least 0.25 t from the line on every
-  link; every access road R2 flips 0.30 t or more from it.
-- **Worth:** R2 keeps two of the three golden links and lists two others; the asks carry the pair (Ask sheet).
+- **Margins on the cut pack** (asserted in checks.py): the equivalent share sits 0.027 above the share reaching 38 and
+  0.042 below the share reaching 37; every standing member (first scores exact or in bands, histories from 2020, 2021
+  or 2023, every resit) files 38, and the latent model's equivalence for any equivalent group is 38 (T1).
+- **Separation.** The default path is wrong on the clean truth (T3) and the matched route on the world's own sittings
+  is the golden (T2).
 
 ## Closure table
 
-| # | Axis | Reading and closure |
+| Axis | Reading in this build | Move |
 |---|---|---|
-| 1 | Population | the register's fourteen links (rule 2.1) |
-| 2 | Unit of account | the link; metric tonnes of NOx per mile |
-| 3 | Attribution window | 1 October 2025 to 30 September 2026 (SF1) |
-| 4 | As-of dating | the exports compiled by 26 October 2026 |
-| 5 | Version basis | the station records as the DOT publishes them; one count per link |
-| 6 | Denominator | link length, cancelling (SF5) |
-| 7 | Weighting | none: each link's own count |
-| 8 | Window length | 365 days |
-| 9 | Boundary inclusivity | 5.00 or more (SF4) |
-| 10 | Rounding path | rates unrounded; counts whole trucks |
-| 11 | Tie-break | none: each link against the line |
-| 12 | Maturity and censoring | the year closed and published |
-| 13 | Order of operations | conform, daily totals, factors, expansion, rates, comparison |
-| 14 | Row order | none |
-| 15 | Duplicate resolution | one count per link; a truck counted once by VIN in the asks |
-| 16 | Identity normalisation | count site ids to links through the register; terminal names to codes |
-| 17 | Netting | none |
-| 18 | Dimensional units | vehicles per day, grams per mile, tonnes |
-| 19 | Code and status semantics | FHWA class groups and direction codes; never the stump |
-| 20 | Integerisation | none before the comparison |
-| 21 | Clause scope | rule 2 the designation, rule 3 the fleet sizing |
-| 22 | Forward window contents | the 2027 program funded on the closed program year (Draw) |
+| 1 Population | the theory paper's candidates; for the call, the group AP-3 calls equivalent | filed (AP-3 section 2) |
+| 2 Unit of account | the person, board numbers sharing surname, initials and date of birth | C1 (SF9) |
+| 3 Attribution window | Harrowgate's sittings 1 April to 30 September 2026, Brindle's to 31 March 2026 | filed (AP-3 section 2, the notice) |
+| 4 As-of dating | the register extract of 12 October 2026 | the file's date |
+| 5 Version basis | one record per sitting; a held record and its release are one sitting | SF7 |
+| 6 Denominator | the equivalent group's candidates | filed (AP-3 section 2) |
+| 7 Weighting | the cross-switch candidates' own first scores | C1 (SF5) |
+| 8 Window length | the resit history 2021 to 2025 | C1 (SF4) |
+| 9 Boundary inclusivity | reaches 65 is at or above 65; no larger share is at or under | filed (SF2, SF3) |
+| 10 Rounding path | marks are whole; shares compared unrounded | C1 by construction |
+| 11 Tie-break | the lowest mark meeting the share | filed (AP-3 section 2) |
+| 12 Maturity and censoring | results held, so no new-paper resit; the window closed on 30 September | filed (AP-3 section 2) |
+| 13 Order of operations | conform, tie people, take sittings, match, set | C1 |
+| 14 Row order | none: set operations by person and date | C1 |
+| 15 Duplicate resolution | a held record beside its release: the release | SF7 |
+| 16 Identity normalisation | provider numbers to board numbers by the register, board numbers to persons by name and date of birth | SF9 |
+| 17 Netting against gross | none | C1 |
+| 18 Dimensional units | scaled scores 0 to 100 on Brindle's paper, raw marks out of 60 on Harrowgate's | the files' own fields |
+| 19 Code and status semantics | SAT, ABS, VOID; cleared, released, held, no_show, voided | AP-3 section 4; SF7 |
+| 20 Integerisation | whole marks and whole candidates | C1 by construction |
+| 21 Clause scope | AP-3's resit rules decide who resits when, not the estimand | filed scope |
+| 22 Forward window contents | the mark applies to the held 2026 results and every 2027 sitting | filed (AP-3 section 2) |
 
 ## Literal reader
 
-Executed word for word, the rules fix the population, the outcome (vehicle-miles by class times the class rates), the
-window, the unit and the line. Each link is counted on two days, so its vehicle-miles over the year have to be
-estimated from the count. The candidates are the count times the year, the all-vehicle station factors, the
-classifying stations' class factors, and for the access roads the terminals' own daily gate counts. The data separate
-them: each access road's combination trucks on its count days run in step with its terminal's gate trucks those days
-(about two passes per gate truck), and the terminals' gates swing week to week with a pattern the stations do not
-have, so every variant expanding the access roads by their gate records files L03, L05 and L14 and every
-station-factor route files another set (checks.py). Every write-up step names the file and rule it executes.
-
-WHAT screen (stumping 1.2): population, rule 2.1; outcome, rule 2.2; window, rule 2.2; unit, rule 2.2; comparison,
-rule 2.3. The decisive step settles none of them: it is how the filed vehicle-miles are estimated from a two-day
-count on a road one terminal generates.
+Executed word for word, AP-3 section 2 asks for the lowest raw mark that no larger share of an equivalent group
+reaches than reaches 65 on Brindle's scale, the group being one whose proficiency would be the same whichever paper it
+sat. Read literally, no group of first-time candidates a year apart, or the halves either side of the switch, has the
+same proficiency (Brindle's own first-time pass rates move between them on an unchanged paper), and the cross-switch
+candidates at their second sitting are equivalent only to themselves at a second sitting, whose Brindle share at 65
+Brindle's resits matched on the first score give: 38. The asks' months and years, first sittings and resits read
+literally on persons give the figures in figures.json.
 
 ## Oracles
 
-None. No control, published AADT or reconciliation ties only under the golden: the stations publish hourly volumes,
-the gate reports daily trucks, and no link's annual volume ships.
+None on the main call: no file carries a pass rate on Harrowgate's paper, an equating table, a provisional mark or a
+recommendation; the Harrowgate records carry no result. The asks have no oracle either: no file states a monthly or
+yearly count.
 
 ## Ask sheet
 
-- **Ask A, drayage trucks registered with the port on each quarter's last day, and those with engines of model year
-  2009 or older: 8 figures.** H18 home: rule 3.1, the Board's sizing of the 2027 truck replacement grants beside the
-  designations. Path: the registry, the engine certification list, the rules. Devices: D7, dirty keys: a truck that
-  moved to another carrier was re-registered under a new truck_id by hand, and where the old registration was left
-  open the new one's VIN carries an O or I for a 0 or 1 (letters a VIN never holds), so no VIN as written appears
-  twice; D3, two columns one word apart: model_year is the truck's, and glider kits carry a 2014 to 2018 chassis on a
-  2004 to 2009 engine whose year only the engine family's certification shows. No sentence describes either.
-- **Ask B, the same two numbers for each motor carrier at 30 September 2026: 16 figures.** Same path; a truck counts
-  once, under the carrier of its latest registration in force that day (rule 3.1).
-- **The construction layer:** the designated links and their count.
+Two asks on the conformed record, each on persons the register ties by surname, initials and date of birth, a link no
+key invites.
 
-| Ask | Cracker (one truck per VIN as written, model_year with the list for blanks) | Mirror (class factors) |
-|---|---|---|
-| A, by quarter (8) | miss | miss |
-| B, by carrier (16) | miss | miss |
+**Ask A, first-time and resitting candidates in each month of 2026 to September (18 figures).**
+- Files: the register, Brindle's export, Harrowgate's export.
+- Primary (D9, the true key elsewhere): a candidate who comes back after a year away re-registers under a second board
+  number and new provider numbers, so taking each board number as a candidate makes the returner a first-time
+  candidate; the person is the board numbers sharing surname, initials and date of birth.
+- Hazards: ABS and VOID bookings; Harrowgate's held records beside their releases; no-show and voided records; UTC
+  timestamps.
 
-Pair ceiling: 33.6 (cracker 45.0 with the call and no ask figure; mirror 22.2, two of five main figures)
+**Ask B, candidates who first sat Brindle's paper in each year 2021 to 2025, and how many passed at it (10 figures).**
+- Files: the register and Brindle's export.
+- Primary (D9 again, a second grain): the returner's later first sitting under the second board number is counted
+  as another first sitting in its year, and its result as another first-sitting pass or fail.
+- Hazard: ABS and VOID bookings are not sittings (AP-3 section 4).
 
-Mirror leakage: 0.0 per cent of ask weight
+| Ask figures | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at rung 0) | Verdict |
+|---|---|---|---|
+| A, 18 monthly figures | takes each board number as a candidate | the same | miss |
+| B, 10 yearly figures | takes each board number as a candidate | the same | miss |
 
-Measured by: generator/ceiling.py
+Pair ceiling: 30.4 (the cracker on the call at 46.9, the mirror off it at 13.9, each keeping 1 of 29 ask criteria,
+the paper's chart).
+Mirror leakage: 3.4 per cent of the ask weight.
+Measured by: generator/ceiling.py (run on the cut pack, target.zip 1fc4d13f)
+
+## Leak sweep
+
+`leak.py task474 --asof 2026-10-13` on target.zip 1fc4d13f: REVIEW, no LEAK; each line ruled.
+- Sweep 3 on `ap3_pass_marks_and_standards.pdf` and `theory_paper_change_notice_2026.pdf` (pass mark, Harrowgate,
+  theory paper): harmless; they are the awarding body's own nouns for the paper and its provider, and neither document
+  carries a mark, a share or a group.
+- Sweep 4 on `ap3_pass_marks_and_standards.pdf` (resits, equivalent, carries, register, sittings): harmless; the policy
+  files the estimand (an equivalent group) and its own resit rules, and says nothing of a second sitting's reading,
+  matching or a cohort (asserted, L1).
+- Fixed before this run: the venues file's name (an author word), the item note column's name, and the workbooks'
+  application stamp (now the office suite's, each workbook with its own save history).
+
+## Pre-ship check
+
+1. Three rules: the decisive step (the resits matched on the first score) is analytical; nothing planted, read or
+   executed decides (the Three rules lines).
+2. Determinism: AP-3 section 2 files the WHAT; the standing family converges on 38 across first-score bands, resit
+   histories and resit orders, the latent model gives 38 for every equivalent group, and the forks are closed
+   (SF1 to SF11, asserted).
+3. Gates on the final cut (target.zip 1fc4d13f): generator checks 42 of 42, the independent verifier on every graded
+   figure, two byte-identical builds, figures_check.py 52 of 52, precut.py 61 of 61, voice-check.py PASS, leak.py
+   REVIEW with no LEAK; the leak reader and the determinism judge run from the main thread.
 
 ## Tried and rejected
 
@@ -345,3 +380,7 @@ Measured by: generator/ceiling.py
   L07, L11, L12; reader 2 the class-factor default L01, L03, L05, L06), but reader 2 kept 20 of 24 ask figures: it
   deduplicated trucks by VIN and read blank model years from the certification list, so neither device sat on its
   path. Re-sited: the open carrier moves' VINs keyed with O or I, and gliders whose model_year is the chassis's.
+- 2026-10-31, the repair of architecture 6 (the port authority's air-corridor designations): the repair's determinism judge returned SEND_BACK; no shipped text said how a two-weekday count becomes a year's vehicle-miles, the golden's carrying rule (follow the vessel calls through the terminal's gate record) was filed nowhere, so the standard classifying-station factoring filed another designation, and the fleet answers needed an unfiled VIN rule. Lesson: an expansion or carrying rule the golden needs is the estimand's WHAT and is filed, or the design forces it; architecture 6 spent, re-rooted as architecture 7 in a new domain.
+- 2026-10-31, architecture 7 at design: a world without the 2025 resit rules let the unmatched resits file the golden (38, the cross-switch candidates' first scores mixed like the history's); the free near-miss resit within six weeks and the six-month wait under 55, the awarding body's own rules from 1 October 2025, make the candidates reaching the new paper low first-scorers, so the unmatched route files 37 and matching decides.
+- 2026-10-31, architecture 7 at design: a provider-count ask (each training provider's candidates on the new paper) was executable from the provider list's merger note, so the cracker kept it whole; replaced by the yearly first sittings and passes, which turn on the re-registered candidates as the monthly ask does.
+- 2026-10-31, architecture 7 at design: the remote sittings' UTC stamps as a month-boundary device: remote sittings run 07:00 to 23:59 UK time, so in British Summer Time no UTC stamp crosses a UK date and the device moved nothing; kept as Layer 1 only.

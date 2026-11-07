@@ -1,141 +1,247 @@
-"""Build task125: the evidence pack into <task>/target, the goldens into <task>/golden, metadata.json and
-generator/figures.json, then the checks and the independent verifier, then a second full build into a scratch
-folder inside the task (removed after) compared byte for byte, then target.zip cut from the final build.
+"""Build task125's pack, goldens, figures.json, submission.md and metadata.json twice, require byte-identical output,
+cut target.zip, then run the checks and the verifier.
 
-    python3 task125/generator/build.py              everything
-    python3 task125/generator/build.py --out DIR    the pack only, into DIR"""
-import argparse
+    python3 task125/generator/build.py
+"""
+import datetime as dt
 import hashlib
+import json
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
+import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import datetime as dt      # noqa: E402
-
-import docs as D           # noqa: E402
-import postprocess as PP   # noqa: E402
-import records as R        # noqa: E402
-import sim as S            # noqa: E402
-
 TASK = os.path.dirname(HERE)
-FILES = {
-    "person": R.PERSON, "calls": R.CALLS, "register": R.REGISTER, "controls": R.CONTROLS, "release": R.RELEASE,
-    "claimants": R.CLAIMANTS, "staffing": R.STAFFING, "methods": D.METHODS, "fi_2026": D.FI_2026, "fi_2024": D.FI_2024,
-    "dictionary": D.DICTIONARY, "notes": D.NOTES,
+sys.path.insert(0, HERE)
+import docs as D    # noqa: E402
+import pack as PK   # noqa: E402
+import sim as S     # noqa: E402
+import world as W   # noqa: E402
+
+STAMP = (2027, 1, 6, 9, 20, 0)
+SOURCES = {
+    "rms": "a municipal police service's records management system occurrence export (versions)",
+    "crosswalk": "a records management system's 2023 offence code crosswalk",
+    "segments": "a city's street centreline segment file",
+    "register": "a police paid-duty office's booking register",
+    "cad": "a police communications centre's computer-aided dispatch export",
+    "roster": "a patrol division's tour roster",
+    "wards": "a city's ward profiles from the 2021 census",
+    "lights": "a city's streetlight service requests",
+    "protocol": "a crime analysis unit's hot spot designation protocol",
+    "directive": "a police service's directive on patrol workload and response measures",
+    "request": "the Superintendent, Patrol Operations' email",
 }
-DISTRACTORS = ("claimants", "staffing")
 
 
-def build(out, quiet=False, world=None):
-    if os.path.exists(out):
-        shutil.rmtree(out)
-    os.makedirs(out)
-    p = lambda k: os.path.join(out, FILES[k])
-    w = world or S.simulate_all()
-    I = w["intakes"]
-    counts = {}
-    w["person_rows"] = R.person_file(I)
-    counts["person"] = R.write_person(p("person"), w["person_rows"])
-    w["call_rows"] = R.calls(I)
-    counts["calls"] = R.write_calls(p("calls"), w["call_rows"])
-    counts["register"] = R.write_register(p("register"), I)
-    R.write_controls(p("controls"))
-    R.write_release(p("release"), I, w["person_rows"])
-    counts["claimants"] = R.write_claimants(p("claimants"))
-    R.write_staffing(p("staffing"))
-    D.write_methods(p("methods"))
-    D.write_fi_2026(p("fi_2026"))
-    D.write_fi_2024(p("fi_2024"))
-    D.write_dictionary(p("dictionary"))
-    D.write_notes(p("notes"))
-    PP.normalize_ooxml(p("controls"), "Population Estimates", "Dylan Fletcher", "2026-02-11T03:12:40Z",
-                       "2026-10-20T02:31:05Z", excel=True)
-    PP.normalize_ooxml(p("release"), "Labour Market Statistics", "Raewyn Bailey", "2026-08-06T21:40:12Z",
-                       "2026-08-12T22:02:51Z", excel=True)
-    PP.normalize_pdf(p("methods"), b"D:20250311104455+13'00'", b"D:20250314081530+13'00'")
-    PP.normalize_pdf(p("fi_2026"), b"D:20260617091207+12'00'", b"D:20260617093342+12'00'")
-    PP.normalize_pdf(p("fi_2024"), b"D:20240304140318+13'00'", b"D:20240304141102+13'00'")
-    stamp = dt.datetime(2026, 10, 20, 16, 20, tzinfo=dt.timezone(dt.timedelta(hours=13))).timestamp()
-    for f in os.listdir(out):
-        os.utime(os.path.join(out, f), (stamp, stamp))
-    w["counts"] = counts
-    if not quiet:
-        print("built %s: %d files; %s" % (out, len(os.listdir(out)), ", ".join("%s %d" % kv for kv in counts.items())))
-    return w
+def world():
+    r = W.rng()
+    segs = W.streets(r)
+    base, inc_g, inc_l, role = W.base_rates(r, segs)
+    ev = W.calendars(r)
+    crimes = W.crimes(r, segs, base, inc_g, inc_l, ev)
+    nonp = W.nonpatrol_rates(r, segs, base)
+    twp = W.township(r)
+    bdg = S.badges(r)
+    rost = S.roster(r, bdg)
+    events = S.cad(r, segs, twp, base, nonp)
+    bks = S.bookings(r, segs, ev, bdg)
+    S.carry_crews(rost, events, bdg)
+    settle_edges(segs, rost, events, bks)
+    return {"r": r, "segs": segs, "base": base, "inc_g": inc_g, "inc_l": inc_l, "role": role, "ev": ev,
+            "crimes": crimes, "nonp": nonp, "twp": twp, "badges": bdg, "roster": rost, "events": events,
+            "bookings": bks}
+
+
+def _own_date_tour(t):
+    h = t.hour + t.minute / 60.0
+    return t.date(), ("D" if 7 <= h < 19 else "N")
+
+
+def _quarter_hours(segs, rost, events, naive=False):
+    out = {}
+    for ev in events:
+        if ev["area"] != "city" or ev["source"] == "OFFICER":
+            continue
+        q = (ev["received"].month - 1) // 3 + 1
+        for u in ev["units"]:
+            key = (_own_date_tour if naive else S.tour_of)(u["dispatched"])
+            n = len(rost.get(key + (u["unit"],), [0]))
+            k = (ev["ward"], q)
+            el = u["cleared"].astimezone(dt.timezone.utc) - u["dispatched"].astimezone(dt.timezone.utc)
+            out[k] = out.get(k, 0.0) + el.total_seconds() / 3600.0 * n
+    return out
+
+
+def _duty_hours(bks):
+    out = {}
+    for b in bks:
+        if b["date"].year != 2026:
+            continue
+        for ln in b["lines"]:
+            if ln["status"] == "WORKED":
+                out[b["ward"]] = out.get(b["ward"], 0.0) + ln["hours"]
+    return out
+
+
+def _later(t, seconds):
+    """An aware time moved on by elapsed seconds (never by wall-clock arithmetic across a clock change)."""
+    return (t.astimezone(dt.timezone.utc) + dt.timedelta(seconds=seconds)).astimezone(t.tzinfo)
+
+
+def settle_edges(segs, rost, events, bks):
+    """Keep every ask figure clear of its rounding edge. An officer-hours cell sits at least a quarter of an hour from
+    a half hour, so no reading of the clocks moves it across; each nudge lets one unit clear nine minutes later,
+    inside its tour. A paid-duty total at a half hour moves by a quarter hour (the register's own record)."""
+    for _ in range(400):
+        moved = False
+        for k, v in sorted(_quarter_hours(segs, rost, events).items()):
+            if abs((v % 1) - 0.5) < 0.25:
+                for e in events:
+                    if not (e["area"] == "city" and e["ward"] == k[0] and e["source"] != "OFFICER" and
+                            (e["received"].month - 1) // 3 + 1 == k[1] and e["units"]):
+                        continue
+                    u = e["units"][0]
+                    if _later(u["cleared"], 540) < S.tour_end(u["dispatched"]) - dt.timedelta(minutes=2) and \
+                            not u.get("nudged"):
+                        u["cleared"] = _later(u["cleared"], 540)
+                        u["nudged"] = True
+                        break
+                moved = True
+        gold = _quarter_hours(segs, rost, events)
+        for k, v in sorted(_quarter_hours(segs, rost, events, naive=True).items()):
+            if abs(v - gold[k]) < 1.0:
+                for e in events:
+                    if not (e["area"] == "city" and e["ward"] == k[0] and e["source"] != "OFFICER" and
+                            (e["received"].month - 1) // 3 + 1 == k[1]):
+                        continue
+                    for u in e["units"]:
+                        if u.get("nudged") or u["dispatched"].hour >= 7:
+                            continue
+                        c_true = len(rost[S.tour_of(u["dispatched"]) + (u["unit"],)])
+                        c_own = len(rost[_own_date_tour(u["dispatched"]) + (u["unit"],)])
+                        sign = 1 if v >= gold[k] else -1
+                        if (c_own - c_true) * sign <= 0:
+                            continue
+                        if _later(u["cleared"], 1500) < S.tour_end(u["dispatched"]) - dt.timedelta(minutes=2):
+                            u["cleared"] = _later(u["cleared"], 1500)
+                            u["nudged"] = True
+                            break
+                    else:
+                        continue
+                    break
+                moved = True
+        for w, v in sorted(_duty_hours(bks).items()):
+            if abs((v % 1) - 0.5) < 0.012:
+                b = next(b for b in bks if b["date"].year == 2026 and b["ward"] == w and
+                         any(ln["status"] == "WORKED" for ln in b["lines"]) and not b["overnight"])
+                ln = next(ln for ln in b["lines"] if ln["status"] == "WORKED")
+                ln["a_end"] += 15
+                ln["hours"] += 0.25
+                moved = True
+        if not moved:
+            return
+    raise SystemExit("settle_edges did not converge")
+
+
+def build_pack(out):
+    os.makedirs(out, exist_ok=True)
+    f = lambda k: os.path.join(out, PK.FILES[k])
+    w = world()
+    r = w["r"]
+    occ, rows = PK.occurrences(r, w["segs"], w["crimes"], w["nonp"])
+    n = {"rms": PK.write_rms(rows, f("rms"))}
+    PK.write_crosswalk(f("crosswalk"))
+    PK.write_segments(w["segs"], f("segments"))
+    PK.write_register(w["bookings"], f("register"), dt.datetime(2027, 1, 6, 7, 2, 11), dt.datetime(2027, 1, 6, 7, 9, 48))
+    n["cad"] = PK.write_cad(r, w["events"], f("cad"))
+    PK.write_roster(w["roster"], f("roster"))
+    PK.write_wards(f("wards"))
+    n["lights"] = PK.write_lights(r, w["segs"], f("lights"))
+    D.protocol(f("protocol"))
+    D.directive(f("directive"))
+    D.request(f("request"))
+    t = dt.datetime(*STAMP).timestamp()
+    for k in PK.FILES:
+        os.utime(f(k), (t, t))
+    w["occ"] = occ
+    return n, w
+
+
+def metadata(n):
+    return {"task": "task125", "architecture": 4, "as_of": "2027-01-06",
+            "files": {PK.FILES[k]: {"source": SOURCES[k], "date": "2027-01-06", "license": "synthetic, CC0",
+                                    "role": "distractor" if k in PK.DISTRACTORS else "evidence"} for k in PK.FILES},
+            "distractors": [PK.FILES[k] for k in PK.DISTRACTORS],
+            "largest_file": {"name": PK.FILES["rms"], "rows": n["rms"]},
+            "cad_rows": n["cad"],
+            "deliverables": ["hot_spot_patrols_2027.pptx", "patrol_figures_2026.csv"]}
 
 
 def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
+    h = {}
+    for root, _d, files in os.walk(folder):
+        for fn in sorted(files):
+            p = os.path.join(root, fn)
+            h[os.path.relpath(p, folder)] = hashlib.sha256(open(p, "rb").read()).hexdigest()
+    return h
 
 
-def cut_zip(root):
-    import zipfile
-    folder = os.path.join(root, "target")
-    stamp = (2026, 10, 20, 16, 22, 4)
-    zp = os.path.join(root, "target.zip")
-    with zipfile.ZipFile(zp, "w") as z:
-        for f in sorted(os.listdir(folder)):
-            zi = zipfile.ZipInfo(f, date_time=stamp)
+def one_build(base):
+    import golden as GD
+    target, golden = os.path.join(base, "target"), os.path.join(base, "golden")
+    n, w = build_pack(target)
+    fig = GD.write_all(target, golden, base)
+    json.dump(fig, open(os.path.join(base, "figures.json"), "w"), indent=1, sort_keys=True)
+    json.dump(metadata(n), open(os.path.join(base, "metadata.json"), "w"), indent=1, sort_keys=True)
+    return digest(base), fig
+
+
+def cut_zip(target, path):
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for fn in sorted(os.listdir(target)):
+            zi = zipfile.ZipInfo(fn, date_time=STAMP)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
-            z.writestr(zi, open(os.path.join(folder, f), "rb").read())
-    return zp
-
-
-def everything(root, quiet=False):
-    import deliver as DL
-    import metadata as MD
-    world = build(os.path.join(root, "target"), quiet=quiet)
-    if os.path.exists(os.path.join(root, "golden")):
-        shutil.rmtree(os.path.join(root, "golden"))
-    world["deliver"] = DL.main(os.path.join(root, "target"), os.path.join(root, "golden"),
-                               os.path.join(root, "generator", "figures.json"))
-    MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"))
-    return world
+            z.writestr(zi, open(os.path.join(target, fn), "rb").read())
 
 
 def main():
-    import checks as CK
-    import verify as V
-    world = everything(TASK)
-    CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), world=world,
-           meta_path=os.path.join(TASK, "metadata.json"))
-    V.main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
-    tmp = tempfile.mkdtemp(dir=TASK, suffix=".tmp")
-    try:
-        os.makedirs(os.path.join(tmp, "generator"))
-        everything(tmp, quiet=True)
-        same_t = digest(os.path.join(TASK, "target")) == digest(os.path.join(tmp, "target"))
-        same_g = digest(os.path.join(TASK, "golden")) == digest(os.path.join(tmp, "golden"))
-        same = {}
-        for f in ("metadata.json", os.path.join("generator", "figures.json")):
-            same[f] = open(os.path.join(TASK, f), "rb").read() == open(os.path.join(tmp, f), "rb").read()
-        if not (same_t and same_g and all(same.values())):
-            raise SystemExit("second build differs: target %s, golden %s, %s" % (same_t, same_g, same))
-    finally:
-        shutil.rmtree(tmp)
-    allh = hashlib.sha256("".join(v for _, v in sorted(digest(os.path.join(TASK, "target")).items())).encode() +
-                          "".join(v for _, v in sorted(digest(os.path.join(TASK, "golden")).items())).encode()).hexdigest()
-    print("two builds byte-identical: %d target files, %d golden files, metadata.json and figures.json (sha256 %s)" % (
-        len(os.listdir(os.path.join(TASK, "target"))), len(os.listdir(os.path.join(TASK, "golden"))), allh[:16]))
-    import zipfile
-    zp = cut_zip(TASK)
-    with zipfile.ZipFile(zp) as z:
-        inside = {i.filename: hashlib.sha256(z.read(i.filename)).hexdigest() for i in z.infolist()}
-    if inside != digest(os.path.join(TASK, "target")):
-        raise SystemExit("target.zip differs from target/")
-    print("target.zip cut from this build: %d files, each identical to target/ (sha256 %s)" % (
-        len(inside), hashlib.sha256(open(zp, "rb").read()).hexdigest()[:16]))
+    a, b = tempfile.mkdtemp(), tempfile.mkdtemp()
+    ha, fig = one_build(a)
+    hb, _ = one_build(b)
+    same = ha == hb
+    print("two builds byte-identical:", same, "(%d files)" % len(ha))
+    if not same:
+        for k in sorted(set(ha) | set(hb)):
+            if ha.get(k) != hb.get(k):
+                print("  differs:", k)
+        sys.exit(1)
+    for sub in ("target", "golden"):
+        dst = os.path.join(TASK, sub)
+        if os.path.isdir(dst):
+            shutil.rmtree(dst)
+        shutil.copytree(os.path.join(a, sub), dst)
+    shutil.copy(os.path.join(a, "figures.json"), os.path.join(HERE, "figures.json"))
+    shutil.copy(os.path.join(a, "metadata.json"), os.path.join(TASK, "metadata.json"))
+    shutil.copy(os.path.join(a, "submission.md"), os.path.join(TASK, "submission.md"))
+    shutil.rmtree(a)
+    shutil.rmtree(b)
+    zp = os.path.join(TASK, "target.zip")
+    cut_zip(os.path.join(TASK, "target"), zp)
+    print("target.zip sha256", hashlib.sha256(open(zp, "rb").read()).hexdigest())
+    print("designated", fig["designated"])
+    for script in ("checks.py", "verify.py"):
+        p = os.path.join(HERE, script)
+        if os.path.exists(p):
+            rc = subprocess.call([sys.executable, p])
+            print(script, "exit", rc)
+            if rc:
+                sys.exit(rc)
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", help="build the pack only, into this folder")
-    a = ap.parse_args()
-    if a.out:
-        build(a.out)
-    else:
-        main()
+    main()

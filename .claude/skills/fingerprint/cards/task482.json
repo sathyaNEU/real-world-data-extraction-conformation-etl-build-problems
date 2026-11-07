@@ -1,110 +1,86 @@
 {
   "task": "task482",
-  "architecture": "v14",
-  "drawn": "2026-10-25",
-  "slot_note": "architecture 14, re-rooted after architecture 13 was spent at stage 4 (both readers carried the interim measure by each practice's own 2025 run-out and landed the call); the run-out is now the default path's last step (stumping 1.1b) and the decisive step is the stays still open at the cut",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "payment-claims-health-plan-analytics",
-  "niche": "a clinically integrated network's 2027 two-sided risk elections for its thirteen independent primary care practices, each practice's 2026 total cost of care per attributed member month projected to the payers' year-end attribution from the October interim run, where the members still in hospital at the cut carry stays the hospitals bill only at discharge, visible only through the daily professional claims and already past the member cap",
+  "architecture": "v16 (re-root into a UK secondary aluminium works' 2026 product-family carbon intensities for a car maker's 2027 low-carbon premium: each family's direct emissions read from the gas each process burned, the shared site meter attributed to melting by the tonnes melted and to the homogenizing furnace and the solution oven by the hours they fired)",
+  "drawn": "2026-10-31",
+  "slot_note": "re-root of task482 in the same objective (Data Extraction & Conformation), batch 1; architecture 15 (the Missouri foundry's employee dental maximum) spent at stage 4 when the judge sent it back on a withheld costing rule; architectures 5 to 14 recorded in the note; new world (a West Midlands secondary aluminium works and a car maker's supplier carbon requirement), new dataset, new shell",
+  "domain": "physical-environmental-sciences",
+  "client_domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a UK secondary aluminium works' 2026 direct emissions per tonne of each product family (two extrusion billet alloys, foundry ingot, heat-treated castings), conformed from the site gas meter's 15-minute export, the gas supplier's invoices, the melting furnaces' charge logs, the homogenizing furnace and solution oven logs and the production records, for a car maker's 2027 low-carbon premium",
   "objective": "etl",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Birrelhaven, Raddelview, Jesselford, Nerrincreek and Torrinridge in the 2027 two-sided track; keep Haddelcrest, Wexelmoor, Mallowcrest, Prestelglen and Garrowdale one-sided.",
-  "answer_source": "submission.md block 1; generator/figures.json call.enter",
+  "shape": "05",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "EUR 342,000: Velden pays EUR 38 a tonne on 7,200 t of 6063 extrusion billet and 1,800 t of LM25 foundry ingot, the two families at or under SCR-2's 0.235 t CO2/t in 2026 (6063 billet 0.211, LM25 ingot 0.168); 6082 billet (0.263) and the LM25-TF castings (0.501) are over the limit",
+  "answer_source": "generator (golden.py on the cut pack, recomputed by verify.py)",
   "gap": [
-    "time",
+    "objective",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G12",
-    "G13",
-    "G16"
+    "G2",
+    "G7",
+    "G14"
   ],
-  "gate_g": "etl_conformance",
-  "calibration_form": "prior_period_close_out",
-  "stump_strategy": "maturity_censoring",
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the three payers' feeds, reads every rule and carries each practice's October interim measure by its own 2025 run-out at the same cut (the field's projection of a retrospective attribution) enters ten practices; the members still in hospital at the cut, whose stays the hospitals bill at discharge, are past the member cap, and only counting each at the cap moves Mallowcrest Pediatrics and Garrowdale Family Practice over their thresholds.",
-  "domain_test": "The deciding quantity is each practice's 2026 total cost of care per attributed member month on the payers' final runs, which a value-based finance team projects from the interim run by completion factors and the attribution's own run-out, with the large claims it already knows of carried separately at the stop-loss; swap the hospital for a school and there is no stay billed at its end and no member cap, so the step has nothing to act on.",
+  "analyst_test": "A strong analyst who conforms the meter export (UTC, the imperial meter's hundreds of cubic feet before the meter exchange, each invoice period's calorific value), dedupes the furnace logs and the production lots, reads the car maker's requirement correctly and attributes each process's gas per tonne processed gives the two billet alloys the same 0.225 t CO2/t and pays EUR 456,000 (the mass allocation, every family at the works' 0.22, pays EUR 480,700); the call is wrong because the homogenizing furnace burns gas by the hours its loads fire, not the tonnes they hold, and a 6082 load soaks about two and a half times as long as a 6063 load, so 6082 billet is at 0.263, over the limit, and the premium is EUR 342,000.",
+  "domain_test": "The deciding quantity is each product family's specific direct emissions, tonnes of CO2 per tonne, the product carbon footprint an emissions inventory attributes from shared combustion to the processes that burn the fuel, with melting energy scaling with the mass melted and soaking energy with time at temperature; put hospital wards or library loans in and there is no furnace, no soak and no melt yield, so the task stops making sense.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a stay billed at its end carried at the member cap from its daily professional charges",
+  "layer2_pattern": "own:shared-meter-process-attribution",
   "layer1": [
-    "three payers' claim feeds in three layouts (csv voiding and replacing reprocessed claims, pipe-delimited lines in cents with adjusted status, JSON claim versions)",
-    "open coverage spans written as 9999-12-31 or left blank",
-    "a title block above the header in a payer's attribution workbook",
-    "TINs with and without a hyphen across the payers' files",
-    "member identifiers that differ by payer, joined through the network's master patient index",
-    "clinicians who moved between practices, with effective dates in the network's roster",
-    "2025 claims paid after the 31 March cut-off still in the October feeds"
+    "the site gas meter exported in UTC at 15-minute intervals, the imperial meter's hundreds of cubic feet until the meter exchange and cubic metres after it",
+    "the gas supplier's invoices by meter-read period, each with its own calorific value and the volume correction factor",
+    "melting furnace charge logs in local time with re-charged and aborted heats",
+    "production lots re-inspected under the same lot number and rejected lots returned to the furnace",
+    "the homogenizing furnace's loads straddling midnight and month ends"
   ],
-  "stakeholder_role": "the network's director of payer performance analytics",
-  "role_family": "portfolio_manager",
-  "scoring_unit": "per covered member",
+  "stakeholder_role": "the car maker's purchasing lead for aluminium semi-finished goods, who awards the 2027 low-carbon premium under the supplier carbon requirement",
+  "role_family": "procurement_lead",
+  "scoring_unit": "per certified output",
   "spine": {
-    "file": "mlh_tcoc_claims_2025-01_2026-09.csv",
-    "rows": 283413,
-    "entity": "one claim, void or replacement line of Merrinlake's value-based partner claims extract",
-    "grain": "claim x version",
+    "file": "brackwell_site_gas_meter_2026.csv",
+    "rows": 35040,
+    "entity": "one 15-minute interval of the works' gas meter (volume, unit, meter serial)",
+    "grain": "15-minute interval",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
+  "forum": "other",
   "forcing_event": "purchase_order_or_contract",
-  "org_family": "hospital_or_health_provider",
+  "org_family": "manufacturer",
   "world": {
-    "geography": "United States, Wisconsin (a fictional clinically integrated network of thirteen independent primary care practices in the east-central counties; the network, its practices, the three payers and the people are fictional, the names screened before the pack is cut)",
-    "currency": "USD",
-    "org_type": "a physician-led clinically integrated network holding three commercial payers' total cost of care contracts",
-    "invented_names": [
-      "Larrowbrook Physician Network",
-      "Merrinlake Health Plan",
-      "Kesselcrest Benefit Partners",
-      "Pemberglen Mutual Health",
-      "Ostrelwood Internal Medicine",
-      "Callowglen Family Practice",
-      "Thornelfield Family Medicine",
-      "Haddelcrest Internal Medicine",
-      "Birrelhaven Children's Clinic",
-      "Raddelview Family Physicians",
-      "Jesselford Family Medicine",
-      "Nerrincreek Family Practice",
-      "Wexelmoor Internal Medicine",
-      "Torrinridge Family Medicine",
-      "Mallowcrest Pediatrics",
-      "Prestelglen Internal Medicine",
-      "Garrowdale Family Practice"
-    ],
+    "geography": "United Kingdom, West Midlands (a fictional secondary aluminium works with a casthouse and a sand foundry, and a fictional German car maker; the companies and people are fictional)",
+    "currency": "GBP",
+    "org_type": "a secondary aluminium works supplying a car maker under its supplier carbon requirement",
     "people": [
-      "Andre O'Connor",
-      "Joel Brewer",
-      "Carlos Howard"
+      "Rosemary Kent",
+      "Tony Coleman",
+      "Reece Parker"
     ]
   },
   "deliverables": [
-    "two_sided_track_elections_2027.xlsx",
-    "practice_cost_vs_benchmark_2026.png"
+    "velden_low_carbon_premium_2027.docx",
+    "brackwell_scr2_figures_2026.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A per-member rate for a period still running is carried to the period's end by the last period's own relation at the same cut, but a few members are inside episodes whose amount is recorded only when the episode ends; the episodes show only through the small charges recorded day by day while they run, and they are already past the per-member cap, so each such member's amount for the period is the cap however the episode ends, while the carried rate, built on members whose later amounts are small, leaves it out.",
-  "driver_concrete": "Each practice's 2026 network measure on the payers' final attribution is its October interim measure carried by its own 2025 run-out at the same cut, plus what the members still in hospital on 31 August will bring: the hospitals bill a stay when it ends, so the premature triplets in a neonatal unit since June (Mallowcrest Pediatrics) and the four members of one family in trauma intensive care since a July crash (Garrowdale Family Practice) show only through the neonatologists' and intensivists' daily professional claims, and each is already past the USD 250,000 member cap, so each member's 2026 cost is the cap.",
-  "stump": "The default path carries each practice's October interim measure, completed by the payers' factors, by its own 2025 run-out at the same cut and enters ten practices; the factors and the run-out carry what the year adds on average, but the stays still open at the cut are billed at discharge and show only as daily professional charges, and the seven members in them are each past the cap, so Mallowcrest Pediatrics and Garrowdale Family Practice come in over their thresholds and eight practices enter.",
-  "mechanism_source": "stumping 1.1b (the field's own method, the attribution run-out, placed on the default path) and the rigor library's judgment list ('what a cap truncates'); a hospital's discharge billing of long stays and an ACO's large-claim handling at the stop-loss",
+  "question_form": "how-much",
+  "driver": "The decisive quantity is each product's share of fuel burned by shared equipment, recorded only by one meter, where one process burns fuel by the mass it melts and others by the hours they hold heat whatever they hold; spreading the meter's fuel over the products by their output mass gives every product the plant's average, while the processes' own fuel, read from the meter's response to when each process runs and how much it melts, puts the long-soaked product and the low-yield product well above it.",
+  "driver_concrete": "Each family's 2026 direct emissions are the gas its processes burned: melting attributed by the tonnes melted for the family (castings melt about 1.6 tonnes per tonne shipped), the homogenizing furnace by its firing hours on the family's loads (6082 billet soaks about twice as long as 6063), the solution oven only to the castings, and the gas burned with no process running shared by tonnes; each process's gas is read from the site meter's 15-minute record against the charge and furnace logs, since no process is sub-metered.",
+  "stump": "The default path reads each process's gas from the site meter as a quantity per tonne and gives the homogenizing furnace's gas to the two billet alloys by the tonnes each put through it, so 6082 billet sits level with 6063 at 0.225 t CO2/t and the premium comes to EUR 456,000; the furnace burns by the hour whatever a load weighs, a 6082 load soaks about 15 hours against about 6 for 6063, and 6082 takes 47 per cent of the furnace's hours on 26 per cent of its billet, which puts it at 0.263, over the limit, and the premium at EUR 342,000.",
+  "mechanism_source": "design_note",
   "differentiation": {
-    "task451": "task451 completes a closed year's unpaid claims by a lag history whose handling sped up; here the completion factors are right on average and what they cannot carry is a few known stays billed at their end, each already past the cap.",
-    "task458": "task458 counts a lasting trait seen only through events while each member is observed; here no trait is counted: the population is defined by the year's own visits, and the late-assigned members' small amounts and whole year of exposure carry the rate.",
-    "task130": "task130's lineage forecasts a group chosen on an extreme outcome by a group chosen the same way a period earlier; here nobody is chosen on the outcome: the population grows inside the period by contact, and the run-out is measured on last year's same cut.",
-    "task482": "architecture 13 carried the interim measure by each practice's own run-out of the attribution, and that run-out is now the default path's last step; architecture 10 summed each member's share of a lifetime total that later spells add to; here the members are already attributed and what is still to come is a bill for a stay open at the cut, fixed at the member cap.",
-    "task231": "task231 recovers the exited share of silent units from older rounds whose record of exits has caught up; here nobody is silent or exited: the members are attributed and present in the claims, and what the record lacks is the amount of a stay still running, fixed at the member cap.",
-    "task234": "task234 reads each source's current output from a share a loss in transit cannot move; here nothing is lost: every claim arrives, and the stays open at the cut have not been billed yet because a hospital bills a stay at its end.",
-    "task445": "task445 completes holders whose reports have not arrived from each holder's last report; here every report has arrived, the averages the completion factors and run-out carry are right, and the step is the few members whose open stays are already past the cap, read from their daily professional claims."
+    "task65": "task65 regroups child emission units into sources under a per-entity fee cap, so the total moves through the cap without any child's value changing; here no record is regrouped and nothing is capped: the site meter's fuel is split among processes by each process's own physical driver (mass melted against hours at temperature), which the meter's response to the process logs reveals, and the product families' intensities move because the time-driven furnaces' fuel follows hours, not output",
+    "task67": "task67 constitutes entities from child records by location under a cap, read through a filed grouping rule; here the attribution rule is filed only as its WHAT (each process carries the fuel it burned) and the work is estimating each process's fuel from one meter's interval record against the logs, an estimation from the data's structure with no grouping and no cap",
+    "task84": "task84 groups concurrently live campaigns on a composite key and prices the copies' premium from removal episodes; here there is no duplicate entity and no key to group on: one meter's interval series is decomposed into the fuel of processes that run at different times and burn by different drivers, and the products carry their processes' fuel"
   },
   "lineage": [
     {
@@ -342,9 +318,159 @@
       "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Raddelview, Jesselford, Nerrincreek, Torrinridge, Mallowcrest and Garrowdale in the 2027 two-sided track; keep Haddelcrest, Birrelhaven, Wexelmoor and Prestelglen one-sided.",
       "architecture": 13,
       "fate": "spent 2026-10-25 at stage 4 round 1: both scored readers re-ran the October 2025 interim run from the 2025 claims and carried each practice's interim measure by its own 2025 final-to-interim ratio, landing the call (the nine), asks 78 and 65 of 78 (exit 1); the judge thread was stopped at the spend"
+    },
+    {
+      "subdomain": "payment-claims-health-plan-analytics",
+      "niche": "a clinically integrated network's 2027 two-sided risk elections for its thirteen independent primary care practices, each practice's 2026 total cost of care per attributed member month projected to the payers' year-end attribution from the October interim run, where the members still in hospital at the cut carry stays the hospitals bill only at discharge, visible only through the daily professional claims and already past the member cap",
+      "objective": "etl",
+      "shape": "10",
+      "decision_type": "designation_set",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G13",
+        "G16"
+      ],
+      "gate_g": "etl_conformance",
+      "stump_strategy": "maturity_censoring",
+      "driver": "A per-member rate for a period still running is carried to the period's end by the last period's own relation at the same cut, but a few members are inside episodes whose amount is recorded only when the episode ends; the episodes show only through the small charges recorded day by day while they run, and they are already past the per-member cap, so each such member's amount for the period is the cap however the episode ends, while the carried rate, built on members whose later amounts are small, leaves it out.",
+      "driver_concrete": "Each practice's 2026 network measure on the payers' final attribution is its October interim measure carried by its own 2025 run-out at the same cut, plus what the members still in hospital on 31 August will bring: the hospitals bill a stay when it ends, so the premature triplets in a neonatal unit since June (Mallowcrest Pediatrics) and the four members of one family in trauma intensive care since a July crash (Garrowdale Family Practice) show only through the neonatologists' and intensivists' daily professional claims, and each is already past the USD 250,000 member cap, so each member's 2026 cost is the cap.",
+      "stump": "The default path carries each practice's October interim measure, completed by the payers' factors, by its own 2025 run-out at the same cut and enters ten practices; the factors and the run-out carry what the year adds on average, but the stays still open at the cut are billed at discharge and show only as daily professional charges, and the seven members in them are each past the cap, so Mallowcrest Pediatrics and Garrowdale Family Practice come in over their thresholds and eight practices enter.",
+      "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Birrelhaven, Raddelview, Jesselford, Nerrincreek and Torrinridge in the 2027 two-sided track; keep Haddelcrest, Wexelmoor, Mallowcrest, Prestelglen and Garrowdale one-sided.",
+      "deliverables": [
+        "two_sided_track_elections_2027.xlsx",
+        "practice_cost_vs_benchmark_2026.png"
+      ],
+      "question_form": "which",
+      "architecture": 14,
+      "drawn": "2026-10-25",
+      "fate": "spent 2026-10-31 at stage 4: the determinism judge's pass 2 returned FIX_NOW (two graded thresholds a cent off, the 2025 measures within a third of a cent of a rounding edge), and the re-judge of the repair found the write-up's claim that all seven stay members were past the cap by 31 August false under a pooled per-day reading (4,535.53 a day against the per-kind 6,380), the call's margins thin and the stay amount unfiled: a FIX_NOW that failed its second pass"
+    },
+    {
+      "architecture": "v15 (re-root into a Missouri manufacturer's self-insured employee dental plan: the 2027 annual maximum priced on the 2025 plan year, with the predetermined work members at the maximum put off to the next plan year read from the predeterminations and the claims after the January reset)",
+      "drawn": "2026-10-31",
+      "slot_note": "re-root of task482 in the same objective (Data Extraction & Conformation), batch 1; architecture 14 (the clinically integrated network's two-sided track) spent when a FIX_NOW failed its second judge pass; architectures 5 to 13 recorded in the note; new world (a Missouri manufacturer's employee dental plan), new dataset, new shell",
+      "domain": "healthcare-delivery-health-economics",
+      "client_domain": "healthcare-delivery-health-economics",
+      "subdomain": "payment-claims-health-plan-analytics",
+      "niche": "a foundry and machining company's self-insured employee dental plan costing the union's bargaining proposal of a higher per-person annual benefit maximum for its 2027 plan year from the 2025 plan year's claims, predeterminations and accumulators, after its administrator moved the plan's claims to a new adjudication platform in July 2025",
+      "objective": "etl",
+      "shape": "04",
+      "decision_type": "dial_setting",
+      "answer_unit": "named_option",
+      "answer": "Agree a 2,000 dollar annual maximum for 2027, not the union's 3,000: under Finance Policy F-17 2,000 dollars adds 1.55 dollars per covered person month, inside Board Resolution 2026-31's 1.90, and 3,000 dollars adds 2.34",
+      "answer_source": "generator (golden.py on the cut pack, recomputed by verify.py)",
+      "gap": [
+        "objective",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G13",
+        "G9"
+      ],
+      "gate_g": "etl_conformance",
+      "calibration_form": "none",
+      "stump_strategy": "other",
+      "decisive_rule_filed": false,
+      "official_decoy": false,
+      "validated_decoy": false,
+      "context_artifact": "filed_model",
+      "stump_class": "analytical",
+      "analyst_test": "A strong analyst who conforms the two claims platforms, reads every plan rule correctly and prices each maximum on a continuance of the 2025 members' plan-paid charges before the maximum (the lines the maximum cut included), trended line by line to the 2027 fee schedule, files a 3,000 dollar maximum; members who reached the 1,500 dollar maximum put off the crowns, bridges and implants their dentists' predeterminations had priced until the January reset, so at any higher maximum that work comes back into the year and only 2,000 dollars stays inside the bargaining mandate's limit.",
+      "domain_test": "The deciding quantity is the plan's 2027 cost at each annual maximum, the benefit-change pricing a health plan's claims analytics works from a continuance table of its members' annual plan-paid charges; put megawatt-hours or library loans in for dental claims and there is no predetermination, no coinsurance tier and no plan-year reset of a per-person benefit maximum, and the task stops making sense.",
+      "layer2_family": "estimand_identification",
+      "layer2_pattern": "own:benefit-ceiling-deferred-work",
+      "layer1": [
+        "two claims platforms across the July 2025 migration (Classic voiding and replacing an adjusted claim, Nexus restating it under a new claim number and superseding the old lines, a Classic claim adjusted after the move restated on Nexus)",
+        "member identifiers renumbered at the migration, joined through the administrator's crosswalk",
+        "Classic procedure codes without the leading D and US-format dates beside Nexus ISO dates",
+        "reduction reasons in two vocabularies (Classic MX, DD and FQ; Nexus CARC 119, 1 and 151)",
+        "a fee schedule workbook with one sheet per year under a title block",
+        "eligibility spans written with an open end as 12/31/9999 on Classic and left blank on Nexus",
+        "Nexus estimate timestamps in UTC beside Classic local times",
+        "Nexus tooth numbers stored as text with a leading zero",
+        "Nexus predeterminations issued in parts, one estimate per tooth group"
+      ],
+      "stakeholder_role": "the company's benefits manager, who costs the union's dental proposal for the company's bargaining committee",
+      "role_family": "finance_controller",
+      "scoring_unit": "per covered member",
+      "spine": {
+        "file": "rba_classic_claims_2024-01_2025-06.csv + rba_nexus_claim_lines_2025-07_2026-10.csv",
+        "rows": 90899,
+        "entity": "one adjudicated dental claim line (procedure, tooth, allowed, paid, deductible, reason)",
+        "grain": "claim line",
+        "source": "synthetic"
+      },
+      "forum": "committee_or_panel",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "manufacturer",
+      "world": {
+        "geography": "United States, Missouri (a fictional iron foundry and machining company of about 2,300 employees; the company, its plan, its administrator, the union local and the people are fictional)",
+        "currency": "USD",
+        "org_type": "a manufacturer's self-insured employee dental plan administered by a third-party administrator",
+        "invented_names": [
+          "Pembrook Castings Company",
+          "Ridgeline Benefit Administrators"
+        ],
+        "people": [
+          "Audrey Bautista",
+          "Marvin Jordan",
+          "Barry Rowland"
+        ]
+      },
+      "deliverables": [
+        "pembrook_dental_member_year_2025.csv",
+        "pembrook_dental_maximum_2027.pdf",
+        "pembrook_dental_maximum_2027.svg"
+      ],
+      "opening_move": "question-first",
+      "question_form": "how-much",
+      "driver": "The decisive quantity is what each member's yearly amount would be under a higher per-member ceiling when the records stop at the current one: members who reach it put off work their providers had already priced in advance until the ceiling resets, so that work shows only in the advance estimates and among the next period's first records, and a higher ceiling's cost read from the period's own records misses it and comes out at about half.",
+      "driver_concrete": "Each 2025 member's plan-paid amount before the maximum is the 2025 claims (the lines the maximum cut included) plus the predetermined major work the member put off once the estimate showed the 1,500 dollar maximum would cut the payment, read as the 2025 estimate lines whose member, procedure and tooth are not claimed in 2025 and are claimed after 1 January 2026 within the estimate's twelve months; at the 2027 fees that work puts the 3,000 dollar maximum over the board's 1.90 dollars per covered person month and leaves 2,000 dollars inside it.",
+      "stump": "A competent solver prices each maximum on a continuance of the 2025 claims re-priced at the 2027 fees and files 3,000 dollars (1.23 per covered person month); members at the 1,500 dollar maximum put off their predetermined crowns, bridges and implants to the January reset, so at a higher maximum the plan pays for that work in the year and only 2,000 dollars (1.55; 3,000 at 2.34) fits the board's 1.90.",
+      "mechanism_source": "design_note",
+      "differentiation": {},
+      "notes": "re-rooted 2026-10-31 by a batch 1 fork: new world (a Missouri manufacturer's employee dental plan), new dataset, new shell (how-much | csv+pdf+svg); stump_strategy other: a member's year of demand is cut off by a per-person benefit ceiling, and the decisive move recovers the work put off above it from the providers' advance estimates and the claims after the ceiling resets; not maturity_censoring (no open period is completed: the 2025 plan year is closed and every record of it is final), not binding_constraint (the ceiling removes no candidate, it hides the demand that prices one), not population_selection (every member is priced; nothing selects who is in the denominator)",
+      "shell": {
+        "question form": "how-much",
+        "second-sentence opener": "price",
+        "rounding opener": "round",
+        "deliverable set": "csv+pdf+svg"
+      },
+      "version": "v15",
+      "spent": "2026-10-31: stage 4 judge NOT_DETERMINISTIC, SEND_BACK, the reconciliation confirmed a withheld rule (F-17 executed word for word files 3,000; the golden's 2,000 needed the put-off work added back, filed nowhere)"
     }
   ],
-  "notes": "stump_strategy maturity_censoring: a member's year is censored at the cut wherever a hospital has yet to bill a stay still running, and the decisive move is reading the members in such stays, already past the member cap, at the cap; not population_selection (the population is filed in full by the attribution clause) and not binding_constraint (the cap fixes the size of the step, it removes no pick by itself). gate_g etl_conformance: each practice's conformed cost of care on the contract's basis, judged against the board's two-sided standard.",
-  "client_domain": "healthcare-delivery-health-economics",
-  "registered": "2026-10-25T01:34:36Z"
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "build",
+      "rounding opener": "give",
+      "deliverable set": "png+xlsx"
+    },
+    {
+      "question form": "how-much",
+      "second-sentence opener": "price",
+      "rounding opener": "round",
+      "deliverable set": "csv+pdf+svg"
+    }
+  ],
+  "notes": "re-rooted 2026-10-31 by a batch 1 fork: new world (a West Midlands secondary aluminium works and a car maker's supplier carbon requirement), new dataset, new shell (how-much | csv+docx); stump_strategy decomposition_attribution: a shared site meter's gas attributed to processes by their own drivers (mass melted, hours fired) rather than by output mass; the slot's lesson filed: the requirement's word-for-word execution (each process attributed the gas it burned) is the golden, and the difficulty is computing it from the meter's record; the asks read the weighbridge's visits (a two-grade load's middle weighing, a dross lift that first unloads returned metal)",
+  "registered": "2026-10-31T21:50:49Z",
+  "shell": {
+    "question form": "how-much",
+    "second-sentence opener": "set",
+    "rounding opener": "tonnes",
+    "deliverable set": "csv+docx"
+  }
 }

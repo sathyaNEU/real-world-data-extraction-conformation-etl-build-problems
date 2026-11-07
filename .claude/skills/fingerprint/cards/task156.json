@@ -1,102 +1,160 @@
 {
   "task": "task156",
-  "architecture": "v1 loop 3",
-  "drawn": "2026-10-17",
-  "slot_note": "wave 5 (new); seed FC27 kept for its world, decision and quantity only (a developer Q&A network's 2027 paid moderation pool across nine topic sites after generative AI cut question volume, sized in FTE against a finance envelope, decided at the council's December sitting); the seed's charter clause that a need method may be used only if it reproduces every certified figure is not shipped (no certified need table ships at all), and its revised close-queue standard (5.0 to 2.0 minutes) ships as a filed standard every response applies, never the decisive step; the pitfall is re-found from how the network's review records come to exist: a community item reaches the paid team only when no volunteer reviews it in 72 hours",
-  "domain": "product-analytics",
-  "subdomain": "retention-cohort-lifetime-value-modeling",
-  "client_domain": "product-analytics",
-  "niche": "a Toronto-run developer Q&A network's 2027 request for its paid moderation team, sized in whole FTE per site from the hours its nine topic sites' moderator flags and unreviewed community-inbox items will take, when every community item goes first to volunteer reviewers, most of whom review casually and stop within months while a steady core stays for years, and review access became invitation-only in September 2026",
+  "architecture": "v3 (re-root in batch 1: a Victorian local government union branch choosing the councils at which it applies for protected action ballot orders for ballots opening 1 March 2027, a ballot counting only if half the roll votes, each member's vote carried from the branch's own online votes and lifted where an elected workplace delegate is active at the member's worksite)",
+  "drawn": "2026-11-07",
+  "slot_note": "re-root of task156 in the same objective (Forecasting), batch 1; architectures 1 and 2 in lineage",
+  "domain": "political-science-public-policy",
+  "subdomain": "election-polling-forecasting",
+  "client_domain": "political-science-public-policy",
+  "niche": "a union branch covering council workers in Victoria, Australia, choosing the councils whose enterprise agreements are being renegotiated in 2027 at which it applies to the Fair Work Commission for protected action ballot orders, a ballot being valid only if at least half the employees on the roll vote; turnout forecast member by member from the branch's own online votes and the ballot agent's declared results, with the mobilisation an elected worksite delegate brings",
   "objective": "forecasting",
-  "shape": "other",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "32 paid moderator FTE for 2027 (Frontend & Web 5, Mobile Apps 2, Data & ML 6, Databases 4, Infrastructure & DevOps 4, Game Development 2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 6 above finance's 26-FTE envelope",
-  "answer_source": "task156/generator/calc.py compute() on the shipped bundle, reproduced by task156/generator/verify.py",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Apply for protected action ballot orders at the councils whose March 2027 ballots are expected to clear half the roll once each member's vote is read with the delegate active at their worksite after the July 2026 delegate elections (design target: 11 of the 24 councils, against 15 on the members' own voting history)",
+  "answer_source": "submission.md block 1; generator/figures.json (call)",
   "gap": [
-    "population",
-    "time"
+    "population"
   ],
   "pattern": [
-    "none"
+    "A"
   ],
   "generators": [
-    "G9",
-    "G6",
-    "G16"
+    "G14",
+    "G13",
+    "G4"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "none",
+  "calibration_form": "realised_outcome_roster",
   "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stakeholder_role": "Millrind's head of moderation operations, who takes the 2027 paid moderation request to the Moderation Council's December sitting and then to finance",
-  "role_family": "operations_director",
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file and rule correctly builds each member's turnout from their participation in the branch's 2022, 2023 and 2025 online votes and their age, membership and employment, calibrates it to the ballot agent's declared 2021 and 2023-24 turnouts, confirms it reproduces the 2023-24 round council by council, applies it to the January 2027 roll and files 15 councils; members vote about 20 points more often where an elected delegate is active at their worksite, and the July 2026 delegate elections, after the last online vote, emptied worksites at some councils and filled others, so six of the 15 fall under half and two councils left out clear it.",
+  "domain_test": "The deciding quantity is each council's expected turnout in a ballot whose validity turns on half the roll voting, worked the way election forecasting works turnout: a vote-history model of each elector, calibrated on declared results, carrying the mobilisation effect of personal contact that turnout research estimates (the canvass or workplace contact lift), here the elected worksite delegate; with another field's nouns there is no roll, no turnout threshold and no mobilisation.",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:vote-history-turnout-carried-past-a-change-in-workplace-mobilisation",
+  "layer1": [
+    "utc-local",
+    "layout-change-across-years",
+    "preliminary-and-final-release",
+    "code-migration",
+    "duplicate-records",
+    "pdf-tables"
+  ],
+  "stakeholder_role": "the branch's research and bargaining officer, whose memo to the Branch Committee of Management recommends the councils at which the branch applies for protected action ballot orders",
+  "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "reviewer_roster_2026-10-08.csv (the review platform's reviewer access spells) beside review_inbox_daily_2024-01-01_2026-09-30.csv (its daily inbox export)",
-    "rows": 23148,
-    "entity": "one reviewer's access spell on one site: grant date, first and last review on the platform, status, lapse date",
-    "grain": "reviewer x site spell",
-    "source": "synthetic (constructed in the layout of a Q&A platform's review inbox export and reviewer roster)"
+    "file": "online_vote_invitations_2022-2025.csv",
+    "rows": 85000,
+    "entity": "one row is one invitation the branch's online voting service sent one member for one online vote",
+    "grain": "member x online vote",
+    "source": "constructed for task156, no real dataset"
   },
-  "forum": "council_or_assembly",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "software_or_platform",
+  "forum": "board_of_directors",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "Canada, Ontario (Millrind's operations and finance in Toronto; the nine sites serve developers worldwide; the network, its sites, people, systems and data are fictional)",
-    "currency": "CAD",
-    "org_type": "developer question-and-answer network of nine topic sites, volunteer review in front of a paid moderation team",
+    "geography": "Victoria, Australia (fictional councils and a fictional union branch)",
+    "currency": "AUD",
+    "org_type": "trade union branch covering local government workers",
     "invented_names": [
-      "Millrind"
+      "Local Services Union, Victoria Branch",
+      "Tallyhouse Ballot Services",
+      "Bellcourt City Council",
+      "Marlow Coast Shire Council",
+      "Tallis Creek Shire Council"
     ],
     "people": [
-      "Duane Zamora",
-      "Natalie Maxwell",
-      "Claudia Spence"
+      "Samantha Taylor",
+      "Dennis Kim",
+      "Eric Goodwin"
     ]
   },
   "deliverables": [
-    "moderation_pool_2027.xlsx",
-    "council_pool_request_2027.pptx"
+    "pab_2027_turnout_forecast.xlsx",
+    "pab_2027_recommendation_bcom.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "Members of a pool leave at their own steady rates, which differ widely, so the fast leavers go first and the pool's overall leaving rate falls as its members age; while new members kept arriving the overall rate held high, and once admission stops the closed pool sheds its newest members and then slows, so carrying the open pool's rate overstates the forward losses, and because the record opens part-way through most members' lives, the rate by tenure has to count each member from when the record first sees them.",
-  "driver_concrete": "Most of Millrind's new volunteer reviewers stop within months (about 9 per cent a month in their first year of access) while reviewers past their third year stop at well under one per cent, so while grants ran at about 320 a month the pool's overall lapse rate held near 3 per cent; review access became invitation-only on 1 September 2026, so the 10,607 reviewers active then are the 2027 pool, shedding their first-year reviewers fast and then slowing, which the open pool's lapse rate overstates; the roster opens in January 2024, so the stop rate by tenure counts each reviewer from the first month the platform shows them active.",
-  "stump": "Carrying each site's reviewer pool from September 2026 at its own lapse rate of the last two years, with no new reviewers since access became invitation-only, files 41 FTE (40 on the last twelve months' rate, 38 on the last three); the step that lands it there is reading one stop rate off a pool that was still taking in newcomers, when reviewers stop at about 9 per cent a month in their first year and under one per cent from their fourth: carried on the stop rate of each reviewer's own tenure, counted from when the roster first sees them, the 10,607 active reviewers average about 8,800 a month in 2027 and the request is 32 FTE (27 with the tenure curve read from each grant date).",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who builds each site's capacity right (the reviews a reviewer completes when the inbox outruns the pool, about 40 a month, against the 2027 inbox the plan implies) and reads the handbook's invitation-only clause carries each site's pool from September 2026 at its own lapse rate of the last two years with no new reviewers and files 41 FTE (40 on twelve months, 38 on three); reviewers stop at rates that fall steeply with tenure, so the closed pool sheds its newest reviewers first, and carried on each reviewer's own tenure the request is 32.",
-  "domain_test": "The deciding quantity is a closed volunteer cohort's 2027 survival, forecast the way product analytics forecasts a retained-user cohort (survival by tenure read from a truncated, censored roster and applied to the members who are left, rather than a pooled churn rate), times the activity a retained reviewer delivers when work outruns the pool; with another field's nouns (a hospital's agency nurses, a utility's call centre) there is no self-selecting volunteer cohort whose members drift away at rates that differ by tenure, so the forecast has nothing to stand on.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:closed-cohort-survival-by-tenure-left-truncated-against-capacity",
-  "layer1": [
-    "a review-platform change in January 2024: a monthly per-queue workbook for 2021 to 2023 (one sheet a year, the edit queue added in 2022) beside a daily inbox export by item type from 2024",
-    "site names in the old workbook against site codes in the new export, with Graphics folded into Game Development in 2023, mapped by the site register",
-    "UTC day boundaries in the platform exports against Toronto time in the moderation team's own records",
-    "the September 2026 inbox export pulled twice, a preliminary pull with the last days' routing still open and a revised pull a week later",
-    "the moderator tool's flag export pulled in two parts that both carry 15 August",
-    "a WFM week re-sent after a payroll query, the original lines kept and marked superseded, and Infrastructure & DevOps still under its old WFM name",
-    "a reviewer roster that keeps the reviewers whose access lapsed in January or February 2024 without a review on the platform (first review blank)",
-    "a monthly report's question counts first reported short (a tag-sync fault, May to August 2022) and restated by the statistics job's rerun in a block below the year's notes"
-  ],
+  "question_form": "which",
+  "driver": "Each unit's chance of acting in a coming event is carried from its own record of past acts and lifted where a contact a separate dated register places at its site is in post, and the register's contacts changed after the last past act the record holds, so every route carried on the units' own record, each of which reproduces the last closed event, brings the old contacts into the coming event.",
+  "driver_concrete": "A member's chance of voting in a protected action ballot rises about 20 points where an elected delegate is active at their worksite, read from the branch's delegate register terms against each member's worksite on the roll; the July 2026 delegate elections, held after the last online vote in October 2025, left worksites at some councils with no delegate and filled others, so turnout carried from members' own votes over-forecasts the councils that lost delegates and under-forecasts those that gained them.",
+  "stump": "Carrying each member's own voting history, calibrated to the 2021 and 2023-24 declared turnouts and checked on the 2023-24 round, files 15 councils above half; the step that lands it there is reading each member's past votes as their own when they rode the delegate active at their worksite at the time, and the July 2026 delegate elections moved those delegates.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task153": "task153 caps what a yard island hands a vehicle at the smaller of the fuel burned between visits and a known tankful, per segment; here the capacity is hidden wherever it was not binding, shrinks on the volunteers' own retention, and the decisive move is its crossing below arrivals in the year the request funds",
-    "task150": "task150 carries pupils at rates on their own base and arrivals at steady counts; here nothing arrives at a steady count and the decisive split is a capacity limit against arrivals",
-    "task148": "task148 drains a queue by abandonment and prices waits; here no item leaves on its own, the 72-hour hand-off is a routing rule, and the forecast is how many items the volunteers will not reach",
-    "task140": "task140 strikes a residual after higher reservations that include a dependent load; here the volunteers are no reservation and their capacity does not depend on the paid tier",
-    "task179": "task179 lets a member's chance of leaving fall once it meets the same peers in several groups, a process the forward members no longer pass through; here nobody's chance changes and the overall rate falls only through who is left, read by tenure from a left-truncated roster",
-    "task170": "task170's failure probability falls with each operator's own count of attempts (learning); here a reviewer's stop chance is constant for life and the fall is selection",
-    "task176": "task176 ends units when the youngest dependant reaches a fixed age, a clock other than tenure; here tenure is the clock, read from the record with its left edge",
-    "task134": "task134 turns a conversion hazard near zero for a member's first months into a forward inflow; here the hazard is highest in the first months and the forecast is a closed pool's survival",
-    "task452": "task452 weights each reference observation by its own design inclusion probability after a preliminary classification was revised; here nothing is sampled: the forecast is a closed volunteer cohort's survival by tenure read from a left-truncated roster, set against an inbox",
-    "task157": "task157 expands a sample in which one defect class is a property of record pairs, so its inclusion probability is the square of the sampling fraction; here nothing is sampled: the forecast is a closed volunteer cohort's survival by tenure, read from a left-truncated roster and set against an inbox",
-    "task265": "task265's decisive step is the record's left edge itself, a survival share read from a record that began after many units had started; here the left edge is the second layer, and the decisive step is carrying a closed pool on the stop rate of each member's own tenure instead of the rate the open pool showed while it was still admitting members"
+    "task179": "task179 lifts each supervisee's booking chance by a status another agency records about the person, linked by name and birth date; here the lift is not a property of the person but of their worksite's elected delegate in post on the ballot date, a dated term in the union's own register, and the forecast turns on how those terms changed between the last observed vote and the ballot.",
+    "task157": "task157 expands a petition sample's validity rate with pair defects whose inclusion goes as the square of the sampling fraction; here no sample is expanded: every member's turnout is forecast and summed against a roll threshold.",
+    "task107": "task107 moves a tight intake to the experienced rate at a service anniversary just before the window; here no anniversary or pay step exists: a worksite contact's elected term changes the propensity of every member at the site, in both directions."
   },
   "lineage": [
+    {
+      "domain": "physical-environmental-sciences",
+      "subdomain": "hydrology-flood-frequency",
+      "objective": "forecasting",
+      "shape": "other",
+      "decision_type": "go_hold_or_stop",
+      "answer_unit": "named_option",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G16",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "driver": "The decisive quantity is how often a fixed capacity is exceeded once a steady load is added, when both the standing load and the response each driving event adds scale with how much of a fixed network lies below a fluctuating level read from a separate record, so one response and one standing load read off a short record whose level mostly stayed low understate a long record whose level often rose past most of the network.",
+      "stump_strategy": "forecast_method_backtest",
+      "forum": "council_or_assembly",
+      "forcing_event": "other",
+      "org_family": "local_government",
+      "role_family": "capacity_planner",
+      "drawn": "2026-10-31",
+      "stump": "Fitting one unit-hydrograph response per millimetre and the meter's own dry weather flow on 2024 to 2026 and replaying 2004 to 2023 files about 1 overflow a year with the subdivision (0.70), inside the consent's two, and connects it; the step that lands it there is reading the station's response as fixed when its infiltration rises 4.2 L/s for every kilometre of sewer below the water table, which stood a median 0.2 km over the meter and 2.1 km over the replay.",
+      "layer2_family": "forecast_uncertainty",
+      "layer2_pattern": "own:submerged-length-conditioned-infiltration-chosen-out-of-sample",
+      "driver_concrete": "The infiltration reaching the pump station on a dry day and in a storm scales with the length of the catchment's sewers whose inverts lie below the water table that day, read from the regional bore's level against the asset register's invert levels; the 2024 to 2026 meter ran through years when the water table mostly stood below the low terrace's sewers, while the consent's 2004 to 2023 replay holds wet years with it above most of them, so one response per millimetre and the meter's base flow carried into the replay understate the overflows the subdivision's added flow takes past the consent.",
+      "architecture": "v2 (re-root in batch 1: a New Zealand district council's wastewater pump station, whether a subdivision can connect in 2027 within the station's consented overflows, the infiltration each storm and each dry day drives read from the length of sewer below the water table)",
+      "fate": "FAILED_TO_STUMP on the portal (2026-11-07): both responses landed the hold call; Response 1 replayed 2004 to 2023 and filed 48 overflows against the 40 allowed, then 2 after the upgrade, so any full-record replay with the subdivision already broke the consent and the water-table step was never needed; driver spent"
+    },
+    {
+      "domain": "product-analytics",
+      "subdomain": "retention-cohort-lifetime-value-modeling",
+      "objective": "forecasting",
+      "shape": "other",
+      "decision_type": "quantity_figure",
+      "answer_unit": "count",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G9",
+        "G6",
+        "G16"
+      ],
+      "gate_g": "forecasting",
+      "driver": "Members of a pool leave at their own steady rates, which differ widely, so the fast leavers go first and the pool's overall leaving rate falls as its members age; while new members kept arriving the overall rate held high, and once admission stops the closed pool sheds its newest members and then slows, so carrying the open pool's rate overstates the forward losses, and because the record opens part-way through most members' lives, the rate by tenure has to count each member from when the record first sees them.",
+      "stump_strategy": "forecast_method_backtest",
+      "forum": "council_or_assembly",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "software_or_platform",
+      "role_family": "operations_director",
+      "architecture": "v1 loop 3 (Millrind's 2027 paid moderation pool, nine sites behind a closing volunteer review community, the 2027 pool carried on survival by tenure)",
+      "drawn": "2026-10-17",
+      "stump": "Carrying each site's reviewer pool from September 2026 at its own lapse rate of the last two years, with no new reviewers since access became invitation-only, files 41 FTE (40 on the last twelve months' rate, 38 on the last three); the step that lands it there is reading one stop rate off a pool that was still taking in newcomers, when reviewers stop at about 9 per cent a month in their first year and under one per cent from their fourth: carried on the stop rate of each reviewer's own tenure, counted from when the roster first sees them, the 10,607 active reviewers average about 8,800 a month in 2027 and the request is 32 FTE (27 with the tenure curve read from each grant date).",
+      "fate": "spent 2026-10-31 at the batch 1 triage: loop 3 was reshipped 10-27 after the portal's FAILED_TO_STUMP on loops 1 and 2 (both responses filed the then golden), keeping the world, the prompt and the asks the portal had already solved once; re-rooted in a new world before any portal result on loop 3"
+    },
     {
       "architecture": "v1 (loops 1 and 2)",
       "drawn": "2026-10-17",
@@ -123,6 +181,26 @@
       "layer2_pattern": "own:volunteer-review-capacity-projected-from-reviewer-retention-against-inbox-arrivals"
     }
   ],
-  "notes": "Kinship cards read at the draw: task150, task153, task152, task149 (the lane's last builds), task140, task147, task148, task111, task128 (capacity and overflow drivers on file). No trust-and-safety card in the corpus carries a moderation-capacity driver. Round 1 (stage 4): the rule 3 audit called the retention tag thin and suggested a trust-and-safety or community-moderation workforce task type; vocab.json has none (healthcare's patient-flow workforce type would make the domain a backdrop), so the tag stays product-analytics retention, the deciding quantity being the volunteer reviewer cohort's retained activity. Loop 3 (2026-10-27): the portal landed the call (35 FTE) on the capacity framing with a flat lapse rate; the decisive step moved to survival by tenure on a closed, left-truncated pool (population_selection, estimation_fit, Gate G forecasting), the old identity in lineage. Strategy forecast_method_backtest: the regime change (review access invitation-only from 1 September 2026) makes the natural fit, the open pool's lapse rate, wrong out of sample, and the closed-cohort back-test separates the methods; population_selection (survivorship) and composition_mix also describe the move and were both banned by the live window at loop 3 (task264 v2 and its neighbours), so the honest third key is used. Generator G9 (downstream survival against upstream acquisition) is decisive: the open pool's rate carries the newcomers acquisition kept feeding in. Registration stamp kept at the draw (2026-10-17T08:19:38Z): the world and its furniture (forum, forcing event, organisation family) date from that draw and are unchanged; restamped at loop 3 the card met ban.forum against task242 and ban.forcing_event against task196 v2, both registered later that day (22:32 and 23:00), an artifact of re-running a draw-time gate (reduce-house-fixes H27); the loop 3 identity was checked against today's corpus with a fresh key first (strategy, gap, pattern and driver tests clear, task452 differentiated).",
-  "registered": "2026-10-17T08:19:38Z"
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "pptx+xlsx"
+    },
+    {
+      "question form": "whether",
+      "second-sentence opener": "the",
+      "rounding opener": "overflows",
+      "deliverable set": "docx+png+xlsx"
+    }
+  ],
+  "notes": "forcing_event statutory_or_regulatory_filing: the branch's applications to the Fair Work Commission for protected action ballot orders, lodged in February 2027 for ballots opening 1 March 2027.",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "the",
+    "rounding opener": "overflows",
+    "deliverable set": "docx+png+xlsx"
+  },
+  "registered": "2026-11-07T20:22:39Z"
 }

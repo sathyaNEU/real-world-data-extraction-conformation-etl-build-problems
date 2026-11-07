@@ -28,6 +28,7 @@ def holiday(y, w):
 
 def tests_of(target):
     res = pd.read_csv(os.path.join(target, R), dtype=str, keep_default_na=False)
+    res = res.rename(columns={"released_utc": "released", "specimen_collected_utc": "specimen_collected"})
     labs = pd.read_excel(os.path.join(target, REG), sheet_name="Laboratories", dtype=str)
     codes = pd.read_csv(os.path.join(target, CODES), dtype=str)
     fac = {f.strip(): r.lab_id for r in labs.itertuples() for f in r.sending_facility_ids.split(",")}
@@ -119,9 +120,9 @@ def main(target, golden, figs_path, sub_path):
     ws = wb["Specimens"]
     rows = [r for r in ws.iter_rows(min_row=5, values_only=True) if r[0] and r[1]]
     assert len(rows) == 10 and all(r[2] == spec[r[1]] for r in rows), rows
-    png = os.path.join(golden, "respiratory_feed_completeness_2027-W03.png")
-    assert open(png, "rb").read(8) == b"\x89PNG\r\n\x1a\n" and os.path.getsize(png) > 50_000
-    assert sorted(os.listdir(golden)) == ["respiratory_feed_completeness_2027-W03.png", "respiratory_feed_escalations_2027-W03.xlsx"]
+    svg = os.path.join(golden, "respiratory_feed_completeness_2027-W03.svg")
+    assert open(svg, "rb").read(200).lstrip().startswith(b"<?xml") and os.path.getsize(svg) > 20_000
+    assert sorted(os.listdir(golden)) == ["respiratory_feed_completeness_2027-W03.svg", "respiratory_feed_escalations_2027-W03.xlsx"]
 
     # figures.json and the write-up
     figs = json.load(open(figs_path))

@@ -54,7 +54,7 @@ forecast_method_backtest).
   the escalations; Travis Humphrey, laboratory liaison; Kaitlyn Sanchez, respiratory epidemiologist, who keeps the
   protocol.
 - **Deliverables.** `respiratory_feed_escalations_2027-W03.xlsx` (the grid, with each stream's estimated tests and
-  completeness) and `respiratory_feed_completeness_2027-W03.png` (each stream's completeness against the 80 per cent
+  completeness) and `respiratory_feed_completeness_2027-W03.svg` (each stream's completeness against the 80 per cent
   line).
 - **Data-native sentence.** Each laboratory's weekly respiratory test count rises and falls with the epidemic among its
   own patients, and in week 3 those epidemics are on different clocks: children's influenza and RSV and the city's
@@ -80,6 +80,16 @@ Sources, one line each (what it teaches; how this build differs):
   fewer events.
 - task232 (same pairing, laboratory result feeds): prices lateness by childcare transmission; this build has no
   lateness and no transmission: each stream's completeness is judged against tests predicted from its positivity.
+
+## Survivor anatomy
+
+Actor: which streams lost results in transit rather than saw their epidemic fall has no column; it is a relation between each stream's received week of results, its received positivity, and its own testing response to positivity fitted on the weeks its aggregate reports already cover, which nothing stores.
+Link: the week's received results, collapsed to tests, are set against the stream's fitted relation of tests to positivity from its reports, a comparison across the feed and the reports that no key offers and no sentence invites (FCP-2 s.5 files a check, never a predictor).
+Reflex: the field's own completeness baselines, last week's count or a seasonal (Farrington-type) baseline, run through the protocol's week-2 check, sit at rungs 0 and 1 and escalate fifteen streams, nine of them complete (`Ends on:`), not the golden six.
+Back-test: the protocol's own week-2 check certifies last week's count as the way that missed least among the textbook baselines, so the easy route passes the filed validation against every alternative it is shown.
+Second use: every file the step reads is in the pack for the protocol's routine: the extract for every completeness, the aggregate reports as the denominator of record, the register for the streams and the codes for the viruses; both asks read the same extract and reports.
+Shock: the two laboratories' losses and the complete streams' falls read as ordinary week-to-week movement in a winter season, their received counts dropping by similar shares, so no shipped statistic sorts the six lossy streams to the top.
+Pins: FCP-2 files the ratio, the denominator (the report of record), the week by county date, the 80 per cent line and the check that chooses the way of estimating the week's tests (s.5); no sentence names a predictor, positivity, or that a lost message drops a positive and a negative alike.
 
 ## Default path
 
@@ -194,11 +204,11 @@ half of a reported figure.
 | SF5 | the week of a result | MMWR week of the local (America/Chicago) release date | the UTC date | counts move by under 15 per cent (week 2's Saturday evening joins week 3), same call | FCP-2 s.2; same call (asserted) |
 | SF6 | "received by 08:00 on the Monday" | every week-3 result in the extract (cut at 08:00 on 25 January) | none | one extract | C1 (asserted: no week-3 row after the cutoff in either clock reading) |
 | SF7 | the denominator | the tests the laboratory's week-3 aggregate report will count for that virus | last week's report | the default path | FCP-2 s.3 and s.4 (the report for the week, due on the Wednesday after it; the escalations set before it arrives) |
-| SF8 | the aggregate report of record | the latest submission for the laboratory, virus and week | the first | same call | data dictionary; same call (asserted) |
+| SF8 | the aggregate report of record | the latest submission for the laboratory, virus and week | the first | same call | FCP-2 s.3 (the latest submission is the report of record); same call (asserted) |
 | SF9 | "below 80 per cent" | strictly below | at or below | same call (no stream within 2 points of the line under any positivity model) | FCP-2 s.4; same call (asserted) |
 | SF10 | a hospital sending under two facility identifiers | one laboratory (the register maps both) | two, or the second left unmapped | the second identifier carries under 2 per cent of the extract, same call | stream register; same call (asserted) |
 | SF11 | an inconclusive result | a test, neither positive nor negative | dropped | same call | FCP-2 s.2; same call (asserted) |
-| SF12 | population of the week's tests | every test the laboratory resulted in the week, whatever the patient's residence | county residents only | the aggregate reports count every test | FCP-2 s.3 (the report's count); data dictionary |
+| SF12 | population of the week's tests | every test the laboratory resulted in the week, whatever the patient's residence | county residents only | the aggregate reports count every test | FCP-2 s.3 (the report's count) |
 | SF13 | the check's "largest miss across the streams" | each way's largest miss over the 29 streams, as a share of the week's reported tests | the average miss | same call: the Poisson fit on positivity misses by 3.2 per cent on average, every other way by 9.0 or more (asserted) | FCP-2 s.5; same call (asserted) |
 | SF14 | estimates "that could have been made at that Monday's cutoff" | from the reports to week 1 and the week-2 results the platform held at 08:00 on 18 January | every week-2 result in the extract | same call: Brandmoor's lost half was never resent, so the week's received results still miss by 49.5 per cent and the positivity fit by 7.6 (asserted) | FCP-2 s.5; same call (asserted) |
 | SF15 | the receipt clock for what the platform held at the cutoff | county time before the broker migration | UTC throughout (the weekend batch counted as held) | same call: the positivity fit misses by 7.6 per cent at most, every other way by 49.5 or more (asserted) | same call (asserted) |
@@ -237,8 +247,8 @@ Four rungs, each a defensible way of estimating the week's tests, each dying to 
 | 1 | Population | the 29 streams of the stream register | FCP-2 s.1; C1 (SF1) |
 | 2 | Unit of account | the test (accession and virus) | FCP-2 s.2 (SF2) |
 | 3 | Attribution window | MMWR week 3 of 2027 (17 to 23 January) by local release date | FCP-2 s.2 (SF5) |
-| 4 | As-of dating | the platform extract of 08:00 on Monday 25 January 2027 | dictionary and README; C1 (SF6) |
-| 5 | Version basis | the latest aggregate submission for each laboratory, virus and week | dictionary (SF8) |
+| 4 | As-of dating | the platform extract of Monday 25 January 2027 | the extract's own date; C1 (SF6: no week-3 row after 08:00 in either clock reading) |
+| 5 | Version basis | the latest aggregate submission for each laboratory, virus and week | FCP-2 s.3 (SF8) |
 | 6 | Denominator | the tests the week-3 aggregate report will count | FCP-2 s.3 (SF7) |
 | 7 | Weighting | none: a ratio of counts per stream | FCP-2 s.3 |
 | 8 | Window length | one MMWR week | FCP-2 s.3 |
@@ -298,7 +308,7 @@ scrambled).
 
 | Ask | Figures | H18 home | Use | Primary device (family) | Hazards | Path (files, columns) | Stops |
 |---|---|---|---|---|---|---|---|
-| A: each stream's completeness for week 2, now that the week-2 aggregate reports are in | 29 | a reconciliation of the feed against the laboratories' own counts for the last closed week | the liaison's note to each laboratory quotes last week's completeness beside this week's call | D8, a clock against a filed cutoff: until the state hub's broker migration on Tuesday 19 January the platform wrote receipt times in local time; the dictionary names the hub's broker as the stamp's writer and states no zone, while the extract's other times are UTC; every laboratory's interface holds the results it releases from Saturday evening and sends them on Monday morning, so the week-2 batch sent on Monday 18 January (after the 08:00 cutoff) reads as arriving before it | the influenza A and B rows; corrected and cancelled results; the merged hospital's two identifiers; UTC release times against the local week | results (facility, accession, test code, target, status, released, received), aggregate reports (tests by laboratory, virus and week), stream register (facility to laboratory), test code list, FCP-2 (s.2, s.3, s.5), platform change log (the migration), dictionary: 7 files, 12 columns | every receipt time read as UTC (every stream high: 99.2 to 99.7 against the answer's 93.9 to 98.0 outside Brandmoor, whose three read 50.5 to 51.6 against 47.4 to 48.3); only rows received before their release shifted (every stream 0.4 points or more high); every pre-migration row shifted and week-3 rows too (the answer for week 2, harmless to week 3); rows with a negative lag dropped (every stream 5 points or more low); the answer, every figure at least 0.0099 points from a rounding edge (Brandmoor's three at about 48 per cent, its interface's lost half never resent) |
+| A: each stream's completeness for week 2, now that the week-2 aggregate reports are in | 29 | a reconciliation of the feed against the laboratories' own counts for the last closed week | the liaison's note to each laboratory quotes last week's completeness beside this week's call | D8, a clock against a filed cutoff: until the state hub's broker migration on Tuesday 19 January the platform wrote receipt times in local time; the receipt column carries the broker's stamp with no zone in its name, while the extract's other two times are named _utc, and before the migration receipts precede their releases by about six hours, which no UTC stamp could; the change log dates the migration; every laboratory's interface holds the results it releases from Saturday evening and sends them on Monday morning, so the week-2 batch sent on Monday 18 January (after the 08:00 cutoff) reads as arriving before it | the influenza A and B rows; corrected and cancelled results; the merged hospital's two identifiers; UTC release times against the local week | results (facility, accession, test code, target, status, released, received), aggregate reports (tests by laboratory, virus and week), stream register (facility to laboratory), test code list, FCP-2 (s.2, s.3, s.5), platform change log (the migration), dictionary: 7 files, 12 columns | every receipt time read as UTC (every stream high: 99.2 to 99.7 against the answer's 93.9 to 98.0 outside Brandmoor, whose three read 50.5 to 51.6 against 47.4 to 48.3); only rows received before their release shifted (every stream 0.4 points or more high); every pre-migration row shifted and week-3 rows too (the answer for week 2, harmless to week 3); rows with a negative lag dropped (every stream 5 points or more low); the answer, every figure at least 0.0099 points from a rounding edge (Brandmoor's three at about 48 per cent, its interface's lost half never resent) |
 | B: the specimens each laboratory tested in week 3 that have results on the platform | 10 | a measure every laboratory carries that the call does not turn on | the liaison opens each call with the laboratory's specimen volume | D7, the true key elsewhere: most laboratories issue an accession per test ordered, so one swab tested for influenza, RSV and SARS-CoV-2 carries up to three accessions, and the panel laboratories add tests to a swab under new accessions; a specimen is one collection from one patient (FCP-2 s.6) | patients swabbed twice in the week; the influenza A and B rows | results (facility, accession, patient number, collected, target), stream register, FCP-2 s.6, dictionary: 4 files, 5 columns | distinct accessions (every laboratory high: 2,976 to 12,863 against the answer's 2,835 to 9,204); distinct patients (every laboratory low: 2,715 to 8,792, repeat swabs); the answer, distinct patient and collection time (patient and collection date counts the same, a patient's collections a day or more apart, asserted) |
 
 - **Span:** nine files and 17 column uses across the asks; no shared primary or path (A reads receipt and release
@@ -314,11 +324,13 @@ scrambled).
 | A completeness, every stream (29) | reads every receipt time as UTC like the extract's other times; the Monday batch counts as received before the cutoff | misses the same way | miss |
 | B specimens, every laboratory (10) | counts distinct accessions, the protocol's key for a test | misses the same way | miss |
 
-- **Cracker keeps:** under 0.05 of the ask weight (no figure is free of a device).
-- Mirror leakage: 5 per cent of ask weight (the mirror's ask path is the cracker's; the asks do not touch the call's
+- **Cracker keeps:** 1 of the 40 ask criteria (the chart's structure), measured on the cut pack.
+- Mirror leakage: 2.5 per cent of ask weight (the mirror's ask path is the cracker's; the asks do not touch the call's
   construction).
-- Pair ceiling: 31.6 (C = 38 + 7 + 55 x 0.05 = 47.8; S = 5 + 7 + 55 x 0.05 = 14.8; mean 31.3, 31.6 with the chart's
-  criteria split).
+- Pair ceiling: 29.9 (cracker 46.4 with the call and 1 of 40 ask criteria; mirror 13.4).
+Measured by: generator/ceiling.py on the cut pack (target.zip d84a1971): each response's ask figures recomputed from
+target/ with its handling (every receipt time read as UTC, specimens by accession) and scored against the golden
+handling on the same files; the full includer keeps 40 of 40.
 
 ## Pre-ship check
 
@@ -338,7 +350,7 @@ scrambled).
    right, runs the check over the textbook baselines and files 9 wrong cells, asserted on the clean truth, R3a); not
    rule application (FCP-2 files the ratio, its denominator, the line and the check's criterion in general terms and
    names no way, predictor or input for the week's tests, asserted on the protocol's text).
-4. Gate G: no shipped artifact estimates, flags or ranks a stream; the three distractors count no laboratory's tests.
+4. Gate G: no shipped artifact estimates, flags or ranks a stream; the four distractors count no laboratory's tests.
 5. Determinism: every asserted positivity model escalates the golden six (nearest stream 0.069 from the line under
    the log models, 0.031 under the linear ones, 0.074 under the golden fit), and every positivity way that beats every
    other way in the check escalates them; the check's inputs read the same as they stood at the cutoff (every earlier
@@ -353,8 +365,8 @@ scrambled).
    93.9 to 98.0 outside Brandmoor, 50.5 to 51.6 against 47.4 to 48.3 at Brandmoor), B (10) in every figure by the
    accession key (2,976 to 12,863 against 2,835 to 9,204); the call reads neither column (asserted by shifting every
    receipt time and by scrambling patients and collection times).
-7. Input gates: 11 files in four formats, the result extract at 211,361 rows, three distractors named in
-   metadata.json; 487 generator checks with the realism sweep; the verifier (its own Poisson fit) green; two builds
+7. Input gates: 10 files in three formats (csv, xlsx, pdf), the result extract at 211,361 rows, four distractors
+   named in metadata.json (the vaccination coverage file added at the 10-31 repair); 487 generator checks with the realism sweep; the verifier (its own Poisson fit) green; two builds
    byte-identical; figures_check 103 of 103; containers clean.
 8. Duplicate guard: `guard.py heart` WARN (repeat.question_form against task194, the decision's own form for a set of
    streams; same_puzzle_older differentiated against task231 and task445; the driver near only its own lineage);
@@ -427,3 +439,9 @@ after 08:00 on 25 January, so every reading puts every week-3 result before the 
 - Cancelled orders sent through on Sundays while the interfaces held every result, on accessions numbered in a block 45,000
   above each laboratory's tests (the leak reader's realism note, architecture 2): they now pass through the interface like
   results (held over the weekend, lost in an outage) on accessions numbered in sequence; no figure moved.
+- 2026-10-31, the README and the data dictionary: withdrawn at the batch 1 repair (files describing the data; the
+  dictionary listed every column of the results extract). The report of record and the status codes are FCP-2's
+  (s.2, s.3), the week's county date is FCP-2 s.2, and the extract now names its two UTC columns (released_utc,
+  specimen_collected_utc) while the receipt column keeps the broker's stamp with no zone, as the extract had it.
+- 2026-10-31, the prompt in the which form with a PNG beside the workbook (both over their corpus caps): the question
+  asked in the whether form and the chart an SVG; the card answers task482 v14 with a differentiation line.

@@ -1,4 +1,4 @@
-"""The golden deliverables: respiratory_feed_escalations_2027-W03.xlsx and respiratory_feed_completeness_2027-W03.png."""
+"""The golden deliverables: respiratory_feed_escalations_2027-W03.xlsx and respiratory_feed_completeness_2027-W03.svg."""
 import os
 
 import matplotlib
@@ -13,7 +13,7 @@ import params as P
 import postprocess
 
 XLSX = "respiratory_feed_escalations_2027-W03.xlsx"
-PNG = "respiratory_feed_completeness_2027-W03.png"
+SVG = "respiratory_feed_completeness_2027-W03.svg"
 NAVY = "1F3A5F"
 WARN = "B03A2E"
 HEAD = PatternFill("solid", fgColor=NAVY)
@@ -151,7 +151,7 @@ def _short(name):
 
 
 def chart(path, A):
-    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8.5})
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8.5, "svg.hashsalt": "task234"})
     fig, ax = plt.subplots(figsize=(9.0, 10.2), dpi=150)
     ss = A["streams"][::-1]
     y, labels, gap, ypos = [], [], 0.0, 0.0
@@ -189,11 +189,14 @@ def chart(path, A):
                            "before the week's aggregate reports.\nEvery other stream sits above the line at %d%% or more; "
                            "escalate below 80%% (FCP-2 section 4)." % A["min_rest"],
              fontsize=8.5, va="top", color="#333333", linespacing=1.4)
-    fig.savefig(path, metadata={"Software": None})
+    fig.savefig(path, format="svg", metadata={"Date": None, "Creator": P.DEPT})
+    svg = open(path, encoding="utf-8").read().replace('id="matplotlib.axis_', 'id="axis_')
+    assert "matplotlib" not in svg.lower()
+    open(path, "w", encoding="utf-8").write(svg)
     plt.close(fig)
 
 
 def write(golden_dir, A):
     os.makedirs(golden_dir, exist_ok=True)
     workbook(os.path.join(golden_dir, XLSX), A)
-    chart(os.path.join(golden_dir, PNG), A)
+    chart(os.path.join(golden_dir, SVG), A)

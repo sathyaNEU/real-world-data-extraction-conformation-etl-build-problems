@@ -1,49 +1,42 @@
 ## Tags
 
-**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: a Medicaid plan's hospital pay-for-performance measure conformed from its claims, a delegated group's encounters and the state's death record linkage, the linked deaths corrected for the linkage's own errors).
+**Domain:** Physical & Environmental Sciences (emissions inventory: a water utility's releases to sewer, trade waste chemical oxygen demand on the agreements' reference method).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Five of Halbrook's 14 network hospitals lose the 2027 Hospital Quality Bonus: Brannock Medical Center, Calloway Memorial Hospital, Mercy Valley Medical Center, Northgate Community Hospital and Westover Regional Hospital. The other nine keep it.**
-Their fiscal 2026 mortality ratios run from 1.25 to 1.55 against the 1.15 line; the highest ratio among the hospitals that keep it is Fairhaven Community Hospital's 1.09. Not the four hospitals that the deaths on the bills and the Office of Vital Records' links give, even with every link a later claim contradicts dropped and every death a later bill records added (Calloway, Northgate, Varden and Westover), because for members enrolled without a Social Security number the linkage links living members with common names to other people's deaths and misses the deaths of members with two-part surnames, and those repairs reach only the members whose later claims happen to show it: corrected at the error rates the record's recorded deaths and living members measure, Varden keeps the bonus and Brannock and Mercy Valley lose it.
+**Coolabah Olives, Glenbrae Meats, Riverbend Poultry and Tallowood Tannery exceeded their agreements' 2026 COD limits and go on the annual return with a notice of agreement review; no other customer did.**
+The dichromate COD the agreements limit also reads chloride, which TOC does not, so each 2026 TOC sample is converted on its own chloride; Mt Edwin Cheese's chloride fell after its brine recovery started in May and Tallowood Tannery's rose from March, so the ratios their 2025 parallel samples carried misstate both.
 
 ## 2. Critical Components
 
-1. The linkage's error rates by identifier class, measured on the index admissions whose deaths the bills record and on the members seen alive after day 30: Social Security number on file, **829 of 836** recorded deaths linked and **12 of 21,855** living members linked; no number, single surname, **44 of 48** recorded deaths linked and **20 of 1,179** living members linked; no number, two-part surname, **78 of 162** recorded deaths linked and **8 of 1,554** living members linked.
-2. The hospitals that lose the bonus, deaths over expected deaths: Brannock Medical Center **84.9** over **67.9**, ratio **1.25**; Calloway Memorial Hospital **190.6** over **143.8**, ratio **1.33**; Mercy Valley Medical Center **502.2** over **387.1**, ratio **1.30**; Northgate Community Hospital **189.3** over **122.2**, ratio **1.55**; Westover Regional Hospital **260.3** over **179.9**, ratio **1.45**.
-3. Varden Surgical Hospital, which the uncorrected links put over the line: **26.4** deaths over **25.6** expected, ratio **1.03**.
+1. The COD equivalent of a TOC sample carries the sample's chloride: fitted on the parallel samples, COD rises **about 0.23 mg/L per mg/L of chloride** beside about 2.8 per mg/L of TOC.
+2. Customers over their limits: **Coolabah Olives, Glenbrae Meats, Riverbend Poultry, Tallowood Tannery**.
+3. Within their limits: Mt Edwin Cheese, Sunvale Dairy, Hartley St Brewing, Bellbird Beverages, Kingfisher Linen, Golden Crumb, Paddock Fresh, Wattle Pet Foods.
 
 ## 3. Step-by-Step Solution
 
-1. Conformed hchp_ip_claims_extract_2026-10-05.csv and CMG_HCHP_IP_ENC_20261006.txt into stays, each as last corrected with voided and deleted bills dropped, Carrisford member numbers mapped through hchp_member_enrollment_extract_2026-10-05.csv and both of Mercy Valley's NPIs through hchp_network_hospitals_2026.csv.
-2. Kept the index admissions of specification 2.1 to 2.4 (34,500 in all): adults, no delivery DRGs, no patient status 07, each member's first, a transfer joined to the first hospital's stay.
-3. Summed each hospital's HIMM 3.2 scores from HIMM_3.2_scores_FY2026_admissions.xlsx, keyed by member, admission date and NPI.
-4. Counted the deaths the bills record (patient status 20 on the stay, its transfer stay or a later stay ending within the 30 days) and joined OVR_HCHP_FY2026_DEATH_LINKAGE_RETURN.csv on member and admission date.
-5. Classed each member by hchp_member_enrollment_extract_2026-10-05.csv (Social Security number on file; otherwise single or two-part surname) and measured each class's share of recorded deaths linked and share of members with a service line in hchp_member_service_lines_2025-01_2026-09.csv, an admission or a live discharge after day 30 linked.
-6. For each hospital and class, estimated the deaths among the admissions neither recorded dead nor seen alive after day 30 as (links less the false-link share times the admissions) over (the share linked less the false-link share), and added the recorded deaths.
-7. Divided each hospital's deaths by its expected deaths and marked the hospitals over 1.15 (specification 5.2).
-8. Took 2 per cent of each hospital's Halbrook payments for stays discharged in fiscal 2026 (Carrisford's out): each stay its original plus a CPS replacement's change or a platform replacement's full amount, a voided bill nothing, plus each additional payment in HCHP_Provider_Dispute_Log_IP_2026-10-01.xlsx made by September 30 on those stays, except one the disputed claim's replacement bill paid that day already carries: the replacement's change to the stay's payment (a CPS replacement's amount, or a platform replacement's amount less the original's) equals the additional payment.
+1. Laboratory: the legacy LIMS (local times, site codes through the crosswalk) and LabWare (UTC to Queensland time, point identifiers), duplicates (-D) dropped, re-issued results (-R) replacing the originals, suspended solids below 5 mg/L at 2.5.
+2. Conversion: COD regressed on TOC and chloride over the samples tested both ways in October to December 2025, with a constant, applied to each 2026 TOC sample with its own chloride.
+3. Volume: each meter's hourly register read in Queensland time over the local year; across an exchange the removed meter to its final read and the installed meter from its opening read, both from the field job log.
+4. Mass: the year's volume times the volume-weighted mean concentration of the year's compliance samples (24-hour composites; the inspection grabs, which carry suspended solids and pH only, are not compliance samples), each weighted by its day's metered volume, January on the measured COD.
+5. Exceedance: each COD mass against the register's limit (kilograms read as such).
+6. Tankered waste: accepted receival dockets of 2026 by local receival date, each docket's waste code from the manifest that carries it, a second pass of a load (the same truck within two hours, no manifest of its own) taking the code of the pass before it.
 
 ## 4. Deliverable Answers
 
-### halbrook_2027_hospital_quality_bonus.xlsx
+### trade_waste_cod_review_2026.pdf
 
-1. Hospitals that lose the 2027 bonus: **5**: Brannock Medical Center, Calloway Memorial Hospital, Mercy Valley Medical Center, Northgate Community Hospital and Westover Regional Hospital.
-2. Each hospital, 2027 bonus and bonus at stake (2 per cent of fiscal 2026 inpatient payments, nearest $100):
-   - Saint Brendan Medical Center: keeps, $791,900
-   - Westover Regional Hospital: loses, $816,700
-   - Calloway Memorial Hospital: loses, $477,100
-   - Varden Surgical Hospital: keeps, $833,800
-   - Mercy Valley Medical Center: loses, $579,700
-   - Northgate Community Hospital: loses, $559,500
-   - Tamsin General Hospital: keeps, $389,500
-   - Pinecrest Hospital: keeps, $412,200
-   - Brannock Medical Center: loses, $391,800
-   - Lakeshore Hospital: keeps, $366,900
-   - Corbel Falls Hospital: keeps, $314,400
-   - Quayside Hospital: keeps, $599,300
-   - Marlow Ridge Medical Center: keeps, $293,100
-   - Fairhaven Community Hospital: keeps, $247,400
-3. Total bonus at stake across the network: $7,073,300.
-4. Bar chart of the 14 hospitals' fiscal 2026 mortality ratios against the 1.15 line, the five that lose the bonus highlighted.
+1. Customers that exceeded their 2026 COD limit: Coolabah Olives, Glenbrae Meats, Riverbend Poultry, Tallowood Tannery.
+2. Customers within their limit: Mt Edwin Cheese, Sunvale Dairy, Hartley St Brewing, Bellbird Beverages, Kingfisher Linen, Golden Crumb, Paddock Fresh, Wattle Pet Foods.
+3. Chart of each customer's 2026 COD mass as a share of its limit, the exceeders marked.
+
+### trade_waste_figures_2026.xlsx
+
+1. Tankered liquid waste received at the treatment plant by quarter of 2026, kL:
+   - grease trap waste: Q1 5,765, Q2 5,791, Q3 6,128, Q4 6,098
+   - septage: Q1 1,724, Q2 1,748, Q3 1,879, Q4 1,683
+   - portable toilet waste: Q1 602, Q2 567, Q3 612, Q4 623
+   - landfill leachate: Q1 2,198, Q2 1,926, Q3 1,984, Q4 2,414
+2. Suspended solids discharged in 2026, t:
+   - Coolabah Olives 16.3; Tallowood Tannery 66.2; Mt Edwin Cheese 35.1; Glenbrae Meats 189.8; Riverbend Poultry 94.1; Sunvale Dairy 45.3; Hartley St Brewing 18.3; Bellbird Beverages 8.6; Kingfisher Linen 13.6; Golden Crumb 9.1; Paddock Fresh 54.2; Wattle Pet Foods 43.4

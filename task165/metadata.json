@@ -1,12 +1,12 @@
 {
   "task": "task165",
-  "title": "How much rock salt a lakeshore city's roads division commits above its rolled-over supply contract for the first winter after a bus network redesign moved 424 lane-km of collectors to bare-pavement service, when the collectors it moved before were streets its hazard-spot salting already covered along much of their length",
+  "title": "Seasonal rock salt commitment, winter 2026-27",
   "domain": "Urban & Regional Science",
   "client_domain": "Urban & Regional Science",
   "house_domain": "urban-regional-science",
-  "subdomain": "municipal service demand and resource allocation (a city's winter road salt for a change of service level, forecast from the spreader records of the streets that went through the same change before, conditioned on how much of each street the old service already salted)",
+  "subdomain": "municipal service demand and resource allocation (winter road salt)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a committed seasonal tonnage to the nearest 100 t, each works yard's dome stock and room on 1 November 2026, each yard's Priority 1 arterial rock salt in each of three winters, and a one-page report to council charting the arterial figures",
+  "prompt_shape": "a committed seasonal tonnage, each works yard's dome stock and room before the season, each yard's arterial rock salt by winter, and a one-page council report with a chart",
   "as_of": "2026-09-25",
   "deliverables": [
     "salt_commitment_2026-27.xlsx",
@@ -19,7 +19,7 @@
   "field_terms": [],
   "stated_inputs": [],
   "input_gates": {
-    "files": 21,
+    "files": 19,
     "formats": [
       "csv",
       "parquet",
@@ -59,29 +59,11 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "data_dictionary.xlsx",
-      "format": "xlsx",
-      "bytes": 10955,
-      "rows": 106,
-      "source": "Constructed: City of Quellbrook Roads Division fleet telematics, data dictionary for the 25 September 2026 pull",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "dome_stock_survey_2026-09.pdf",
       "format": "pdf",
       "bytes": 35531,
       "rows": null,
       "source": "Constructed: Tessaline Geomatics, salt dome stock survey report TG-2026-0917 for the City of Quellbrook (16 September 2026)",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "export_manifest.csv",
-      "format": "csv",
-      "bytes": 2299,
-      "rows": 20,
-      "source": "Constructed: City of Quellbrook Roads Division fleet telematics, export manifest for the 25 September 2026 pull",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -205,7 +187,7 @@
     {
       "path": "winter_maintenance_plan_2026-27.pdf",
       "format": "pdf",
-      "bytes": 42912,
+      "bytes": 42982,
       "rows": null,
       "source": "Constructed: City of Quellbrook Roads Division, winter maintenance plan 2026-27 (18 September 2026)",
       "date": "2026-09-25",

@@ -1,42 +1,117 @@
 {
  "task": "task468",
- "architecture": 4,
- "title": "How many of Halbrook Community Health Plan's 14 network hospitals lose their 2027 Hospital Quality Bonus on fiscal 2026 risk-adjusted 30-day mortality, and which; with each hospital's bonus at stake (2 per cent of the plan's fiscal 2026 inpatient payments), the network total and a chart of the mortality ratios against the 1.15 line",
- "domain": "Healthcare Delivery & Health Economics",
- "subdomain": "payment-claims-health-plan-analytics (a Medicaid plan's hospital mortality measure conformed from its claims, a delegated medical group's encounters, enrollment, service lines, risk scores and the state vital records office's death linkage)",
- "objective": "Data Extraction & Conformation (ETL)",
- "prompt_shape": "10: a scorecard: each of 14 hospitals' mortality ratio against the 1.15 bonus line, with the count and the hospitals that lose it, beside each hospital's bonus at stake",
- "as_of": "2026-10-09",
- "deliverables": [
-  "halbrook_2027_hospital_quality_bonus.xlsx"
- ],
- "distractor_files": [
-  "HCHP_Quality_Dashboard_Readmissions_FY2026.xlsx",
-  "HCHP_Network_Hospital_Profiles_2026.pdf"
- ],
- "stated_inputs": [
-  "fiscal 2026",
-  "2027",
-  "1.15",
-  "2 per cent"
- ],
- "input_gates": {
-  "files": 14,
-  "formats": [
-   "csv",
-   "pdf",
-   "txt",
-   "xlsx"
-  ],
-  "largest_file": "hchp_member_service_lines_2025-01_2026-09.csv",
-  "largest_file_rows": 324402
- },
- "sources": [
+ "architecture": 6,
+ "setting": "2027-01-12",
+ "files": [
   {
-   "files": "all files under target/",
-   "origin": "constructed for this task by task468/generator/build.py (seeded, deterministic) in the layouts of a Medicaid managed care plan's inpatient claims extract (UB-04 type of bill and patient status codes, MS-DRGs, ICD-10-CM), a delegated medical group's encounter submission file, an enrollment extract, a member service-line extract, a state vital records office's death linkage return, a plan's risk model scores, a network hospital list, a measure specification, a linkage methods note, extract notes, a file layout, a quality dashboard and hospital profiles; the state is unnamed and the plan, group, hospitals, members and people are fictional",
-   "date": "2026-10-09",
-   "license": "original work for this task; no third-party data (MS-DRG and UB-04 code values are public code sets used as labels)"
+   "name": "cod_review_request.eml",
+   "role": "evidence",
+   "source": "synthetic: the Trade Waste Manager's request email",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glenbrae_daily_rainfall_2026.csv",
+   "role": "distractor",
+   "source": "synthetic: daily rainfall at the utility's gauge",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glw_customer_production_returns_2026.xlsx",
+   "role": "distractor",
+   "source": "synthetic: customers' quarterly production returns",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glw_field_service_jobs_2026.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the field service job log with the meter exchanges",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glw_laboratory_notice_toc_2026.pdf",
+   "role": "evidence",
+   "source": "synthetic: the laboratory's notice of the move from COD to TOC",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glw_labware_trade_waste_results_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the laboratory's LabWare export of trade waste results from February 2026, UTC",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glw_lims_trade_waste_results_2025-01_to_2026-02.csv",
+   "role": "evidence",
+   "source": "synthetic: a water utility laboratory's legacy LIMS export of trade waste results, January 2025 to February 2026, local times",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glw_liquid_waste_receival_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the treatment plant's liquid waste receival station log",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glw_sampling_point_crosswalk.csv",
+   "role": "evidence",
+   "source": "synthetic: the legacy site codes to LabWare sampling points",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glw_trade_waste_agreements_register_2026.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the trade waste agreements register with each agreement's COD limit",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glw_trade_waste_flow_telemetry_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: hourly cumulative register reads of the trade waste flow meters, UTC",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glw_trade_waste_inspections_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the trade waste officers' inspection visits",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "glw_trade_waste_policy_v4.pdf",
+   "role": "evidence",
+   "source": "synthetic: the utility's trade waste policy, version 4",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "qld_waste_tracking_manifests_glw_2026.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the state waste tracking system's manifests for loads delivered to the plant",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   }
+ ],
+ "distractors": [
+  "glenbrae_daily_rainfall_2026.csv",
+  "glw_customer_production_returns_2026.xlsx"
+ ],
+ "distractor_reasons": {
+  "glenbrae_daily_rainfall_2026.csv": "rainfall says how wet the catchment was, not what a customer discharged through its meter",
+  "glw_customer_production_returns_2026.xlsx": "production returns are the customers' own activity figures; the policy measures mass from the utility's meters and samples"
+ },
+ "deliverables": [
+  "trade_waste_cod_review_2026.pdf",
+  "trade_waste_figures_2026.xlsx"
  ]
 }

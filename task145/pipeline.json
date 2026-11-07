@@ -1,67 +1,123 @@
 {
  "task": "task145",
- "status": "SHIPPED",
- "domain": "economics-econometrics/forecasting-forecast-evaluation",
+ "status": "PAUSED",
+ "domain": "education-learning-sciences/learning-analytics-early-warning-models (client education-learning-sciences)",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-15",
- "stump": "Carrying each gateway's formal entries per inbound shipment of the twelve months to September 2026 onto the 2027 network plan places one post at each of the five gateways and holds one; the step that lands it there is forecasting the 2027 count without estimating how each segment's CAD values respond to the plan's exchange rates, and re-routing every shipment at those rates instead (or one pooled pass-through share) drops Calgary's post and holds four.",
- "architecture": 1,
- "loops": 2,
+ "stage": 3,
+ "stage_name": "build",
+ "updated": "2026-11-01",
+ "stump": "A competent analyst prices each student on the network's early-warning indicators (chronic absence, course failures, behaviour incidents), validates them on the 2025-26 leavers and files about 95 to 100 expected leavers and the Bridge contract's first tier (125 seats); the step that lands it there is counting missed days rather than unbroken runs of them, when the fall 2026 family texts cut the scattered days while week-long disappearances (families moving between addresses) rose and leaving rides on the runs, so about 156 leave and the second tier (195 seats) is needed.",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-15",
-  "checks": 49,
-  "pair_ceiling": 37
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, five lines answered in the design note's ## Leak sweep, no LEAK (2026-10-15, the shipped cut 2ef27adf)",
-  "reader": "round 1 (first cut c150b43f): Q1 to Q4 none, Q6 analytical, every REVIEW line harmless; round 2 (the stage 4 repair's cut db04473c), superseded by the rule 3 rework; round 3 (the shipped cut 2ef27adf): Q1 to Q4 none, Q6 mainly analytical, the pass-through step never surfaced, its ask readings the devices"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g against task144; test.same_driver_older a NOTE, task127 v3, task138 and task446 v2 differentiated on the card); re-run after the rework on the new driver",
-  "nearest": "driver 0.08 (task253 v3), 0.07 (task450 v2), 0.06 (task107 v4, task121 v1, task118)",
-  "surface": "exit 0; 1 promoted, task446 on the card signature (gap time, G16, Gate G forecasting), the same-driver match differentiated on the card at the draw, for the author's clone-check",
-  "note": "drawn 2026-10-15 after git pull (task262, task455 and task144 on file): guard WARN repeat.gate_g answered in ## Draw; guard check re-run on the reworked card, WARN only"
+  "guard_check": "WARN 2026-11-01 on the registered card (strategy risk grain_or_unit; first names Monica and Patricia in older builds; Gate G forecasting against task130); the same-puzzle and same-driver older matches differentiated on the card",
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task145/determinism_check_report.md (the fresh judge on the pass-through cut: Gate H analytical, every figure and ask cell reproduced; its main risk, the literal full re-pricing at the plan's rates, ruled an easy-route wrong answer the data contradicts; its optional pin in the plan's assumption 2 declined, as it would point at pricing)",
-  "brief": ""
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 3: the generator is written (params, world, pack, docs, analysis, golden, writeup, checks, verify, ceiling) and the prompt passes voice-check; build.py stops at postprocess.normalize_pdf's assertion on board_policy_JF-7_bridge_program.pdf (fix the PDF normaliser for the four pack PDFs docs.py writes), then run python3 task145/generator/build.py (two byte-identical builds, checks.py, verify.py), write the design note's stage-2 sections and pass precut.py, then figures_check, leak.py --asof 2026-12-21, guard.py heart and surface after a fresh pull, golden-realism and reduce-house-fixes, and the stage 4 hand-off (leak copy at scratchpad/leak-task145/, brief at scratchpad/task145_stage4_leak_brief.md)",
  "approved": null,
- "delivered": "2026-10-15",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "build": {
-  "checks": 191,
-  "verify": "from the bundle alone (the pass-through by gateway and invoice currency, the golden and the three rivals), equal to figures.json, the workbook and the deck",
-  "rebuild": "two builds byte-identical; the final rebuild cut the judged target.zip again",
-  "figures_check": "exit 0 (133 figures)",
-  "voice_check": "PASS (867 characters, the prompt unchanged)",
-  "containers": "clean (target and golden)",
-  "precut": "exit 0 (49 checks, no FAIL or WARN)",
-  "target_zip_sha256": "2ef27adfec63a099dc9c2d77d24ac8dd0d65f481cd0f95b414f250ccce4b8f66"
- },
- "rework": {
-  "kind": "rule 3 rework of the decisive step (re-root, not a repair)",
-  "date": "2026-10-15",
-  "decisive_step": "each segment's exchange-rate pass-through (gateway and invoice currency) estimated from the base year's consignments repeated from the year before; the plan's rates applied to the invoice-held share, the CAD-held share kept at its base-year routes",
-  "call": "kept: Dorval 2, Calgary 1, three held",
-  "rivals": {
-   "a_default": "one post at each gateway, one held",
-   "b_full_repricing": "Dorval 2, four held (Calgary 2,023 a month, 505.7 a post on four)",
-   "c_one_network_share": "Dorval 2, four held (share 0.737; Calgary 544.0 a post on four)",
-   "d_one_share_per_currency": "Dorval 2, four held (US dollar 0.719; Calgary 546.6)",
-   "e_one_share_per_gateway": "the golden placement on other figures (Richmond 3,150 a month; Mississauga 540 and Richmond 520 a post)"
+ "architecture_spent": false,
+ "history": [
+  {
+   "date": "2026-11-01",
+   "event": "architecture 1 (Larchwood Express Canada's customs broker posts, shipped 10-15) spent at the batch 1 audit: short of the survivor anatomy (precut.py FAIL, the Survivor anatomy section missing; the prompt disclosed a count the data hold)",
+   "architecture_1": {
+    "status": "SHIPPED",
+    "domain": "economics-econometrics/forecasting-forecast-evaluation",
+    "objective": "forecasting",
+    "stage": 5,
+    "stage_name": "ship",
+    "updated": "2026-10-15",
+    "stump": "Carrying each gateway's formal entries per inbound shipment of the twelve months to September 2026 onto the 2027 network plan places one post at each of the five gateways and holds one; the step that lands it there is forecasting the 2027 count without estimating how each segment's CAD values respond to the plan's exchange rates, and re-routing every shipment at those rates instead (or one pooled pass-through share) drops Calgary's post and holds four.",
+    "architecture": 1,
+    "loops": 2,
+    "precut": {
+     "exit": 0,
+     "date": "2026-10-15",
+     "checks": 49,
+     "pair_ceiling": 37
+    },
+    "leak": {
+     "leak_py": "REVIEW, five lines answered in the design note's ## Leak sweep, no LEAK (2026-10-15, the shipped cut 2ef27adf)",
+     "reader": "round 1 (first cut c150b43f): Q1 to Q4 none, Q6 analytical, every REVIEW line harmless; round 2 (the stage 4 repair's cut db04473c), superseded by the rule 3 rework; round 3 (the shipped cut 2ef27adf): Q1 to Q4 none, Q6 mainly analytical, the pass-through step never surfaced, its ask readings the devices"
+    },
+    "duplicate_check": {
+     "heart": "WARN (repeat.gate_g against task144; test.same_driver_older a NOTE, task127 v3, task138 and task446 v2 differentiated on the card); re-run after the rework on the new driver",
+     "nearest": "driver 0.08 (task253 v3), 0.07 (task450 v2), 0.06 (task107 v4, task121 v1, task118)",
+     "surface": "exit 0; 1 promoted, task446 on the card signature (gap time, G16, Gate G forecasting), the same-driver match differentiated on the card at the draw, for the author's clone-check",
+     "note": "drawn 2026-10-15 after git pull (task262, task455 and task144 on file): guard WARN repeat.gate_g answered in ## Draw; guard check re-run on the reworked card, WARN only"
+    },
+    "judge": {
+     "verdict": "DETERMINISTIC",
+     "disposition": "APPROVE",
+     "report": "task145/determinism_check_report.md (the fresh judge on the pass-through cut: Gate H analytical, every figure and ask cell reproduced; its main risk, the literal full re-pricing at the plan's rates, ruled an easy-route wrong answer the data contradicts; its optional pin in the plan's assumption 2 declined, as it would point at pricing)",
+     "brief": ""
+    },
+    "returned": [],
+    "resume": "",
+    "approved": null,
+    "delivered": "2026-10-15",
+    "portal": null,
+    "portal_id": "",
+    "portal_status": "",
+    "portal_status_date": "",
+    "build": {
+     "checks": 191,
+     "verify": "from the bundle alone (the pass-through by gateway and invoice currency, the golden and the three rivals), equal to figures.json, the workbook and the deck",
+     "rebuild": "two builds byte-identical; the final rebuild cut the judged target.zip again",
+     "figures_check": "exit 0 (133 figures)",
+     "voice_check": "PASS (867 characters, the prompt unchanged)",
+     "containers": "clean (target and golden)",
+     "precut": "exit 0 (49 checks, no FAIL or WARN)",
+     "target_zip_sha256": "2ef27adfec63a099dc9c2d77d24ac8dd0d65f481cd0f95b414f250ccce4b8f66"
+    },
+    "rework": {
+     "kind": "rule 3 rework of the decisive step (re-root, not a repair)",
+     "date": "2026-10-15",
+     "decisive_step": "each segment's exchange-rate pass-through (gateway and invoice currency) estimated from the base year's consignments repeated from the year before; the plan's rates applied to the invoice-held share, the CAD-held share kept at its base-year routes",
+     "call": "kept: Dorval 2, Calgary 1, three held",
+     "rivals": {
+      "a_default": "one post at each gateway, one held",
+      "b_full_repricing": "Dorval 2, four held (Calgary 2,023 a month, 505.7 a post on four)",
+      "c_one_network_share": "Dorval 2, four held (share 0.737; Calgary 544.0 a post on four)",
+      "d_one_share_per_currency": "Dorval 2, four held (US dollar 0.719; Calgary 546.6)",
+      "e_one_share_per_gateway": "the golden placement on other figures (Richmond 3,150 a month; Mississauga 540 and Richmond 520 a post)"
+     },
+     "margins": "against (b): 19,061 of the 19,252 repeats in the three CAD-held segments keep their CAD value (Calgary's US-dollar goods 0.009 plus or minus 0.002, about 1,200 standard errors from one; the Chinese goods at Mississauga 0.011 and Richmond 0.013), within-consignment slopes 0.009 to 0.013 against one; against (c): the segments split into 0.958 to 1.000 and 0.009 to 0.013, homogeneity rejected at 71,119 on 11 degrees of freedom, Calgary about 900 standard errors under the pooled 0.737",
+     "freeze": "the call, the posts placed, the prompt and all 40 ask figures unchanged against the stage 4 snapshot; the main side's forecasts and loads, the card's stump and driver and the note's ladder and default path moved by design"
+    }
+   }
   },
-  "margins": "against (b): 19,061 of the 19,252 repeats in the three CAD-held segments keep their CAD value (Calgary's US-dollar goods 0.009 plus or minus 0.002, about 1,200 standard errors from one; the Chinese goods at Mississauga 0.011 and Richmond 0.013), within-consignment slopes 0.009 to 0.013 against one; against (c): the segments split into 0.958 to 1.000 and 0.009 to 0.013, homogeneity rejected at 71,119 on 11 degrees of freedom, Calgary about 900 standard errors under the pooled 0.737",
-  "freeze": "the call, the posts placed, the prompt and all 40 ask figures unchanged against the stage 4 snapshot; the main side's forecasts and loads, the card's stump and driver and the note's ladder and default path moved by design"
- }
+  {
+   "date": "2026-11-01",
+   "event": "first architecture 2 draw (Draaiboek Systems' 2027 gross revenue retention, success-manager tenure at renewal) blocked at registration by ban.strategy (composition_mix, its honest label, held by task125); redrawn, not relabelled"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "DRAWN: architecture 2, education-learning-sciences / learning-analytics-early-warning-models x forecasting (Cedar Prairie Charter Schools' spring 2027 Bridge contract tier), card registered"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "PAUSED mid-build: the world re-tuned so every defensible run threshold from five to ten days, every cell and model variant and every year subset files Tier 2 while every early-warning route files Tier 1; the asks re-sited onto devices the call never reads (one school a day under late-entered exits, a hearing officer's amendment under a re-coded behaviour)"
+  }
+ ]
 }

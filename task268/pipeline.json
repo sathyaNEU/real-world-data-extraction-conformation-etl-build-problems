@@ -1,30 +1,30 @@
 {
  "task": "task268",
  "status": "SHIPPED",
- "domain": "actuarial-science-insurance",
+ "domain": "marketing-consumer-research",
  "objective": "descriptive-distribution",
- "stage": "5",
+ "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-28",
- "stump": "The default path develops each region's 2025 claims still to be notified with the region's own report-lag factors, or splits bodily injury from damage, and leaves Valley out of the pilot; developed by notifying channel, the split that reproduces accident year 2022 as it finally came in, Valley's 2025 frequency is among the two highest.",
- "architecture": "4",
- "loops": "0",
+ "updated": "2026-10-31",
+ "stump": "A competent analyst builds the duplication of purchase table on the Rewards card, the chain's customer unit, and names Nordhavn; homes assembled from the Rewards cards and online accounts that pay with one bank card in Faircourt's settlement file put Oro Rosso lowest.",
+ "architecture": 5,
+ "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-28"
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2026-10-28",
-  "reader": "re-read clean on md5 9f49c3af (Q1 none, Q6 analytical choice)"
+  "leak_py": "REVIEW, every line ruled",
+  "reader": "architecture 5 read and two re-reads after the counter repair: no leak, question 6 analytical"
  },
  "duplicate_check": {
-  "heart": "WARN (no BLOCK), 2026-10-28",
-  "nearest": "task169 v2 0.08"
+  "heart": "WARN 2026-10-31 (three_rules.strategy_risk; older same-puzzle and same-driver notes differentiated)",
+  "nearest": "surface 2026-10-31: task267 and task264 promoted for adjudication, both differentiated on the card"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md (re-judge on md5 9f49c3af653b4216ab1af1381d9d0dbe); pass 1 SEND_BACK on the retired 2026 claims ask in determinism_check_report_pass6.md"
+  "report": "determinism_check_report.md (pass 1, FIX_NOW on the counter ask) and determinism_check_report_pass2.md (APPROVE)"
  },
  "returned": [
   {
@@ -34,14 +34,15 @@
    "commit": ""
   }
  ],
- "resume": "shipped 2026-10-28; awaiting the portal",
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-28",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
  "seed_world": 273,
- "zip_md5": "9f49c3af653b4216ab1af1381d9d0dbe"
+ "zip_md5": "f6dc0b57e6efa9a011d4e87d21613e30",
+ "zip_sha256_16": "56492de5d6701f85"
 }

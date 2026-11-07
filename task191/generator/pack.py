@@ -1,271 +1,228 @@
-"""Write the bundle the platform's network planning desk would hand over."""
-import csv
+"""The pack: the files the platform's systems hold on the morning of 2 November 2026."""
 import datetime as dt
+import json
 import os
-import random
 
-import panel
-import sim
-import world as W
+import numpy as np
+import openpyxl
+from openpyxl.styles import Font
+
+import common as C
+import docs as D
 
 FILES = {
-    "panel": "panel_throughput_minutes.csv",
-    "rollup": "evening_quality_daily.csv",
-    "register": "interconnect_register.csv",
-    "maint": "maintenance_windows.csv",
-    "health": "collector_health_log.csv",
-    "edge": "edge_traffic_5min.csv",
-    "commit": "peering_commitments.csv",
-    "amend": "commitment_amendments.csv",
-    "credits": "invoice_credits.csv",
-    "sessions": "client_sdk_sessions.csv",
-    "releases": "sdk_release_log.json",
-    "rebuffer": "rebuffer_events_daily.csv",
-    "incidents": "incident_log.csv",
-    "restored": "incident_restoration_extract.csv",
-    "plan": "peering_capacity_plan.xlsx",
-    "catalogue": "content_catalogue_hours.csv",
-    "cache": "cdn_cache_hit_by_pop.csv",
-    "manifest": "telemetry_handover_inventory.csv",
+    "alerts": "tm_alerts_2025-07_2026-10.csv",
+    "cases": "fcm_cases_export_2026-11-02.json",
+    "sars": "sar_filings_2025-07_2026-10.csv",
+    "catalogue": "tm_scenario_catalogue_2026.xlsx",
+    "runs": "tm_monitoring_runs_2025-07_2026-10.csv",
+    "procedure": "aml_alert_handling_procedure_2026.pdf",
+    "thread": "tuning_2027_thread.eml",
+    "risk": "customer_risk_tiers_2026-10.csv",
+    "capacity": "investigations_capacity_2027.xlsx",
+    "qa": "qa_case_sampling_2026.csv",
 }
+DISTRACTORS = ("risk", "capacity", "qa")
 
 
-def _csv(path, header, rows):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\n")
-        w.writerow(header)
-        for r in rows:
-            w.writerow(r)
-    return path
+def _status_at_extract(a, case):
+    X = C.EXTRACT_UTC
+    if a["triage_end"] > X:
+        return "OPEN", None, None, None
+    if a["triage"] == "DUP":
+        return "CLOSED", a["triage_end"], "DUP", None
+    if a["triage"] == "NSA":
+        return "CLOSED", a["triage_end"], "NSA", None
+    return "CLOSED", a["triage_end"], "ESC", a["case"]
 
 
-def recorded_port(code, day):
-    """the port code the record carries: one port was renamed inside the quarter"""
-    old, new, when = W.RENAMED
-    return old if code == new and day < when else code
-
-
-def write_panel(target, minutes):
-    """one row per interconnect per minute of the two retained bands, with the collector's losses.
-
-    A collector loss takes a whole band for a whole day on one port, which is what an outage does,
-    so the bands the collector did capture are whole and their medians are the standard's own.
-    """
-    rng = random.Random(W.SEED + 11)
-    lost = set()
-    kept, dropped = [], {}
-    for stamp, code, sessions, med, p10, reb, sday in minutes:
-        local = stamp + dt.timedelta(hours=panel.offset(stamp.date()))
-        band = "evening" if local.hour >= W.EVENING_BAND[0] else "day"
-        key = (code, local.date(), band)
-        if key not in lost:
-            lost.add(key)
-            if rng.random() < 0.0083:
-                dropped[key] = True
-        if dropped.get(key):
+def write_alerts(W, path):
+    case = {c["case_id"]: c for c in W["cases"]}
+    rows = []
+    for a in sorted(W["alerts"], key=lambda a: (a["gen"], a["alert_id"])):
+        if a["gen"] > C.EXTRACT_UTC or a["bdate"] < C.DATA0:
             continue
-        kept.append((stamp, code, local, sessions, med, p10, reb, sday, band))
-    rows = [[k[0].strftime("%Y-%m-%dT%H:%M:%SZ"), recorded_port(k[1], k[2].date()),
-             k[3], k[4], k[5], k[6]] for k in kept]
-    rows.sort(key=lambda r: (r[0], r[1]))
-    _csv(os.path.join(target, FILES["panel"]),
-         ["measured_at_utc", "port_code", "sessions", "median_kbps", "p10_kbps",
-          "rebuffer_events"], rows)
-    return kept, sorted(dropped)
+        st, closed, outcome, cid = _status_at_extract(a, case)
+        rows.append([a["alert_id"], a["shown"], a["run_id"], C.iso_z(a["gen"]), a["customer"], a["account"], a["score"],
+                     st, C.iso_z(closed) if closed else "", outcome or "", cid or ""])
+    C.write_csv(path, ["alert_id", "scenario_code", "run_id", "created_at_utc", "customer_no", "account_no",
+                       "alert_score", "triage_status", "triage_closed_at_utc", "triage_outcome", "case_id"], rows)
+    return len(rows)
 
 
-def rollup_from_panel(kept):
-    """the pipeline's daily band medians, read off the minutes the collector captured"""
-    by = {}
-    for stamp, code, local, sessions, med, p10, reb, sday, band in kept:
-        by.setdefault((code, local.date()), {}).setdefault(band, {}) \
-          .setdefault(local.hour, []).append(med)
-        by[(code, local.date())]["sessions"] = sday
+def write_cases(W, path):
+    r = C.rng("case-events")
+    X = C.EXTRACT_UTC
+    alerts_of = {}
+    for a in W["alerts"]:
+        if a["case"] and a["triage_end"] <= X:
+            alerts_of.setdefault(a["case"], []).append(a["alert_id"])
+    teams = ["INV-East", "INV-Central", "INV-Merchant", "INV-Cross-border"]
     out = []
-    for (code, day), bands in sorted(by.items()):
-        if "day" not in bands or "evening" not in bands:
-            continue                     # the pipeline summarises a day it captured both bands on
-        ref = [v for h in bands["day"] for v in bands["day"][h]]
-        if len(ref) < 180:
+    for c in sorted(W["cases"], key=lambda c: (c["opened"], c["case_id"])):
+        # the export holds every investigation open on 1 July 2025 or opened since
+        if c["opened"] > X or c["case_id"] not in alerts_of or c["decided"] < C.DATA0_UTC:
             continue
-        refmed = panel.median_of(ref)
-        for _, hour in W.WINDOWS:
-            vals = bands["evening"].get(hour)
-            if not vals or len(vals) < 60:
-                continue
-            out.append(("2027Q1", code, day, hour, panel.median_of(vals), refmed,
-                        bands["sessions"]))
-    return out
+        ev = [{"at": C.iso_z(c["opened"]), "event": "opened"}]
+        t = c["opened"] + dt.timedelta(hours=float(r.uniform(2, 60)))
+        ev.append({"at": C.iso_z(min(t, X)), "event": "assigned", "team": teams[int(r.integers(0, 4))]})
+        span = (min(c["decided"], X) - c["opened"]).total_seconds()
+        if span > 10 * 86400 and r.random() < 0.55:
+            ev.append({"at": C.iso_z(c["opened"] + dt.timedelta(seconds=span * float(r.uniform(0.15, 0.45)))),
+                       "event": "request_for_information"})
+        done = c["decided"] <= X
+        if c["outcome"] == "SAR":
+            fiu = c["decided"] - dt.timedelta(days=float(r.uniform(18, 40)))
+            if fiu <= X and fiu > c["opened"]:
+                ev.append({"at": C.iso_z(fiu), "event": "referred_to_fiu"})
+            qa = c["decided"] - dt.timedelta(days=float(r.uniform(2, 9)))
+            if qa <= X and qa > c["opened"]:
+                ev.append({"at": C.iso_z(qa), "event": "sar_quality_review"})
+        if done:
+            ev.append({"at": C.iso_z(c["decided"]), "event": "sar_filed" if c["outcome"] == "SAR" else "closed_no_sar"})
+        ev.sort(key=lambda e: e["at"])
+        out.append({"case_id": c["case_id"], "customer_no": c["customer"], "account_no": c["account"],
+                    "opened_at": C.iso_z(c["opened"]), "alert_ids": sorted(alerts_of[c["case_id"]]),
+                    "status": "CLOSED" if done else "OPEN",
+                    "disposition": ("SAR filed" if c["outcome"] == "SAR" else "No SAR") if done else None,
+                    "decided_at": C.iso_z(c["decided"]) if done else None, "events": ev})
+    doc = {"export": {"system": "Financial crimes case manager", "exported_at": "2026-11-02T11:20:00Z",
+                      "scope": "investigations open on 1 July 2025 or opened since"}, "cases": out}
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(doc, f, indent=1, ensure_ascii=False)
+        f.write("\n")
+    C.set_mtime(path)
+    return len(out)
 
 
-def write_rollup(target, rollup):
-    """the pipeline's own daily summary, kept for two years where the minutes are kept for ninety"""
-    rows = []
-    for label, code, day, hour, ev, dayb, sess in rollup:
-        rows.append([day.isoformat(), recorded_port(code, day), "%02d:00" % hour,
-                     "%.0f" % ev, "%.0f" % dayb, sess, label])
-    rows.sort(key=lambda r: (r[0], r[1], r[2]))
-    return _csv(os.path.join(target, FILES["rollup"]),
-                ["evening_date_local", "port_code", "window_from", "evening_median_kbps",
-                 "reference_median_kbps", "sessions", "reporting_quarter"], rows)
+def write_sars(W, path):
+    rows = [[f["bsa_id"], f["case_id"], C.iso_z(f["filed"]), f["shown_prior"], f["start"].isoformat(), f["end"].isoformat(),
+             f["amount"], f["subjects"]] for f in W["filings"] if f["filed"] >= C.DATA0_UTC]
+    C.write_csv(path, ["bsa_id", "case_id", "filed_at_utc", "prior_bsa_id", "activity_start", "activity_end",
+                       "amount_usd", "subjects"], rows)
+    return len(rows)
 
 
-def write_register(target):
-    rows = []
-    old, new, when = W.RENAMED
-    for code, peer, kind, cap, load, spread in W.PATHS:
-        rows.append([code, peer, kind, cap,
-                     when.isoformat() if code == new else "2023-04-01", "", "in service", code])
-    rows.append([old, dict((p[0], p[1]) for p in W.PATHS)[new], "cable", 100, "2023-04-01",
-                 (when - dt.timedelta(days=1)).isoformat(), "renamed", new])
-    rows.append(["BRK-01", "Brakveld Net", "cable", 100, "2023-04-01", "2026-05-31",
-                 "decommissioned", ""])
-    rows.append(["TRN-A1", "Noordlijn Transit", "transit", 400, "2023-04-01", "", "in service",
-                 "TRN-A1"])
-    rows.append(["TRN-A2", "Noordlijn Transit", "transit", 400, "2025-09-01", "", "in service",
-                 "TRN-A2"])
-    rows.append(["TRN-B1", "Grensweg Carrier", "transit", 200, "2023-04-01", "", "in service",
-                 "TRN-B1"])
-    rows.append(["TRN-B2", "Grensweg Carrier", "transit", 200, "2026-02-01", "", "in service",
-                 "TRN-B2"])
-    rows.append(["TRN-C1", "Zandpoort IX", "transit", 100, "2024-11-01", "", "in service",
-                 "TRN-C1"])
-    return _csv(os.path.join(target, FILES["register"]),
-                ["port_code", "peer", "port_type", "capacity_gbps", "in_service_from",
-                 "in_service_to", "status", "current_port_code"], rows)
+def write_runs(W, path):
+    rows = [[x["run_id"], x["bdate"].isoformat(), x["type"], C.iso_z(x["start"]), C.iso_z(x["end"]), x["n"], x["note"]]
+            for x in sorted(W["runs"], key=lambda x: (x["start"], x["run_id"])) if x["bdate"] >= C.DATA0]
+    C.write_csv(path, ["run_id", "business_date", "run_type", "started_at_utc", "completed_at_utc", "alerts_raised",
+                       "note"], rows)
 
 
-def write_maintenance(target):
-    """the planned work the network operations team books, with the evenings it covers"""
-    rng = random.Random(W.SEED + 17)
-    rows = []
-    code, lo, hi = W.MAINTENANCE
-    d = lo
-    while d <= hi:
-        rows.append([recorded_port(code, d), d.isoformat(), "19:00", "23:30",
-                     "line card replacement, port running on one card", "CHG-20412"])
-        d += dt.timedelta(days=1)
-    # earlier planned work, outside the evening band, which the framework does not reach
-    for c, day, frm, to, what, ref in [
-            ("KZD-01", dt.date(2027, 1, 14), "02:00", "05:00", "optics clean", "CHG-20287"),
-            ("VSN-01", dt.date(2027, 1, 28), "03:00", "06:00", "firmware", "CHG-20319"),
-            ("DLF-01", dt.date(2027, 3, 4), "02:30", "04:30", "cross connect move", "CHG-20506"),
-            ("OPL-01", dt.date(2027, 3, 18), "01:00", "04:00", "optics clean", "CHG-20544"),
-            # work that does reach an evening window, on other ports
-            ("KZD-01", dt.date(2027, 1, 21), "20:30", "22:00", "peering session reset",
-             "CHG-20301"),
-            ("VSN-01", dt.date(2027, 2, 19), "19:15", "21:45", "optics replacement", "CHG-20388"),
-            ("VSN-01", dt.date(2027, 2, 20), "19:15", "21:45", "optics replacement", "CHG-20388"),
-            ("OPL-01", dt.date(2027, 3, 11), "21:00", "23:00", "radio path realignment",
-             "CHG-20521"),
-            ("DLF-01", dt.date(2027, 1, 7), "19:00", "20:30", "cross connect move", "CHG-20272")]:
-        rows.append([recorded_port(c, day), day.isoformat(), frm, to, what, ref])
-    rows.sort(key=lambda r: (r[1], r[0]))
-    return _csv(os.path.join(target, FILES["maint"]),
-                ["port_code", "work_date_local", "window_from", "window_to", "work", "change_ref"],
-                rows)
+TYPOLOGY = {"CSH-LDS": "Structuring", "CSH-VEL": "Cash", "XB-HRJ": "Cross-border", "RMF-P2P": "Layering",
+            "MUL-INF": "Money mules", "FAN-OUT": "Layering", "CHB-ABU": "Merchant abuse", "ATM-WDL": "Cash-out",
+            "PRF-DEV": "Profile", "DRM-REA": "Account takeover", "MER-RND": "Merchant collusion",
+            "CRY-OFF": "Virtual assets", "ELD-EXP": "Elder exploitation", "GMB-SPL": "Gambling"}
+OWNER = {"CSH-LDS": "Retail cash", "CSH-VEL": "Retail cash", "XB-HRJ": "Cross-border", "RMF-P2P": "P2P",
+         "MUL-INF": "P2P", "FAN-OUT": "P2P", "CHB-ABU": "Merchant", "ATM-WDL": "Card", "PRF-DEV": "Monitoring",
+         "DRM-REA": "Monitoring", "MER-RND": "Merchant", "CRY-OFF": "Cross-border", "ELD-EXP": "Consumer",
+         "GMB-SPL": "Merchant"}
 
 
-def write_health(target, dropped):
-    """the collector's own record of what it captured, by day and port"""
-    by = {}
-    for code, day, band in dropped:
-        by[(day, code)] = by.get((day, code), 0) + 180
-    rows = []
-    for label, lo, hi in sim.quarters():
-        if label != "2027Q1":
-            continue
-        for day in sim.evenings(lo, hi):
-            for code, peer, kind, cap, load, spread in W.PATHS:
-                miss = by.get((day, code), 0)
-                rows.append([day.isoformat(), recorded_port(code, day), 360, 360 - miss, miss])
-    return _csv(os.path.join(target, FILES["health"]),
-                ["collection_date_local", "port_code", "minutes_scheduled", "minutes_captured",
-                 "minutes_missing"], rows)
-
-
-def write_plan(target):
-    """the capacity plan as the planning desk keeps it, one wide sheet a month"""
-    from openpyxl import Workbook
-    from openpyxl.styles import Alignment, Font
-    rng = random.Random(W.SEED + 43)
-    wb = Workbook()
-    first = True
-    for mon, name in ((1, "Jan 2027"), (2, "Feb 2027"), (3, "Mar 2027")):
-        ws = wb.active if first else wb.create_sheet()
-        ws.title = name
-        first = False
-        ws["A1"] = "%s: interconnect capacity plan, %s" % (W.PLATFORM, name)
-        ws["A1"].font = Font(bold=True, size=12)
-        ws["A2"] = "Committed and planned capacity in gigabits a second. Planning desk working copy."
-        ws["A3"] = "Prepared by the network planning desk."
-        head = ["Measure"] + [p[0] for p in W.PATHS] + ["Transit"]
-        for j, h in enumerate(head):
-            c = ws.cell(row=5, column=1 + j, value=h)
+def _xlsx(path, sheets, created, modified, author):
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)
+    for title, rows, widths in sheets:
+        ws = wb.create_sheet(title)
+        for row in rows:
+            ws.append(list(row))
+        for c in ws[1]:
             c.font = Font(bold=True)
-            if j:
-                c.alignment = Alignment(horizontal="center")
-        for i, (label, scale) in enumerate((("Committed capacity", 1.0),
-                                            ("Busy hour load", 0.58),
-                                            ("Headroom", 0.42),
-                                            ("Planned capacity next quarter", 1.0))):
-            ws.cell(row=6 + i, column=1, value=label)
-            for j, p in enumerate(W.PATHS):
-                v = p[3] * scale * (0.97 + 0.06 * rng.random())
-                if label == "Planned capacity next quarter":
-                    v = p[3] * (1.0 if rng.random() < 0.7 else 1.5)
-                ws.cell(row=6 + i, column=2 + j, value=round(v, 1))
-            ws.cell(row=6 + i, column=2 + len(W.PATHS),
-                    value=round(1100 * scale * (0.97 + 0.06 * rng.random()), 1))
-        ws.cell(row=11, column=1, value="Headroom is committed capacity less busy hour load and "
-                                        "carries no quality measure.").font = Font(size=9,
-                                                                                   italic=True)
-        ws.column_dimensions["A"].width = 30
-    path = os.path.join(target, FILES["plan"])
+        for i, w in enumerate(widths):
+            ws.column_dimensions[chr(65 + i)].width = w
     wb.save(path)
-    return path
+    C.normalise_zip(path, created, modified, author=author)
 
 
-def write_manifest(target):
-    """what the data platform handed over, each file with its own rows and range"""
-    import csv as _c
-    spans = {
-        FILES["panel"]: ("measured_at_utc", "measured_at_utc",
-                         "one row per interconnect per minute of the two retained bands"),
-        FILES["rollup"]: ("evening_date_local", "evening_date_local",
-                          "the pipeline's daily band medians, kept for two years"),
-        FILES["health"]: ("collection_date_local", "collection_date_local",
-                          "what the collector was due to record and what it did"),
-        FILES["edge"]: ("sampled_at_utc", "sampled_at_utc",
-                        "the edge's five-minute traffic samples for every port it bills"),
-        FILES["maint"]: ("work_date_local", "work_date_local",
-                         "work the network operations team booked"),
-        FILES["sessions"]: ("session_date_local", "session_date_local",
-                            "client sessions by day and version string"),
-        FILES["rebuffer"]: ("session_date_local", "session_date_local",
-                            "sessions that rebuffered, by day and version string"),
-        FILES["incidents"]: ("opened_at_utc", "opened_at_utc",
-                             "every incident the duty desk opened in the quarter"),
-        FILES["restored"]: ("service_restored_at_utc", "service_restored_at_utc",
-                            "the restoration times the duty engineers recorded"),
-    }
+def write_catalogue(path):
+    rows = [["scenario_code", "scenario_name", "typology", "owner", "in_production_from", "retired_on", "replaced_by",
+             "notes"]]
+    starts = {"CSH-LDS": "2021-03-01", "CSH-VEL": "2021-03-01", "XB-HRJ": "2021-09-13", "RMF-P2P": "2022-02-07",
+              "MUL-INF": "2022-06-20", "FAN-OUT": "2022-06-20", "CHB-ABU": "2023-01-16", "ATM-WDL": "2021-03-01",
+              "PRF-DEV": "2021-03-01", "DRM-REA": "2022-11-07", "MER-RND": "2023-08-14", "CRY-OFF": "2024-04-08",
+              "ELD-EXP": "2024-10-21", "GMB-SPL": "2025-02-03"}
+    for code in C.CODES:
+        retired = "2026-03-31" if code in C.REPLACEMENT else ""
+        rep = C.REPLACEMENT.get(code, "")
+        note = "recalibrated and reissued as " + rep if rep else ""
+        rows.append([code, C.NAME[code], TYPOLOGY[code], OWNER[code], starts[code], retired, rep, note])
+        if rep:
+            rows.append([rep, C.NAME[code] + " (recalibrated)", TYPOLOGY[code], OWNER[code], "2026-04-01", "", "",
+                         "replaces " + code])
+    _xlsx(path, [("Scenarios", rows, (11, 58, 18, 13, 18, 12, 12, 52))], "2021-02-22T15:10:00Z", "2026-04-02T13:46:00Z",
+          "Miguel Swanson")
+
+
+def write_risk(W, path):
+    r = C.rng("risk")
+    seen = sorted({a["customer"] for a in W["alerts"] if a["bdate"] >= C.DATA0 and a["gen"] <= C.EXTRACT_UTC})
     rows = []
-    for name in sorted(spans):
-        lo_col, hi_col, scope = spans[name]
-        with open(os.path.join(target, name), encoding="utf-8") as fh:
-            rd = list(_c.DictReader(fh))
-        lo = min(r[lo_col] for r in rd if r[lo_col])[:10]
-        hi = max(r[hi_col] for r in rd if r[hi_col])[:10]
-        rows.append([name, str(len(rd)), lo, hi, W.AS_OF.isoformat(), scope])
-    for name, scope in ((FILES["register"], "every interconnect and transit port the platform holds"),
-                        (FILES["commit"], "the peering and transit commitments in force"),
-                        (FILES["amend"], "amendments to those commitments"),
-                        (FILES["credits"], "service credits issued to peers"),
-                        (FILES["catalogue"], "titles and hours added, by genre"),
-                        (FILES["cache"], "cache hit ratio and egress by point of presence")):
-        with open(os.path.join(target, name), encoding="utf-8") as fh:
-            n = sum(1 for _ in fh) - 1
-        rows.append([name, str(n), "", "", W.AS_OF.isoformat(), scope])
-    return _csv(os.path.join(target, FILES["manifest"]),
-                ["extract", "rows_handed_over", "covers_from", "covers_to", "pulled_on",
-                 "what_it_holds"], rows)
+    for cno in seen:
+        tier = ["Low", "Medium", "High"][int(r.choice(3, p=[0.55, 0.33, 0.12]))]
+        seg = "Merchant" if r.random() < 0.18 else "Consumer"
+        on = dt.date(2019, 1, 1) + dt.timedelta(days=int(r.integers(0, 2400)))
+        rev = max(on, dt.date(2026, 10, 30) - dt.timedelta(days=int(r.integers(0, 720))))
+        rows.append([cno, seg, tier, on.isoformat(), rev.isoformat()])
+    C.write_csv(path, ["customer_no", "segment", "risk_tier", "onboarded_on", "last_kyc_review"], rows)
+
+
+def write_capacity(path):
+    rows = [["team", "investigators_2026", "investigators_2027", "productive_hours_per_investigator", "notes"],
+            ["INV-East", 9, 10, 1480, "one hire approved for Q1 2027"],
+            ["INV-Central", 8, 8, 1480, ""],
+            ["INV-Merchant", 6, 7, 1450, "merchant collusion specialist from February 2027"],
+            ["INV-Cross-border", 5, 5, 1420, "shares the FIU's sanctions screening rota"],
+            ["Triage pool", 14, 14, 1520, "contractors from the March 2026 surge retained"]]
+    _xlsx(path, [("Capacity 2027", rows, (18, 18, 18, 30, 50))], "2026-08-19T14:02:00Z", "2026-10-28T20:31:00Z",
+          "Leah Berg")
+
+
+def write_qa(W, path):
+    """Quality Assurance's monthly sample of closed investigations (procedure section 7), as its review log holds it."""
+    r = C.rng("qa")
+    findings = ["Rationale for closure not recorded in full", "Request for information not followed up",
+                "Counterparty searches not evidenced", "SAR narrative missing the activity period",
+                "Related alerts not reviewed before closure", "Escalation note does not cite the alert"]
+    by_month = {}
+    for c in W["cases"]:
+        if c["decided"] > C.EXTRACT_UTC:
+            continue
+        d = C.to_eastern(c["decided"]).date()
+        if d.year == 2026 and d.month <= 9:
+            by_month.setdefault(d.month, []).append(c)
+    rows = []
+    ref = 30_000 + int(r.integers(100, 900))
+    for m in sorted(by_month):
+        pool = sorted(by_month[m], key=lambda c: c["case_id"])
+        k = 16 + int(r.integers(0, 9))
+        pick = sorted(int(i) for i in r.choice(len(pool), size=k, replace=False))
+        for i in pick:
+            c = pool[i]
+            ref += int(r.integers(1, 6))
+            reviewed = dt.date(2026, m, 1) + dt.timedelta(days=31 + int(r.integers(0, 20)))
+            while reviewed.weekday() >= 5:
+                reviewed += dt.timedelta(days=1)
+            u = float(r.random())
+            res = "Pass" if u < 0.80 else ("Pass with comments" if u < 0.94 else "Fail")
+            note = "" if res == "Pass" else findings[int(r.integers(0, len(findings)))]
+            rows.append(["QA-%d" % ref, "2026-%02d" % m, c["case_id"],
+                         "SAR filed" if c["outcome"] == "SAR" else "No SAR", reviewed.isoformat(), res, note])
+    C.write_csv(path, ["qa_ref", "sample_month", "case_id", "disposition", "reviewed_on", "result", "finding"], rows)
+
+
+def build(W, folder):
+    os.makedirs(folder, exist_ok=True)
+    p = lambda k: os.path.join(folder, FILES[k])
+    n = {}
+    n["alerts"] = write_alerts(W, p("alerts"))
+    n["cases"] = write_cases(W, p("cases"))
+    n["sars"] = write_sars(W, p("sars"))
+    write_runs(W, p("runs"))
+    write_catalogue(p("catalogue"))
+    write_risk(W, p("risk"))
+    write_capacity(p("capacity"))
+    write_qa(W, p("qa"))
+    D.procedure_pdf(p("procedure"))
+    D.thread_eml(p("thread"))
+    return n

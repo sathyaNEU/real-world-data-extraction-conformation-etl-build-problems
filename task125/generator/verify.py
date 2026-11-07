@@ -1,138 +1,144 @@
-"""Independent verifier: recomputes the July to September split, the gap path and the three regional asks from target/
-alone, with its own parsing, raking and matching (no generator module), and compares them with the goldens."""
-import csv
+"""task125 independent verifier: recomputes the designation and every ask figure from target/ with pandas, by its
+own route (cell means for the venue excess, merges for the asks), and compares with figures.json.
+
+    python3 task125/generator/verify.py
+"""
+import json
 import os
-import re
 import sys
-import zipfile
-from collections import defaultdict
 
 import numpy as np
-import openpyxl
-import pyarrow.parquet as pq
+import pandas as pd
 
-REG = ["VEL", "CAR", "PEL", "HAS", "TIR", "DUN"]
-NAME = {"VEL": "Velmouth", "CAR": "Carrowdene", "PEL": "Pellard", "HAS": "Haskvale", "TIR": "Tirrin", "DUN": "Dunmarrow"}
-
-
-def controls(target):
-    wb = openpyxl.load_workbook(os.path.join(target, "population_controls_2023q1_2027q4.xlsx"), data_only=True)
-    reg = {r[0]: np.array(r[2:8], float) for r in wb["Region"].iter_rows(min_row=2, values_only=True)}
-    cel = {r[0]: np.array(r[2:16], float) for r in wb["Age and sex"].iter_rows(min_row=2, values_only=True)}
-    return reg, cel
+HERE = os.path.dirname(os.path.abspath(__file__))
+TARGET = os.path.join(os.path.dirname(HERE), "target")
+PATROL = {"1610", "1420", "1430", "2120", "2142", "2170", "3370"}
 
 
-def ipf(region, cell, rt, ct):
-    w = np.ones(len(region))
-    for _ in range(500):
-        w = w * rt[region] / np.bincount(region, w, 6)[region]
-        f = ct / np.bincount(cell, w, 14)
-        w = w * f[cell]
-        if abs(f - 1).max() < 1e-13:
-            break
-    return w
+def t(path):
+    return os.path.join(TARGET, path)
 
 
-def ur_er(st, w):
-    e, u = w[st == 1].sum(), w[st == 2].sum()
-    return 100 * u / (e + u), 100 * e / w.sum()
+def when(s):
+    s = s.fillna("")
+    day_first = s.str.contains("/")
+    out = pd.Series(pd.NaT, index=s.index)
+    out[day_first] = pd.to_datetime(s[day_first], format="%d/%m/%Y %H:%M")
+    rest = (~day_first) & (s != "")
+    out[rest] = pd.to_datetime(s[rest].str[:16], format="%Y-%m-%d %H:%M")
+    return out
 
 
-def main(target, golden):
-    t = pq.read_table(os.path.join(target, "hls_person_quarter_2023q1_2026q3.parquet")).to_pydict()
-    n = len(t["quarter"])
-    first = {}
-    with open(os.path.join(target, "hls_call_records_2025q1_2026q3.csv"), encoding="utf-8") as fh:
-        calls = list(csv.DictReader(fh))
-    for r in calls:
-        if r["outcome"] == "110":
-            s = r["serial"][:9]
-            first[s] = min(first.get(s, 99), int(r["visit_no"]))
-    reg, cel = controls(target)
+def main():
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    occ = pd.read_csv(t("mps_rms_occurrences_2022_2026.csv"), dtype=str)
+    occ["version"] = occ["version"].astype(int)
+    last = occ.sort_values(["occurrence_no", "version"]).groupby("occurrence_no").tail(1).copy()
+    xw = pd.read_csv(t("rms_offence_code_crosswalk_2023.csv"), dtype=str)
+    m = dict(zip(xw.legacy_code, xw.ucr2_code))
+    last["code"] = last["offence_code"].map(lambda c: m.get(c, c))
+    when_ = when(last["occurred_from"])
+    when_ = when_.fillna(when(last["reported"]))
+    last["date"] = when_.dt.normalize()
+    keep = last[last.code.isin(PATROL) & (last.status != "UNFOUNDED") & last.segment_id.notna() &
+                (last.date >= "2022-01-01") & (last.date <= "2026-12-31")].copy()
+    segs = pd.read_csv(t("mountjoy_street_segments.csv"), dtype={"segment_id": int})
+    keep["segment_id"] = keep.segment_id.astype(int)
+    keep = keep[keep.segment_id.isin(segs.segment_id)]
+    daily = keep.groupby(["segment_id", "date"]).size()
 
-    def sample(q):
-        idx = [i for i in range(n) if t["quarter"][i] == q]
-        region = np.array([REG.index(t["region"][i]) for i in idx])
-        age = np.array([t["age"][i] for i in idx])
-        grp = np.digitize(age, [25, 35, 45, 55, 65, 75])
-        cell = 2 * grp + np.array([t["sex"][i] for i in idx]) - 1
-        st = np.array([t["ilo_status"][i] for i in idx])
-        wave = np.array([t["wave"][i] for i in idx])
-        late = np.array([first.get(t["serial"][i][:9], 0) >= 4 for i in idx])
-        wt = np.array([t["weight"][i] for i in idx])
-        return region, cell, st, wave, late, wt
-
-    # the one quarter with no capped intake at any wave and a visit history for every household: January to March
-    # 2026. The cap runs on the intakes of 2026Q2 to 2027Q1, so quarter q holds them at waves q - intake + 1.
-    region, cell, st, wave, late, _ = sample("2026Q1")
-    base = ur_er(st, ipf(region, cell, reg["2026Q1"], cel["2026Q1"]))
-    path = []
-    for pos in [(1, 2), (1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5)]:      # 2026Q3 .. 2027Q3
-        keep = ~(np.isin(wave, pos) & late)
-        r = ur_er(st[keep], ipf(region[keep], cell[keep], reg["2026Q1"], cel["2026Q1"]))
-        path.append((r[0] - base[0], r[1] - base[1]))
-    keep = ~((wave == 1) & late)                                                # 2026Q2, one capped intake at wave 1
-    r = ur_er(st[keep], ipf(region[keep], cell[keep], reg["2026Q1"], cel["2026Q1"]))
-    prior = (r[0] - base[0], r[1] - base[1])
-    q2 = ur_er(*sample("2026Q2")[2::3])
-    q3 = ur_er(*sample("2026Q3")[2::3])
-    cap_u = path[0][0] - prior[0]
-    real_u = (q3[0] - q2[0]) - cap_u
+    xl = pd.read_excel(t("mps_paid_duty_register_2022_2027.xlsx"), sheet_name=None, dtype=str)
+    nights = {"G": set(), "L": set()}
+    mar = {2026: 0, 2027: 0}
+    for name, df in xl.items():
+        df.columns = [c.lower().replace(" ", "_") for c in df.columns]
+        dcol = "duty_date"
+        loc = df["location"].fillna("")
+        ev = df[df.category == "EVENT"]
+        for _, r in ev.drop_duplicates("booking_no").iterrows():
+            d = pd.Timestamp(r[dcol][:10]) if "-" in r[dcol] else pd.to_datetime(r[dcol], format="%d/%m/%Y")
+            l = r["location"]
+            v = "G" if ("GARDENS" in l) else ("L" if "LAKESHORE" in l else None)
+            if v is None:
+                continue
+            if str(r["status"]).startswith("CANC"):
+                continue
+            nights[v].add(d)
+            if r["client"] == "MOUNTJOY MARINERS HOCKEY CLUB" and d.year in mar:
+                mar[d.year] += 1
+    days = pd.date_range("2022-01-01", "2026-12-31")
+    g = pd.Series(days.isin(list(nights["G"])), index=days)
+    l = pd.Series(days.isin(list(nights["L"])), index=days)
+    seg_ids = sorted(segs.segment_id)
+    mat = daily.unstack(fill_value=0).reindex(index=seg_ids, columns=days, fill_value=0)
+    none = (~g) & (~l)
+    only_g = g & ~l
+    only_l = l & ~g
+    base = mat.loc[:, none.values].mean(axis=1)
+    ex_g = mat.loc[:, only_g.values].mean(axis=1) - base
+    ex_l = mat.loc[:, only_l.values].mean(axis=1) - base
+    g26 = sum(1 for d in nights["G"] if d.year == 2026)
+    l26 = sum(1 for d in nights["L"] if d.year == 2026)
+    exp = base * 365 + ex_g * (g26 - mar[2026]) + ex_l * (l26 + mar[2026])
+    top = sorted(exp.sort_values(ascending=False).index[:20].tolist())
+    ok = top == fig["designated"]
+    fails = [0 if ok else 1]
+    print("%s  designation recomputed by cell means (%s)" % ("PASS" if ok else "FAIL", "same 20" if ok else top))
 
     # asks
-    register = {}
-    with open(os.path.join(target, "hls_address_register_2025q1_2026q3.csv"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            register[r["serial"]] = r["region"]
-    vis = defaultdict(set)
-    for r in calls:
-        if r["intake"] == "2026Q3":
-            vis[register[r["serial"][:9]]].add((r["serial"], r["visit_no"]))
-    key = lambda i: (t["serial"][i][:9], t["sex"][i], str(t["date_of_birth"][i]))
-    q2p = {key(i): i for i in range(n) if t["quarter"][i] == "2026Q2"}
-    q3p = {key(i): i for i in range(n) if t["quarter"][i] == "2026Q3"}
-    num, den = defaultdict(int), defaultdict(int)
-    for k, i in q2p.items():
-        if t["ilo_status"][i] == 2 and k in q3p:
-            den[t["region"][i]] += 1
-            num[t["region"][i]] += t["ilo_status"][q3p[k]] == 1
-    hours = defaultdict(float)
-    for i in range(n):
-        if t["quarter"][i] == "2026Q3" and t["ilo_status"][i] == 1:
-            h = t["actual_hours"][i]
-            if t["mode"][i] == "CATI":
-                whole = int(h)
-                h = whole + round((h - whole) * 100) / 60
-            hours[t["region"][i]] += t["weight"][i] * h
+    cad = pd.read_csv(t("mps_cad_calls_2026.csv"), dtype=str)
+    for c in ("received_utc", "dispatched_utc", "onscene_utc", "cleared_utc"):
+        cad[c] = pd.to_datetime(cad[c], format="%Y-%m-%dT%H:%M:%SZ", utc=True).dt.tz_convert("America/Toronto")
+    cad = cad[(cad.source != "OFFICER") & (cad.received_utc.dt.year == 2026)]
+    cad["segment_id"] = pd.to_numeric(cad.segment_id)
+    cad = cad.merge(segs[["segment_id", "ward"]], on="segment_id", how="inner")
+    ros = pd.read_csv(t("mps_patrol_roster_2026.csv"), dtype=str)
+    ros["crew"] = 1 + ros.officer_2.notna().astype(int)
+    u = cad[cad.unit.notna()].copy()
+    loc = u.dispatched_utc.dt.tz_localize(None)
+    hour = loc.dt.hour
+    u["tour"] = np.where((hour >= 7) & (hour < 19), "D", "N")
+    tour_day = loc.dt.normalize() - pd.to_timedelta((hour < 7).astype(int), unit="D")
+    u["tour_date"] = tour_day.dt.strftime("%Y-%m-%d")
+    u = u.merge(ros[["tour_date", "tour", "unit", "crew"]], on=["tour_date", "tour", "unit"], how="left")
+    u["oh"] = (u.cleared_utc - u.dispatched_utc).dt.total_seconds() / 3600 * u.crew
+    u["q"] = u.received_utc.dt.quarter
+    oh = u.groupby(["ward", "q"]).oh.sum()
 
-    # compare with the goldens
-    wb = openpyxl.load_workbook(os.path.join(golden, "hls_visit_limit_path_2027.xlsx"), data_only=True)
-    gp = [r for r in wb["Gap path"].iter_rows(min_row=5, max_row=9, values_only=True)]
-    for (u, e), r in zip(path, gp):
-        assert "%.2f" % r[1] == "%.2f" % round(u, 2) and "%.2f" % r[2] == "%.2f" % round(e, 2), (r, u, e)
-    split = {r[0]: r for r in wb["Gap path"].iter_rows(min_row=12, max_row=20, values_only=True) if r[0]}
-    assert "%.2f" % split["of which the cap"][1] == "%.2f" % round(cap_u, 2), (split["of which the cap"][1], cap_u)
-    assert "%.2f" % split["of which the labour market"][1] == "%.2f" % round(real_u, 2)
-    assert "%.2f" % split["Published, July to September 2026"][1] == "%.2f" % round(q3[0], 2)
-    assert "%.2f" % split["Gap, April to June 2026"][1] == "%.2f" % round(prior[0], 2)
-    rg = {r[0]: r for r in wb["Regions"].iter_rows(min_row=4, max_row=9, values_only=True)}
-    for g in REG:
-        row = rg[NAME[g]]
-        assert row[1] == len(vis[g]), (g, row[1], len(vis[g]))
-        assert (row[2], row[3]) == (den[g], num[g]), (g, row[2:4], den[g], num[g])
-        assert "%.2f" % row[4] == "%.2f" % (100 * num[g] / den[g])
-        assert "%.1f" % row[5] == "%.1f" % (hours[g] / 1000), (g, row[5], hours[g])
-    with zipfile.ZipFile(os.path.join(golden, "hls_visit_limit_note_2026q3.docx")) as z:
-        x = re.sub(r"<[^>]+>", "", z.read("word/document.xml").decode("utf-8"))
-    assert "accounts for %.2f point of that rise and the labour market for %.2f point" % (round(cap_u, 2),
-                                                                                          round(real_u, 2)) in x
-    print("verify: OK (July to September: %.2f of the %.2f-point rise is the cap, against %.2f for the wave-1 route; "
-          "gap path %s; 18 regional figures recomputed independently)"
-          % (cap_u, q3[0] - q2[0], 0.0, "/".join("%.2f" % p[0] for p in path)))
+    def differ(cells):
+        bad = 0
+        for k, v in fig["ask_officer_hours"].items():
+            w, q = k.split()
+            bad += int(np.floor(cells[(int(w), int(q[1]))] + 0.5)) != v
+        return bad
+
+    bad = differ(oh)
+    fails.append(bad)
+    print("%s  ask A recomputed on the naive wall clock (%d of 32 differ)" % ("PASS" if not bad else "FAIL", bad))
+
+    # the same ask on aware local times, the way a pandas reader writes it: a night tour's date from the dispatch's
+    # local midnight less a Timedelta day, or from the dispatch less seven hours of elapsed time
+    crew = ros.set_index(["tour_date", "tour", "unit"]).crew
+    v = cad[cad.unit.notna()].copy()
+    v["q"] = v.received_utc.dt.quarter
+    v["el"] = (v.cleared_utc - v.dispatched_utc).dt.total_seconds() / 3600
+    hr = v.dispatched_utc.dt.hour
+
+    def cells(day, letter):
+        n = crew.reindex(pd.MultiIndex.from_arrays([day.dt.strftime("%Y-%m-%d"), letter, v.unit])).to_numpy()
+        return (v.el * n).groupby([v.ward, v.q]).sum()
+
+    mid = v.dispatched_utc.dt.normalize()
+    aware = cells(mid.where(hr >= 7, mid - pd.Timedelta(days=1)), np.where((hr >= 7) & (hr < 19), "D", "N"))
+    back = v.dispatched_utc - pd.Timedelta(hours=7)
+    seven = cells(back.dt.normalize(), np.where(back.dt.hour < 12, "D", "N"))
+    for name, got in (("local midnight less a Timedelta day", aware), ("seven hours of elapsed time back", seven)):
+        bad = differ(got)
+        fails.append(bad)
+        print("%s  ask A recomputed with tours dated by %s (%d of 32 differ)" % ("PASS" if not bad else "FAIL", name,
+                                                                                bad))
+    return 0 if not any(fails) else 1
 
 
 if __name__ == "__main__":
-    here = os.path.dirname(os.path.abspath(__file__))
-    task = os.path.dirname(here)
-    main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(task, "target"),
-         sys.argv[2] if len(sys.argv) > 2 else os.path.join(task, "golden"))
+    sys.exit(main())

@@ -1,384 +1,260 @@
-"""task172 independent verifier: reads only the shipped bundle (target/), never the generator's world or calc.py, and
-recomputes the quote by exact convolution rather than simulation, then both ask tables, and compares every owed figure
-with generator/figures.json at the prompt's rounding.
+"""Independent verifier: recomputes the call and every ask figure from target/ alone with its own parsing (pandas),
+its own Cox fit (statsmodels PHReg, Efron ties, stratified), its own log-rank and its own projection, and compares
+with the golden CSV, the golden PDF's text and figures.json.
 
-For a renewal of the coming quarter the natural wait is the appointment lead (with its category's appointment share)
-plus the review; once the natural wait has passed the team's request (the card's expiry plus the request offset), an
-accepted request ends it at the request plus the expedite response. So P(W > w) = P(natural > w) * (1 - a * P(gap +
-offset + response <= w)), every distribution read from the record in whole days, the natural wait mixed over the
-quarter's categories.
-
-    python3 task172/generator/verify.py task172/target"""
-from __future__ import annotations
-
-import csv
-import datetime as dt
+    python3 task172/generator/verify.py
+"""
 import json
+import math
 import os
+import re
 import sys
-from collections import defaultdict
 
 import numpy as np
-from openpyxl import load_workbook
+import pandas as pd
+from pypdf import PdfReader
+from scipy.stats import norm
+from statsmodels.duration.hazard_regression import PHReg
 
-EXPORT = dt.date(2026, 12, 4)
-RULE = dt.date(2025, 10, 30)
-LEAD_WINDOW = (dt.date(2026, 10, 1), dt.date(2026, 11, 30))
-QUARTER = (dt.date(2027, 1, 1), dt.date(2027, 3, 31))
-MONTH = 30.4
-FAILS = []
-
-
-def say(ok, label, detail=""):
-    print("%s  %-80s %s" % ("PASS" if ok else "FAIL", label, detail))
-    if not ok:
-        FAILS.append(label)
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+T = os.path.join(TASK, "target")
+G = os.path.join(TASK, "golden")
+bad = []
 
 
-def day(v):
-    if v in (None, ""):
-        return None
-    if isinstance(v, dt.datetime):
-        return v.date()
-    if isinstance(v, dt.date):
-        return v
-    v = str(v)
-    if "/" in v:
-        m, d, y = v.split("/")
-        return dt.date(int(y), int(m), int(d))
-    return dt.date.fromisoformat(v[:10])
+def ok(name, cond, detail=""):
+    print("%s  %s  %s" % ("PASS" if cond else "FAIL", name, detail), flush=True)
+    if not cond:
+        bad.append(name)
 
 
-def rows_csv(path):
-    with open(path, encoding="utf-8", newline="") as fh:
-        return list(csv.DictReader(fh))
+def f(n):
+    return os.path.join(T, n)
 
 
-def rows_xlsx(path, sheet):
-    ws = load_workbook(path, read_only=True)[sheet]
-    it = ws.iter_rows(values_only=True)
-    head = next(it)
-    return [dict(zip(head, r)) for r in it]
+sites = {s["site"]: s["time_zone"] for s in json.load(open(f("talon2_sites.json")))["sites"]}
+rand = pd.read_csv(f("talon2_irt_randomisation_export.csv"))
+utc = pd.to_datetime(rand["Randomisation Date/Time (UTC)"]).dt.tz_localize("UTC")
+rand["rdate"] = [u.tz_convert(sites[s]).date() for u, s in zip(utc, rand["Site"])]
+rand["arm"] = rand["Treatment Arm"].str.startswith("Ravolimab").astype(int)
+rand["stratum"] = rand["Stratum: Disease Status"] + "|" + rand["Stratum: Primary Tumour Site"]
+rand = rand.set_index("Randomisation Number")
+bicr = pd.read_csv(f("talon2_bicr_timepoint_reads.csv"), parse_dates=["SCANDT"])
+bicr["wk"] = bicr["TPT"].str.split().str[1].astype(int)
+deaths = pd.read_excel(f("talon2_edc_subject_status.xlsx"), sheet_name="Deaths")
+deaths = dict(zip(deaths["Subject"], pd.to_datetime(deaths["Date of death"]).dt.date))
+disp = pd.read_excel(f("talon2_edc_subject_status.xlsx"), sheet_name="Disposition")
+wdcol = "Date of withdrawal or loss to follow-up"
+wd = {s: pd.Timestamp(d).date() for s, d in zip(disp["Subject"], disp[wdcol]) if pd.notna(d)}
 
 
-def kaplan_meier(times, events):
-    """survival just after each whole day 0..T for (time, event) data"""
-    t = np.asarray(times, int)
-    e = np.asarray(events, int)
-    T = int(t.max()) + 1
-    deaths = np.bincount(t[e == 1], minlength=T + 1)
-    leaving = np.bincount(t, minlength=T + 1)
-    at_risk = len(t) - np.concatenate([[0], np.cumsum(leaving)[:-1]])
-    S = np.cumprod(np.where(at_risk > 0, 1 - deaths / np.maximum(at_risk, 1), 1.0))
-    return S                        # S[k] = P(Q > k)
+def pfs(cut):
+    out = []
+    for sid, r in rand.iterrows():
+        rs = bicr[(bicr["SUBJID"] == sid) & (bicr["SCANDT"].dt.date <= cut)].sort_values("SCANDT")
+        last, ne, ev, has_pd = r["rdate"], 0, None, False
+        for _, b in rs.iterrows():
+            if b["BICR_OVRL_RESP"] == "NE":
+                ne += 1
+                continue
+            if b["BICR_OVRL_RESP"] == "PD":
+                has_pd = True
+                ev = (last, False) if ne >= 2 else (b["SCANDT"].date(), True)
+                break
+            last, ne = b["SCANDT"].date(), 0
+        dd = deaths.get(sid)
+        if ev is None and dd is not None and dd <= cut:
+            run = 0
+            for _, b in rs.iterrows():
+                if last < b["SCANDT"].date() < dd:
+                    run = run + 1 if b["BICR_OVRL_RESP"] == "NE" else 0
+            ev = (last, False) if run >= 2 else (dd, True)
+        if ev is None:
+            ev = (last, False)
+        risk = (not ev[1]) and not has_pd and not (dd is not None and dd <= cut) and not (sid in wd and wd[sid] <= cut)
+        out.append(dict(sid=sid, t=(ev[0] - r["rdate"]).days, e=ev[1], arm=r["arm"], s=r["stratum"], risk=risk,
+                        fu=(cut - r["rdate"]).days))
+    return pd.DataFrame(out)
 
 
-def main(target):
-    root = os.path.dirname(os.path.abspath(target))
-    figs = json.load(open(os.path.join(root, "generator", "figures.json")))
-    notices = rows_csv(os.path.join(target, "renewal_case_notices_2024-01_2026-12.csv"))
-    actions = rows_csv(os.path.join(target, "case_actions_2024-2026.csv"))
-    reg_path = os.path.join(target, "renewal_case_register.xlsx")
-    old = rows_xlsx(reg_path, "Cases to Mar 2025")
-    new = rows_xlsx(reg_path, "Cases")
-    # one key per case: the current reference, reached from either reference
-    key = {}
-    case = {}
-    for r in old:
-        key[r["Case ID"]] = r["Case ID"]
-        case[r["Case ID"]] = dict(person=r["Person ID"], ptype=r["Person Type"], sponsor=r["Sponsor ID"], cat=r["Category"],
-                                  kind=r["Case Type"].lower(), card=day(r["Card Expires"]), received=day(r["Received"]),
-                                  status=r["Status"], closed=day(r["Closed"]), decided=day(r["Decided"]),
-                                  new=day(r["New Card Expires"]), sent=day(r["Packet Sent"]), by=r["Filed By"])
-    for r in new:
-        key[r["case_id"]] = r["case_id"]
-        if r["legacy_case_id"]:
-            key[r["legacy_case_id"]] = r["case_id"]
-        case[r["case_id"]] = dict(person=r["person_id"], ptype=r["person_type"].title(), sponsor=r["sponsor_id"],
-                                  cat=r["category"], kind=r["case_type"], card=day(r["card_expires"]),
-                                  received=day(r["received_on"]), status=r["status"], closed=day(r["closed_on"]),
-                                  decided=day(r["decided_on"]), new=day(r["new_card_expires"]),
-                                  sent=day(r["packet_sent_on"]), by=r["filed_by"])
-    # renewals by receipt number
-    by = defaultdict(list)
-    for n in notices:
-        if n["receipt_no"]:
-            by[n["receipt_no"]].append(n)
-    req = defaultdict(list)
-    stop = {}
-    for a in actions:
-        k = key.get(a["case_id"])
-        if a["action"] == "Expedite request" and k:
-            req[k].append((day(a["action_date"]), a["outcome"]))
-        if a["action"] == "Stop work" and k:
-            stop[k] = day(a["action_date"])
-    ren = []
-    for rno, ns in by.items():
-        rc = [n for n in ns if n["notice_type"] == "Receipt notice"]
-        if not rc:
-            continue
-        k = key.get(ns[0]["client_ref"])
-        rcv = day(rc[0]["received_date"])
-        ap = sorted([n for n in ns if n["notice_type"] == "Biometrics appointment notice"],
-                    key=lambda n: (n["notice_date"], n["logged_on"], n["notice_id"]))
-        reuse = any(n["notice_type"] == "Biometrics reuse notice" for n in ns)
-        dec = sorted(day(n["notice_date"]) for n in ns if n["notice_type"] in ("Approval notice", "Denial notice"))
-        wd = sorted(day(n["notice_date"]) for n in ns if n["notice_type"] == "Withdrawal acknowledgement")
-        decided = dec[0] if dec else None
-        if wd and (decided is None or wd[0] < decided):
-            continue
-        c = case.get(k, {})
-        st = stop.get(k) or (c.get("closed") if c.get("status") == "Closed - no longer tracked" else None)
-        rq = sorted(req.get(k, []))
-        ren.append(dict(rcv=rcv, cat=rc[0]["eligibility_category"], appt=day(ap[-1]["appointment_date"]) if ap else None,
-                        reuse=reuse and not ap, decided=decided, stop=st, card=c.get("card"), req=rq[-1] if rq else None))
-    ren = [r for r in ren if r["appt"] or r["reuse"]]
-    pA = {cat: np.mean([r["appt"] is not None for r in ren if r["cat"] == cat]) for cat in ("(c)(9)", "(c)(26)")}
-    L = np.array([(r["appt"] - r["rcv"]).days for r in ren if r["appt"] and LEAD_WINDOW[0] <= r["rcv"] <= LEAD_WINDOW[1]])
-    qt, qe = [], []
-    for r in ren:
-        s = r["appt"] if r["appt"] else r["rcv"]
-        if s > EXPORT:
-            continue
-        end = min(x for x in (EXPORT, r["stop"]) if x)
-        if r["req"] and (r["decided"] is None or r["req"][0] < r["decided"]):
-            t, ev = (r["req"][0] - s).days, 0
-        elif r["decided"] and r["decided"] <= end:
-            t, ev = (r["decided"] - s).days, 1
-        else:
-            t, ev = (end - s).days, 0
-        if t >= 0:
-            qt.append(t)
-            qe.append(ev)
-    SQ = kaplan_meier(qt, qe)
-    post = [r for r in ren if r["rcv"] >= RULE]
-    gap = np.array([(r["card"] - r["rcv"]).days for r in post if r["card"]])
-    with_req = [r for r in post if r["req"]]
-    outs = [r["req"][1] for r in with_req if r["req"][1] in ("Accepted", "Denied")]
-    acc = outs.count("Accepted") / len(outs)
-    E = np.array([(r["decided"] - r["req"][0]).days for r in with_req if r["req"][1] == "Accepted" and r["decided"] and
-                  r["decided"] >= r["req"][0]])
-    OFF = np.array([(r["req"][0] - r["card"]).days for r in with_req if r["card"]])
-
-    # ------------------------------------------------------------------- ask A's records: each current person's permit
-    emp = rows_csv(os.path.join(target, "employees_2026-12.csv"))
-    dep = rows_csv(os.path.join(target, "dependants_2026-12.csv"))
-    permits = rows_xlsx(os.path.join(target, "work_permits_2026-12.xlsx"), "Permits")
-    tracker = rows_xlsx(os.path.join(target, "green_card_tracker_2026-12.xlsx"), "Applicants")
-    # an employee is one person under every ID HR gives him (IDs sharing a benefits enrollment: a move between
-    # Sallowmere's entities), current while any of them is Active
-    eperson = {e["employee_id"]: e["benefits_enrollment_id"] for e in emp}
-    eactive = {e["benefits_enrollment_id"] for e in emp if e["status"] == "Active"}
-    sponsor = {}
-    for p in permits:
-        if p.get("household_employee_id"):
-            sponsor.setdefault(p["holder_id"], p["household_employee_id"])
-    for c in case.values():
-        if c["ptype"] == "Spouse" and c["sponsor"]:
-            sponsor.setdefault(c["person"], c["sponsor"])
-    for t in tracker:
-        if t["relationship"] == "Spouse":
-            sponsor.setdefault(t["applicant_id"], t["principal_employee_id"])
-    enr = {e["benefits_enrollment_id"]: e["employee_id"] for e in emp}
-    for d in dep:
-        if d["relationship"] != "Child" and d["benefits_enrollment_id"] in enr:
-            sponsor.setdefault(d["dependant_id"], enr[d["benefits_enrollment_id"]])
-
-    def who(h):
-        """the person behind an ID: an employee by enrollment, a spouse as her household's one spouse"""
-        if h in eperson:
-            return ("emp", eperson[h]), eperson[h] in eactive
-        hh = eperson.get(sponsor.get(h))
-        return (("sp", hh) if hh else ("none", h)), hh in eactive
-    cards = {}                      # (holder, first day) -> [last day, category, from a filing, card numbers]
-
-    def put(h, vf, vt, cat, filing, num=None):
-        if not (h and vf and vt) or vf > EXPORT:
-            return
-        cur = cards.get((h, vf))
-        if cur is None:
-            cur = cards[(h, vf)] = [vt, cat, filing, set()]
-        elif filing and not cur[2]:
-            cur[1], cur[2] = cat, True
-        if num:
-            cur[3].add(num)
-    for p in permits:
-        put(p["holder_id"], day(p["valid_from"]), day(p["valid_to"]), p["category"], False, p["card_number"])
-    for c in case.values():
-        if c["status"] == "Approved" and c["new"] and c["decided"]:
-            put(c["person"], c["decided"], c["new"], c["cat"], True)
-    for n in notices:
-        if n["notice_type"] == "Approval notice":
-            c = case.get(key.get(n["client_ref"]))
-            if c:
-                put(c["person"], day(n["valid_from"]), day(n["valid_to"]), n["eligibility_category"], True)
-    for t in tracker:
-        if t["ead_approved"] and t["ead_valid_to"]:
-            put(t["applicant_id"], day(t["ead_approved"]), day(t["ead_valid_to"]), "(c)(9)", True)
-    # one card number, one holder: the people two IDs share a card between are one person
-    up = {}
-
-    def top(x):
-        while up.get(x, x) != x:
-            x = up[x]
-        return x
-    holders_of = defaultdict(set)
-    for (h, vf), (_, _, _, nums) in cards.items():
-        for num in nums:
-            holders_of[num].add(who(h)[0])
-    for ps in holders_of.values():
-        ps = sorted(ps)
-        for q in ps[1:]:
-            a, b = top(ps[0]), top(q)
-            if a != b:
-                up[max(a, b)] = min(a, b)
-    live = defaultdict(bool)
-    for (h, vf) in cards:
-        p, cur = who(h)
-        live[top(p)] |= cur
-    permit = {}                     # person -> the card approved most recently
-    for (h, vf), (vt, cat, filing, _) in cards.items():
-        person = top(who(h)[0])
-        if not live[person]:
-            continue
-        if person not in permit or vf > permit[person][0]:
-            permit[person] = (vf, vt, cat, filing)
-        elif vf == permit[person][0] and filing and not permit[person][3]:
-            permit[person] = (vf, vt, cat, True)     # one card under two IDs: the approval's category stands
-    permit = {k: v[:3] for k, v in permit.items()}
-
-    # the quarter's categories: current permits whose renewal reaches USCIS in the quarter (last day less the median
-    # card gap), less the (c)(9) permits of applicants whose adjustment is approved
-    lpr = {top(who(t["applicant_id"])[0]) for t in tracker if t["i485_status"] == "Approved"}
-    g50 = int(round(float(np.median(gap))))
-    nmix = defaultdict(int)
-    for h, (vf, vt, cat) in permit.items():
-        if cat == "(c)(9)" and h in lpr:
-            continue
-        if QUARTER[0] <= vt - dt.timedelta(days=g50) <= QUARTER[1]:
-            nmix[cat] += 1
-    tot = sum(nmix.values())
-    mix = {cat: nmix[cat] / tot for cat in ("(c)(9)", "(c)(26)")}
-    pA_mix = sum(mix[c] * pA[c] for c in mix)
-
-    H = 900
-
-    def sq(k):
-        k = np.asarray(k)
-        out = np.ones(k.shape)
-        pos = k >= 0
-        out[pos] = np.where(k[pos] < len(SQ), SQ[np.minimum(k[pos], len(SQ) - 1)], SQ[-1])
-        return out
-    w = np.arange(H)
-    pl = np.bincount(L.astype(int), minlength=H)[:H] / len(L)
-    s_appt = np.array([np.sum(pl * sq(x - np.arange(H))) for x in w])
-    s_nat = (1 - pA_mix) * sq(w) + pA_mix * s_appt
-    lo = int(min(0, OFF.min()))
-    pd_ = np.bincount(gap.astype(int), minlength=H)[:H] / len(gap)
-    po = np.bincount((OFF - lo).astype(int)) / len(OFF)
-    pe = np.bincount(E.astype(int), minlength=H)[:H] / len(E)
-    conv = np.convolve(np.convolve(pd_, po), pe)
-    g = np.cumsum(conv)                           # index i of the convolution is day i + lo
-    G = np.array([g[min(i - lo, len(g) - 1)] if i - lo >= 0 else 0.0 for i in range(H)])
-    S_w = s_nat * (1 - acc * G)
-    q80 = int(np.argmax(1 - S_w >= 0.8))
-    months = q80 / MONTH
-    quote = np.floor(months * 2 + 0.5) / 2
-    say(quote == figs["quote_months"], "the quote recomputes by exact convolution", "%d days, %.3f months, %.1f (the "
-        "quarter %.0f%% (c)(9), appointment share %.3f)" % (q80, months, quote, 100 * mix["(c)(9)"], pA_mix))
-    edge = 0.25 - abs(months - quote)
-    say(edge >= 0.125, "the quote sits a quarter-bin clear of its edges", "edge distance %.3f" % edge)
-    say(round(np.median(L) / 7) == figs["lead_weeks_now"], "the appointment lead now set", "%.2f weeks" % (
-        np.median(L) / 7))
-    oldL = [(r["appt"] - r["rcv"]).days for r in ren if r["appt"] and r["rcv"] < dt.date(2026, 1, 1)]
-    say(round(np.median(oldL) / 7) == figs["lead_weeks_before"], "the lead through 2024 and 2025", "%.2f weeks" % (
-        np.median(oldL) / 7))
-    # appointment-route renewals of the quarter past their card's expiry undecided: P(L + Q > D)
-    pdist = np.bincount(gap.astype(int), minlength=H)[:H] / len(gap)
-    reach_appt = float(np.sum(pdist * s_appt))
-    say(abs(reach_appt - figs["reach_appt_share"]) < 0.03 and 0.85 <= reach_appt < 0.95,
-        "about nine in ten appointment-route renewals reach the card's expiry undecided", "%.3f" % reach_appt)
-    say(round(np.median(E) / 7) == figs["expedite_response_weeks"], "the expedite response, about a week",
-        "%.1f days" % np.median(E))
-    # the rival the write-up names: the record's own 80th percentile, open renewals censored
-    tt, ee = [], []
-    for r in ren:
-        end = min(x for x in (EXPORT, r["stop"]) if x)
-        if r["decided"] and r["decided"] <= end:
-            tt.append((r["decided"] - r["rcv"]).days)
-            ee.append(1)
-        else:
-            tt.append((end - r["rcv"]).days)
-            ee.append(0)
-    S_rec = kaplan_meier(tt, ee)
-    rec80 = int(np.argmax(S_rec <= 0.2 + 1e-12))
-    say(np.floor(rec80 / MONTH * 2 + 0.5) / 2 == figs["rival_record_months"], "the record's own 80th percentile",
-        "%.3f months" % (rec80 / MONTH))
-
-    # ------------------------------------------------------------------- ask A
-    got = defaultdict(int)
-    for h, (vf, vt, cat) in permit.items():
-        if vt.year == 2027 and vt.month in (7, 8, 9):
-            got["2027-%02d %s" % (vt.month, cat)] += 1
-    for k, v in figs["ask_a"].items():
-        say(got[k] == v, "ask A " + k, "%d" % got[k])
-
-    # ------------------------------------------------------------------- ask B
-    rej = set()
-    for n in notices:
-        if n["notice_type"] == "Rejection notice":
-            rej.add((key.get(n["client_ref"]), day(n["notice_date"])))
-    for a in actions:
-        if a["action"] == "Notice forwarded by applicant" and a["detail"] == "Rejection notice":
-            rej.add((key.get(a["case_id"]), day(a["notice_date"])))
-    # a renewal is the card it renews for the person, whichever case the register files it under
-    renewal = {k: (c["person"], c["card"]) if c["kind"] == "renewal" and c["card"] else ("case", k)
-               for k, c in case.items()}
-    rcv = defaultdict(set)
-    for n in notices:
-        if n["notice_type"] == "Receipt notice":
-            k = key.get(n["client_ref"])
-            rcv[renewal.get(k, ("case", k))].add(day(n["received_date"]))
-    first_out = {}
-    for k, c in case.items():
-        if c["kind"] == "renewal" and c["received"]:
-            rcv[renewal[k]].add(c["received"])
-        if c["kind"] == "renewal" and c["sent"]:
-            first_out[renewal[k]] = min(first_out.get(renewal[k], c["sent"]), c["sent"])
-    # a rejection of one of the renewal's packets falls after its first packet left and before USCIS had it
-    rej = {(k, d) for k, d in rej if not (first_out.get(renewal.get(k, ("case", k)), d) > d or
-                                          any(x < d for x in rcv.get(renewal.get(k, ("case", k)), ())))}
-    quarters = {"2025 Q4": (dt.date(2025, 10, 1), dt.date(2025, 12, 31)), "2026 Q1": (dt.date(2026, 1, 1), dt.date(2026, 3, 31)),
-                "2026 Q2": (dt.date(2026, 4, 1), dt.date(2026, 6, 30)), "2026 Q3": (dt.date(2026, 7, 1), dt.date(2026, 9, 30))}
-    for lab, (a, b) in quarters.items():
-        inq = [(k, d) for k, d in rej if a <= d <= b]
-        ref30 = 0
-        for k, d in inq:
-            nxt = sorted(x for x in rcv.get(renewal.get(k, ("case", k)), ()) if x > d)
-            ref30 += bool(nxt and (nxt[0] - d).days <= 30)
-        say(len(inq) == figs["ask_b"][lab]["rejected"], "ask B %s rejected" % lab, "%d" % len(inq))
-        say(ref30 == figs["ask_b"][lab]["refiled_30"], "ask B %s filed again within 30 days" % lab, "%d" % ref30)
-
-    # ------------------------------------------------------------------- the goldens carry the same figures
-    gold = os.path.join(root, "golden")
-    ws = load_workbook(os.path.join(gold, "q1_2027_renewal_quote.xlsx"), read_only=True)
-    q_cell = [r for r in ws["Quote"].iter_rows(values_only=True) if r and r[0] == "Wait to quote"][0][1]
-    say(q_cell == "%.1f months" % figs["quote_months"], "the workbook states the quote", q_cell)
-    exp_rows = [r for r in ws["Expiring permits"].iter_rows(values_only=True) if r and isinstance(r[1], int) and
-                not str(r[0]).startswith("July to")]
-    say([(r[1], r[2]) for r in exp_rows] == [(figs["ask_a"]["2027-%02d (c)(9)" % m], figs["ask_a"]["2027-%02d (c)(26)" % m])
-                                            for m in (7, 8, 9)], "the workbook's expiring permits")
-    rej_rows = [r for r in ws["Lockbox rejections"].iter_rows(values_only=True) if r and isinstance(r[1], int) and
-                not str(r[0]).startswith("October 2025 to")]
-    say([(r[1], r[2]) for r in rej_rows] == [(figs["ask_b"][q]["rejected"], figs["ask_b"][q]["refiled_30"])
-                                            for q in quarters], "the workbook's lockbox rejections")
-    svg = open(os.path.join(gold, "q1_2027_expiring_permits.svg"), encoding="utf-8").read()
-    say(all((">%d<" % v) in svg for v in figs["ask_a"].values()), "the chart labels every bar with its count")
-    sub = open(os.path.join(root, "submission.md"), encoding="utf-8").read()
-    say("%.1f months" % figs["quote_months"] in sub, "the write-up states the quote at the half month")
-    print("%d failed" % len(FAILS))
-    return 1 if FAILS else 0
+# the cut: the 165th event
+far = pfs(pd.Timestamp("2027-12-31").date())
+far["edate"] = [rand.loc[s, "rdate"] + pd.Timedelta(days=int(t)) for s, t in zip(far["sid"], far["t"])]
+cut = sorted(far.loc[far["e"], "edate"])[164]
+d = pfs(cut)
+ok("165 events at the cut", d["e"].sum() == 165, str(cut))
 
 
-if __name__ == "__main__":
-    sys.exit(main(sys.argv[1]))
+def lr(df):
+    U = V = 0.0
+    for _, g in df.groupby("s"):
+        tt = np.sort(g.loc[g["e"], "t"].unique())
+        for x in tt:
+            atr = g[g["t"] >= x]
+            n, n1 = len(atr), atr["arm"].sum()
+            dd_ = ((g["t"] == x) & g["e"]).sum()
+            d1 = ((g["t"] == x) & g["e"] & (g["arm"] == 1)).sum()
+            U += dd_ * n1 / n - d1
+            if n > 1:
+                V += dd_ * (n1 / n) * (1 - n1 / n) * (n - dd_) / (n - 1)
+    return U / math.sqrt(V)
+
+
+z = lr(d)
+mod = PHReg(d["t"].values.astype(float), d["arm"].values.astype(float)[:, None], status=d["e"].values.astype(int),
+            strata=d["s"].values, ties="efron").fit()
+hr = math.exp(mod.params[0])
+b = z * math.sqrt(0.5)
+cp_trend = 1 - norm.cdf((1.959964 - b - (b / 0.5) * 0.5) / math.sqrt(0.5))
+figs = json.load(open(os.path.join(HERE, "figures.json")))
+ok("stratified hazard ratio", "%.2f" % hr == figs["hr_stratified"], "%.4f" % hr)
+ok("PH conditional power in band A", cp_trend < 0.20 and str(int(round(100 * cp_trend))) == figs["cp_trend"], "%.4f" % cp_trend)
+
+# independent projection: per-arm rates before and after day 105, every patient at risk followed to the 330th event
+rate = {}
+for a in (0, 1):
+    g = d[d["arm"] == a]
+    for lo, hi in ((0, 105), (105, 1e9)):
+        pt = np.clip(np.minimum(g["t"], hi) - lo, 0, None).sum()
+        ev = (g["e"] & (g["t"] >= lo) & (g["t"] < hi)).sum()
+        rate[(a, lo)] = ev / pt
+drop = len([s for s in wd if wd[s] <= cut]) / float(np.maximum(d["t"], 0).sum())
+rng = np.random.default_rng(99)
+T0 = d["t"].values.astype(float)
+E0 = d["e"].values.astype(bool)
+ARM = d["arm"].values.astype(int)
+FU = d["fu"].values.astype(float)
+RISK = d["risk"].values.astype(bool)
+SC = pd.factorize(d["s"])[0]
+L0 = np.where(ARM == 1, rate[(1, 0)], rate[(0, 0)])
+L1 = np.where(ARM == 1, rate[(1, 105)], rate[(0, 105)])
+
+
+def lr_np(t, e, arm, s):
+    U = V = 0.0
+    for k_ in np.unique(s):
+        m = s == k_
+        tt, ee, aa = t[m], e[m], arm[m]
+        o = np.argsort(-tt, kind="stable")
+        tt, ee, aa = tt[o], ee[o], aa[o]
+        n = np.arange(1, len(tt) + 1, dtype=float)
+        n1 = np.cumsum(aa).astype(float)
+        # group ties: take the at-risk counts at the last row of each tied time (largest n)
+        last = np.r_[tt[1:] != tt[:-1], True]
+        cum_e = np.cumsum(ee)
+        cum_e1 = np.cumsum(ee & (aa == 1))
+        idx = np.where(last)[0]
+        de = np.diff(np.r_[0, cum_e[idx]])
+        de1 = np.diff(np.r_[0, cum_e1[idx]])
+        nn, nn1 = n[idx], n1[idx]
+        k2 = de > 0
+        U += np.sum(de[k2] * nn1[k2] / nn[k2] - de1[k2])
+        q = nn[k2] > 1
+        V += np.sum((de[k2] * (nn1[k2] / nn[k2]) * (1 - nn1[k2] / nn[k2]) * (nn[k2] - de[k2]) / np.maximum(nn[k2] - 1, 1))[q])
+    return U / math.sqrt(V)
+
+
+ok("own log-rank matches", abs(lr_np(T0, E0, ARM, SC) - z) < 1e-9, "%.6f %.6f" % (lr_np(T0, E0, ARM, SC), z))
+rej = 0
+NS = 600
+need = 330 - int(E0.sum())
+for k in range(NS):
+    u = rng.exponential(size=len(T0))
+    cap = np.where(T0 < 105, L0 * (105 - T0), 0.0)
+    early = (T0 < 105) & (u < cap)
+    t_ev = np.where(early, T0 + u / L0, np.maximum(T0, 105) + (u - cap) / L1)
+    t_dr = T0 + rng.exponential(1 / drop, size=len(T0))
+    nt = np.where(RISK, np.minimum(t_ev, t_dr), T0)
+    ne = np.where(RISK, t_ev <= t_dr, E0)
+    cal = nt - FU
+    fut = np.sort(cal[RISK & ne])
+    fcut = fut[need - 1]
+    fu2 = FU + fcut
+    obs = np.minimum(nt, fu2)
+    e2 = ne & (nt <= fu2)
+    rej += lr_np(obs, e2, ARM, SC) > 1.959964
+cpv = rej / float(NS)
+ok("independent projection: band C and the 100 per cent bin", cpv >= 0.95, "%.4f over %d runs" % (cpv, NS))
+
+# golden CSV against independent asks
+gold = pd.read_csv(os.path.join(G, "talon2_interim_tables.csv"))
+gv = {(r["Measure"], r["Arm"]): int(r["Value"]) for _, r in gold.iterrows()}
+armname = {0: "Placebo + GemCis", 1: "Ravolimab + GemCis"}
+
+# ask A
+pv = pd.read_excel(f("talon2_pv_sae_line_listing.xlsx"))
+pv["v"] = pv["Report version"].map(lambda s: 0 if s == "Initial" else int(s.split()[-1]))
+pv = pv.sort_values(["Case number", "v"]).groupby("Case number").tail(1)
+pv = pv[pv["Case status"] != "Nullified"]
+scr = pd.read_csv(f("talon2_screening_log.csv"))
+s2r = dict(zip(rand["Screening Number"], rand.index))
+key = lambda r: (r["Site"], r["Sex"], r["Year of Birth"], r["Initials"])
+rk = {key(r): r for _, r in scr[scr["Screening No"].isin(s2r)].iterrows()}
+for _, r in scr[scr["Outcome"] == "Screen failure"].iterrows():
+    if key(r) in rk:
+        s2r[r["Screening No"]] = s2r[rk[key(r)]["Screening No"]]
+pv["sid"] = pv["Patient (screening number)"].map(s2r)
+pv = pv[pv["sid"].notna()]
+pv["on"] = pd.to_datetime(pv["Onset date"]).dt.date
+pv = pv[[(o >= rand.loc[s, "rdate"]) and (o <= cut) for o, s in zip(pv["on"], pv["sid"])]]
+pv["arm"] = pv["sid"].map(rand["arm"])
+for a in (0, 1):
+    g = pv[pv["arm"] == a]
+    ok("ask A patients, %s" % armname[a], gv[("Patients with a serious adverse event", armname[a])] == g["sid"].nunique())
+    ok("ask A events, %s" % armname[a], gv[("Serious adverse events, all", armname[a])] == len(g))
+    for soc in ("Infections and infestations", "Hepatobiliary disorders", "Gastrointestinal disorders",
+                "Blood and lymphatic system disorders"):
+        ok("ask A %s, %s" % (soc, armname[a]), gv[(soc, armname[a])] == int((g["MedDRA system organ class"] == soc).sum()))
+
+# ask B
+expo = pd.read_csv(f("talon2_edc_exposure.csv"))
+expo["d"] = pd.to_datetime(expo["Date administered"], dayfirst=True).dt.date
+irt = pd.read_csv(f("talon2_irt_drug_administration.csv"))
+irt["d"] = pd.to_datetime(irt["Transaction Date"]).dt.date
+adm = irt[irt["Kit Status"] == "Administered"]
+first = pd.concat([expo[["Subject", "d"]].rename(columns={"Subject": "sid"}),
+                   adm[["Randomisation Number", "d"]].rename(columns={"Randomisation Number": "sid"})]).groupby("sid")["d"].min()
+lab = pd.read_csv(f("talon2_central_lab_transfer.csv"))
+lab = lab[lab["TEST_CODE"].isin(["ALT", "AST", "TBIL"])]
+trk = pd.read_csv(f("talon2_edc_central_lab_kit_log.csv"))
+cd = dict(zip(trk["Kit accession number"], pd.to_datetime(trk["Date sample collected"], dayfirst=True).dt.date))
+lab["sid"] = lab["SCREENING_NO"].map(s2r)
+lab["d"] = lab["ACCESSION"].map(cd)
+lab = lab[lab["sid"].isin(first.index)]
+lab = lab[[(x > first[s]) and (x <= cut) for x, s in zip(lab["d"], lab["sid"])]]
+lab["hit"] = lab["RESULT"] > np.where(lab["TEST_CODE"] == "TBIL", 3.0, 5.0) * lab["REF_HIGH"]
+loc = pd.read_csv(f("talon2_edc_local_labs.csv"))
+loc["d"] = pd.to_datetime(loc["Sample date"], dayfirst=True).dt.date
+loc["code"] = loc["Test"].map({"Alanine aminotransferase": "ALT", "Aspartate aminotransferase": "AST", "Bilirubin, total": "TBIL"})
+loc = loc[loc["Subject"].isin(first.index)]
+loc = loc[[(x > first[s]) and (x <= cut) for x, s in zip(loc["d"], loc["Subject"])]]
+loc["hit"] = loc["Result"] > np.where(loc["code"] == "TBIL", 3.0, 5.0) * loc["Upper limit of normal"]
+hits = pd.concat([lab.loc[lab["hit"], ["sid", "TEST_CODE"]].rename(columns={"TEST_CODE": "code"}),
+                  loc.loc[loc["hit"], ["Subject", "code"]].rename(columns={"Subject": "sid"})]).drop_duplicates()
+hits["arm"] = hits["sid"].map(rand["arm"])
+label = {"ALT": "Patients with ALT above 5 x ULN", "AST": "Patients with AST above 5 x ULN",
+         "TBIL": "Patients with total bilirubin above 3 x ULN"}
+for a in (0, 1):
+    for c in ("ALT", "AST", "TBIL"):
+        ok("ask B %s, %s" % (c, armname[a]), gv[(label[c], armname[a])] == int(((hits["arm"] == a) & (hits["code"] == c)).sum()))
+
+# ask C
+given = set(zip(adm.loc[adm["d"] <= cut, "Randomisation Number"], adm.loc[adm["d"] <= cut, "d"]))
+ev = expo[(expo["Treatment"] == "Ravolimab/placebo") & (expo["d"] <= cut)]
+given |= set(zip(ev["Subject"], ev["d"]))
+treated = set(expo.loc[expo["d"] <= cut, "Subject"]) | set(adm.loc[adm["d"] <= cut, "Randomisation Number"])
+for a in (0, 1):
+    ok("ask C safety population, %s" % armname[a],
+       gv[("Patients who received study treatment", armname[a])] == sum(1 for s in treated if rand.loc[s, "arm"] == a))
+    ok("ask C doses, %s" % armname[a],
+       gv[("Ravolimab or placebo doses given", armname[a])] == sum(1 for s, _d in given if rand.loc[s, "arm"] == a))
+
+# the golden PDF states the call, the band and the figures
+txt = " ".join(p.extract_text() for p in PdfReader(os.path.join(G, "talon2_interim_recommendation.pdf")).pages)
+txt = re.sub(r"\s+", " ", txt)
+ok("golden PDF states the call", "Continue TALON-2 to its final analysis at 330 events as planned" in txt)
+ok("golden PDF states the conditional power", "100 per cent to the nearest 10 per cent" in txt)
+ok("golden PDF states the stratified ratio", figs["hr_stratified"] in txt)
+print("verify: %d failures" % len(bad))
+sys.exit(1 if bad else 0)

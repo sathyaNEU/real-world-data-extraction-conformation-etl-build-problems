@@ -1,85 +1,157 @@
 {
  "task": "task146",
- "status": "SHIPPED",
- "domain": "survey-research-official-statistics/seasonal-adjustment-official-time-series-production",
+ "status": "PAUSED",
+ "domain": "biomedical-clinical-research / dose-response-pk-pd-modeling (client biomedical-clinical-research)",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-16",
- "stump": "Sizing the claims filed again in the first claims week of the fourth quarter region by region, each region's third-quarter ineligible determinations taken whole at the share its own past quarter turns show, calls about 15,000 initial claims for the week ended 10 October 2026; the step that lands it there is weighing every refusal of the quarter alike, when past turns show that in Western, Coastal and Island between two thirds and nine tenths of those refused in a quarter's last month file again in the first week against under one in five of those refused in its first two months, and this quarter's refusals there came 55.3 per cent in September against about a third in a quarter's last month at a usual turn, so the week is about 17,000; the national determinations at the national rate and the seasonal step call about 13,000.",
- "architecture": 1,
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-11-01",
+ "stump": "A competent solver reads the phase 2b dose-response, the arms' week-16 PASI 75 rates or an Emax curve fitted on dose, and takes 100 mg, which cleared 70 per cent there; the phase 3 population weighs more and HB-231's clearance rises with weight, so at 100 mg its patients run lower troughs and the expected response falls under 70 per cent; carried through the weight-clearance relation and the exposure-response fitted on phase 2b, only 200 mg clears the bar.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-16"
+  "date": "2026-11-01",
+  "checks": "61, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-16, the shipped cut e5e9d268): the same eight lines, each answered in the design note's ## Leak review",
-  "reader": "five rounds in task146/leak_check_report.md (## Solver's-eye read): round 1 (the stage 3 cut 22f06ed9), round 2 (the repaired cut a040f6c1) and round 3 (the strengthened cut f0b43f3f) each Q1 to Q4 none and Q6 an analytical choice, round 3 never surfacing the month of the refusal; targeted re-read 1 (a502ea69) no leak, Q6 analytical, its realism tells in the case notes and the desk data log fixed in the realism pass; targeted re-read 2 (the shipped cut e5e9d268) no leak, nothing ranks or states a figure, Q6 analytical",
-  "rulings": [
-   "the VR notes and the 'amendment form emailed' notes do not change any count: technical notes section 5 counts a change only through an amended notice, and the judge reproduced all 24 Ask A cells on that reading",
-   "the chart's revised-or-first-reported question for past weeks is ungraded and low risk",
-   "the technical notes' completeness is the board's own methodology document, so it is not steering",
-   "the remaining regularity in the case notes is accepted as a residual realism risk"
-  ]
+  "leak_py": "REVIEW 2026-11-01 on target.zip 381bf343 (--asof 2026-11-16, no LEAK): sweeps 1, 3 and 4 ruled harmless in the note's Leak sweep",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-16 on the strengthened card (repeat.gate_g, overuse.gate_g, answered at the draw)",
-  "nearest": "driver 0.07 (task446 v2); surface exit 0, task134 and task54 promoted on the card signature for the author's clone-check"
+  "guard_check": "PASS 2026-11-01 on the registered card (differentiated against task171 v5, task168, task260, task464 v8)",
+  "heart": "PASS 2026-11-01 on a freshly pulled tree",
+  "surface": "exit 0 on the final cut 2026-11-01 (no BLOCK; four pairs promoted on card axes for the author's adjudicated read; personas Villads Kjaer, Helle Carlsen, Bodil Lauritsen)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (round 3, on the strengthened cut f0b43f3f), Gate H analytical",
-  "disposition": "APPROVE; its optional CN051136 fix made; the later cuts (a502ea69, e5e9d268) changed only the case notes and the desk data log, no graded figure moved, freeze determinism PASS with nothing allowed",
-  "report": "task146/determinism_check_report.md (round 3: the call reproduced at 16,895, bootstrap 16,656 to 17,137, all 24 Ask A cells and 14 Ask B changes); history: determinism_check_report_round1.md (22f06ed9) and determinism_check_report_round2.md (a040f6c1), both DETERMINISTIC / APPROVE on the designs before the strengthening",
-  "stump_power": "moderate; its partial landing route (July 2026's refiling ratio applied to September's refusals gives about 17,000) recorded as an accepted risk"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 4 from the main thread: rebuild with `python3 task146/generator/make.py` (two byte-identical builds, checks.py and verify.py; target.zip sha256 381bf34356e15bd50a6393279b5f0712f5d3e7e0959854b717b53d98627d8ab2), then spawn together in the background, both at medium effort, the leak reader on scratchpad/leak-task146/ with the brief scratchpad/task146_stage4_leak_brief.md and the determinism judge on task146 (architecture 1's reports are kept as determinism_check_report_arch1*.md); fix every finding in the generator in one pass and rebuild, re-judge a FIX_NOW once; then stage 5: every gate on the final cut, the reader's section in leak_check_report.md, git add -f task146/target.zip and task146/golden/*, ledger row, card current, commit SHIPPED (task146).",
  "approved": null,
- "delivered": "2026-10-16",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "wave": "wave 3 (new), seed FC17 (world, decision and quantity kept; pitfall re-found)",
- "gates": {
-  "checks": "187, 0 failed",
-  "verify": "agrees (call 16,895, se 83, timing-blind 14,849, national 13,340, seasonal 13,241)",
-  "rebuilds": "two byte-identical; the final rebuild cut the shipped target.zip again (e5e9d268)",
-  "figures_check": "69 figures, 0 absent",
-  "precut": "49 checks, 0 FAIL, 0 WARN",
-  "voice_check": "exit 0",
-  "scrub": "target and golden clean",
-  "guard": "validate clean, heart WARN, surface exit 0",
-  "freeze": "determinism mode PASS with nothing allowed through the case-note cuts",
-  "leak_py": "REVIEW, no LEAK, the same eight lines answered"
+ "lineage_v1": {
+  "stump": "Sizing the claims filed again in the first claims week of the fourth quarter region by region, each region's third-quarter ineligible determinations taken whole at the share its own past quarter turns show, calls about 15,000 initial claims for the week ended 10 October 2026; the step that lands it there is weighing every refusal of the quarter alike, when past turns show that in Western, Coastal and Island between two thirds and nine tenths of those refused in a quarter's last month file again in the first week against under one in five of those refused in its first two months, and this quarter's refusals there came 55.3 per cent in September against about a third in a quarter's last month at a usual turn, so the week is about 17,000; the national determinations at the national rate and the seasonal step call about 13,000.",
+  "architecture": 1,
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-16"
+  },
+  "leak": {
+   "leak_py": "REVIEW, no LEAK (2026-10-16, the shipped cut e5e9d268): the same eight lines, each answered in the design note's ## Leak review",
+   "reader": "five rounds in task146/leak_check_report.md (## Solver's-eye read): round 1 (the stage 3 cut 22f06ed9), round 2 (the repaired cut a040f6c1) and round 3 (the strengthened cut f0b43f3f) each Q1 to Q4 none and Q6 an analytical choice, round 3 never surfacing the month of the refusal; targeted re-read 1 (a502ea69) no leak, Q6 analytical, its realism tells in the case notes and the desk data log fixed in the realism pass; targeted re-read 2 (the shipped cut e5e9d268) no leak, nothing ranks or states a figure, Q6 analytical",
+   "rulings": [
+    "the VR notes and the 'amendment form emailed' notes do not change any count: technical notes section 5 counts a change only through an amended notice, and the judge reproduced all 24 Ask A cells on that reading",
+    "the chart's revised-or-first-reported question for past weeks is ungraded and low risk",
+    "the technical notes' completeness is the board's own methodology document, so it is not steering",
+    "the remaining regularity in the case notes is accepted as a residual realism risk"
+   ]
+  },
+  "duplicate_check": {
+   "heart": "WARN 2026-10-16 on the strengthened card (repeat.gate_g, overuse.gate_g, answered at the draw)",
+   "nearest": "driver 0.07 (task446 v2); surface exit 0, task134 and task54 promoted on the card signature for the author's clone-check"
+  },
+  "judge": {
+   "verdict": "DETERMINISTIC (round 3, on the strengthened cut f0b43f3f), Gate H analytical",
+   "disposition": "APPROVE; its optional CN051136 fix made; the later cuts (a502ea69, e5e9d268) changed only the case notes and the desk data log, no graded figure moved, freeze determinism PASS with nothing allowed",
+   "report": "task146/determinism_check_report.md (round 3: the call reproduced at 16,895, bootstrap 16,656 to 17,137, all 24 Ask A cells and 14 Ask B changes); history: determinism_check_report_round1.md (22f06ed9) and determinism_check_report_round2.md (a040f6c1), both DETERMINISTIC / APPROVE on the designs before the strengthening",
+   "stump_power": "moderate; its partial landing route (July 2026's refiling ratio applied to September's refusals gives about 17,000) recorded as an accepted risk"
+  },
+  "gates": {
+   "checks": "187, 0 failed",
+   "verify": "agrees (call 16,895, se 83, timing-blind 14,849, national 13,340, seasonal 13,241)",
+   "rebuilds": "two byte-identical; the final rebuild cut the shipped target.zip again (e5e9d268)",
+   "figures_check": "69 figures, 0 absent",
+   "precut": "49 checks, 0 FAIL, 0 WARN",
+   "voice_check": "exit 0",
+   "scrub": "target and golden clean",
+   "guard": "validate clean, heart WARN, surface exit 0",
+   "freeze": "determinism mode PASS with nothing allowed through the case-note cuts",
+   "leak_py": "REVIEW, no LEAK, the same eight lines answered"
+  },
+  "shipped_cut": "commit 0a888d3, target.zip sha256 e5e9d268b7bd6c16d6a5cddd8940d004dbd9ac8645dd1ed80daf05e942720a54",
+  "delivered": "2026-10-16",
+  "accepted_risks": [
+   "the judge's partial landing route: applying July 2026's refiling ratio to September's refusals in Western, Coastal and Island gives about 17,000 without the region-by-month build",
+   "the remaining regularity in the case notes (residual realism risk, from the final re-read)"
+  ],
+  "wave": "wave 3 (new), seed FC17 (world, decision and quantity kept; pitfall re-found)",
+  "fate": "retired 2026-11-01 by the batch 1 audit before any portal result: no survivor anatomy lines and precut.py fails it (no Measured by: line); re-rooted into banking-credit-financial-risk"
  },
- "rule3_audits": [
+ "history": [
   {
-   "file": "scratchpad rule3/task146.md",
-   "commit": "f71f5a0",
-   "cut": "22f06ed9",
-   "verdict": "AT_RISK on data semantics",
-   "outcome": "fixed: the rule 3 repair filed the refiling in technical notes 2.3 (no size, timing or region) and moved the decisive step to its regional sizing"
+   "date": "2026-11-01",
+   "event": "architecture 1 (the claims-week refiling call, shipped 10-16) retired by the batch 1 audit: no survivor anatomy, precut FAIL"
   },
   {
-   "file": "scratchpad rule3/task146_r2.md",
-   "commit": "67e305d",
-   "cut": "a040f6c1",
-   "verdict": "PASS, but the stump too weak",
-   "outcome": "strengthened: the refiling share by month of refusal (both top responses had landed regional sizing about half to three quarters of the time)"
+   "date": "2026-11-01",
+   "event": "DRAWN: architecture 2, banking-credit-financial-risk / deposit-liquidity-behaviour x forecasting, registered 2026-11-01T00:42:44Z (re-filed after the forum and artifact axes were redrawn)"
   },
   {
-   "file": "scratchpad rule3/task146_r3.md",
-   "commit": "0f4de4d",
-   "cut": "f0b43f3f",
-   "verdict": "PASS and strong",
-   "outcome": "shipped as built (0.5 to 0.9 landers expected in the top two; eleven constructions outside the asserted 24 all land 17,000)"
+   "date": "2026-11-01",
+   "event": "stage 2 partial: world priced (rungs R0 221, R1 125, R2 170, R3 165 on seed 146079, stable across seeds 146027, 7 and 11), generator and goldens built green; the ask layer measured over precut's bar (pair ceiling 62.2); PAUSED with the resume step"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "architecture 2 spent on paper at stage 2: the decisive step (following the money across same-day close-and-open pairs) is an inclusion over a second source with no safe filing (19c4263b, 273af233); checked in the note's Three rules before any ask work, per the coordinator"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "DRAWN: architecture 3, biomedical-clinical-research dose-response-pk-pd-modeling x forecasting, registered on a freshly pulled tree"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "PAUSED at stage 2: the main call built and green (make.py, checks, verify on target.zip 26bb6d65); the ask devices to redesign"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "stage 3 complete on architecture 3: the ask devices redesigned (rescue phototherapy in its own names; the diary keyed by handheld, replacements only in the device log), every free gate green on target.zip 381bf343; paused at stage 4 for the main thread"
   }
  ],
- "accepted_risks": [
-  "the judge's partial landing route: applying July 2026's refiling ratio to September's refusals in Western, Coastal and Island gives about 17,000 without the region-by-month build",
-  "the remaining regularity in the case notes (residual realism risk, from the final re-read)"
- ],
- "shipped_cut": "commit 0a888d3, target.zip sha256 e5e9d268b7bd6c16d6a5cddd8940d004dbd9ac8645dd1ed80daf05e942720a54"
+ "lineage_v2": {
+  "status": "PAUSED",
+  "domain": "banking-credit-financial-risk / deposit-liquidity-behaviour (client banking-credit-financial-risk)",
+  "stump": "A competent solver runs the book off on cohorts of accounts open at each 30 November (the field's method) and files a GBP 125 million hedge with a GBP 23 million new swap, because a member who takes up a new Loyalty Saver issue closes one account and opens another the same day for the same amount and the cohort books that money as gone; matching each closing payment to the same-day opening it funded keeps it in instant-access savings and puts the hedge at GBP 165 million (a GBP 63 million new swap).",
+  "architecture": 2,
+  "loops": 0,
+  "precut": {
+   "exit": null,
+   "date": null
+  },
+  "leak": {
+   "leak_py": "",
+   "reader": ""
+  },
+  "duplicate_check": {
+   "guard_check": "WARN 2026-11-01 on the registered card (people.first, repeat.gate_g; test.same_driver_older differentiated against task464 v1)"
+  },
+  "judge": {
+   "verdict": "",
+   "disposition": "",
+   "report": ""
+  },
+  "resume": "stage 1, a re-root: architecture 2 (Trentmoor Building Society's structural hedge, the money followed across same-day close-and-open moves between instant-access issues) is spent on paper by the rule-application lines of commits 19c4263b and 273af233: its decisive step is an inclusion over a second source (the event log's same-day pairs decide which balances count as kept), which policy 7.3 files (\"to the extent the Society held it in instant-access savings\", a rule executed, task445 v2) and which unfiled leaves the account cohort as the literal reading (a withheld rule, task468 v5); the account-cohort route also contradicts 7.3. Draw architecture 3 in another world and client domain under Forecasting (guard.py recent, coverage, mechanisms and slots on a freshly pulled tree; the card's architecture 2 identity into lineage as spent) with the decisive step an estimate the filed WHAT leaves to the analyst and no shipped source lists; architecture 2's generator, pack and goldens stay in git as history (target.zip 06b54fc7, python3 task146/generator/build.py rebuilds it).",
+  "build": {
+   "rebuild": "python3 task146/generator/build.py",
+   "zip_sha256": "06b54fc79be5d3d3f50f5a2bb2e80fe7aa5508995dedae578266c26c136fcb07",
+   "gates": "two byte-identical builds; checks.py 0 failed (rungs: R0 221, R1 125, R2 170, R3 165; links recover the world's 4,312 switches exactly; every graded figure 0.053 million or more off a rounding edge; pooled and averaged start dates agree at the million); verify.py 0 failures; ceiling.py: cracker keeps 6 of 20 ask figures, pair ceiling 62.2, mirror leakage 30.0",
+   "call": "hedge GBP 165 million from January 2027, a new three-year swap of GBP 63 million against the GBP 101.9 million left after the January maturity"
+  },
+  "architecture_spent": true,
+  "source_note": "re-root into a new world (a mutual building society's structural hedge on its instant-access savings); architecture 1 spent",
+  "fate": "spent 2026-11-01 on paper at stage 2 by the rule-application lines of 19c4263b and 273af233: its decisive step (the money followed across same-day close-and-open moves between instant-access issues) is an inclusion over a second source"
+ },
+ "source_note": "re-root into a new world (Hvidore Biologics' phase 3 dose for HB-231 in plaque psoriasis, carried from the Nordic phase 2b through exposure to the heavier North American phase 3 population); architectures 1 and 2 spent",
+ "build": {
+  "rebuild": "python3 task146/generator/make.py",
+  "zip_sha256": "381bf34356e15bd50a6393279b5f0712f5d3e7e0959854b717b53d98627d8ab2",
+  "gates": "two byte-identical builds (19 files), checks.py 0 failed (C1 to C7, SF1 to SF17, G1 to G5), verify.py 0 failures (the call, each dose's side of the bar, all 20 ask figures, recomputed with statsmodels), figures_check 80 of 80, precut 61 checks with no FAIL or WARN, voice-check PASS, leak.py REVIEW with no LEAK, guard heart PASS; ceiling.py: pair ceiling 45.0, mirror leakage 30.0 per cent, the cracker misses ask A 5 of 10 and ask B 9 of 10",
+  "call": "200 mg: expected week-16 PASI 75 in the VELA-3 population 39.5 / 64.0 / 82.9 at 50 / 100 / 200 mg (standing family 63.8 to 66.9 at 100 mg, 82.9 to 84.7 at 200 mg); the easy routes put 100 mg at 73.6 to 81.0 in VELA-2"
+ }
 }

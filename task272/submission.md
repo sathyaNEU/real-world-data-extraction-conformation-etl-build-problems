@@ -1,133 +1,66 @@
 ## Tags
 
-**Domain:** Sociology & Demography (income and poverty measurement).  
-**Analytical objective:** Descriptive & Distribution Analysis.
+> **Domain:** General Statistics & Data Science (exploratory data analysis and distribution assessment).
+> **Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**The FY2027 budget should carry 16 Decision Coaching Grants, $1,024,000, for H02, H08, H10, H11, H12, H14, H15, H17, H20, H22, H23, H24, H26, H28, H29 and H30.**
-At each of these hospitals at least six percent of the 2025 applications from households within the free-care limit on their income over the twelve months before applying left the household owing more than half its balance; at no other hospital did. Not the 2025 policy's yearly figure read as that income, which finds 5 hospitals because a household whose work follows a harvest, fishing or resort season was assessed on its best or its worst quarter. Not one calendar for each kind of work or for each region, which finds 10 either way because one kind of work keeps different months in different regions and one region's kinds of work keep different months.
+**Configure 4 batch-compounded products for gravimetric verification of every dose at the April 2027 cutover: Cefazolin 2 g in 20 mL syringe; Cefoxitin 2 g in 20 mL syringe; Phenylephrine 100 mcg/mL 10 mL syringe; Midazolam 1 mg/mL 50 mL syringe.** Each made more than 10 out-of-tolerance doses per hundred thousand doses made in 2026 under PH-QP-07 3.1 once every dose is placed on its set at the litres the set had pumped. The other 8 stay on SC-SOP-12's checks. A normal fit to the weighed doses alone would instead add Ampicillin 2 g in 50 mL bag; Piperacillin-tazobactam 4.5 g in 100 mL bag; Vancomycin 1 g in 200 mL bag and leave out Cefazolin 2 g in 20 mL syringe; Phenylephrine 100 mcg/mL 10 mL syringe.
 
 ## 2. Critical Components
 
-1. The counsellors' 2025 first-review decisions: **92,053** across the 31 hospitals
-2. Of them, applications from households within the free-care limit on their twelve-month income, each household's quarter put on a yearly basis by its region's calendar for its kind of work: **63,832**, of which **4,005** left the household owing more than half its balance
-3. Hospitals at six percent or more: **16** (H02, H08, H10, H11, H12, H14, H15, H17, H20, H22, H23, H24, H26, H28, H29, H30)
-4. FY2027 budget line: **16** grants at **$64,000**, **$1,024,000**
+1. On PC-1, PC-2 and PC-3 a product's weighed doses fall in a straight line with the litres the set had pumped since its set-up, about a start that varies from set to set; on PC-4 they do not move.
+2. Each completed dose's chance of lying outside its tolerance, taken at the litres its set had pumped and summed over every dose made, gives each product's 2026 rate per hundred thousand doses made.
+3. Against the limit of 10, Cefazolin 2 g in 20 mL syringe; Cefoxitin 2 g in 20 mL syringe; Phenylephrine 100 mcg/mL 10 mL syringe; Midazolam 1 mg/mL 50 mL syringe are **over it**; every other product is **under 3**.
 
 ## 3. Step-by-Step Solution
 
-1. Conformed the three hub extracts by the data guide's codes, put the Columbia extract's UTC times on Pacific time, joined H23's rows across both hubs, and kept each hospital's 2025 first-review decisions, without reconsiderations, pends, withdrawals or the presumptive screening (criteria 2.2): 92,053 decisions.
-2. Put every application's income on the 2025 policy's yearly basis, the three full months before the month of application times four (the Puget three-month total times four, the Willamette yearly figure, the Columbia monthly average times twelve).
-3. For each region in fac_member_hospitals_2025.xlsx and each kind of work, averaged that yearly figure, as a share of the guideline for the household's size, over every first-review decision of 2024 and 2025 by month of application, set each month against the twelve months' average, and divided each application's figure by its month's factor: its income over the twelve months before it applied (criteria 2.3).
-4. Kept the applications from households at or below 200 percent of the 2025 guideline for their size (section 3), 63,832, and counted those denied or approved at 25 percent (criteria 2.4), 4,005.
-5. Compared each hospital's share with six percent unrounded (criteria 2.1 and 2.5): 16 hospitals qualify, at $64,000 each (criteria 1.2), $1,024,000.
-6. For the assistance, took each write-off once (the adjustments extract repeats it on every account the approval covers, so a line can exceed its own account's balance in fac_patient_accounts_2025.csv), credited it to the household's approval decided last before it posted (an approval on a later application for the same bill posts under the number the household's first application carried), kept the counsellors' 2025 approvals, subtracted each reversal posted through 31 March 2026 from the approval whose write-off it reverses, and counted the Willamette hub's twice-loaded December 2025 lines once: $299,646.9 thousand in all.
-7. For the denials, counted the counsellors' 2025 denials for documents not received, reading code 2 before 1 July 2025 and code 1 from 1 July, when the reason list was renumbered (the denials that reconsiderations reopen carry code 2 to 30 June and code 1 after): 3,558 in all.
-8. Recommendation: 16 grants, $1,024,000.
+1. Read compounding_equipment_register.csv's station for each serial (PC-3's two serials, before and after 14 July, are one compounder) and compounded_product_master.xlsx's tolerance, specific gravity and tare for each product.
+2. Took the completed doses in compounder_dose_log_2026.parquet (fill times in UTC) and put each on the set its device had installed: the latest SET_UP in compounder_events_2026.csv before the dose, a re-seated set (the same set lot) being one set.
+3. For each dose, the litres its set had pumped before it: the programmed volumes of the set's earlier completed doses.
+4. Tied each weighed dose in gravimetric_check_register_2026.xlsx to its dose by batch and dose number; delivered volume is the net weight (gross weight less the container tare to 30 June) divided by the specific gravity, as a per cent of the labelled volume.
+5. For each product fitted the weighed doses' per cent deviation as the set's start plus a loss per litre pumped (one slope across the product's sets, the start varying from set to set about its mean, a dose-to-dose scatter about the line).
+6. Summed over every completed dose the normal chance of lying outside the tolerance at its litres pumped, with the start's spread and the scatter, per hundred thousand doses made; the call is the products over 10.
+7. Counted each station's completed doses by Ontario-local month and each product's sets (distinct set lots on their devices, the product of the doses filled on them).
 
 ## 4. Deliverable Answers
 
-### fair_assistance_coaching_2027.xlsx
+### gravimetric_verification_2027.pdf
 
-1. Number of grants: 16, the FY2027 budget line $1,024,000
-2. Whether each hospital qualifies, 31 hospitals in code order:
-   - H01 Whitlock Memorial Hospital: No
-   - H02 Ostrander Community Hospital: Yes
-   - H03 Brannigan Regional Medical Center: No
-   - H04 Copperhill Medical Center: No
-   - H05 Halvorsen General Hospital: No
-   - H06 Delacroix Memorial Hospital: No
-   - H07 Underhill Community Hospital: No
-   - H08 Pettibone Medical Center: Yes
-   - H09 Carmody Memorial Hospital: No
-   - H10 Kittredge Hospital: Yes
-   - H11 Marchbanks Regional Hospital: Yes
-   - H12 Nesbitt Community Hospital: Yes
-   - H13 Beckwith Medical Center: No
-   - H14 Jessup Memorial Hospital: Yes
-   - H15 Lindqvist Medical Center: Yes
-   - H16 Vandermeer Hospital: No
-   - H17 Thackery Memorial Hospital: Yes
-   - H18 Sorensen Regional Medical Center: No
-   - H19 Rasmussen Community Hospital: No
-   - H20 Ingersoll General Hospital: Yes
-   - H21 Stromberg Medical Center: No
-   - H22 Jorgenson Memorial Hospital: Yes
-   - H23 Lundgren Regional Hospital: Yes
-   - H24 Bellweather Community Hospital: Yes
-   - H25 Castellan Medical Center: No
-   - H26 Dunleavy Memorial Hospital: Yes
-   - H27 Mattingly Hospital: No
-   - H28 Nygaard Community Hospital: Yes
-   - H29 Petrakis Medical Center: Yes
-   - H30 Sundquist Memorial Hospital: Yes
-   - H31 Wennberg Regional Hospital: No
-3. Assistance written off on the counsellors' 2025 approvals, net of reversals posted by 31 March 2026, thousands of dollars to one decimal:
-   - H01: 18,681.4
-   - H02: 12,514.4
-   - H03: 11,235.1
-   - H04: 12,325.2
-   - H05: 11,730.7
-   - H06: 5,358.1
-   - H07: 6,607.9
-   - H08: 7,420.8
-   - H09: 7,243.6
-   - H10: 7,958.3
-   - H11: 5,763.8
-   - H12: 4,548.5
-   - H13: 6,498.8
-   - H14: 6,918.4
-   - H15: 19,753.5
-   - H16: 15,159.6
-   - H17: 12,496.6
-   - H18: 9,722.4
-   - H19: 11,072.0
-   - H20: 16,535.7
-   - H21: 10,805.6
-   - H22: 10,246.6
-   - H23: 12,399.7
-   - H24: 9,795.5
-   - H25: 6,071.3
-   - H26: 7,608.6
-   - H27: 5,576.0
-   - H28: 4,977.9
-   - H29: 9,879.2
-   - H30: 7,568.9
-   - H31: 5,172.5
-4. Counsellor denials in 2025 for documents not received, whole counts:
-   - H01: 181
-   - H02: 185
-   - H03: 28
-   - H04: 92
-   - H05: 122
-   - H06: 31
-   - H07: 48
-   - H08: 90
-   - H09: 36
-   - H10: 105
-   - H11: 113
-   - H12: 83
-   - H13: 32
-   - H14: 84
-   - H15: 470
-   - H16: 67
-   - H17: 319
-   - H18: 42
-   - H19: 106
-   - H20: 207
-   - H21: 87
-   - H22: 117
-   - H23: 234
-   - H24: 126
-   - H25: 53
-   - H26: 141
-   - H27: 42
-   - H28: 80
-   - H29: 127
-   - H30: 88
-   - H31: 22
+1. Products configured for gravimetric verification of every dose: Cefazolin 2 g in 20 mL syringe; Cefoxitin 2 g in 20 mL syringe; Phenylephrine 100 mcg/mL 10 mL syringe; Midazolam 1 mg/mL 50 mL syringe.
+2. Every batch-compounded product marked in or out:
+   - Cefoxitin 2 g in 20 mL syringe: in
+   - Phenylephrine 100 mcg/mL 10 mL syringe: in
+   - Cefazolin 2 g in 20 mL syringe: in
+   - Midazolam 1 mg/mL 50 mL syringe: in
+   - Ampicillin 2 g in 50 mL bag: out
+   - Cefazolin 1 g in 10 mL syringe: out
+   - Ephedrine 5 mg/mL 10 mL syringe: out
+   - Ketamine 10 mg/mL 10 mL syringe: out
+   - Piperacillin-tazobactam 4.5 g in 100 mL bag: out
+   - Vancomycin 1 g in 200 mL bag: out
+   - Ondansetron 8 mg in 50 mL bag: out
+   - Heparin 1,000 units/mL 5 mL syringe: out
+3. Chart: each product's 2026 out-of-tolerance rate per hundred thousand doses made against the limit of 10, the products going on verification in red.
 
-### fair_assistance_coaching_2027.png
+### compounding_review_2026.csv
 
-1. Horizontal bar chart of the 31 hospitals' shares against the six-percent line, the 16 qualifying hospitals highlighted.
+1. Each compounder's doses made in each month of 2026 (Ontario local time), whole numbers:
+   - PC-1: Jan 16,917, Feb 18,158, Mar 17,563, Apr 17,705, May 17,407, Jun 17,684, Jul 18,396, Aug 17,238, Sep 17,974, Oct 19,300, Nov 17,743, Dec 17,131
+   - PC-2: Jan 11,693, Feb 9,940, Mar 11,892, Apr 11,513, May 10,794, Jun 12,520, Jul 11,785, Aug 10,604, Sep 12,060, Oct 11,553, Nov 11,379, Dec 11,868
+   - PC-3: Jan 4,977, Feb 4,196, Mar 5,718, Apr 5,105, May 4,820, Jun 5,179, Jul 5,379, Aug 4,686, Sep 5,105, Oct 5,297, Nov 5,111, Dec 4,806
+   - PC-4: Jan 3,707, Feb 3,931, Mar 3,573, Apr 3,663, May 4,030, Jun 3,341, Jul 4,143, Aug 2,913, Sep 3,101, Oct 4,088, Nov 3,947, Dec 4,581
+   - GC-1: Jan 1,673, Feb 1,539, Mar 1,898, Apr 2,063, May 1,617, Jun 1,483, Jul 1,674, Aug 1,669, Sep 1,846, Oct 1,560, Nov 1,458, Dec 1,536
+2. The sets each product filled on PC-1 to PC-4 used in 2026, whole numbers:
+   - Cefazolin 2 g in 20 mL syringe: 441
+   - Cefazolin 1 g in 10 mL syringe: 148
+   - Cefoxitin 2 g in 20 mL syringe: 354
+   - Phenylephrine 100 mcg/mL 10 mL syringe: 420
+   - Ephedrine 5 mg/mL 10 mL syringe: 169
+   - Ketamine 10 mg/mL 10 mL syringe: 130
+   - Ampicillin 2 g in 50 mL bag: 271
+   - Piperacillin-tazobactam 4.5 g in 100 mL bag: 272
+   - Vancomycin 1 g in 200 mL bag: 172
+   - Ondansetron 8 mg in 50 mL bag: 114
+   - Midazolam 1 mg/mL 50 mL syringe: 167
+   - Heparin 1,000 units/mL 5 mL syringe: 166

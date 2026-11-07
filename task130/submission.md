@@ -1,46 +1,49 @@
 ## Tags
 
-**Domain:** Actuarial Science & Insurance (pricing, ratemaking and credibility).
+**Domain:** Economics & Econometrics (discrete choice and limited dependent variable modelling).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Corvane Health should put $1,250,000 into its professional liability trust for 2027.**
-That is the expected cost, at 2027 cost level, of the Claims first made against the trust in 2027 from incidents on or after each entity's Transition Date, each Claim of the 2016 to 2024 experience costed at its own delay from incident to first making against the days each entity is in the trust. Not the window's expected number of Claims at each class's average Claim cost, because the Claims made within the year are disclosed harm settled within weeks and program requests settled small, while the average carries the demands and suits made a year or more later. Not the same count at the average cost of the Claims made within a year, or along a severity curve fitted on the delay, because the window counts the costly Claims made within weeks far more often than the cheap ones made months later, and the cost falls and then rises with the delay.
+**No: Redbud's field employees will record about 255 recordable injuries on Pinewater work in 2027, a rate of 3.57 per 200,000 hours on the 2027 work plan, above the 3.0 limit of CS-4, so the plan puts Redbud in enhanced oversight for 2027.** The deciding figure is the rate the crews record in the first 35 days of their HR-14 recognition counts, where an award is far off, carried onto every 2027 crew hour once the programme ends on 31 December 2026. Not the recorded rate of 2.46 carried forward, which gives 176 recordables inside the limit, because crews leave injuries they can hide off the log as each count nears its award.
 
 ## 2. Critical Components
 
-1. The experience is **3,043** Claims, one per incident, from 2016 to 2024 incidents naming Covered Clinicians.
-2. It rests on **13,747.1** covered FTE-years in the 2016 to 2024 payroll.
+1. From 2021 to 2026 the crews recorded **2.55** recordables per 200,000 hours and the technicians, outside HR-14, **1.92**; carried onto the 2027 plan that record gives **176** recordables, a rate of **2.46**.
+2. Read against each crew's own 90-day count, the crews record **3.85** per 200,000 hours in days 0 to 14, **3.84** in days 15 to 34, **3.07** in days 35 to 49, **1.38** in days 50 to 64 and **1.01** in days 65 to 89.
+3. With no award at stake in 2027, the crews' rate in days 0 to 34 (**3.84**) on 12,258,000 crew hours and the technicians' **1.92** on 2,030,000 hours give **255** recordables: **60**, **66**, **67** and **62** by quarter, each a rate of **3.57**.
+4. The limit of 3.0 allows about **214** recordables on the plan's **14,288,000** hours, so the forecast is over it.
 
 ## 3. Step-by-Step Solution
 
-1. From rm_claims_register_extract_20261002.csv, kept the incidents dated 2016 to 2024 whose rows name a Covered Clinician (a Schedule B job in clinician_fte_by_month_2016-01_2025-12.csv in the incident month, contracted rows aside), merged each incident's claim numbers into one Claim made on its earliest claim_made_date per the trust agreement's Claim definition, and classed it by its first-named Covered Clinician per Schedule B: 3,043 Claims.
-2. Valued each Claim at the paid and reserved indemnity and defense on its Covered Clinicians' rows, trended at 5.0% a year from the incident year to 2027 per the funding policy, and took its delay in days from the incident date to the Claim's first making.
-3. Summed the covered paid FTE in clinician_fte_by_month_2016-01_2025-12.csv for 2016 to 2024 under both Schedule B code sets by specialty class, each month one twelfth of an FTE-year: 13,747.1 FTE-years.
-4. Took each entity's monthly covered FTE by class in clinician_staffing_plan_2027.xlsx from its Transition Date in Schedule A, each month one twelfth of an FTE-year held through the month's days.
-5. Counted each experience Claim, at its own trended cost, once for each 2027 FTE-year of its class with at least its own delay left before 31 December 2027, per FTE-year of the class's experience, and added the classes: $1,250,000 to the nearest $250,000.
-6. Matched each entity's open register claims, one per incident, from incidents since its expiring carrier's first term in insurance_premium_history_2016-2026.xlsx, to that carrier's loss run valued 30 September 2026 by insured reference, reading RMN references through rm_carrier_notices_2012_2026.csv, suits under their prior_claim_no, and a suit the run carries with no insured reference by entity, date of loss and claim type: Alderwick 4 and the medical group 5 missing.
-7. Added the hours on each covered position's lines in hcm_clinician_pay_lines_2026-01_2026-09.csv (covered through hcm_job_profile_crosswalk.csv and Schedule B; a worker paid on a resident or fellow position for the month is a trainee that month, a TRM termination payout not counting, and his additional position is left out per the trust agreement's Covered Clinician definition) over 173.33, by the entity of its cost centre in cost_centre_directory_2026.csv: September 2026 188.0, 465.4, 1,040.6 and 108.2.
-8. Recommended the 2027 contribution of $1,250,000.
+1. Stacked ehs_case_log_2021-2024.csv and the Cases sheet of case_management_export_2024-2026.xlsx, kept each case's latest revision and the new system's copy of each migrated case, and dropped first aid, linked recurrences and mutual-aid (MA-) work.
+2. Placed each case on the worker's crew or team on its injury date from crew_assignments_2020-2026.csv, with the crews recoded in March 2025 carried under their new codes (crew_register_2026.xlsx).
+3. Took hours worked from timesheet_hours_by_pay_period_2021-2026.csv as regular plus overtime hours, each prior-period adjustment in the pay period it corrects, and spread each pay period's crew hours over its working days.
+4. Rebuilt each crew's HR-14 count day by day from 11 January 2021, restarting it the day after a recordable injury to any member and the day after each 90th day (crew_safety_recognition_programme.pdf), and computed the crews' recordables per 200,000 hours by day of the count.
+5. Applied the crews' rate in days 0 to 34 of their counts and the technicians' recorded rate to the crew and technician hours of work_plan_hours_2027.xlsx, quarter by quarter.
+6. For the first-aid cases, counted each injury once: a Nurse line case is the injury of the Supervisor case for the same worker dated up to three days before its call, and a Nurse line case with none is an injury of its own; counted first-aid injuries on Pinewater work from 5 January to 27 September 2026 by the calendar quarter of the injury date and the district of the worker's crew or team on that day.
+7. Compared the 2027 rate with the limit of 3.0 in pinewater_contractor_safety_standard_cs4.pdf.
 
 ## 4. Deliverable Answers
 
-### trust_funding_2027.xlsx
+### safety_plan_recordables_2027.docx
 
-1. The 2027 contribution: $1,250,000.
-2. Open claims under each entity's policies with the carrier it is leaving missing from that carrier's latest loss run, and our reserves on them:
-   - Tolliver Falls Hospital (Quillan Mutual): none
-   - Alderwick Medical Center (Quillan Mutual): 4 claims, $839,000
-   - Corvane Medical Group (Stoneleigh Casualty): 5 claims, $16,000
-   - Brennick Community Hospital (Stoneleigh Casualty): none
-3. Covered clinician FTE the payroll paid in July, August and September 2026:
-   - Tolliver Falls Hospital: 188.6, 187.1, 188.0
-   - Alderwick Medical Center: 464.5, 463.6, 465.4
-   - Corvane Medical Group: 1,037.1, 1,036.8, 1,040.6
-   - Brennick Community Hospital: 105.5, 106.7, 108.2
+1. Within the 3.0 limit in 2027: No.
+2. 2027 recordable injuries: 255, a rate of 3.57 per 200,000 hours.
+3. By quarter of 2027:
+   - Q1: 60 recordables, 3.57
+   - Q2: 66 recordables, 3.57
+   - Q3: 67 recordables, 3.57
+   - Q4: 62 recordables, 3.57
 
-### trustees_paper_2027.pptx
+### recordables_by_quarter_2027.png
 
-1. Slide 1 states the contribution, $1,250,000, with each entity's Transition Date and months in the trust in 2027.
-2. Slide 2 charts each entity's paid covered clinician FTE in July, August and September 2026 as grouped columns, one per month, each labelled with its value.
+4. The four quarters' forecast recordables (60, 66, 67 and 62) against the count the 3.0 limit allows in each quarter.
+
+### recordables_forecast_2027.xlsx
+
+5. First-aid cases on Pinewater work, 5 January to 27 September 2026:
+   - Blue Ridge: Q1 36, Q2 44, Q3 19, in all 99
+   - Piedmont: Q1 38, Q2 34, Q3 32, in all 104
+   - Lakes: Q1 45, Q2 46, Q3 30, in all 121
+   - Coastal: Q1 52, Q2 51, Q3 33, in all 136

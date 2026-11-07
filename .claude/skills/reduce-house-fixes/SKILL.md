@@ -24,8 +24,15 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
   real-clock timestamp into metadata, unseen by text checks.
 - **Cost.** The signature says generated; the timestamp contradicts the setting, both ways (`python-docx`
   stamps 2013). Assert a band, not a ceiling.
-- **Line.** Signatures: scrub inputs; a script-made golden may keep its own. Timestamps: scrub every shipped
-  file whose body states a date, goldens included. Scrubbing both everywhere is the cheap way out.
+- **Line.** Signatures: scrub OOXML and image inputs; a script-made golden may keep its own. A PDF input is
+  made by an office application, not a programming library: write the document as .docx and export it with
+  LibreOffice Writer (`soffice --headless --convert-to pdf`), so Producer and Creator honestly read
+  "LibreOffice" and "Writer" and no library header comment exists; the issuing organisation goes in Author
+  only and the Subject is real. The portal fails a PDF that names ReportLab or another library, one whose
+  Producer or Creator is the organisation, one whose library header was overwritten, and a Subject left at
+  the placeholder "(unspecified)" (task127, task482). Fix the export's date, /DocChecksum and /ID at equal
+  length so two builds stay byte-identical (task482/generator/officepdf.py).
+  Timestamps: scrub every shipped file whose body states a date, goldens included.
 - **Check.** Sweep the pack and the deliverables (two generators): no writer name, no stamp outside the
   band. Wire OOXML, PDF and image branches even before a file of that kind ships.
 - **Repair.** Byte-level, never a re-save (it re-stamps). OOXML: repack same entries in order, change only
@@ -573,3 +580,18 @@ content it was written for rather than on a type that a stricter case also satis
 of cases out and run it: both directions of every tolerance (a one-member set against its member, a set in
 another order, a string-typed figure against a number, a prose name with a qualifier) with the wanted verdict
 beside each, as a test the script keeps.
+
+## H13. A generator's pattern left visible in the pack
+
+**The defect.** Identifiers that advance in a fixed step, times that rise by a fixed increment, every document
+carrying one creation stamp, a workbook modified before it was created, a table cell clipped at a PDF's page edge.
+Each is invisible to the generator's checks and plain to a reader at a glance.
+
+**What it costs.** Readers called task181's equipment log generated (work orders 37 apart, sign-off times three
+minutes later each row, so the one repair that mattered stood out as a cue), task191's ids in steps of 3 and 7,
+task118's workbooks modified before created, and task306's quotation clipped its second cover's terms mid-word.
+
+**The check.** Before stage 4: difference every id and timestamp column and refuse a constant step; read each
+PDF's CreationDate and ModDate and each workbook's created and modified, distinct per document and in order; and
+read every PDF back with `pdftotext -layout` at the default crop, refusing a cell that runs past the margin.
+

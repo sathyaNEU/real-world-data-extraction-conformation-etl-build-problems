@@ -1,65 +1,58 @@
-# determinism-check report, task181, 2026-10-12
+# determinism-check report, task181 (architecture 6), 2026-10-31
 
 ## Verdict
-NOT_DETERMINISTIC (the main call holds; two supplementary answers are not uniquely forced). Failure type: competing_defensible_answer.
-**Disposition:** FIX_NOW
-**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+DETERMINISTIC
+**Disposition:** APPROVE
+**Stumping type:** mechanism: decomposition_attribution, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+
+target.zip sha256 2ba1a5636e3a2bf73fb58b4679e0a4664a85607dc88579dcf4b3d87d8e078e89. One judge thread, one pass; its verdict is /tmp/determinism-check-task181-a6/verdict.md.
 
 ## Why
-The main call (Tarvik only, 72.4 against 40.0) recomputes exactly from the files. Gate failures: (1) the delay column holds only if slot plans whose ifplid is absent from the FDPS archive are dropped, and no shipped file says so (709 slot rows, 662 plans); read literally all eight values differ at two decimals. (2) The pptx rate table for the seven non-Tarvik sectors holds only under a pooled loss-per-pair ratio; a per-sector ratio moves them (Linmark 25.6 rather than 24.1, Lysvik 24.9 rather than 26.4, and others). The call is unchanged but the "Lysvik next highest at 26.4" figure is open.
+Every graded figure recomputes from the bundle. The Centre's guide files the estimand ("own practice"). The scans, cycles and equipment log show that steriliser 3 loads after the 12 May 2027 repair carry 115 infections against 21.7 expected. With those procedures set aside only GS-16 and GS-21 are above the limit. Every reasonable alternative treatment (exclude all steriliser 3 items, price the exposure as its own stratum) gives the same pair. Only dropping all post-repair procedures differs (GS-21 alone), which the judge rates an unreasonable reading.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| ATM-related SMI (D or I), 1 Jan 2025 to 30 Sep 2026 | 96 | 96 | yes |
-| Losses that are crossing pairs in their sector | 96 of 96 | 96 of 96 | yes |
-| Crossing pairs in the record | 392,294 | 392,294 | yes |
-| Losses per 10,000 pairs, pooled and by sector | 2.45; 2.31 to 2.59 | 2.45; 2.31 to 2.59 | yes |
-| Losses per 100,000 hours, whole record | 13.8 to 24.2 | 13.8 to 24.2 | yes |
-| Tarvik 2027 pairs / hours | 48,545 / 16,414 | 48,545 / 16,414.1 | yes |
-| Forecast rate, Tarvik | 72.4 | 72.4 | yes |
-| Forecast rate, others (pooled) | at or under 26.4 | Lysvik 26.4, Hallin 24.9, Mosby 24.8, Karrow 24.2, Linmark 24.1, Grendal 23.5, Sandvik 18.9 | yes, pooled only |
-| Forecast rate, others (per-sector ratio) | not claimed | Tarvik 72.5, Linmark 25.6, Lysvik 24.9, Hallin 24.8, Mosby 24.7, Karrow 24.0, Grendal 23.9, Sandvik 19.0 | competing answer |
-| Delay/flight (Tarvik, Mosby, Grendal, Linmark, Karrow, Lysvik, Hallin, Sandvik) | 0.53, 0.41, 0.43, 0.16, 0.29, 0.55, 0.27, 0.10 | with ifplid filter: same. Without: 0.59, 0.50, 0.50, 0.19, 0.34, 0.66, 0.32, 0.11 | only under an unfiled filter |
-| Hours open as own sector | 1,532.1, 1,310.5, 735.3, 1,202.3, 771.1, 1,410.2, 971.6, 1,301.9 | same | yes |
-| ACAS RA encounters (deduplicated) | 8, 9, 10, 7, 4, 7, 3, 2 | same (68 rows to 50 encounters) | yes |
+| Procedures after cleaning | 30,700 | 30,700 | yes |
+| Q2 notice (120 vs 59.894, UCL 76) | notice | same | yes |
+| All-procedure Apr-Sep 2027 counts above UCL | GS-05, 12, 16, 21 | 43/22, 45/23, 35/22, 62/21 | yes |
+| Exposed procedures / infections / expected | 362 / 115 / 21.7 | 362 / 115 / 21.706 | yes |
+| 4.3 times the rate of other procedures | 4.3 | 5.3 observed to expected for exposed against about 1.24 for the rest (120 against 96.5, design note) | yes (note: the judge quotes the 5.3 ratio; the 4.3 is relative to the rest) |
+| Unexposed GS-16 / GS-21 | 35 v 22 / 26 v 16 | same | yes |
+| Unexposed GS-05 / GS-12 | 4 v 11 / 5 v 12 | same | yes |
+| Ask CSV, 60 cells | as filed | all reproduce | yes |
 
 ## Competing answers that survived
-1. Delay, plans not in FDPS: dropping them gives the golden; keeping them gives 0.59/0.50/0.50/0.19/0.34/0.66/0.32/0.11. 574 of the 709 rows match a flown callsign, date and route under another ifplid (refiled). The extract notes do not close it.
-2. Forecast ratio, pooled over eight sectors (golden) or per sector: same call, different rates for seven sectors at one decimal. The design note's fork table row 7 asserts "sector rates give the same set" but that covers the over/under set only, not the printed rates.
-3. Minor, literal text favours the golden: five "bandboxed briefly... reopened 5 min later" remarks with no logged change. Deducting them gives Tarvik 1,531.7. The OM says a change takes effect at the logged time, so leave it.
-4. Main-call method (judged recoverable, not a fork): no file states crossing pairs. The data separates the candidates (96 of 96 losses are crossing pairs while crossing pairs are about 10 percent of overlapping pairs; loss per pair is flat across sectors). Touching counted as crossing still gives Tarvik alone (69.6 pooled).
+None on the main call. Low-severity notes that change no named consultant:
+1. GS-41 = GS-14 is stated in no shipped file. It is inferred from the handover and the CSSD register. Keeping them separate zeroes six GS-14 ask cells. The judge rates the separate reading poor, and the author placed it as Layer 1 mess.
+2. Chart basis: the golden charts infections in the unreached procedures, while a literal reader could chart all-procedure counts. The red set and the call are the same either way, so only bar heights are exposed.
+3. Notice cutoff: counting only infections entered by 30 September gives 210 against 235. The guide directs the full count.
+4. The judge did not run the case where the 14:40 repair time is read as UTC. It estimated by inspection that only a few loads move.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10+ | 15 | yes |
-| Formats | 3+ | 6 (pdf, csv, parquet, json, xlsx, md) | yes |
-| Largest file | 25,000+ rows | 1,693,315 (parquet); planning csv 308,913 | yes |
-| Distractors | 2+ named in metadata.json, none labelled in file names | controller_roster_summer2026.xlsx, met_cb_activity_summer2026.csv; names carry no label | yes |
-| Distractors relevant and unused | same world, ruled out by a shipped fact | judge found two present and not the surface read | yes (judge did not name either as the read carrying the task) |
-| Deliverables | 1 to 3 | 2 (pptx, csv) | yes |
-| Deliverables present | all named | golden/ holds both | yes |
-| Multi-dimensional asks | yes | per-sector rates against the line, delay, hours, ACAS across eight sectors | yes |
-| Units and rounding stated | yes | delay two decimals in minutes, hours one decimal, encounters whole; the forecast rate table has no stated rounding or unit in the prompt | NO (prompt asks for "forecast rate" with no unit or rounding) |
-| Prompt shape and 25 criteria | shape identifiable, 25+ | shape 01 in metadata.json; rubric is generated at grading and not checked here | shape yes, count not verifiable |
-| Realism | no LLM tells, goldens read as work products | judge found no authoring disclosures and realistic orphan ifplids; golden realism not independently reviewed | pass on judge's read |
-| Prompt length | one paragraph, under 1,000 characters | 619 | yes |
+| Files / formats | 10+ / 3+ | 11 / 4 (CSV, PDF, XLSX, JSON) | yes |
+| Large file | 25,000+ rows | 47,657 scans; 32,036 operations | yes |
+| Distractors | 2+ in metadata, none labelled by name | hand_hygiene_audits_2027.csv, theatre_air_sampling_2027.json; names carry no label | yes |
+| Distractors unused yet weighable | yes | flat monitoring records, no graded quantity answered | yes |
+| Deliverables | 1 to 3, all in golden | 2 (docx, csv), both in golden/ | yes |
+| Asks multi-dimensional with unit and rounding | yes | 10 consultants x 3 years x 2 measures, "whole numbers" in the prompt | yes |
+| Prompt shape and 25+ criteria | yes | shape 10 (scorecard against a threshold); design note counts 61 ask criteria plus the call criteria. I did not re-derive the generated rubric. | yes (note-based) |
+| Reads as real, not LLM generated | yes | judge found no authoring leakage in files read; I did not read the goldens | partly checked |
 
 ## Gate G reconciliation
-Judge: method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note and card: stump_class analytical; the stump is forecasting from flight hours when losses follow the climbing or descending pairs; "no reported number is wrong". Consistent. The hours-based close-out table is the surface read but does not rank sectors for 2027, so it is not a Gate G artifact. Neither declared distractor was named as carrying the task.
-Gate H: domain pass, layers pass, decisive_step analytical. The card's domain_test (controller workload and vertical interaction) matches the judge's.
-Note the two failing items are supplementary or presentation determinism, not the stump, so the build reads the same shape from outside as inside.
+The thread and the design note agree: mechanism decomposition_attribution, family analytical_non_defect, surface_read_dependency no, sole_data_defect no. The declared distractors (hand hygiene, air sampling) are not the surface read carrying the task; the thread named the all-procedure ratio against the limit as the easy route. The card has stump_class analytical, with analyst_test and domain_test filled in. The card's mechanism and strategy fields are None, so the design note is the declared source. Match, no finding.
+
+Gate H: the thread gives domain pass, layers pass, decisive_step analytical. The design note's Three rules agree (No decoy, Not semantics, Not rule application all present). The thread's one borderline note is that the raw count is true and merely misattributed, so the call is not a flip away from a wrong number. That fits the design.
 
 ## Stump power (Gate F)
-Likely strong. The natural path (2026 per-hour rate times 2027 hours) gives "no sector" (Mosby 32.0), and the trend path gives Grendal/Hallin on one extra loss each. Reaching Tarvik needs testing what the 96 losses share and rebuilding exposure on the new Brekka climbs and descents (5,520 EXBK flights against 0 in the record). The pair work is heavy, so some failures will be effort rather than analysis. No too-easy signals named.
+The easy route (the Centre's ratio against the limit) files four names. The decisive work is a three-step trace: scans to operations, operations to the last passed load, loads to the repair date. Nothing in the files names the fault, and every cycle prints a pass. Partial discounting can keep GS-05 or GS-12. The thread rates stump power real. The design note's pair ceiling is 33.9. Caution: the field's standard attribution step (set aside the common-source exposure, re-test against the limit) is a landable call for a strong solver once the trace is found. The stump is finding the trace, which the main thread should weigh against the design note's ladder.
 
 ## Findings, ranked
-1. extract_notes_2026-10-12.md: state that slot plans whose ifplid is not in the FDPS archive are not counted as flights, so the delay column is forced. Regenerate the golden only if the filter is stated the other way.
-2. Prompt or extract notes: fix the forecast ratio (pooled over the eight sectors) so the printed rates are determinate to one decimal. Alternatively word the table column so only the sector(s) over the line are graded.
-3. prompt.txt: give the forecast rate a unit and rounding in the asking sentence (per 100,000 flight hours, one decimal).
-4. Optional: one sentence in the notes that the record can be tested for what the losses share, leaving the pair method open. Main call, Tarvik figures, hours-open and ACAS columns stay frozen.
-5. Any earlier runs on the delay column and the table's non-Tarvik rates should be regraded or rerun after the pins.
+1. Low: GS-41 = GS-14 is unfiled. Optional fix: a roster line making the handover explicit in a shipped file. This would change solver inputs, so only if the author wants it.
+2. Low: chart basis wording. Optional fix: say which counts the chart shows. This would also change what solvers see.
+3. Informational: the repair-time UTC case was not run by the judge. The margins are wide.
 
 ## Next action for the author
-Add the ifplid exclusion line to the extract notes and the pooled-ratio plus unit/rounding wording to the prompt or notes, rebuild byte-identically, and re-judge once.
+Ship as is, unless you choose to close findings 1 and 2 with filed wording. If you do, the reshipped cut needs the usual re-run of the gates.

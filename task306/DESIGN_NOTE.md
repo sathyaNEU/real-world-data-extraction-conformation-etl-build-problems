@@ -1,214 +1,244 @@
 # task306 design note
 
-Architecture 1, drawn 2026-10-24. Seed `analytical_tasks/04_opportunity_sizing/OS08` (the world, the decision and the quantity only: a refurbishment plant tooling next year's out-of-warranty traction-battery replacements across five EV platforms in lots of 50).
-
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task306.json`, architecture v1, registered 2026-10-24. Guard verdict WARN after two axis redraws at check (below); `test.same_puzzle_older` and `test.same_driver_older` are cleared by differentiation lines against task468's lineage and task98's lineage; task132 and task133 are differentiated on the card. Nearest drivers on file sit at 0.05 (task183, task130 lineage, task138 lineage, task114, task479 lineage).
-- **Pairing:** Energy Systems & Utilities / `asset-condition-maintenance`, drawn for Opportunity Sizing & Decision Support. The task type forecasts the failures an asset base will throw off from each asset's own condition and sizes the maintenance capacity to meet them; here the assets are traction-battery packs in cars on the Dutch register, and the opportunity is the year's out-of-warranty replacement demand the refurbisher's fixed line is tooled against, pool (every pack in use in the Netherlands in 2027) to realisable (the packs that fail in 2027 outside cover).
-- **Niche:** Voltwerk Accu Revisie B.V. (fictional, Tilburg) refurbishes traction batteries for five platforms (Volta hatch, Kestrel SUV, Plover saloon, Mira city car, Tern van). Fixtures, module stock and end-of-line test programmes are platform-specific and are committed before the year in lots of 50; the 3,000 slots of 2027 are split in proportion to each platform's forecast of pack failures outside the OEM warranty in the Netherlands in 2027, by largest remainder; demand is about 3,800, so the split rations the line.
-- **The call:** each platform's 2027 slots in lots of 50 and the total forecast to the nearest hundred: Mira city car 1,450, Volta hatch 900, Plover saloon 350, Kestrel SUV 250, Tern van 50, 3,800 failures (world seed 3448, line seed 31062). The register-only route files Volta 1,000, Kestrel 300, Plover 350, Mira 1,250, Tern 100 and 3,400, four of the five slot figures and the total wrong.
-- **Shape:** other. The call is an allocation of 60 lots to five platforms with the sized total (5 + 1), three per-lot asks over the five platforms (15), the chart's parts and the two files: about 30 criteria. Shape 05 is the honest key and `ban.shape` holds it against task486, so the shape is filed as other with this arithmetic rather than relabelled. Per-platform forecasts are not graded: the register-only route files four of the five at the nearest hundred, so grading them would pay the wrong route.
-- **Strategy:** `maturity_censoring`, Gate G `forecasting`, generators G13 (the register's horizon is 30 June 2026, the decision's is calendar 2027), G6 (the 2027 pool's mix shifts toward old imported Mira cars), G12 (the cars still to arrive are absent from the register, not absent from the fleet); gap population, then time; Layer 2 `estimand_identification`, pattern `own:installed-base-forecast-carrying-the-inflow-the-register-does-not-hold-yet`. F4's insight is this build's: the register is the count that has arrived, the decision needs an estimate of what will arrive, and the arrived count understates exactly the platform whose cars keep arriving. Redrawn at check and registration against the live window (task179, task275, task483): `population_selection` (the F7 reading, who is in the denominator) is banned against task275 and `composition_mix` against task179, and F4 is the honester of the free labels, since the error is an arrival stream left uncounted rather than a rate misapplied; the decisive generator moved from G12 to G13 (`ban.pattern` against task482 at the first check), G13 being the honester first code because the register is complete for its own date.
-- **Forum, event, organisation:** line_manager_or_team (Voltwerk's head of operations signs the tooling plan; `executive_team` was banned against task179), purchase_order_or_contract (fixtures and module stock committed before the year), manufacturer. Role capacity_planner; context artifact `capacity_report` (the tooling plan; `register` and `filed_standard` were banned against task179 and task483).
-- **People** (`guard.py names --geo NL --seed 306`): Imke Recers, operations planner, who asks; Maarten Cammel, finance controller. Neither appears in the prompt.
-- **Probes before the draw:** call-only, isolated, medium effort, on two packs cut from the prototype (scratch `t306/`). Pack 1 (seed 3061, an imported car's pack history abroad hidden): sonnet tooled exactly the register-only split after calibrating the hidden abroad replacements down by 0.74; opus built a careful register forecast, back-tested it on 2024 and 2025, and left out "cars that will come onto the register after June 2026" in a caveat. Pack 2 (the history made complete, EU-wide): sonnet filed the register-only split to the slot (1,100, 300, 350, 1,150, 100); opus also forecast from the register alone (its own code compared microsecond and nanosecond timestamps, so it never applied the warranty end). Four of four missed the decisive step.
-- **WARNs answered:** `overuse.gate_g` (forecasting in five of the last twelve): the decisive mechanism is a forecast's population, and no other key is honest. `repeat.deliverables` (xlsx and png against task275): a tooling workbook and a chart of the split are what an operations board takes; the deliverable names and contents are this build's own.
-- **Data-native sentence:** the RDW register holds each car from the day it is first registered in the Netherlands and carries its first admission anywhere in the EU, so the used imports it shows arriving every month, about 116 Mira city cars a month at 8.1 years from first admission, are already past the Mira's five-year pack warranty when they arrive; a forecast summed over the register on 30 June 2026 is complete for that day and short of every car that arrives before or during 2027, and those cars' packs fall due in their first months here.
-
-## Three rules
-
-Task type: asset-condition-maintenance (Energy Systems & Utilities), tagged in the taxonomy for Opportunity Sizing & Decision Support: the out-of-warranty failures an asset base throws off in 2027, forecast from each asset's own condition (the pack it carries, the pack's age, its life curve, the car's warranty clock), sizing a refurbishment line's fixed capacity across five platforms.
-Domain test: The deciding quantity is each platform's 2027 pack failures outside the OEM warranty in the Netherlands, the asset-condition analyst's installed-base forecast built from each pack's own condition; for a vehicle fleet the installed base keeps moving through used imports that the register records only as they arrive, so the 2027 base is the register plus the arrival stream its own registration dates show, and replacing it with the register's own sum moves four lots onto the Volta hatch, Kestrel SUV and Tern van from the Mira city car.
-Swap: "the slots each platform needs once the used imports the register shows arriving, eight years old and past their pack warranty, are carried into 2027" put into a hospital's infusion pumps or a utility's distribution transformers loses its mechanism: no hospital takes in used pumps from abroad every month past their warranty, no transformer fleet grows by imported second-hand units, and no asset register carries both an asset's first service anywhere and its arrival date here.
-Layer 1: the RDW open-data extract with Dutch field names, YYYYMMDD dates and two registration dates per car; trade names that vary by variant; a replacement log merged from the OEMs' EU-wide dealer records and Voltwerk's own, with the country, the cover and the source of each fit, and rows for cars scrapped or exported before the extract; life curves published as cumulative shares by whole year of pack age; per-platform warranties (the Mira's five years, the others' eight); the line's MES, stores, bench and recycler exports in their own codes and units; nothing is placed to be caught.
-Layer 2: estimand_identification: the population whose packs fall due in 2027 is every car in use in the Netherlands in 2027, which the plan files as the register of 30 June 2026 and the cars first registered here from 1 July 2026 to the end of 2027; which of the later registrations' packs fall due is filed nowhere: the used imports among them are projected from the register's own arrival history (their rate, their age and the pack each arrived with) and carried at their conditional chance of failing outside the warranty after they arrive, while the new cars stay inside their warranty all year.
-Decisive step: carrying the used imports the register shows arriving every month into the 2027 forecast, each at the pack it arrives with and its chance of failing in 2027 after its warranty once it is here, rather than taking the register of 30 June 2026 as the population whose packs fall due in 2027.
-Not semantics: every field reads as what it is (first admission, first Dutch registration, each replacement's date and pack, the warranty years from first admission), the curves are read as the plan says, and the register is complete for its own date; the plan files that the cars first registered here after 30 June 2026 are in the 2027 fleet, and no field, code or sentence says that any of them is a used car or past its warranty, so the analyst who reads all of it correctly and carries them as the new cars most registrations are, or as the fleet's growth at its average chance, still files the register's split or Mira city car 1,300 to 1,400.
-Not rule application: the plan files the WHAT (failures outside the OEM warranty on each platform in the Netherlands in calendar 2027, the fleet of 2027 as the register and the cars first registered here from 1 July 2026 to the end of 2027, one pack per car, a car in use taken to stay in use, the curves read by straight lines, the largest remainder) and nothing about how the later registrations are projected or which of them fall due. Enumerated family on the Mira city car: 1,250 slots (the register alone, or the later registrations carried as new cars), 1,350 (either half of the stream) and 1,450 (the full stream), a spread of four lots and 3,448 to 3,828 on the total. Standing family (SF25, 144 projections carrying the full stream: trailing windows of 3 to 48 months, calendar 2024 or 2025, straight-line trends over 12 to 48 months, each with the cars on their own day of the month, mid-month, on the first, on the last or spread through the month, on the pack they were registered with or built with; by quarter at each car's own month or mid-quarter; the last 12 or 18 months replayed): one call on all five platforms and one total, the Mira city car's import failures 320.2 to 395.5 inside the golden's corridor of 318 to 398.5, totals 3,771 to 3,848, all 3,800, worst remainder margin 0.029 lots; the conventions (the late-2026 renewal, warranty ends in calendar or 365.25-day years, pack age over 365 or 365.25 days) file the same call. The ruling-out is not loud: no filed sentence says which later registrations fall due; only the register's own two date columns do, about 116 Mira imports a month 8.1 years old, which no filed rule and no one group-by of the forecast's own inputs puts into the 2027 sum.
-Analyst test: A strong analyst who reads every file correctly takes each registered car's pack from the log and its conditional chance of failing outside the warranty from the curves, counts the cars first registered here after 30 June 2026 as the plan files them, and carries them as the new cars most registrations are, inside their warranty all year, so they add nothing: Volta hatch 1,000, Kestrel SUV 300, Plover saloon 350, Mira city car 1,250, Tern van 100 against a total of 3,400, where the golden is 900, 250, 350, 1,450 and 50 against 3,800 (carried as the fleet's growth at its average chance instead, the Mira city car gets 1,300 to 1,400); checks.py runs it on the generator's clean truth and on the pack.
-Estimand: each platform's pack failures outside the OEM warranty in the Netherlands in calendar 2027 (a pack failing on a car in use in the Netherlands after the OEM's warranty on that car has ended, Voltwerk refurbished packs included whether or not Voltwerk's own warranty covers them), over the fleet of 2027 (the register of 30 June 2026 and the cars first registered here from 1 July 2026 to the end of 2027, each from the day it is registered), one pack per car (the pack it carries at the end of 30 June 2026, or when it is registered if later), with the 3,000 slots split in lots of 50 in proportion by largest remainder (tooling_plan_2027_draft.docx sections 2 and 3).
-No decoy: nothing is planted: the register is the RDW's as it stood on 30 June 2026, the log the recorded replacements, the curves the OEMs' and Voltwerk's own; no memo, draft or figure argues for a split, no file ranks the platforms, no past split or forecast is in the pack, and no stakeholder figure is set up to be overturned.
-No certified replay: no certified or published figure sits in the pack; no file states a forecast, a past split or a past year's replacement count to be reproduced, and the method is not recovered from any figure.
-Lesson: an installed-base forecast is a forecast of the base too; when the roll it is summed over is a snapshot of a base that keeps taking in old units, the units still to arrive are part of the population and the roll's own arrival dates show them; no build on file forecasts a population's units still to arrive from the roll's own arrival history.
+1. Card: `.claude/skills/fingerprint/cards/task306.json`, architecture 4, registered 2026-10-31 after a pull; the
+   three earlier architectures sit in the card's lineage as spent.
+2. Pairing: Quantitative Finance, task type portfolio-construction-risk, objective Opportunity Sizing & Decision
+   Support (the headline is the alpha a year each strategy keeps at the size it would be given, pool to realisable,
+   and the larger keeps the money); shape other (three candidates each with a gross alpha, a cost at size and a net,
+   the call, the runner-up and the gap, a chart, and two asks on the desk's own 2026 trading).
+3. World: Wealdmoor Investment Management, a London asset manager whose systematic equity desk runs four live UK
+   strategies and has three more backtested; its brokers Orchard Lane Securities, Calder Row Brokers, Brightwater
+   Execution and Hythe Street Markets. People from `guard.py names --geo "United Kingdom" --seed 306`: Howard Simpson
+   (chief investment officer, chairs the investment committee and sends the request), Carole Shaw (head of
+   systematic equities), Sarah Ford (head of trading, owns transaction cost analysis).
+4. Quantity: for each backtested strategy, its expected alpha a year in pounds at GBP 400 million, the backtest's
+   gross alpha less the cost its 2026 rebalances would pay traded at that size; the call is which strategy takes the
+   money from 4 January 2027.
+5. Default path: each strategy's 2026 turnover priced at what the desk's own orders paid per traded pound in stocks of
+   the same size (or a flat research cost), the field's back-of-envelope capacity check, which leaves small-cap
+   momentum first on its gross lead.
+6. Data-native sentence: the desk's orders carry each order's size and the stock's daily traded value, so the cost of
+   an order rises with its share of that value along a curve the executions trace; the desk's small-cap and mid-cap
+   pounds traded sat at about one per cent of a stock's day at the median, their larger shares coming in thin names
+   where an ordinary order is much of the day, while at GBP 400 million momentum's month-end trades take about 30 per cent of each liquid
+   small cap's day at the median pound, a scale the desk's average cost never weighted.
+7. Against task310 (an added store's yield behind a site's send-out limit), task106 (candidates sharing one pool of
+   spare capacity), task309 (one effect ratio carried across an intensity range) and task83 (a capped budget ranked by
+   a randomized holdout's effect): here one candidate is funded whole and the carried quantity is a cost per traded
+   pound that rises smoothly with the trade's share of the stock's day, fitted on the desk's own executions (the
+   card's differentiation lines).
+8. Furniture: forum committee_or_panel (the investment committee), forcing launch_or_rollout (the strategy goes live
+   on 4 January 2027), org financial_institution, role portfolio_manager; none is banned against the last three
+   builds (task181, task474, task125).
+9. Prompt shell: a which question (what alpha each keeps, and which should take it), the second sentence opening
+   "The", the rounding sentence opening "Alpha"; the dead architecture's how-much shell is not kept;
+   deliverables pptx and xlsx.
+10. Guard WARN people.first answered: Carole and Sarah each appear in one older build (task105, task108); both are the
+   drawn personas for this seed and no other persona in the pack shares their names.
 
 ## Default path
 
-1. Maps each row of the RDW extract to its platform by make and reads the two dates; takes each car's pack on 30 June 2026 from the log: its last replacement, else the pack it was built with.
-2. Ends the OEM warranty 8 years after first admission (5 for the Mira city car, the warranty terms' table) and reads each pack's age from its fitting.
-3. Gives each car the chance its pack fails in 2027 after the warranty, given it works on 30 June 2026, from the curves read by straight lines.
-4. Sums by platform over the register: Mira city car 1,469, Volta hatch 1,142, Plover saloon 425, Kestrel SUV 322, Tern van 91, 3,448 in all.
-5. Splits the 60 lots by largest remainder and reports the total to the nearest hundred.
+1. Read IC-07: alpha at a size is the backtest's annualised gross alpha less the shortfall the twelve months of
+   rebalances would pay at that size, estimated from the desk's own executions.
+2. Conform the desk's orders (each execution id once, pounds fills as pence, the failover orders merged, shortfall
+   from arrival, cost positive) and read what they paid in the band each candidate trades, as IC-07 files it: the
+   value-weighted shortfall per band, about 33 basis points for the large caps, 37 for the FTSE 250 and 61 for the
+   small caps.
+3. Scale each candidate's traded weights to GBP 400 million and price every pound traded at its band's average, the
+   field's capacity check done on the desk's record.
+4. Net it from gross alpha: UK Smaller Companies Momentum keeps about GBP 13 million, UK Mid Cap Value 10, UK Large Cap
+   Quality 6.
 
-Ends on: Volta hatch 1,000, Kestrel SUV 300, Plover saloon 350, Mira city car 1,250, Tern van 100 slots, 3,400 failures
-Golden: Volta hatch 900, Kestrel SUV 250, Plover saloon 350, Mira city car 1,450, Tern van 50 slots, 3,800 failures
+Ends on: UK Smaller Companies Momentum
+Golden: UK Mid Cap Value
 
 ## Stump sentence
 
-A competent analyst forecasts 2027 from the register of 30 June 2026 alone, each car's pack from the log at its chance of failing after its warranty, and tools the Mira city car 1,250 slots and the Volta hatch 1,000, the Kestrel SUV 300 and the Tern van 100 against the golden 1,450, 900, 250 and 50, with a total of 3,400 against 3,800; the step that lands it there is taking the register as the population whose packs fall due in 2027, when the register's own arrival dates show about 116 used Mira city cars a month arriving past their five-year warranty, whose packs fail in their first months here.
+The default path prices each candidate's twelve months of rebalances at GBP 400 million at what the desk's own orders
+paid per traded pound in the same band and gives the money to UK Smaller Companies Momentum; the step that lands it
+there is carrying the desk's average cost to trades of a new size, when the executions show shortfall rising with the
+square root of each order's share of the stock's daily traded value and at GBP 400 million momentum's month-end swaps
+take a fifth to two fifths of each small cap's day, so it keeps about GBP 5 million against UK Mid Cap Value's 8.
+
+## Three rules
+
+Task type: portfolio-construction-risk (Quantitative Finance), which serves Opportunity Sizing & Decision Support: the headline is the alpha a year each candidate keeps at the capital it would be given, the pool its gross alpha and the realisable part what survives its own trading.
+Domain test: the quantity that decides is each candidate's alpha net of the market impact its rebalances pay at GBP 400 million, which systematic equity estimates from the desk's transaction cost analysis, cost per order rising with its share of the stock's daily volume; with another field's nouns there is no participation, no arrival-mid shortfall and nothing that makes a trade dearer per pound as it grows.
+Swap: "Which charity should receive the bequest, sized by the beneficiaries it reaches?" reads differently, because a grant's cost per beneficiary does not rise with the size of the cheque against what a market absorbs in a day; put megawatt-hours in and there is no stock whose daily traded value prices the trade.
+Layer 1: the OMS export as the desk's systems write it: fills re-sent after the 9 June outage under the same execution ids, one broker reporting pounds where the rest report pence, orders the backup re-created after each failover under new ids, block orders on the desk's block account with a separate allocation export, cancelled orders with unfilled remainders, UTC stamps against London trade dates, a reused account code, SEDOL in the market data against ISIN in the backtest log, share consolidations in the market data; each is produced by the system that records it and none is placed to be caught.
+Layer 2: estimation_fit, the shortfall curve in trade size: the desk's executions trace cost against each order's share of the stock's day, and the comparison is decided by reading that curve at the participation each candidate's rebalances would have at GBP 400 million.
+Decisive step: pricing each rebalance trade at the cost the executions show for an order of its own share of the stock's day, rather than at what the desk paid on average for its own, far smaller orders.
+Not semantics: every field read right (participation, arrival mid, shortfall sign, the bands) still leaves the band averages, which are correct figures for the desk's own orders and say nothing about orders ten to forty times larger; no column holds a trade's cost at a size the desk never traded.
+Not rule application: IC-07 files the estimand and the TCA standard the measures, and neither says how cost depends on size; executing every filed rule with each band's average cost files momentum, and only the shape of cost against participation in the executions, which no sentence states, moves the money.
+Analyst test: a strong analyst conforms every fill, reads IC-07 and the TCA standard correctly, prices each candidate's rebalances at GBP 400 million at the desk's value-weighted shortfall for that band and gives the money to UK Smaller Companies Momentum at about GBP 13 million kept; every field is read and every rule executed, and the call is wrong because momentum's trades at that size sit far up a cost curve the desk's average never reached.
+Estimand: ic_capital_allocation_policy_2026.pdf section 2 with tca_standard_rev4.pdf sections 1 to 3: population, the candidates in Research's workbook; outcome, alpha a year at GBP 400 million, the annualised gross alpha 2015 to 2026 less the implementation shortfall of the rebalances of the twelve months to 30 November 2026 scaled to GBP 400 million and traded in full on each rebalance day; unit, pounds a year; comparison, the largest.
+No decoy: nothing is planted to be caught; no memo, research note or broker estimate argues the band average, the commission schedule and the ESG list are context, and the backtest workbook carries gross alpha only.
+No certified replay: no certified or published figure reproduces the method; no file carries a cost estimate for any candidate, a capacity figure or a ranking.
+Lesson: what a strategy keeps depends on the size it runs at, because a trade's cost rises with its share of the stock's daily volume; a model that learns to read the desk's own cost curve at the size being decided, not at the size it has traded, sizes capacity the way the field does, which no build on file teaches.
+
+## Survivor anatomy
+
+Actor: the deciding property, what a trade of a given size would cost, has no column; the orders carry their own participation and shortfall, the candidates' trades carry only a weight, and the property is the relation between the two that the executions trace and the candidates' trades sit far beyond on average.
+Link: no key ties a candidate's trade to any execution; the comparison that prices it (the desk's orders binned or fitted on participation, read at the trade's own participation on the rebalance date) is one the band-average capacity check never asks for, and no sentence invites it.
+Reflex: the field's back-of-envelope capacity check, turnover times the desk's average realised cost, is rung 0 and files UK Smaller Companies Momentum.
+Back-test: the textbook route validates: on the desk's own orders the band average reproduces each book's realised 2026 shortfall almost exactly, because those orders sit where the average was measured.
+Second use: every file the decisive step reads has its own reason to be in the pack: the fills and orders carry the year's TCA report (both asks), the market data the participation the standard defines, the trade log the candidates' rebalances.
+Shock: momentum's gross alpha is the largest by GBP 8 million and its trades are the desk's most familiar kind; the golden is not an interval of any sort of the candidates by gross alpha, turnover, band or holdings, asserted in checks.py (C2 and R0).
+Pins: the WHAT sits in IC-07 (gross alpha, the twelve months of rebalances, the size, traded in full on the day, the desk's executions in the candidate's index band as the population a cost is estimated from, commissions and the launch build outside) and the TCA standard (shortfall, value, participation, volatility, the consolidation day that gives no return, the 60 sessions of history); no filed sentence names how cost grows with size, a square root, impact or capacity (R1).
 
 ## Readability screen
 
-| Rung | What it needs | Verdict |
-|---|---|---|
-| warranty from first admission, not the Dutch registration | the warranty terms' sentence (wherever in the EU) and the field descriptions | readable |
-| each car's pack from the log | the plan's pack-age sentence and a join on the plate | readable |
-| the chance given the pack works on 30 June 2026 | standard conditioning of a life curve on survival | readable |
-| the cars first registered after 30 June 2026 are in the 2027 fleet | the plan, section 3 (filed at the portal return, SF25) | readable |
-| the full arrival stream, July 2026 to December 2027, carried at its own age, pack and warranty (decisive) | the register's two date columns; no sentence says any later registration is a used car or past its warranty | silent |
-
-## Ladder
-
-| Rung | Construction | Mira city car slots | Split (Volta, Kestrel, Plover, Mira, Tern) | Total, nearest hundred |
-|---|---|---|---|---|
-| R0 | warranty and pack age from the Dutch registration (a field misread) | 550 | 1,350, 400, 550, 550, 150 | 1,900 |
-| R1 | the chance unconditioned on 30 June 2026 | 1,100 | 1,000, 350, 450, 1,100, 100 | 2,500 |
-| R2 | every car on the pack it was built with (log ignored) | 1,600 | 850, 200, 300, 1,600, 50 | 5,400 |
-| R3 | the register alone (default path) | 1,250 | 1,000, 300, 350, 1,250, 100 | 3,400 |
-| R4 | half the stream (arrivals through December 2026 only, or in 2027 only) | 1,350 | 950, 250, 350, 1,350, 100 | 3,600 |
-| R5 | the full stream (golden) | 1,450 | 900, 250, 350, 1,450, 50 | 3,800 |
-
-R3 is the stump; R4 is the partial repair (the fleet of 1 January 2027, or only the year's own arrivals); every rung is asserted in checks.py.
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Second use | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 turnover at a flat research cost | none | the trade log's weights | the backtest habit | none | none | one product | yes | readable |
+| R1 turnover at the desk's average shortfall per band | IC-07 names the desk's executions | the TCA columns | the field's capacity check | the desk's own books reproduce it | the battery cleans the fills | one product | yes | readable |
+| R2 R1 with the orders' average per order, not per pound | none | the TCA columns | a TCA summary | none | none | one product | yes | readable |
+| R3 (decisive) each trade priced at its own participation on the executions' cost curve | none names size, a curve, impact or a square root | no column holds a trade's cost at a new size | not the capacity reflex | no file prices any candidate | the battery stops at clean orders | not affine in any shipped column | the files carry the asks | silent |
 
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | next year, 2027 | calendar 2027 | Voltwerk's financial year July 2027 to June 2028 | another window | the plan, section 2: "in calendar 2027" |
-| SF2 | outside the OEM warranty | Voltwerk-warranty failures count | left out | same slots (total 3,750) | the plan, section 3: a refurbished pack's failure counts whether or not our warranty covers it |
-| SF3 | eight (five) years from first admission | calendar years | 365.25-day years | same call | same call |
-| SF4 | pack age in years | days over 365.25 | days over 365 | same call | same call |
-| SF5 | reading the curves | straight lines between whole years | steps (the share at the last whole year) | Kestrel 200, Mira 1,500 | the plan, section 3: read by straight lines |
-| SF6 | the warranty's start | first admission anywhere | first Dutch registration | R0 | warranty terms, section 1: wherever in the EU, not restarting when the vehicle changes country |
-| SF7 | a pack's age | from its fitting, or first admission for the original pack | from the Dutch registration | R0 | the plan, section 3 |
-| SF8 | a pack replaced under the OEM warranty | covered to the original end | a new period | another call | warranty terms, section 1 |
-| SF9 | cars leaving use | none in 2027 | a scrappage rate | another call | the plan, section 3: a car in use is taken to stay in use |
-| SF10 | which cars are imports | first admission before first Dutch registration | another marker | same set | the field descriptions; no car is registered here before its first admission (asserted) |
-| SF11 | the total's rounding | nearest hundred of the unrounded sum | sum of rounded parts | same (3,800) | same call |
-| SF12 | largest remainder at a tie | none open | none | margin 0.27 lots | asserted |
-| SF13 | the five platforms | the five makes, one platform each | another mapping | none | the field descriptions: each make is one platform |
-| SF14 | in the Netherlands | cars on the Dutch register | none | none | the plan and the extract |
-| SF15 | ask A, modules issued | net of returns | issues only | 173, 289, 198, 153, 238 | the asking sentence: net of returns |
-| SF16 | ask A, modules | a Kestrel carrier is 2 | stores units | Kestrel 141 | artikelstam: modules per unit |
-| SF17 | ask A, packs shipped | shipments in the year | work orders closed as shipped in the year | same counts (asserted) | same answer |
-| SF18 | ask B, a run | an aborted run is no run | an ABORT as a failed first run | 91.4, 85.4, 91.4, 85.9, 90.5 | the line notes: an aborted run is no test of the pack |
-| SF19 | ask B, the packs counted | packs whose first run was in the year | packs with any run in the year | another population | the asking sentence: packs that had their first run in those months |
-| SF20 | ask C, cores received | every core received at either dock in the twelve months, by the day received | the cores the line scrapped left out of the count | 9.3, 6.2, 11.2, 15.1, 8.7 | the asking sentence: the cores we received |
-| SF22 | the failure chance | the published curves | a curve rescaled to a year's realised fittings | another split | the plan, section 3: packs fail as the life curves say |
-| SF21 | ask C, rejected at intake | graded AFGEKEURD with no work order on the core | every AFGEKEURD row on 1 July 2026 | 12.6, 10.1, 13.2, 17.6, 12.5 | the asking sentence (at intake) and the MES notes (the core the pack is built on); the quarantine tags' dates give the same rejects (asserted) |
-| SF23 | ask A, the window | modules issued in the twelve months, per pack shipped in those months | the modules issued to the packs shipped in the year, whenever issued (the stores export of the year holds only part of it) | 158, 239, 180, 138, 224 | the asking sentence: issued them in the twelve months to June 2026, per pack we shipped in those months |
-| SF24 | the forecast's rounding | the 2027 total to the nearest hundred, the split from the unrounded forecasts | each platform's forecast to the nearest hundred before the split | Plover 300, Tern 100 | the prompt: round the 2027 total |
-| SF25 | the 2027 population (portal return, both judges) | the fleet of 2027: the register of 30 June 2026 and the cars first registered here from 1 July 2026 to the end of 2027, each from the day it is registered; the later registrations projected from the register's own used imports, the new cars among them inside their warranty all year | both judges: the register of 30 June 2026 alone, no entries projected (the plan as shipped: a car in use taken to stay in use, the register the only source named) | Mira city car 1,250, Volta hatch 1,000, Plover saloon 350, Kestrel SUV 300, Tern van 100, 3,400 (with SF26's renewals Mira 1,300, Tern 50, 3,500) | the plan, section 3: "those first registered here from 1 July 2026 to the end of 2027, each from the day it is registered" (the WHAT pinned at authority, no import, arrival or method named); the projection stays open and converges (C1: 144 projections file the golden split and total, asserted by name in checks.py, six recomputed in verify.py); outside the family each cell maps to what it violates: half streams the sentence, a quarter's cars all on its first or last day the register's own dates, copies kept at their first admission the register's steady age on arrival, one pooled age the platforms' own ages, an unconditioned chance the register's own conditioning |
-| SF26 | which failures a car contributes (portal return, a judge) | one pack per car: the pack it carries at the end of 30 June 2026 (a fit that day included), or the pack a later registration carries when registered, and that pack's failure; a pack fitted in its place later left out | a judge: renewals in, the refurbished packs fitted after late-2026 failures failing again in 2027 (the judge's +25.3; the generator's late-2026 term is +16.2); also the pack at the start of 30 June (8 fits that day) | same call and total (asserted); the register's stated 3,448 becomes 3,465 or 3,450 | the plan, section 3: "The forecast follows one pack per car and counts its failure", "at the end of 30 June 2026", "a pack fitted in its place later is left out" |
-| SF27 | ask A, a pick list serving several work orders on a replacement lot (portal return, a judge) | each held lot's replacement modules went out once: the quantity the list repeats counted once, which brings each of the eight replacement lots back to its receipt | a judge: every stores line summed as written | 171, 283, 195, 150, 238 against 167, 274, 190, 149, 224 | the line notes: "stores keeps its stock by lot, and no lot's stock goes below zero", one receipt row per lot: as written the eight replacement lots go below zero; every repair that keeps them at zero or above (the quantity counted once, the lot capped at its receipt, its lines scaled to it) files the golden to the module (C1, asserted); under the golden reading no lot goes below zero, so collapsing the other shared lists is called for by nothing |
+| SF1 | participation's daily traded value | 20 sessions before the trade date | 60 sessions | same call and rounded figures (asserted) | TCA standard section 3 |
+| SF2 | daily volatility | 60 sessions before | 250 sessions | same call and rounded figures (asserted) | TCA standard section 3 |
+| SF3 | the cost curve's form and weighting | least squares, band by band, on daily volatility times the square root of participation | participation to the 0.4 to 0.7, without the volatility term, value-weighted, the exponent fitted per band, binned | same call, runner-up, gap and rounded figures under every member (asserted, C2, C3 and C7); band by band each alpha stays at least 0.25 inside its million (C8); a fit through the origin keeps the call, runner-up and gap and moves momentum's kept alpha to 4 (the re-judge's one open member, rejected by the fit) | convergence: the desk's small-cap and mid-cap orders reach a fifth to two thirds of a thin name's day, so the executions trace the curve across the participation the candidates trade at |
+| SF4 | the failover orders in the fit | merged into their originals | left as separate orders | same call and rounded figures (asserted) | TCA standard section 1 |
+| SF5 | re-sent fills in the fit | each execution id once | kept twice | same call and rounded figures (asserted) | TCA standard section 1 |
+| SF6 | a pounds fill | times 100 into pence | read as pence | shortfalls of minus 10,000 bps show at once (asserted) | the fill's price unit and TCA standard section 1 |
+| SF7 | expected gross alpha | the Summary's annualised figure | the annual alphas compounded or averaged | the annual alphas compound to it (asserted) | IC-07 section 2 |
+| SF8 | the rebalances priced | the twelve months to 30 November 2026: twelve monthly, four quarterly | calendar 2026 or the whole log | not the filed window (asserted twelve and four) | IC-07 section 2 |
+| SF9 | what the cost of trading excludes | commissions and the launch build | either included | not the filed estimand | IC-07 section 2 (asserted) |
+| SF10 | shortfall, value, a block's owners and a portfolio's orders | arrival mid, filled quantity at arrival, the allocation export, the dated register | fill value, order quantity, the blotter's account | moves the asks only | TCA standard sections 1, 2 and 4 (asserted) |
+| SF11 | the executions a candidate's cost is estimated from | the desk's executions in stocks of the candidate's index band | one curve pooled over the bands | with an intercept per band, same call and rounded figures (asserted, C7); with one intercept for all bands the figures move, since the half-spread differs by band | IC-07 section 2 (asserted, SF9) |
+| SF12 | the consolidation day in the volatility | no return | the history before it adjusted, or the tenfold change left as a return | same call and rounded figures under both (asserted, C7): only the least liquid small caps, which no book or candidate trades, consolidate | TCA standard section 3 (asserted, SF10) |
+| SF13 | an order without 60 sessions of history | measured only once 60 sessions exist | measured on fewer | none exists: the books' orders begin on 1 April 2025, the 64th session (asserted) | TCA standard section 3 (asserted, SF10) |
+| SF14 | the ESG list against the rebalance log | inert: every exclusion took effect before the log and the orders begin | the excluded names dropped from the rebalances | no rebalance trade is in an excluded name (asserted), so dropping changes nothing (C7) | the list's own effective dates |
+| SF15 | the Severnvale transition's and the block account's orders in the fit | kept: the desk's own executions | dropped | same call and rounded figures (asserted, C7) | IC-07 section 2 |
+| SF16 | orders cancelled part filled, in the fit | kept for the quantity they filled | dropped | same call and rounded figures (asserted, C7) | TCA standard section 2 |
+
+## Ladder
+
+| Rung | Construction | Files | Dies to |
+|---|---|---|---|
+| 0 | gross alpha less turnover at a flat 10 basis points | UK Smaller Companies Momentum (GBP 19 million kept) | IC-07 sends the cost to the desk's executions |
+| 1 | gross alpha less turnover at the desk's value-weighted shortfall per band | UK Smaller Companies Momentum (about 13, against 10 and 6) | the desk's pounds sat where the average was measured; at GBP 400 million momentum's swaps take a fifth to two fifths of each small cap's day |
+| 2 | rung 1 with the per-order average | UK Smaller Companies Momentum (13, against 11 and 7) | the same fact: the desk's orders are mostly small |
+| 3 (decisive) | each trade at the cost the executions show for its own participation | UK Mid Cap Value (8), UK Large Cap Quality (6), momentum (5) | the golden |
+
+- **Margins on the cut pack** (asserted in checks.py): the golden keeps 4.90 (momentum), 7.99 (UK Mid Cap Value) and
+  5.90 (UK Large Cap Quality), a gap of 2.08. Across the 31-member fit family (C7: participation to the 0.4 to 0.7,
+  with and without the volatility term, band by band and pooled with an intercept per band, unweighted and
+  value-weighted, without the transition, the block account or the cancelled orders, either consolidation reading,
+  the ESG names dropped) band by band momentum keeps 4.79 to 5.24, UK Mid Cap Value 7.97 to 8.07 and UK Large Cap
+  Quality 5.85 to 6.03, each at least 0.25 inside its whole million (C8); the pooled fits widen that to 4.74 and 6.14,
+  still 0.2 inside. The fitted power, the binned reading, 60-session participation, 250-session volatility and the
+  fit without the failover merge or with the re-sent fills round to the same figures (C3, SF1 to SF5). The size-blind
+  routes file momentum by 2.4 to 7.4 million (R0). The one member outside the family, recorded at the re-judge: a
+  curve fitted through the origin (no half-spread) keeps the call, the runner-up and the gap but puts momentum at
+  3.64, so its kept alpha rounds to 4 against the golden's 5; the executions reject it (the small-cap band's fit
+  explains 0.77 of the shortfall's variance with the intercept against 0.68 without), and naming the curve's form
+  would file the method.
+- **Pricing sequence.** (1) The residue the filed WHAT leaves is how cost depends on size, a method, not a knob. (2)
+  Momentum has to fall from about 13 kept to under 6; at GBP 400 million its pounds trade at a fifth to two fifths of
+  the day, where the executions price them at about twice the band average (126 basis points against 61). (3) The one-group-by route (cost by
+  band) ranks the books' realised costs correctly and misprices the candidates; no route is affine in a shipped
+  column. (4) Across the fit family momentum spreads 4.74 to 5.24, mid caps 7.97 to 8.07; the gap of 2 million to
+  the runner-up holds under every member (raw 1.86 to 2.22). (5) and (6) No variance is corrected. (7) No subset of rows prints a
+  candidate's cost. (8) The reflex sweep runs as code (checks.py R0, C2 and C3).
 
 ## Closure table
 
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | every car of the five platforms in use in the Netherlands in calendar 2027, cars still to arrive included | filed literally at authority (plan section 3: the register of 30 June 2026 and the cars first registered here from 1 July 2026 to the end of 2027, each from the day it is registered; SF25); the extract describes itself as the register of 30 June 2026 |
-| 2 | Unit of account | a pack failure outside the OEM warranty; a slot is one pack | filed (plan sections 1 and 3) |
-| 3 | Attribution window | failures from 1 January to 31 December 2027 | filed (plan section 2) |
-| 4 | As-of dating | the register and log as of 30 June 2026; the line's exports of 1 July 2026 | filed (file names, field descriptions, line notes) |
-| 5 | Version basis | the 2026 warranty summary; the published curves | filed |
-| 6 | Denominator | the five platforms' forecast total for the shares; packs shipped, packs first run, cores received for the asks | filed (plan section 2; the asking sentences) |
-| 7 | Weighting | each car once (plan section 3, one pack per car), each later registration at the window's rate per month | filed (SF26) and C1 (SF25: 144 projections file one call and one total, asserted) |
-| 8 | Window length | twelve months of arrivals | C1 (trailing 3 to 48 months, calendar 2024 and 2025, trends over 12 to 48 months agree, asserted in SF25) |
-| 9 | Boundary inclusivity | the year's first and last days in; a replacement on 30 June 2026 counts as fitted | filed (plan section 3: the pack a car carries at the end of 30 June 2026; SF26); the 8 fits of that day move the register's stated figure to 3,450 under the other reading, never the call (asserted) |
-| 10 | Rounding path | shares from unrounded forecasts; total to the nearest hundred once | filed (the prompt) |
-| 11 | Tie-break | none at the cut | asserted (margin 0.27 lots) |
-| 12 | Maturity and censoring | cars still to arrive in the population | filed WHAT (axis 1, SF25); the construction (which later registrations fall due, carried at their own age, pack and warranty) is the stump |
-| 13 | Order of operations | forecast, then shares, then lots | filed (plan section 2) |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | ask A's repeated batch quantity counted once (device); no duplicate in the call's files | filed fact (line notes: no lot's stock goes below zero, one receipt row per lot; SF27) and C1 over every repair that keeps the lots at zero or above (asserted) |
-| 16 | Identity normalisation | plates in one format in both files; makes to platforms | filed (field descriptions); asserted |
-| 17 | Netting against gross | ask A's returns netted | filed (the asking sentence) |
-| 18 | Dimensional units | packs, modules (a Kestrel carrier 2), per cent | filed (artikelstam, the prompt) |
-| 19 | Code and status semantics | OEM nieuw, Voltwerk revisie; PASS, FAIL, ABORT; AFGEKEURD | filed (log, line notes); never the stump |
-| 20 | Integerisation | 60 lots by largest remainder | filed (plan section 2) |
-| 21 | Clause scope | the warranty years per platform; the asks per platform | filed (warranty terms' table; the prompt) |
-| 22 | Forward window contents | the cars first registered here from July 2026 to December 2027 (filed, SF25) | C1: projected from the register's own arrival history; 144 projections file one call and one total (asserted) |
+| Axis | Reading in this build | Move |
+|---|---|---|
+| 1 Population | the candidates in Research's workbook; each one's cost estimated from the desk's executions in its index band | filed (IC-07 sections 1 and 2); SF11 |
+| 2 Unit of account | pounds of alpha a year at GBP 400 million | filed (IC-07 section 2) |
+| 3 Attribution window | the rebalances of 1 December 2025 to 30 November 2026 | filed (IC-07 section 2); SF8 |
+| 4 As-of dating | each trade's participation and volatility on its rebalance date, the consolidation day giving no return, 60 sessions of history | filed (TCA standard section 3); SF1, SF2, SF12, SF13 |
+| 5 Version basis | the trade log as Research cut it; the OMS export of 1 December 2026 | one version shipped |
+| 6 Denominator | the GBP 400 million for alpha; arrival value for shortfall | filed |
+| 7 Weighting | shortfall value-weighted at arrival; the curve's own weighting left open and converging | filed (TCA standard section 2); SF3 (C7) |
+| 8 Window length | twelve months of rebalances | filed |
+| 9 Boundary inclusivity | 1 December 2025 and 30 November 2026 both inside | filed; no rebalance near either edge |
+| 10 Rounding path | each figure rounded once from unrounded pounds; the gap from the rounded figures | C1; mid-bin asserted (C4) |
+| 11 Tie-break | none needed: the margins exceed 1.2 million | C2 |
+| 12 Maturity and censoring | none: the orders are complete fills to the export | C1 |
+| 13 Order of operations | conform, size, fit, price, net | C1 (SF4, SF5) |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | each execution id once | filed (TCA standard section 1); SF5 |
+| 16 Identity normalisation | ISIN to SEDOL through the security master | the systems' own keys |
+| 17 Netting against gross | buys and sells both cost, signed so a cost is positive | filed (TCA standard section 2) |
+| 18 Dimensional units | pence in the market data and fills, pounds where a fill says so | filed; SF6 |
+| 19 Code and status semantics | TERMINATED, BACKUP-RECOVERY, CANCELLED, the block account | filed (TCA standard section 1) |
+| 20 Integerisation | none: pounds | C1 |
+| 21 Clause scope | IC-07's commissions and launch exclusions bind the call only | filed scope |
+| 22 Forward window contents | the twelve months of 2026 rebalances stand for a year of trading from 4 January 2027 | filed (IC-07 section 2) |
 
 ## Literal reader
 
-Executing the prompt and every filed sentence word for word (the plan's sections 1 to 3, the warranty terms, the field descriptions, the curves, the line notes): the plan's section 3 files the fleet of 2027 as the register of 30 June 2026 and the cars first registered here from 1 July 2026 to the end of 2027, each from the day it is registered, with one pack per car (the pack at the end of 30 June 2026, or the pack a later registration carries when registered, a pack fitted in its place later left out), so the register-only reading both portal judges filed violates a quotable sentence (SF25), as do the renewal and start-of-day readings (SF26). That leaves one open move on the call, a method and not a reading: how to project the later registrations, which no file can hold yet. The new cars among them are inside their warranty all year; the used imports are projected from the register's own arrival history, and every projection a competent analyst builds from it (144 cells, SF25) files the same five slots and the same total, while each cell outside that family violates a filed sentence or the register's own dates and ages. The default path's answer is what the easy method on this literal estimand files: the later registrations counted and carried as new cars inside their warranty. On ask A the line notes' lot stock rule rules out summing the replacement lots' lines as written, and every repair that respects it files the golden (SF27).
+Executed word for word, IC-07 takes each candidate's annualised gross alpha from the workbook, scales the trade log's
+weights for the twelve months to 30 November 2026 to GBP 400 million and asks what implementation shortfall those
+trades would pay, traded in full on each rebalance day, estimated from the desk's executions in the candidate's index
+band; the TCA standard defines shortfall, value, participation and volatility, the consolidation day and the history
+it is measured on. A literal reader fitting cost on participation, the standard's own measure, files
+the golden; the band average is a reading of the executions that ignores the measure the standard defines.
 
 ## Oracles
 
-None on the call: no file ties only under the golden and no past split or forecast is shipped. The log lets a solver back-test, and neither back-test hands over the level: run on 2025 with the cars on the register now, the method over-forecasts the Mira city car (1,645 against the 1,519 fitted, the year's arrivals counted from January); with the cars registered by the end of 2024 it under-forecasts it (1,293), the gap the rigorous route reads as the arrivals, and a year's realised ratio does not carry to 2027 (SF22). On the asks, three referees each arbitrate a designed disagreement without handing over a level: the goods receipts (ask A, a replacement lot issued more than it received), the BMS pairings (ask B, two pakket_id values on one work order), the MES work orders (ask C, an AFGEKEURD core the line built on), with the recycler's quarantine dates agreeing.
+None on the main call: no file carries a cost estimate, capacity figure or ranking for any candidate. The verifier
+(generator/verify.py) recomputes the call, every figure and both asks with pandas from target/ alone.
 
 ## Ask sheet
 
-**Ask A: the modules a lot of 50 should carry, by platform (5 figures, whole modules).** H18: the plan commits module stock with each lot; the call reads none of the line's files (asserted). Use: the module orders priced by finance. Primary device, silent (D6, an event's quantity on every line it covers): when a supplier's module lot is held, the line reworks the packs built with it together and stores books one replacement pick for the batch; the export writes the batch's quantity against every work order on that pick list (eight holds, every platform). Only a cut against the goods receipts shows it: those replacement lots issue three to five times what they received, and since the portal return the line notes file that stores keeps its stock by lot and no lot's stock goes below zero, with one receipt row per lot (SF27), which makes the natural read wrong in the record without naming a batch pick or a lot. Interior: same-day pick lists that carry equal quantities for several work orders are real (every platform), so collapsing lines alike on pick, lot and quantity over-repairs. Hazards: returns as negative issues, the Kestrel's two-module carriers, spares from the replacement lots issued later. Files: magazijn_mutaties, magazijn_ontvangsten, artikelstam, mes_werkorders, verzendingen (5 files, 12 columns). Stops: the natural read 171, 283, 195, 150, 238; the over-repair 160, 266, 178, 140, 217; issues only 173, 289, 198, 153, 238; golden 167, 274, 190, 149, 224. Realism: an ERP export joining a pick header's quantity to each linked work order line.
+Two asks on the desk's own 2026 trading, both from the OMS export the call reads for its curve, neither carrying the
+call's decisive step.
 
-**Ask B: of the packs that had their first end-of-line run in the twelve months, the share that passed it, by platform (5 figures, one decimal of a per cent).** H18: the test programme committed per lot; the call reads none of it. Use: rework capacity per lot. Primary device, silent (D7, the true key elsewhere): the bench reads the pack's serial from its BMS, and seven reworks in ten after a failed run replace the BMS, so the reworked pack runs again under a new pakket_id; only the MES's BMS pairings tie the two ids to one work order. Interior: one work order in 25 replaces a BMS before the first run (two pairings, one id on the bench), and packs scrapped after failing twice. Hazards: ABORT runs (no run, the notes), packs first run in June 2025 and run again in the year (out). Files: eol_testlog, mes_bms_koppelingen, mes_werkorders (3 files, 9 columns). Stops: by pakket_id 92.3, 87.2, 94.2, 88.0, 91.3; an ABORT as the first run 91.4, 85.4, 91.4, 85.9, 90.5; golden 92.6, 88.2, 94.0, 88.3, 90.5. Realism: a bench that identifies the pack by what its electronics report.
+**Ask A, each live strategy's implementation shortfall in each quarter of 2026 (16 figures, bps to one decimal).**
+- Devices: the orders the backup re-created after each failover are the originals (TCA standard section 1), and
+  nothing keys them; a block order belongs to its books by the allocation export.
+- Hazards: re-sent fills, pounds fills, cancelled remainders, the dated register.
 
-**Ask C: the share of the cores received in the twelve months that were rejected at intake, by platform (5 figures, one decimal of a per cent).** H18: the cores to have on hand per lot, rejects included (the plan, section 5); the call reads none of it. Use: core purchasing. Primary device, silent (D2, an attribute at a later snapshot): the intake export carries each core's grade as it stands on 1 July 2026, and when the line scraps a pack (torn down beyond repair, or failing its end-of-line test twice) the core's grade becomes AFGEKEURD with the line's reason, drawn from the same reasons the docks use; only a join of the intake export's kerncode to the MES work orders (the core the pack is built on) shows those cores passed intake, and the recycler's quarantine tags agree, an intake reject's dated the day it arrived and a scrapped pack's the day the line scrapped it (every platform, 99 cores). Interior: the line also scraps packs built on cores received before the year, which the year's intake export does not hold. Hazards: both docks' rejects, cores bought in, the label's platform wording. Files: kernen_inname, mes_werkorders, afvoer_recycler, lijn_exports_toelichting (4 files, 11 columns). Stops: every AFGEKEURD row (the natural read) 12.6, 10.1, 13.2, 17.6, 12.5; every recycler line in the year a reject 12.7, 10.1, 13.6, 17.8, 12.5; after meeting the device, the scrapped cores out of both counts 9.3, 6.2, 11.2, 15.1, 8.7 and the year's scrapped work orders subtracted by count 8.8, 5.9, 10.6, 14.5, 8.3; golden 8.9, 5.9, 11.0, 14.7, 8.3. Realism: a core master whose grade field the line overwrites when it scraps the pack, exported as it stood on the pull day.
+**Ask B, the value each live strategy traded in each half of 2026 (8 figures, whole GBP million).**
+- Device: the block orders sit on the desk's block account in the blotter and reach each book only through the
+  post-trade allocation export.
+- Hazards: the same battery; the reused account code.
 
-Main population zero-counts: the call reads the register, the log, the curves, the warranty terms, the plan and the field descriptions, and no line file; the asks read the ten line files and none of the call's (asserted, separation).
-
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule) | Verdict |
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
 |---|---|---|
-| A modules per lot | 0 of 5 on every path that does not meet the batch picks (natural read, over-repair, issues only, units); the filed stock rule is met only by the cut of each lot against its receipt, which is the device | miss |
-| B first-run pass share | 1 of 5 at best (an ABORT as the first run lands the Tern van) | miss |
-| C intake reject share | 0 of 5 on every path that does not meet the cores scrapped on the line (the natural read, every recycler line a reject) | miss |
+| A, 16 quarter shortfalls | measures each re-created order from its own arrival and leaves the blocks on the block account | miss |
+| B, 8 half-year traded values | leaves the blocks on the block account | miss |
 
-Pair ceiling: 32.8 ((48.7 + 17.0) / 2), the cracker keeping 1 of the 15 ask figures on the call and the mirror the same on the register-only call (1 of 6 call figures, the Plover saloon's 350).
-Mirror leakage: 6.7 per cent of ask weight.
-Measured by: generator/pair.py on the cut pack (target.zip 7aa71d60; re-run on a89c9dea after the determinism repair, unchanged).
+Pair ceiling: 28.5 ((38 + 7 + 55 x 0) and (5 + 7 + 55 x 0), averaged)
+Mirror leakage: 0.0 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack, target.zip 7f2aba02)
+
+## Leak review
+
+`leak.py task306 --asof 2026-12-01` on target.zip 7f2aba02: REVIEW, no LEAK; each line ruled.
+- Sweep 1, the backtest workbook's Notes sheet: harmless; it defines gross alpha, says the ESG list is applied and
+  names its preparer, and describes no file or column.
+- Sweep 4 on IC-07 (executions, candidate, rebalances, standard, outside) and on the TCA standard (orders, average,
+  participation, standard, register): harmless; they are each document's own nouns for its estimand and measures, and
+  neither says how cost depends on size (R1). IC-07's population sentence (the desk's executions in the candidate's
+  index band) is the grouping the band average itself uses, and the TCA standard's consolidation and history sentences
+  are measurement conventions; none names a curve, a square root or impact.
+- Sweep 6, the backtest workbook names the candidates beside numbers: harmless; it ranks them by gross alpha, the input
+  IC-07 names, not by the alpha each keeps.
+- INFO, the account register names the live books: their codes and dates, no figure.
+- Sweep 11, the prompt gate's shell quota (WARN in voice-check.py, which passes): the corpus now holds the 'which'
+  question form at 37 per cent of 196 prompts against a cap of 30, a quota other builds moved since this prompt was
+  written; the prompt is left as built for the main thread to reword at the role level if it chooses.
 
 ## Pre-ship check
 
-- Free gates (stage 4 repair pass): generator checks 101 passed (R1 to R3c on the clean truth and on the pack, the
-  standing family of seven constructions each filing the golden slots with the total in the 3,800 bin and the worst
-  margin 0.263, the ladder, SF1 to SF24, the two back-tests, every ask figure's edge, the three devices with ask C's
-  quarantine-date route converging on the golden, separation, the distractors unread, the bench and shipment realism,
-  the input gates); verify.py 0 failures with the five documents read back; two builds byte-identical (target.zip
-  a62fa349); figures_check, precut and voice-check as recorded at the gates.
-- Stage 4 round 1 (on 4442d745): the leak reader filed the register-only split and 3,400 (Plover's 350 is shared by
-  that rung and the golden), missed asks A and B on all ten figures and landed ask C's five through dock 2's zero
-  rejects and the recycler's blank core codes; the judge returned DETERMINISTIC and APPROVE, Gate G
-  analytical_non_defect, Gate H domain pass, layers pass, decisive step analytical, with three findings: the
-  stay-in-use sentence as the one soft spot, dock 2's practice stated in no file, and recycler collections after the
-  pull date.
-- Repairs in one generator pass: ask C re-sited onto the grade's date (no graded figure moved); the stay-in-use
-  sentence placed in 2027; the recycler's notes end with the 1 July 2026 collection; the reader's realism tells fixed
-  (the plan rewritten as concept 3 for the operations meeting, saved by its author at revision 9; the register
-  extract without its two constant columns, its filter stated in the field descriptions; the log's source column
-  showing the dealer-reported fits of our packs; the item master with its superseded and repair articles; the lead
-  times with the BMS boards, seal kit and carrier brackets; the price list with its other charges).
-- Stage 4 round 2 (on a62fa349): the reader filed the register-only split and 3,400 again and kept 0 of the 15 ask
-  figures (the natural read on all three asks); its two data tells were fixed with no figure moved (goods receipts
-  numbered with the gaps of a shared sequence, the four benches coming on line one after another on the go-live
-  morning), giving the shipped target.zip 7aa71d60 (101 checks, byte-identical, verify, precut 51/0/0, figures
-  66/66, voice-check PASS).
-- score_reader.py prints a call hit on both readers: it counts any one of the six call keys, and the one key hit is
-  the Plover saloon's 350, which the register-only rung shares with the golden (the ladder); both readers filed
-  that rung's split, four of five slots and the total wrong.
-- leak.py REVIEW on 7aa71d60, four design-note vocabulary lines, each ruled harmless: the warranty terms state the
-  first-admission clock, a filed convention on a lower rung; the price list carries prices and charges only; the RDW
-  field descriptions are the publisher's field list; the plan files the estimand and the conventions and names no
-  import. guard heart WARN (Gate G forecasting in 5 of the last 12; png and xlsx); containers clean; H4 the zip's 18
-  members; H11 one submission and one prompt; H16 every extract ending by its pull date, the APK expiry dates as
-  validity dates; H24 no generator word under target/.
-- The 10/10 rules re-read against the built pack: the decisive step is the population whose packs fall due in 2027,
-  the fleet as it will stand with the used imports still to arrive, which no filed rule names and which the field's
-  installed-base forecast carries; the Layer 1 items move nothing (R2 asserted per item); nothing is planted (R3c).
-- Pair ceiling 32.8 (cracker 48.7, mirror 17.0), mirror leakage 6.7 per cent of the ask weight; ask C's stops after
-  meeting its device are printed apart (2 of 5 at most, by count).
-- Open risk, stated: a reader who reads the import stream off the two registration dates and carries it through 2027
-  lands the call; two stage 4 readers and the four pre-draw probes did not.
-- Determinism repair after the portal return (target.zip a89c9dea, two full rebuilds byte-identical, figures.json
-  byte-identical to the shipped one): generator checks 425 passed (SF25's 144 projection cells by name with the counts
-  they are built from, each cell outside the family against what it violates, SF26's renewal and start-of-day readings,
-  SF27's lot stock rule and its three repairs, the easy route now carrying the later registrations as new cars on the
-  clean truth and on the pack); verify.py 0 failures, six SF25 cells, SF26 and SF27 recomputed on its own code path;
-  figures_check 66 of 66; precut 51, 0, 0; voice-check PASS; leak.py REVIEW (five design-note vocabulary lines; the plan
-  files the fleet of 2027 and one pack per car and names no import, arrival, age or warranty state of the later
-  registrations, the line notes' new sentence names no batch pick or lot); guard validate 0 invalid; guard heart BLOCK
-  on test.same_driver_older against task166 (v3, registered after this build shipped), cleared by a differentiation
-  line on the card, then WARN as at ship; freeze.py determinism PASS. Owed before re-ship: the one re-judge and a leak
-  reader, since the plan's wording changed at the decisive step.
+1. The three rules re-read against the built pack: the decisive step is the cost curve read at the candidates'
+   participation, analytical; the mess is Layer 1 only and each piece is asserted not to move the call (SF4 to SF6).
+2. Determinism: the WHAT filed in IC-07 (the band's executions) and the TCA standard (the consolidation day, the
+   60-session history); every member of the 31-member fit family converges on the golden's call, runner-up, gap and
+   whole millions (C7), band by band at least 0.25 inside each million (C8), and the distractors are inert (SF14).
+3. Gates on the final cut: generator checks, the verifier, two byte-identical builds, figures_check.py, precut.py,
+   voice-check.py, leak.py, guard.py surface and heart.
 
 ## Tried and rejected
 
@@ -224,108 +254,17 @@ Measured by: generator/pair.py on the cut pack (target.zip 7aa71d60; re-run on a
 - Ask C's first device, dock 2 setting its rejects aside without scanning them (absent from the intake export, present at the recycler without a core code), was landed 5 of 5 by the stage 4 reader: dock 2's zero rejects and the blank core codes sit on the path of anyone counting rejects, and the judge found the dock's practice stated in no file. Re-sited onto the grade's date (D2): the intake export carries each core's grade on 1 July 2026, so a core the line built on and scrapped reads AFGEKEURD, and only its work order in the MES shows it passed intake; every ask C figure is unchanged.
 - The plan's "a car in use in the Netherlands is taken to stay in use through 2027" read to the stage 4 reader, and to the judge as its one soft spot, as freezing the register of 30 June 2026; the sentence now places the car in 2027 ("a car in use in the Netherlands in 2027 is taken to stay in use for the rest of the year"), the population the estimand already files, and names no import.
 - The portal returned the build on determinism (both judges: Gates C, D and E, underspecified_objective, A, B and G passing): the plan as shipped named the register as its only source and its only dynamics clause was about exits, so both judges forecast the register of 30 June 2026 alone (3,448, 3,500 with a judge's renewals), and a judge also summed ask A's batch lines as written. Pinning the population to the register was refused (it makes the judges' answer the golden and spends the stump), and filing the projection (a twelfth a month at the trailing rate, mix and age) was refused (rule application, CLAUDE.md rule 3). Closed instead by the WHAT at authority: plan section 3 files the fleet of 2027 as the register and the cars first registered here from 1 July 2026 to the end of 2027 (SF25) and one pack per car (SF26), the projection left open and forced by C1 over 144 projections, and the line notes file the lot stock rule for ask A (SF27); no graded or stated figure moved (freeze.py). The cost: that the later registrations are in the fleet is now readable, so the decisive rung keeps only what no sentence says, which of them fall due; the default path's answer is now the easy route's on the literal estimand (the later registrations carried as new cars).
-
-## The determinism repair spent the stump: redesign, 2026-10-26
-
-**The repair worked and the build still cannot ship.** All three forks closed, no method filed, every free gate green,
-`freeze.py check --mode determinism` PASS, and 144 projection variants landing the committed split. Then one isolated
-reader, holding only `prompt.txt` and the eighteen pack files and nothing else, reproduced the call cell for cell:
-Volta 900, Kestrel 250, Plover 350, Mira 1,450, Tern 50, total 3,814 rounding to 3,800. It also reproduced the modules,
-the first-pass yields and the core rejection shares.
-
-Asked what decided its answer, it said: mainly following a rule a shipped document states, plus reading dates
-correctly, and "I did not reach the answer by an analytical choice". Asked which sentence told it the decisive step,
-it quoted the paragraph the repair added, together with the plan's existing pack-age sentence and the warranty
-document's first-admission clause, and called them "a procedure". Asked which file exists only to help the analyst, it
-named the tooling plan, because it "spells out the method".
-
-**The diagnosis is the one `/fix-determinism` step 3 names, and it was missed at the start of the repair rather than
-at the end.** The fork and the stump were the same object. Before the repair the stump was that no reader thought to
-ask whether cars registered after the 30 June 2026 snapshot belong in the 2027 population; the portal's judges called
-that an unpinned population, which it was. Pinning it is the only closure that makes the literal reading the golden,
-and pinning it tells the reader the one thing they were not asking. The reader confirms both halves: omitting the
-later registrations gives 3,400 and 1,250 Mira slots, which is the old default path, and the filed sentence now rules
-that out.
-
-**And underneath it, the decisive lever was never analytical.** The reader measured what moves its answer: taking the
-warranty from the Dutch registration date instead of the date of first admission gives a total of 1,968 and 550 Mira
-slots, and ignoring the logged pack replacements gives 5,752 and 1,700. Those are the two large levers, and both are
-field readings. The one genuinely analytical element, extrapolating the new-registration cohort, the reader supplied
-itself with an assumption of its own and still landed. So the call turns on reading `datum_eerste_toelating` rather
-than `datum_eerste_tenaamstelling_in_nederland` and on applying a warranty table in which one platform alone carries
-five years to the others' eight. That is data semantics plus rule application, which the client's rule 3 bans as the
-decisive step whatever the determinism verdict.
-
-**Status: back to stage 2, not re-shipped.** The repair's record closures are sound and are kept; what has to be
-re-rooted is the decisive step. A pin cannot be removed to restore the stump, because the portal already failed the
-unpinned version: this architecture has no position in which it is both deterministic and stumped, which is what
-spent means.
-
-**Two findings worth carrying into the redesign, from the same read.**
-
-- **The modules ask reads as planted.** The reader called the eight over-posted pick lists out unprompted: bookings
-  stepping through 07:05, 07:06 and so on, identical quantities repeated per work order, each lot's receipt equal to
-  one copy plus the later small issues. `supplemental-stumping` law 1 and law 7 forbid exactly that signature. The
-  device should survive, the regularity should not.
-- **Realism tells across the pack.** Bookings stepping on exact consecutive minutes, life curves smooth to four
-  decimals, round lot sizes (600, 1,200, 300), recycler weights banded per platform, and the register extract with
-  "no real-world noise". That is a `golden-realism` sweep owed on the next cut.
-
-
-- The determinism repair itself, as a way to keep this architecture: refused on measurement after the fact. The three
-  record closures hold and no method was filed, but the fork and the stump were one object: the only closure that makes
-  the literal reading the golden is a population pin, and that pin tells the reader the question they were not asking.
-  One isolated reader then landed the call cell for cell and said it got there by following filed rules and reading
-  dates, not by an analytical choice. `/fix-determinism` step 3's stop condition, read at the start of the repair
-  rather than the end, would have sent this to stage 2 without the repair being built.
-
-## Correction: the two licensed reads split, and the diagnosis above was wrong twice, 2026-10-26
-
-The section above was written from the leak reader alone, while the licensed re-judge was still running. The judge
-then returned **DETERMINISTIC, APPROVE**, with `decisive_step: analytical`, and it contradicts that section on the
-point that matters. Both errors were mine and both change what should happen next.
-
-**Error 1: the reader's ask performance was overstated.** Scored against `figures.json` at the asked rounding, the
-reader took the call and **5 of 15 ask figures, 33.3 per cent**: all five module figures, and **none** of the ten
-first-pass-yield and core-rejection figures. Its yields (92.3, 87.2, 94.2, 88.0, 91.3) are the pakket_id grouping the
-judge names as a wrong route, against the golden's 92.6, 88.2, 94.0, 88.3, 90.5; its rejection shares (12.6, 10.1,
-13.2, 17.6, 12.5) are the raw grade against the golden's 8.9, 5.9, 11.0, 14.7, 8.3. The ask layer did its job.
-
-**Error 2: this is not a rule 3 finding.** The reader's answer to question 6, that it followed filed rules and read
-dates rather than making an analytical choice, was introspection about its own route, and its own write-up undercuts
-it: the formula it quotes carries the conditioning denominator, divided by one minus the curve at the snapshot age,
-and it never names that as a choice. The judge measured what the alternatives cost. The text does not state the
-conditioning; the data force it, the curve reaching certainty at age 13 while the register holds surviving original
-packs older than that. Conditional survival with left truncation is an estimand choice, which the client's rules count
-as analysis.
-
-**What the judge measured, over 40 variants run end to end.** Inside the golden family (conditioning on survival,
-daily pro-rata) eight variants give a total of 3,681 to 3,810 and the committed split in seven of eight. Outside it:
-the unconditional reading gives about 2,700 with Mira 1,300, Plover 400, Kestrel 300 and Tern 100, **wrong on three
-platforms**; stopping at the register gives Mira 1,250 and Volta 1,000; taking the warranty from the Dutch
-registration date gives 1,968; ignoring the replacement log gives 5,732. So the easy routes do land wrong, which is
-what the section above denied.
-
-**The real finding, and it is Gate F rather than Gate H.** The decisive step is analytical, and it is reflex
-reachable: a competent solver doing survival analysis conditions on survival without deliberating, and one cold
-reader's reflex reached the golden. The judge saw the same thing from the other side: "the docx specifies nearly every
-convention, so the careful solver only has to recognise conditioning." `stumping` Part 6 is explicit that a reflex
-reaching the golden spends the stump.
-
-**Where that leaves the decision, stated rather than settled.** The repo's test is that a build whose **two** cold
-readers both land the call is redesigned. One landed. A second cold read is the deciding evidence and it is banned:
-there is no solver round and none is rebuilt under another name. So the evidence available is one APPROVE from the
-licensed judge and one cold read that landed the call while taking a third of the asks.
-
-Pair arithmetic on what was measured: this response banks about 45 on the call plus 33.3 per cent of the 55 ask
-points, about 63, and about 68 with instruction following. A second response off the call sits near 23. The pair
-averages about 46 against a bar of 70 built to 60, so the bar is met unless a second response also lands the call.
-
-The status stays at stage 2 pending the author's call between shipping on that arithmetic and re-rooting the decisive
-step so no reflex reaches it.
-
-
-- The rule 3 reading of the leak reader's question 6, filed earlier today and withdrawn the same day: the judge's
-  measurement contradicts it. The easy routes land materially wrong (the unconditional reading wrong on three
-  platforms, register-only wrong on four), so the decisive step is an estimand choice and not a field reading plus a
-  stated rule. What survives is the weaker and still serious finding that the step is reflex reachable.
+- 2026-10-31, architecture 1 spent at the batch 1 triage: shipped 10-24 and reshipped 10-26 after the portal's determinism block, its isolated cold reader reproduced the call cell for cell (Volta 900, Kestrel 250, Plover 350, Mira 1,450, Tern 50, 3,800) and named the decisive step a procedure, since the repair's population sentence and the plan's pack-age sentence read together as the method; the surviving risk the note recorded was that conditioning a survival curve on survival to the as-of date is reflex reachable. Re-rooted in a new world rather than hardened.
+- 2026-10-31, re-root screen before this draw: an actuarial reinsurance-capital draw (a county mutual's 2027 windstorm programme, the vendor's year loss table loaded storm by storm for demand surge read off the market's index loss) cleared `guard.py check` and was set aside unregistered, because task309 (FORTIFIED roofs, one cut ratio across storms that varies with gust intensity, carried through a vendor event set) is the same insight in the same domain; regression to the mean in a health-services pilot and a healthy-adopter uptake were set aside as general statistical mechanisms readers name unprompted (task308's screen of six); stale-priced returns in a portfolio's risk budget were set aside as task135's cross-day covariance.
+- 2026-10-31, architecture 2 (the development corporation's 2027 inward investment award between a logistics hub on the city region's boundary and an inland food plant, the induced round read where each project's staff live) drawn, registered and spent at stage 2 before any data was cut: the survivor anatomy's Actor test failed on paper, since where the hub's staff live is one join from a column (a roster postcode against the postcode directory's local authority), and every honest way to ship it (a roster, a travel plan's postcode survey, a commuting flow for the depot's zone) is a column or a sentence that sends a solver to it; the IO world offered no relation between rows that carries the induced round's leak.
+- 2026-10-31, architecture 3 first cut (an occurrence cover against an annual aggregate cover): the two covers' releases separated by about 1.12 times under every loading of the storms, so no costing of the record moved the call; redesigned at stage 2 into the second-event cover, buy or not, on the occurrence cover's retained band.
+- 2026-10-31, the second-event cover on the 50th worst year alone, an upper layer above the occurrence cover and a tall tower from 12 to 60 million were each priced: the single year was noisy enough to flip on the seed, the upper layer's release was small and noisy, and the tower closed the gap between the cheap routes and the golden; the capital policy's average of the 50 worst years and the 7.5 million xs 4 million band were kept.
+- 2026-10-31, the first record draw (seed 498): the ratio of totals over the later storms of each season landed the call (worth plus 0.13 million) with the golden's release, and the mean of ratios over the later storms of each year landed it too; a stormier physics with more trains a season made the rank routes buy harder, and shifting a year's first train to clear the year end left nine gaps of exactly 70 days and one inside the window corridor. The record is now drawn with trains kept apart across the year end and searched over 7,500 seeds for one where every rank, year, season, size and pooled route under every estimator files the wrong call (seed 2703, worst route minus 0.06 million).
+- 2026-10-31, an exposure ask on the home book (sums insured in force by county) was set aside: in-force by date, renewal terms under new numbers and lapses are rule application a careful solver executes, with no reconstruction left after noticing; the home extract ships as a distractor and the farm book carries the exposure ask.
+- 2026-10-31, a reopened claim's further damage first came to some claims before they had been notified, which no claims system allows and which left the pairing of lines and instructions unrecoverable for those claims; further damage now comes only to a claim already open with its adjuster instructed.
+- 2026-10-31, architecture 3 (Penwarden's second-event windstorm cover for the county mutual) spent at stage 4: the FIX_NOW failed its second pass. Pass 1 (DETERMINISTIC, FIX_NOW) found "worth" in two senses, cover B's one reinstatement missing from the working and the coinsurance share unpinned, all fixed; pass 2 (DETERMINISTIC, FIX_NOW) found the 2026 storms asks open, since 379 reopened /R1 claim lines with no instruction of their own took their original claim's instructed damage day in the golden, a rule filed nowhere, and the lines' own loss_date filed a recovery of 11,881,000 against 12,015,000. The main call (follow-on storms costing 1.62 times the model) held throughout. The lesson carried forward: a reopened, re-sent or amended record's date or owner is filed or unmistakable before any ask counts it. Reports kept as determinism_check_report_arch3.md and determinism_check_report_arch3_pass2.md.
+- 2026-10-31, architecture 4 at its stage 4 judge (NOT_DETERMINISTIC, reconciled FIX_NOW): the call held in every variant, but the runner-up, the gap and the kept alpha moved with the curve's exponent (momentum 3.91 to 5.88 between 0.7 and 0.4), its weighting, a common intercept across the bands, the consolidation day left as a return and the ESG names dropped, because the desk's orders sat almost all under 3 per cent of a stock's day (1.2 per cent were event trades) and the data did not separate the forms (R2 0.4655 against 0.4630); the ESG list also took effect inside the log (15 January 2026) while 101 rebalance rows still traded listed names. Repaired in the generator, the call and the decisive step unchanged; the judge's verdict kept as determinism_check_report_arch4.md.
+- 2026-10-31, the first repair raised liquid event trades to a tenth of the desk's orders (4 to 60 per cent of the day): the family converged, but those orders carried most of the desk's traded pounds, so the value-weighted band averages (57, 75 and 115 bps) converged on the curve and filed UK Mid Cap Value, and the default path no longer ended wrong. Rejected.
+- 2026-10-31, kept: participation comes from thin names, as it does on a desk. Each lower band carries a tail of thinly traded names (52 in the FTSE 250, 100 in the SmallCap), where the books' ordinary orders, sized in pounds and scaled only mildly with liquidity, take a fifth to two thirds of the day; the desk's pounds stay in liquid names at about one per cent, so the band averages still file momentum (by 2.7 million) while about 1,550 small-cap orders above a tenth of the day pin the curve where momentum trades. The 12 least liquid small caps, which no book or candidate trades, carry the consolidations; the ESG list predates the log and no book or candidate trades a listed name; the books' orders begin on 1 April 2025 with 60 sessions of history; the Severnvale transition trades large and mid caps only, at five orders a day.
+- 2026-10-31, a tail of 130 thin small caps was dropped: it left momentum's investable pool (5 million a day or more) too small to swap 18 names a month, and its kept alpha fell to under 1 million.
+- 2026-10-31, a common intercept across the bands was not chased: the half-spread differs by band (3, 8.5 and 25 bps), so one intercept misprices each band's trades by 0.5 to 2.2 million, which no rounding bin absorbs; IC-07 now files the population a cost is estimated from (the desk's executions in the candidate's index band), the WHAT, and the golden fits band by band. A lower shortfall noise and a narrower or wider spread of order sizes were screened and left the family's width unchanged (it is form error, set by where the desk's orders sit), so the order sizes' spread was set at 0.6 for the wider stump margin.

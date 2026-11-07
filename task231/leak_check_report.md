@@ -1,22 +1,23 @@
 # leak check, task231
 
-**Verdict: REVIEW.** 15 files read, 50 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 47 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: register, settled, rounds, closure, standard, non-returners, closures, decisive, trading, records, history, levels, islands, window, eligibility, earlier, extract, western, uplands, section, population, sentence, estimate, recorded, points
+Stump terms swept: reading, architecture, vendor, export, district, network, co-movement, register, readable, judged, decisive, pooled, comparison, checks, sentence, records, settled, record, readings, profile, nights, october, reference, family, forecast
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `BCS_fieldwork_quality_standard_v3.pdf`: 8 of 25 stump-paragraph terms appear (register, rounds, closure, standard, trading, records); read whether the document names the move
-- **REVIEW** `business_register_extract_notes.pdf`: 5 of 25 stump-paragraph terms appear (register, closure, trading, records, extract); read whether the document names the move
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `sdhd_ess_atmospheric_2026_27.csv`: golden figure 27,330 appears: ...scheduled ESS4702,2027-02-08T16:00:00Z,-67,-98,79,27,330,scheduled ESS4702,2027-02-08T17:00:00Z,-61,-117,6...
+- **REVIEW** `sdhd_ess_atmospheric_2026_27.csv`: golden figure 33,118 appears: ...5,scheduled ESS4899,2026-10-02T00:00:00Z,67,12,67,33,118,scheduled ESS4899,2026-10-02T01:00:00Z,73,5,62,88...
 
-## 6 ranking artifacts (REVIEW 2, INFO 1)
-- **REVIEW** `BCS_regional_balances_2026_06.xlsx`: names 7 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `bcs_invitations_2026_09.csv`: names 7 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `bcs_region_review_2023.csv`: names 7 of 8 answer-set candidates; confirm it does not rank them on the decision question
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `quillan_air_temperature_qc_configuration_v4_3.pdf`: 4 of 25 stump-paragraph terms appear (reading, district, network, readings); read whether the document names the move
+- **REVIEW** `quillan_service_agreement_schedule_b.pdf`: 4 of 25 stump-paragraph terms appear (vendor, district, network, october); read whether the document names the move
+- **REVIEW** `sdhd_road_weather_data_quality_standard_rev2.pdf`: 3 of 25 stump-paragraph terms appear (vendor, district, october); read whether the document names the move
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `BCS_round_calendar.xlsx`: 15 ISO dates after 2026-09-25, e.g. 2026-09-28, 2026-10-09, 2026-10-16, 2026-10-30, 2026-12-01
+## 6 ranking artifacts (REVIEW 2)
+- **REVIEW** `sdhd_rwis_preseason_checks_oct2026.xlsx`: names 8 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `sdhd_rwis_site_register.xlsx`: names 8 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -25,15 +26,16 @@ Stump terms swept: register, settled, rounds, closure, standard, non-returners, 
 
 ## 2 author vocabulary (clean)
 
-## 3 answer figures in the pack (clean)
-
 ## 5 announcements (clean)
 
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
 
+## 9 dates after the setting (clean)
+
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 

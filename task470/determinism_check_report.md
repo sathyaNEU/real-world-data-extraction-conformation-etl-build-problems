@@ -1,4 +1,6 @@
-# determinism-check report, task470, 2026-10-18
+# determinism-check report, task470 (architecture 2), 2026-10-31
+
+Judge thread: one pass, verdict at /tmp/determinism-check-task470-191731/verdict.md (brief judge_brief.md in the same folder). target.zip sha256 26076f7e43ec0c97b2c28988ecfa57066c891a809a12576809f748f028542a10. Replaces the architecture 1 report.
 
 ## Verdict
 DETERMINISTIC
@@ -6,50 +8,46 @@ DETERMINISTIC
 **Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-One judge thread (sonnet, medium, run r1) saw only a fresh unzip of target.zip and the five blocks. Executed literally, the shipped files give the seven qualifying fields (T13, A71, L08, U44, O16, F37, W33). Every committed figure reproduced. The only open step is the estimator in method 4.4. The ten counted fields pin it: unrecorded operations per never-recorded based piston airplane is near-constant (65 to 73, CV 4 percent), against capture rate (CV 50 percent) and operations per based aircraft (CV 42 percent). The seven are stable for any ratio from 56 to 923. Using only the four commissioned counts (69.76) or only the six towers (68.9) gives the same seven.
+The regulation (Sections 3, 4, 6) fixes the population, the "nobody lived there on any day of 9 to 22 November" rule, the rounding and the 5.0 line. The meter data separates the candidates cleanly: the largest daily evening/morning rise over night use is under 0.3 kWh for 395-396 dwellings and over 1 kWh for all but one of the rest, so every threshold from 0.3 to 0.8 kWh and the window variants give the same 396 vacant dwellings and the same five qualifiers. Every main-call and ask figure reproduced.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Unrecorded ops, ten counted fields | 23,376 | 23,376 (towers 2,544/2,368/3,290/2,512/2,988/2,768; F37 2,120, G42 1,928, D19 2,712, L08 146) | yes |
-| Never-recorded based piston airplanes, counted fields | 338 | 338 | yes |
-| Operations per airplane | 69.2 | 69.16 | yes |
-| Never-recorded airplanes, 20 uncounted fields | T13 33 ... D73 3 | all 20 exact | yes |
-| 2026 lead, 24 fields (kg) | 22 down to 2 | 22.13 ... 1.83, all round to the golden | yes |
-| Towered ops and lead | 17,600/9,900/19,400/12,200/13,600/7,900; 22/18/23/16/16/13 | 17,625/9,916/19,414/12,191/13,616/7,928; 22.1/17.9/23.2/16.0/16.0/12.9 | yes |
-| Events kept in Pacific 2026 | n/a | 186,494, all resolved to a registration | yes |
-| Wrong sets (8 pooled, 9 split, 8 per based aircraft) | named in the recommendation | reproduced | yes |
+| Counted dwellings (matrikkel, Bolig, in use by 1 Nov 2026) | 8,020 | 8,020 (1640/520/980/860/430/740/380/1120/560/790) | yes |
+| Vacant dwellings | 396 | 396 (66/38/63/33/28/34/31/36/30/37) | yes |
+| Shares | 4.0/7.3/6.4/3.8/6.5/4.6/8.2/3.2/5.4/4.7 | same; qualifiers 5802, 5803, 5805, 5807, 5809 | yes |
+| Persons registered 1 Nov | 13,599 and all 30 age cells | identical, register of 5 Jan rolled back over 856 later events | yes |
+| Land-register holdings | 133/17/149/80/27/141/23/136/86/58 | identical, tinglyst rollback, company closure, name-only titles | yes |
 
 ## Competing answers that survived
-- Method 4.4 does not name the estimator (Gate C, mild). The data and the network notes close it by leave-one-out on the ten counts. The reading of "fields with a count" does not change the set.
-- Towered fields' "piston-engine operations" (supplementary ask 3): the golden takes unrecorded tower civil operations whole as piston (methods 4.2 and 3.2). Scaling by the recorded piston share would give HWK 17,264, CRV 9,241, OSY 19,268 and leads of 21.5 and 16.8 kg for HWK and CRV. The literal method closes it, but the prompt wording invites the other reading. This is an ask-side fork only; the main call is unaffected. Advisory.
-- Never recorded anywhere versus at the home field, changeover-day events (17, under 0.1 kg total) and the tower closing minute (KTY by 1 operation) move no rounded figure and no qualifier.
+None on the main call. Rejected: fortnight-average rise (7 qualifiers, ruled out by Section 4 "any day"), median day (Langgrav 5.1, same), register empties (all 10, Section 4), consumption floor (none, heated empties).
+One residual low-risk fork on ask 4 only: dokumentdato instead of tinglyst_dato moves 14 deeds (132/16/148/74/25/140/22/135/85/50). The register wording ("held on the land register") favours tinglyst_dato.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 18 | yes |
-| Formats | 3 or more | csv, txt, xlsx, pdf | yes |
-| Large file | 25,000 rows or more | 187,403 rows (adsb events) | yes |
-| Distractors named, none labelled in a file name | 2 or more | metadata.json names airport_master_records_5010.xlsx (declared wrong-basis) and cvaqd_lead_monitoring_2026.csv; no file name labels one | yes |
-| Distractors unused yet weighable | yes | 5010 gives operations estimates (all aircraft, 2018 to 2025), ruled out by its own notes and method section 4; lead monitors sit at two towered fields and rank no candidate. I did not recompute the 5010 arithmetic myself; the judge reproduced the per-based-aircraft 8-field set from it | yes |
-| Deliverables | 1 to 3, all in the golden | 2 (csv, docx), both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | 24-field lead and 6 towered fields; whole kg and nearest hundred stated | yes |
-| Prompt shape and rubric | shape identifiable; 25 or more criteria | shape 01 (candidates against a cap); rubric is generated at ship, 24 fields plus 6 towers plus components make it reachable | yes (rubric not yet generated) |
-| Not LLM generated | yes | judge: no authoring leakage, real FAA layouts, coherent dates | yes |
+| Files / formats / large file | 10 / 3 / 25,000 rows | 14 / 5 (csv, parquet, xlsx, pdf, eml) / 2,720,816 rows | yes |
+| Distractors in metadata.json, none named in a file | 2+ | spotpriser_no1, nettselskap_avbrudd | yes (names carry no label; both unused, outage hours miss the night window, prices cannot answer the quantity) |
+| Deliverables | 1 to 3, all in golden | 2 (docx, xlsx), both present | yes |
+| Asks multi-dimensional, unit and rounding | yes | per-municipality cuts; shares to one decimal stated; counts are integers | yes |
+| Prompt shape and 25+ criteria | shape identified | shape 01 (design note: well over 25 criteria; rubric is portal-generated, not verifiable here) | yes, by design note |
+| Reads as real, not LLM generated | yes | judge saw no authoring language | yes |
+| Stage 4 conditions in prompt | question first, under 1,000 chars | 919 chars | yes |
 
 ## Gate G reconciliation
-Thread: mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note: the decisive step is the choice of estimation auxiliary (never-recorded airplanes) over a capture share; the default path, a pooled 0.815 capture rate, gives A71 F37 K58 L08 P05 S27 T13 T61, and the split by flight training gives nine. These match the thread's wrong sets exactly. The declared distractor (5010) does not carry the task: it yields a different wrong set, and the thread names the capture-rate scaling as the surface read. No finding. Gate G passes.
+Thread: mechanism method_or_model_selection, family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card: gate_g method_or_model_selection, stump_class analytical. Match. The declared distractors (spot prices, outage log) were not named as the surface read carrying the task. Gate H: domain pass, layers pass, decisive_step analytical, matching the card's analyst_test (consumption floor gives none, register gives all ten) and domain_test. The thread's extra route (fortnight-average rise, 7 qualifiers) is ruled out by the filed "any day" wording, so it is a rule reading, not a fork.
 
-Gate H: domain pass, layers pass, decisive_step analytical. This matches the note's Three rules (domain: emissions-inventory ratio estimator; Layer 1: UTC against Pacific, register history, N-number forms; Layer 2: estimation_fit; No decoy, Not semantics, Not rule application). No mismatch.
+Open readings raised by the leak reader:
+- Dwelling with no metering point, or points not valid across the fortnight: covered in part. Verdict: every counted dwelling has a household point (8,074 by bruksenhet_id, 99 by address, all unique), 63 points on later units dropped, meter changes summed, estimated-then-replaced deliveries resolved. I checked the shipped metering file myself: 90 points carry a gyldig_til (15 to 20 Nov) and 147 start after 9 Nov, which are the meter changes the verdict sums, and none is left unmeasured. The verdict does not state what a dwelling with a gap would score because none exists. No finding.
+- Population register state on 1 Nov: covered. The verdict rolled the 5 Jan 2027 snapshot back over the events and reproduced all 30 cells; it notes a direct join without the rollback loses 105 persons. It did not give the as-is-snapshot totals per municipality, so the as-is alternative is shown wrong only in aggregate, and the regulation's 1 November date (filed in the prompt) closes it.
+- Land register holding on 1 Nov: covered for the transfers rollback (tinglyst fork above). The share question: I checked the shipped grunnbok_hjemmel file, every row has andel 1/1 (5,119 rows), so a share-of-unit reading cannot differ from whole-unit. Closed.
 
 ## Stump power (Gate F)
-The capture-rate route and the per-based-aircraft route both file a wrong qualifying set, and leave-one-out on the counts separates them from the golden. The risk is that it is somewhat easy: the receiver notes state the broadcast-and-record rule, and the register join is mechanical. The portal is the measure.
+Good per the thread: population register, a consumption floor and the fortnight-average rise each land a wrong main call; asks 3 and 4 add rollback and ownership-closure traps. Caution for the main thread: the field's standard smart-meter occupancy method (diurnal rise over night load) is a textbook route a strong solver could land, and the 0.5 kWh figure is filed in Critical Components, not the prompt, with the data (bimodal rise) settling any value from 0.3 to 0.8. Weigh against the ladder in the design note.
 
 ## Findings, ranked
-1. Advisory, ask 3: restate in the solution or write-up that unrecorded tower operations are taken whole as piston under method 4.2. Note only; no rebuild.
-2. Advisory: method 4.4 is silent on the estimator. This is mild, closed by the data, and the main call is stable.
-No send-back finding.
+1. Low: ask 4 dokumentdato versus tinglyst_dato (14 deeds), literal reading is tinglyst. No fix required.
+2. Info: stump-power caution above.
 
 ## Next action for the author
-Proceed to ship stage 5. Optionally add one clause on the whole-piston treatment of unrecorded tower operations to the submission step list (note-only, no regeneration).
+None required; ship. Optionally add a fork-table row naming tinglyst_dato as the holding date for ask 4.

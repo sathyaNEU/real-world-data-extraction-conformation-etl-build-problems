@@ -195,7 +195,7 @@ def submission(A):
     out.append("3. Specimens tested in week 3 with results on the platform:")
     for s in A["specimens"]:
         out.append("   - %s: %s" % (s["lab"], format(s["specimens"], ",")))
-    out.append("\n### respiratory_feed_completeness_2027-W03.png\n")
+    out.append("\n### respiratory_feed_completeness_2027-W03.svg\n")
     out.append("4. Horizontal bar chart of the 29 streams' week-3 completeness against the 80 per cent line, grouped by "
                "laboratory: the six bars of %s and %s below the line, every other bar above it." % (L["L03"], L["L10"]))
     return "\n".join(out) + "\n"

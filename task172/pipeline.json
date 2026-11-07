@@ -1,64 +1,69 @@
 {
  "task": "task172",
  "status": "SHIPPED",
- "domain": "general-statistics-data-science/regression-classification-model-diagnostics",
+ "domain": "biomedical-clinical-research / survival-time-to-event-analysis (client biomedical-clinical-research)",
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-19",
- "stump": "A competent solver who sees the fingerprint appointments now being set about seventeen weeks out adds the thirteen extra weeks to the record's appointment-route waits and quotes 7.0 months (the record's own waits, open cases censored, give 4.0); about nine in ten of the quarter's renewals that need an appointment will reach the filer's card expiry undecided, and since the automatic extension ended the renewals pending at expiry have been decided about a week after the expedite request the team files around the day the card expires, so the quarter's 80th percentile is 5.5 months.",
- "architecture": 1,
- "loops": 5,
+ "updated": "2026-10-31",
+ "stump": "Carrying the interim's stratified Cox hazard ratio of 0.91 into the rest of the trial, as the B-value's trend does, files a conditional power of about 5 per cent and a futility stop (band A); ravolimab's arm progresses no more slowly than placebo's through the week-12 assessment (1.34) and at 0.38 times its rate from the week-18 assessment on, and 200 of the 267 patients still at risk are past the week-12 assessment, so followed forward on each arm's own rates the final test rejects in more than 99 per cent of continuations: 100 per cent to the nearest 10, band C, continue as planned.",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-19"
+  "date": "2026-10-31",
+  "checks": "61, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-19, the shipped cut f20b583e, as-of 2026-12-04): the standard shares the call's vocabulary; future dates only in forward-looking columns; every REVIEW line answered in the design note's Leak sweep",
-  "reader": "round 5: a fresh blind scored reader (scored-task172e) missed the call (4.0, the censored Kaplan-Meier route) and all 14 ask figures; round 4: the scored reader missed the call (6.5) and kept 14 of 14 ask figures on the round 3 pack, so the ask layer was re-sited; round 3: clean, as a solver near 4.0; round 2: clean",
-  "score_reader": "round 5 exit 0 (call 0 of 1, asks 0 of 14, re-scored on the shipped figures); round 4 exit 1 (asks 14 of 14) on the round 3 pack; the round 5 reader's path on the shipped cut lands 0 of 14"
+  "leak_py": "REVIEW 2026-10-31 on target.zip 3749a023 (--asof 2026-12-01, no LEAK): sweeps 3 and 4 ruled harmless in the note's Leak sweep",
+  "reader": "read 1 on 0b377dd6 and read 2 on 3749a023 (the independent statistician renamed), isolated, pack and prompt only: no leak at either, question 6 analytical at both (each arm's progression over the remaining follow-up estimated from the interim data and the final analysis projected from it); leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.objective)",
-  "surface": "1 promoted for adjudication: task170 vs task172 (two apart, surface 0.086; gap time and decision quantity_figure on the cards; decisive pattern G7 against G3, not the same puzzle); adjudication is author-triggered",
-  "nearest": "task127 v2 0.13 (driver, differentiated)"
+  "guard_check": "WARN 2026-10-31 on the card filed anew after the design screens (question form repeats task191; lineage shell repeats task256 v1)",
+  "heart": "WARN 2026-10-31 on the final cut (people.first Rachel against task185; Gate G and the csv+pdf set repeat task272 v3). An earlier BLOCK on the surname Shaw against task306, shipped the same evening, was cleared by renaming the independent statistician (guard.py names --geo uk --seed 172); no figure moved",
+  "surface": "exit 0 on the final cut 2026-10-31 (personas Jay O'Connor, Rachel Savage)"
  },
  "judge": {
-  "verdict": "round 5 DETERMINISTIC, APPROVE (judge-task172e/verdict.md): the 5.5 quote forced, both tables reproduced, Q1 2026 refiled settled at 26 on GM-07 2.4's receipt reading; round 4 targeted check: September 2027 (c)(26) 771 confirmed; round 3 DETERMINISTIC with SOLUTION_WRONG on that cell, settled at 771; round 2 NOT_DETERMINISTIC on the supplementary tables only; round 1 on table 1 only",
-  "disposition": "APPROVE; at ship one realism fix, data only (the judge's Files/Hygiene regularity): each forwarded copy of a notice counsel logged carries counsel's date, a copy counsel never logged the date USCIS issues it, and the other filings' rejections are dated from their own trips; the call side byte-identical and no golden moved",
-  "report": "coordinator's scratchpad: judge-task172e/verdict.md, scored-task172e/reader.json and reader_method.md (round 4: judge-task172d/cell_check.md, leak-task172d; round 3: judge-task172c, leak-task172c; round 2: judge-task172b, rule3/task172b.md, leak-task172b; round 1: judge-task172, rule3/task172.md, leak-task172)"
+  "pass": 1,
+  "date": "2026-10-31",
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task172/determinism_check_report.md",
+  "zip_judged": "0b377dd6 (the shipped 3749a023 differs only in the independent statistician's name; figures.json identical)",
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "residual": "the main call's one open reading is a constant hazard per arm (band A, about 13 per cent) against the time-varying projection the data favour (likelihood ratio p = 0.004; band C, 96 to 100 per cent); minor ask forks recorded in the report (SAE reports after the cut, EDC-only exposure, the Melbourne receipt dates), each closed by the SAP's wording or the IRT log"
  },
- "returned": [],
- "resume": "",
+ "returned": [
+  {
+   "date": "2026-10-31",
+   "portal": "architecture 1 retired by the batch audit (no survivor anatomy; stump power argued from the retired scored reader), never returned by the portal",
+   "repair": "re-root",
+   "commit": "DRAWN (task172) architecture 2"
+  }
+ ],
+ "resume": "Shipped 2026-10-31 on architecture 2: the judge DETERMINISTIC, APPROVE (decisive step analytical, the remaining follow-up projected on each arm's progression as it runs), two clean leak reads, every free gate re-run on target.zip 3749a023 (two byte-identical builds, 48 checks, verify PASS, figures_check 49 of 49, precut 61 checks, voice-check PASS, guard heart WARN and surface exit 0). Waits on the portal.",
  "approved": null,
- "delivered": "2026-10-19",
+ "delivered": "2026-10-31",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "answer": "5.5 months",
+ "answer": "Continue TALON-2 to its final analysis at 330 events as planned: conditional power 100 per cent to the nearest 10 (99.96 per cent of 20,000 continuations), band C",
  "stage3": {
-  "checks": "117 of 117",
-  "verify": "0 failed",
-  "rebuild": "two full builds, each with a byte-identical rebuild of 19 files, the same target.zip",
-  "figures_check": "exit 0, 37 figures",
-  "precut": "52 checks, 0 FAIL, 0 WARN",
-  "screens": "dispersion, variance-only, common-exposure subset (1 decided renewal since the rule at the forward exposure) and truncation direction pass (stumping 1.2)",
-  "recentre": "PAPER_MEAN 21 again after round 2's lead change (18, 19, 21 clear; 21 nearest 5.50 among them); generator/recentre.py exit 0",
-  "golden": "5.395 months (164 days), quote 5.5; 4.4 days above the 5.25 line, 10.8 under the 5.75 line",
-  "family": "17 constructions 5.388 to 5.526; with one sigma 5.378 to 5.536, edges 0.128 and 0.214",
-  "process": "5.526 (168 days); realised quarter 5.493",
-  "pair_ceiling": 33.1,
-  "both_on_call": 44.0,
-  "mirror_leakage": 0.0,
-  "target_zip": {
-   "members": 14,
-   "bytes": 5864840,
-   "sha256": "f20b583ecb417adf8339442b253b446bb819320a6bbd8d3b73aa0489cb40751b"
-  },
-  "house_fixes": "H25 asserted in checks.py: the standard opens in pypdf (lenient and strict), pdfminer.six, pdfplumber and pdftotext with every paragraph, and the strict text equals the lenient",
-  "freeze": "freeze.py check --mode rubric PASS (the main call, the stump and every frozen figure unchanged; WARN that no ask figure moved, since the goldens are the same world)",
-  "call_side": "byte-identical to the round 3 commit: every renewal row, component, route, the margin family and the quarter's mix (674 and 562) recomputed equal (sha256 26cd0f92); counsel's notices, the dispatch log, the dependants, the tracker and the standard byte-identical files; the case log's expedite and stop rows and the register's receipted renewals identical",
-  "cracker": "the round 4 reader's path keeps 0 of 20 ask cells on the shipped cut; with one device found at most 4 (the rejected counts); the round 5 reader's path 0 of 14"
- }
+  "generator": "task172/generator/build.py (world seed 24)",
+  "target_zip_sha256": "3749a02356c920a09ad513ac041e3420eb6a395289bc2b430570edf602afd1ab",
+  "checks": "48 of 48",
+  "verify": "PASS",
+  "figures_check": "49 of 49",
+  "pair_ceiling": "28.5 (generator/ceiling.py)",
+  "files": 16,
+  "largest_file": "talon2_central_lab_transfer.csv, 39,530 rows"
+ },
+ "history": [
+  {
+   "date": "2026-10-31",
+   "event": "SHIPPED: architecture 2, continue TALON-2 to its final analysis as planned (conditional power 100 per cent to the nearest 10, band C); judge DETERMINISTIC, APPROVE; target.zip 3749a023"
+  }
+ ]
 }

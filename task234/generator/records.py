@@ -240,8 +240,8 @@ class Records:
         cols = ["message_id", "facility", "accession", "patient", "collected", "code", "target", "result", "status",
                 "released", "received"]
         return out[cols].rename(columns={"facility": "sending_facility", "patient": "patient_mrn",
-                                         "collected": "specimen_collected", "code": "test_code",
-                                         "status": "result_status"})
+                                         "collected": "specimen_collected_utc", "released": "released_utc",
+                                         "code": "test_code", "status": "result_status"})
 
     def aggregate_reports(self):
         """each laboratory's weekly report of tests and positives by virus, MMWR 2022-W40 to 2027-W02, with the
@@ -338,6 +338,27 @@ class Records:
                 lam = K[v] * max(act - 0.6 * P.FLOOR[v], 0.002)
                 rows.append(dict(mmwr_year=y, mmwr_week=wk, virus=P.VNAME[v], new_admissions=int(rng.poisson(lam)),
                                  hospitals_reporting=int(14 - (rng.random() < 0.08))))
+        return pd.DataFrame(rows)
+
+
+    def vaccination(self):
+        """distractor: the county immunization registry's weekly influenza doses and cumulative coverage by age group,
+        MMWR 2026 week 36 to 2027 week 2 (its own seed, so no other record moves)"""
+        rng = np.random.default_rng(P.SEED * 1013 + 41)
+        groups = [("6 months to 4 years", 21800, 0.46), ("5 to 17 years", 64300, 0.33), ("18 to 49 years", 172900, 0.27),
+                  ("50 to 64 years", 78400, 0.43), ("65 years and over", 69100, 0.68)]
+        start = P.mmwr_start(2026) + dt.timedelta(weeks=35)
+        rows = []
+        for g, pop, final in groups:
+            cum = 0
+            for k in range(19):
+                ws = start + dt.timedelta(weeks=k)
+                y, wk = sim.mmwr_label(ws)
+                share = final * (1.0 - np.exp(-(k + 1) / 6.5)) / (1.0 - np.exp(-19 / 6.5))
+                doses = max(0, int(round(pop * share - cum + rng.normal(0, 0.004 * pop))))
+                cum += doses
+                rows.append(dict(mmwr_year=y, mmwr_week=wk, week_ending=(ws + dt.timedelta(days=6)).isoformat(),
+                                 age_group=g, doses_administered=doses, cumulative_coverage_pct=round(100.0 * cum / pop, 1)))
         return pd.DataFrame(rows)
 
 

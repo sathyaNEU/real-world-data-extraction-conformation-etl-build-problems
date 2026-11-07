@@ -1,346 +1,318 @@
-"""task231 checks, run on every build: the three rules (R1 to R3c) on the clean truth, the ladder, the settled corridor,
-every semantic fork row (SF1 to SF13), the asks' devices and their separation from the main population, the input
-gates and the realism sweep. Every assertion is labelled; make.py prints the count."""
+"""task231 architecture 2: the generator's assertions, on the built pack and the world it was cut from.
+
+    python3 task231/generator/checks.py
+
+Labels: R1 to R3 the client's three rules on the clean truth; G the golden against the truth and its family;
+L the ladder; SF the semantic fork table's rows; A and B the asks and their devices; I the input gates and the
+realism sweep."""
 import csv
+import datetime as dt
+import glob
 import json
 import os
 import re
-import shutil
-import tempfile
+import sys
 import zipfile
-from collections import Counter, defaultdict
-from datetime import date, datetime, timedelta, timezone
 
-import estim
-import params as P
-import records
-import sim
-import verify as V
-import world as W
+import numpy as np
 
-LINES = (55.0, 58.0)
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import analysis as A  # noqa: E402
+import params as P  # noqa: E402
+import world as WD  # noqa: E402
 
-
-def margin(x):
-    return min(abs(x - 55.0), abs(x - 58.0))
+TASK = os.path.dirname(HERE)
+TARGET = os.path.join(TASK, "target")
+RES = []
 
 
-def bands(d):
-    return {g: V.band(x) for g, x in d.items()}
+def check(label, ok, detail=""):
+    RES.append((label, bool(ok), detail))
+    print("%-6s %-4s %s" % (label, "ok" if ok else "FAIL", detail))
 
 
-def run(target, golden_dir, pan, rec, res):
-    out = []
+def sites_of(reg, idx):
+    return sorted(reg["sites"][k]["site"] for k in idx)
 
-    def ok(label, cond, detail=""):
-        assert cond, (label, detail)
-        out.append(label)
 
-    pk = res["pack"]
-    lad = res["ladder"]
-    call = V.call_from(lad)
-    gold = {g: lad[g]["golden"] for g in lad}
-    sim_res, sim_sh = estim.routes(pan)
-    regs = estim.REGS
+W = WD.build()
+S = A.solve(TARGET)
+S["target"] = TARGET
+M, reg = S["M"], S["reg"]
+codes = [s["site"] for s in reg["sites"]]
+tag = {P.SITE[t]: t for t in P.TAGS}
+wi = [P.TAGS.index(tag[c]) for c in codes]          # analysis order -> world order
+NS, NH = len(codes), P.NH
+gold = set(M["retune"])
+GOLD_TAGS = {"K1", "K2", "K3", "K4", "M1", "M2", "M3", "P3"}
 
-    # ------------------------------------------------------------------------------- generator and files agree
-    ok("G1 golden rates: simulation and shipped files agree", all(abs(sim_res[g]["golden"] - gold[g]) < 1e-9 for g in regs))
-    ok("G2 default and call-centre rungs agree", all(abs(sim_res[g]["R1"] - lad[g]["R1"]) < 1e-9
-                                                    and abs(sim_res[g]["casro"] - lad[g]["casro"]) < 1e-9
-                                                    and abs(sim_res[g]["unob"] - lad[g]["unob"]) < 1e-9 for g in regs))
-    ok("G3 settled share agrees", abs(sim_sh["settled"] - res["shares"]["settled"]) < 1e-12)
-    by_close_files = {}
-    for q, rows_ in pk.out.items():
-        rnd = pk.by_quarter[q]
-        reach = pk.reach_times(q, True)
-        for r in rows_:
-            by_close_files[(rnd["frame"], int(r["panel_id"]))] = reach.get(int(r["panel_id"])) is not None and \
-                reach[int(r["panel_id"])] <= rnd["close_utc"]
-    mism = sum(1 for o in pan.outcomes if o["frame"] < P.CURRENT and
-               by_close_files[(o["frame"], rec.pid[o["fid"]])] != o["by_close"])
-    ok("G4 every return's on-time status in the files matches the simulation", mism == 0, mism)
+# ---------------- G: the golden against the world's truth ----------------
+truth_fr = (W["spatial"] & W["right"]).sum(1)[wi]
+check("G1", (M["fr"] == truth_fr).all(), "golden false-rejection hours equal the truth at every station")
+check("G2", (M["withheld"] == W["spatial"].sum(1)[wi]).all(), "the QC log's spatial rows are the test's hours")
+check("G3", {tag[c] for c in sites_of(reg, gold)} == GOLD_TAGS, "re-tune set %s" % sites_of(reg, gold))
+acc = np.abs(W["read"] - W["T"]) <= P.SENSOR_ACCURACY_C + 1e-9
+check("G4", (acc == W["right"]).all(), "right means within 0.3 C of the station's air, every reading")
+for tau in (1.5, 2.5, 3.0, 3.5, 4.0, 4.5):
+    rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], tau=tau)
+    check("G5", ((M["wh"] & rr).sum(1) == M["fr"]).all(), "tolerance %.1f C gives the same hours" % tau)
+var = {}
+for nm, kw in (("corr 0.7", {"cth": 0.7}), ("corr 0.9", {"cth": 0.9}), ("15 km", {"dk": 15.0}),
+               ("120 m", {"dz": 120.0}), ("sig -0.3", {"sig": -0.3}), ("sig -1.0", {"sig": -1.0})):
+    G2, _, _ = A.sharing(M["val"], M["wh"], M["anyflag"], reg, M["night"], res=M["res"], **kw)
+    rr, _ = A.judge(M["val"], M["wh"], reg, G2)
+    var[nm] = (M["wh"] & rr).sum(1)
+    mv = {codes[k]: int(var[nm][k] - M["fr"][k]) for k in range(NS) if var[nm][k] != M["fr"][k]}
+    check("G6", set(A.retune(var[nm] / NH * 100)) == gold, "grouping %s: same set%s" % (
+        nm, ", hours move at %s" % mv if mv else ", same hours"))
+for nm, kw in (("radius 40 km", {"rad": 40.0}), ("radius 60 km", {"rad": 60.0}), ("any pool mate", {"floor_rule": "any"})):
+    rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], **kw)
+    var[nm] = (M["wh"] & rr).sum(1)
+    check("G7", (var[nm] == M["fr"]).all(), "%s gives the same hours" % nm)
+rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], lapse=M["slope"])
+fl = (M["wh"] & rr).sum(1)
+moved = {codes[k]: int(fl[k] - M["fr"][k]) for k in range(NS) if fl[k] != M["fr"][k]}
+check("G7", set(A.retune(fl / NH * 100)) == gold, "each hour's fitted lapse in place of 6.5 C per km: same set, "
+      "hours move at %s" % moved)
+slope_c = -M["slope"] * 1000
+check("G7", np.nanpercentile(slope_c, 1) < 0, "the hourly fitted lapse turns negative (%.1f C per km at the 1st "
+      "percentile) on the hours the pools bend the line" % np.nanpercentile(slope_c, 1))
+rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], agg="mean")
+mean_fr = (M["wh"] & rr).sum(1)
+check("G8", set(A.retune(mean_fr / NH * 100)) == gold, "a mean of the stations sharing the air: same set, hours "
+      "move at %s" % {codes[k]: int(mean_fr[k] - M["fr"][k]) for k in range(NS) if mean_fr[k] != M["fr"][k]})
+# every graded share holds at its rounding (whole per cents) under every defensible variant
+whole_g = [A.whole(x) for x in M["share"]]
+var["mean of the stations sharing the air"] = mean_fr
+var["each hour's fitted lapse"] = fl
+for tau in (1.5, 2.5, 3.0, 3.5, 4.0, 4.5):
+    rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], tau=tau)
+    var["tolerance %.1f" % tau] = (M["wh"] & rr).sum(1)
+bad_w = {nm: [codes[k] for k in range(NS) if A.whole(v[k] / NH * 100) != whole_g[k]] for nm, v in var.items()}
+check("G9", not any(bad_w.values()), "whole-per-cent shares identical at every station under %d variants" % len(var))
+edge = min(min(abs(M["fr"][k] - (j + 0.5) * NH / 100.0) for j in range(0, 30)) for k in gold)
+check("G9", edge >= 7, "every re-tuned station's hours sit %.1f hours or more from a whole-per-cent edge" % edge)
+# the tolerance corridor's floor and ceiling, from the readings themselves
+floor_idx = [k for k in range(NS) if M["G"][k]]
+d_ok = []
+for k in floor_idx:
+    ok = ~M["anyflag"][k] & ~np.isnan(M["val"][k])
+    ref = np.nanmedian(M["val"][M["G"][k]][:, ok], axis=0)
+    d_ok.append(np.abs(M["val"][k, ok] - ref))
+d_ok = np.concatenate(d_ok)
+d_ok = d_ok[~np.isnan(d_ok)]
+check("G10", np.percentile(d_ok, 99) < 1.5, "stations sharing a pool agree within %.2f C on 99 per cent of the "
+      "hours the QC passed" % np.percentile(d_ok, 99))
+fault_dev = []
+for k in range(NS):
+    i = wi[k]
+    hs = np.where(M["wh"][k] & ~W["right"][i])[0]
+    if not len(hs):
+        continue
+    if M["G"][k]:
+        ref = np.nanmedian(M["val"][M["G"][k]][:, hs], axis=0)
+    else:
+        fa = [j for j in range(NS) if not M["G"][j] and j != k and reg["D"][k, j] <= A.FA_RADIUS_KM]
+        ref = np.nanmedian(M["val"][fa][:, hs] + A.LAPSE / 1000.0 * (reg["Z"][fa] - reg["Z"][k])[:, None], axis=0)
+    fault_dev.append(np.abs(M["val"][k, hs] - ref))
+fault_dev = np.concatenate(fault_dev)
+check("G11", fault_dev.min() > 4.5, "every wrong withheld reading is %.2f C or more from its reference" %
+      fault_dev.min())
+sh = M["share"]
+inn = [sh[k] for k in gold]
+out = [sh[k] for k in range(NS) if k not in gold]
+check("G12", min(inn) >= 2.5 and max(out) <= 0.6, "the line sits in a gap: lowest re-tuned %.2f, highest other %.2f"
+      % (min(inn), max(out)))
+check("G13", M["nopeer"].sum() == 0, "every withheld reading has a delivered reference")
 
-    # ------------------------------------------------------------------------------- the call and the ladder
-    ok("L1 golden: Capital and Harbour red, Islands and Western Uplands amber, the rest green",
-       call["extension"] == ["R01", "R02"] and call["email"] == ["R04", "R06"] and len(call["neither"]) == 8)
-    red = lambda key: {g for g in regs if V.band(lad[g][key]) == "red"}
-    amber = lambda key: {g for g in regs if V.band(lad[g][key]) == "amber"}
-    ok("L2 default (register as it stands): five red, seven amber", red("R1") == {"R01", "R02", "R04", "R05", "R06"}
-       and amber("R1") == set(regs) - red("R1"))
-    ok("L3 call-centre e: four red, Border amber", red("casro") == {"R01", "R02", "R04", "R06"} and "R05" in amber("casro"))
-    ok("L4 call-centre e counting staff answers as alive, or reading outbound records only: same levels",
-       bands({g: lad[g]["casro_any"] for g in regs}) == bands({g: lad[g]["casro"] for g in regs}) ==
-       bands({g: lad[g]["casro_out"] for g in regs}))
-    for key in ("recent", "allr", "unob"):
-        ok("L5 %s: four red, Border amber" % key, red(key) == {"R01", "R02", "R04", "R06"} and "R05" in amber(key))
-    ok("L6 R3 and R4 with telephone returns read at the database load time: same levels",
-       bands({g: lad[g]["recent_nat"] for g in regs}) == bands({g: lad[g]["recent"] for g in regs}) and
-       bands({g: lad[g]["allr_nat"] for g in regs}) == bands({g: lad[g]["allr"] for g in regs}))
-    ok("L7 over-correction (every unresolved non-returner closed): all green", red("over") | amber("over") == set())
-    ok("L8 truth lands the golden's levels with margin", all(V.band(sim_res[g]["truth"]) == call["levels"][g]
-                                                          and margin(sim_res[g]["truth"]) >= 0.3 for g in regs))
-    ok("L9 every rung sits clear of the lines", min(margin(lad[g][k]) for g in regs
-                                                   for k in ("R1", "casro", "recent", "allr", "unob", "golden")) >= 0.15)
-    ok("L10 only the settled share files the golden call",
-       all(bands({g: lad[g][k] for g in regs}) != call["levels"] for k in ("R1", "casro", "recent", "allr", "unob", "over")))
-    ok("L11 shares: settled above all rounds above the last two years", res["shares"]["settled"] > res["shares"]["all"] >
-       res["shares"]["recent"])
+# ---------------- L: the ladder ----------------
+R = A.rungs(M, TARGET)
+for k, v in R.items():
+    s = set(A.retune(v))
+    check("L1", s != gold, "%s files %s" % (k, sites_of(reg, s)))
+r2 = {tag[c] for c in sites_of(reg, A.retune(R["R2 hourly lapse refit within 5 C"]))}
+check("L2", r2 == {"K4", "M3", "P3"}, "the default path (hourly lapse refit) ends on %s" % sorted(r2))
+r8 = {tag[c] for c in sites_of(reg, A.retune(R["R8 HRRR forecast within 5 C"]))}
+check("L3", r8 == r2, "the forecast check files the same as the lapse refit")
+r7 = {tag[c] for c in sites_of(reg, A.retune(R["R7 withheld with a neighbour within 30 km"]))}
+check("L4", "P3" not in r7 and r7 < GOLD_TAGS, "co-withholding misses %s" % sorted(GOLD_TAGS - r7))
+pre = W["preseason"]
+check("L5", max(abs(b - a) for _, _, a, b in pre) <= 0.3, "every probe passed the October check within 0.3 C")
+cnt = sum(1 for k, v in R.items() if set(A.retune(v)) == gold)
+check("L6", cnt == 0, "cheap routes landing the call: %d" % cnt)
+# R1, the analyst test on the clean truth: every field read right, the easy route still files the wrong set
+check("R1", set(A.retune(R["R2 hourly lapse refit within 5 C"])) != gold and
+      set(A.retune(R["R1 every withheld reading right"])) != gold,
+      "the field's background-field check and the vendor's own log both miss the golden")
+# R2: the main path's mess is neutral
+fr_dup = M["fr"].copy()
+val2, st2 = A.feed(TARGET, reg)
+check("R2", st2["duplicates"] > 0 and np.array_equal(np.nan_to_num(val2, nan=-999), np.nan_to_num(M["val"], nan=-999)),
+      "re-sent feed rows (%d) carry identical readings" % st2["duplicates"])
+wh_any = M["anyflag"]
+rr, _ = A.judge(M["val"], wh_any, reg, M["G"])
+check("R2", set(A.retune((wh_any & rr).sum(1) / NH * 100)) == gold, "counting the step test's rows too: same set")
+main_files = {P.FILES[k] for k in ("feed", "qc", "register", "standard")}
+ask_device_files = {P.FILES[k] for k in ("messages", "modems", "outages", "pavement", "sla")}
+check("R2", not (main_files & ask_device_files), "no ask device sits in a file the main call reads")
+# R3: no decoy, not semantics, not rule application
+hdr = open(A.fpath(TARGET, "qc"), encoding="utf-8").readline().strip().split(",")
+check("R3", not any(x in hdr for x in ("right", "valid", "verdict", "false_rejection", "confirmed")),
+      "the QC log carries no verdict on its rows")
+txt = open(A.fpath(TARGET, "email"), encoding="utf-8").read()
+check("R3", not re.search(r"\d+(\.\d+)? per cent|lapse|pool|inversion|basin", txt), "the request carries no figure "
+      "or method")
+spread = {k: tuple(sites_of(reg, A.retune(v))) for k, v in R.items()}
+check("R3", len(set(spread.values())) >= 6, "the enumerated family files %d different sets; the standing family "
+      "(G5 to G7) files one" % len(set(spread.values())))
 
-    # ------------------------------------------------------------------------------- the corridor (SF7 to SF10)
-    for g in regs:
-        for name, x in sim_res[g]["corridor"].items():
-            ok("C1 simulation corridor %s %s" % (g, name), V.band(x) == call["levels"][g] and margin(x) >= 0.25, x)
-    for g, row in res["corridor"].items():
-        for name, x in row.items():
-            ok("C2 file corridor %s %s" % (g, name), V.band(x) == call["levels"][g] and margin(x) >= 0.25, x)
-    last = estim.months_before(P.EXTRACT, P.SETTLED_MONTHS)
-    s_call, _ = estim.settled_share(pan, last, key=lambda f, o: o["call"], first_frame=date(2022, 3, 1))
-    cur = estim.current(pan)
-    for g in regs:
-        c = cur[g]
-        x = 100.0 * c["R"] / (c["R"] + sum(1 - s_call.get(o["call"], 0.0) for f, o in c["nr"]))
-        ok("C3 settled share by call outcome (2022 rounds) %s" % g, V.band(x) == call["levels"][g], x)
+# ---------------- SF: the semantic fork table ----------------
+check("SF1", NH == 5088 and P.WIN_START_UTC == dt.datetime(2026, 10, 1, 6), "winter = 5,088 hours from 1 Oct 00:00 MDT")
+cut = M["wh"].copy()
+cut[:, :6] = False
+check("SF1", set(A.retune((cut & M["right"]).sum(1) / NH * 100)) == gold, "the window read from UTC midnight: same set")
+deliv = (~np.isnan(M["val"])).sum(1)
+check("SF2", set(A.retune(M["fr"] / deliv * 100)) == gold, "share of the hours delivered instead: same set")
+check("SF3", set(A.retune(M["fr"] / NH * 100 - 1e-9)) == gold and not any(abs(x - 2.0) < 0.5 for x in sh),
+      "above against at-or-above 2 per cent: same set, no share within half a point of the line")
+rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], tau=0.3)
+ok = ~M["anyflag"] & ~np.isnan(M["val"])
+bad = 0
+tot = 0
+for k in floor_idx:
+    ref = np.nanmedian(M["val"][M["G"][k]][:, ok[k]], axis=0)
+    bad += int((np.abs(M["val"][k, ok[k]] - ref) > 0.3).sum())
+    tot += int(ok[k].sum())
+check("SF4", bad / tot > 0.3, "0.3 C against the stations sharing the air would call %.0f per cent of the readings "
+      "the QC passed wrong: the accuracy is the probe's against its own air, not a tolerance between stations" % (
+          100 * bad / tot))
+rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], floor_rule="any")
+check("SF5", ((M["wh"] & rr).sum(1) == M["fr"]).all(), "any one pool mate within the tolerance, against their median: same hours")
+check("SF6", M["qc"]["step"] > 0, "the step test's rows are a different test; the standard reviews each test")
+rel = set()
+with open(A.fpath(TARGET, "qc"), newline="", encoding="utf-8") as f:
+    for r in csv.DictReader(f):
+        rel.add(r["qc_release"])
+check("SF7", rel == {"4.3.0", "4.3.2"}, "both releases carry the same air temperature tests (configuration 4.3)")
+check("SF8", len({s["rpu"] for s in reg["sites"]}) == NS, "one RPU per site")
 
-    # ------------------------------------------------------------------------------- semantic fork table
-    inv = pk.inv
-    holders = pk.holders
-    ok("SF1 every invited firm's region matches its panel register record",
-       all(any(h["region"] == inv[pid]["region"] for h in holders[pid]) for pid in inv))
-    active = set()
-    for pid, hs in holders.items():
-        for h in hs:
-            if h["left"] is None and h["recruited"] <= V.FRAME:
-                active.add(pid)
-    ok("SF2 the active panel and the invitation list hold the same firms", active == set(inv), len(active ^ set(inv)))
-    last_ret = max(t for v in pk.sep.values() for t, m in v)
-    ok("SF3 no September return after 15:00 UTC on 25 September", last_ret <= datetime(2026, 9, 25, 15, 0, tzinfo=timezone.utc))
-    frames = set(records.FRAMES)
-    ok("SF4 no shipped closure ceased on a round's frame date", all(c[0] not in frames for c in pk.clos.values()))
-    ok("SF5 the September 2026 frame date is 1 September", pk.rounds["2026-09"]["frame"] == date(2026, 9, 1))
-    raw = {g: 100.0 * lad[g]["R"] / lad[g]["inv"] for g in regs}
-    ok("SF6 returns over every invited firm: a wrong call", bands(raw) != call["levels"])
-    ok("SF7 every settled estimate at least 0.25 points from both lines",
-       min(margin(x) for row in res["corridor"].values() for x in row.values()) >= 0.25)
-    ok("SF8 status at the round's end lands the same levels", all(V.band(row["end"]) == call["levels"][g]
-                                                                  for g, row in res["corridor"].items()))
-    ok("SF9 windows from 36 to 72 months land the same levels",
-       all(V.band(row["w%d" % w]) == call["levels"][g] for g, row in res["corridor"].items() for w in (36, 42, 48, 54, 60, 72)))
-    ok("SF10 by region, rounds silent and size band land the same levels",
-       all(V.band(row[k]) == call["levels"][g] for g, row in res["corridor"].items() for k in ("region", "k", "size")))
-    dup = {pid: v for pid, v in pk.sep.items() if len(v) > 1}
-    close = pk.rounds["2026-09"]["close_utc"]
-    ok("SF11 every September firm with two returns has both before the close",
-       len(dup) > 0 and all(t <= close for v in dup.values() for t, m in v))
-    rows_count = {}
-    sepv = pk.september()
-    for g in regs:
-        extra = sum(len(pk.sep[pid]) - 1 for pid in dup if inv[pid]["region"] == g)
-        R, n = sepv[g]["R"] + extra, len(sepv[g]["nr"])
-        rows_count[g] = 100.0 * R / (R + n * (1 - res["shares"]["settled"]))
-    ok("SF11b counting return rows instead of firms leaves every level", bands(rows_count) == call["levels"])
-    exact = {r["company_number"] for r in csv.DictReader(open(os.path.join(target, "brevland_business_register_closures.csv")))}
-    ok("SF12 main files carry the check-digit form only: an exact join and a core join agree",
-       all(re.fullmatch(r"\d{6}-\d", r["company_number"]) for r in inv.values()) and
-       {pid for pid, r in inv.items() if r["company_number"] in exact} ==
-       {pid for pid, r in inv.items() if V.core(r["company_number"]) in pk.clos})
-    import pypdf
-    std = " ".join(pg.extract_text() for pg in pypdf.PdfReader(os.path.join(target, "BCS_fieldwork_quality_standard_v3.pdf")).pages)
-    std = re.sub(r"\s+", " ", std)
-    ok("SF13 the standard's alert table: red under 55 goes into the extension, amber gets one extra email",
-       "under 55 per cent The region goes into the reminder-call extension" in std and "one extra email reminder" in std, std[:200])
-    ok("SF4b the standard files the scope sentence once", std.count("whether or not the Brevland Business Register yet records") == 1)
+# ---------------- A: unavailable hours under Schedule B ----------------
+Asla = S["A"]
+rec_w = np.array([[x if x is not None else np.inf for x in row] for row in W["received"]], float)
+late_w = rec_w - (np.arange(NH)[None, :] + 1) * 60.0
+avail_w = (late_w <= P.SLA_GRACE_MIN) & ~W["outage"]
+un_w = (NH - avail_w.sum(1) - W["outage"].sum(1))[wi]
+check("A1", (Asla["unavailable"] == un_w).all(), "unavailable hours equal the truth at every station")
+fin = late_w[np.isfinite(late_w)]
+check("A2", not ((fin > 13.5) & (fin < 20.5)).any(), "no receipt between 13.5 and 20.5 minutes: the 20-minute line "
+      "is clear")
+placed = sorted(tag[codes[k]] for spells in Asla["placed"].values() for k, _, _ in spells)
+check("A3", placed == sorted(W["spare"]), "each spell of a shop spare places at exactly one station: %s" % placed)
+secs = sorted({s_["section"] for s_ in reg["sites"]})
+spare_secs = sorted({reg["sites"][k]["section"] for spells in Asla["placed"].values() for k, _, _ in spells})
+check("A3", spare_secs == secs, "a spare spell in every maintenance section")
+check("A4", len({int(x) for x in Asla["unavailable"]}) >= 27, "unavailable hours are not one number repeated")
+avail_rate = 1 - Asla["unavailable"] / (NH - Asla["excluded"])
+check("A5", (avail_rate >= 0.975).sum() >= 10 and (avail_rate < 0.975).sum() >= 5, "stations either side of the "
+      "97.5 per cent service level: %d at or above, %d below" % ((avail_rate >= 0.975).sum(), (avail_rate < 0.975).sum()))
+import ceiling as CL  # noqa: E402
+crack_un = A.by_section(reg, CL.cracker_sla(TARGET, reg, M["val"]))
+gold_un = A.by_section(reg, Asla["unavailable"])
+check("A6", all(crack_un[x] != gold_un[x] for x in secs), "dropping the spares' messages moves every section's "
+      "unavailable station-hours: %s" % {x: gold_un[x] - crack_un[x] for x in secs})
 
-    # ------------------------------------------------------------------------------- the three rules
-    hdrs = {}
-    for f in os.listdir(target):
-        if f.endswith(".csv"):
-            with open(os.path.join(target, f), encoding="utf-8") as fh:
-                hdrs[f] = next(csv.reader(fh))
-    banned = re.compile(r"scope|eligib|trading_at|status_at|share|rate|alive|dead|imput|weight", re.I)
-    ok("R1a no shipped column holds the deciding quantity", not any(banned.search(h) for v in hdrs.values() for h in v),
-       hdrs)
-    ok("R1b the decisive computation reads the round outcomes and the register's two dates",
-       abs(pk.settled_share()[0]["all"] - sim_sh["settled"]) < 1e-12 and "registered" in hdrs[
-           "brevland_business_register_closures.csv"] and "ceased_trading" in hdrs["brevland_business_register_closures.csv"])
-    # R2: every Layer 1 item, mishandled, leaves the call
-    settled_rows = [(q, r) for q, rows_ in pk.out.items() for r in rows_ if pk.by_quarter[q]["frame"] <= V.SETTLED_LAST]
-    ok("R2a postal keying lag: every settled-round row has recorded_at equal to received_at",
-       all(r["recorded_at"] == r["received_at"] for q, r in settled_rows))
-    settled_out = [o for o in pan.outcomes if o["frame"] <= V.SETTLED_LAST and o["ret_day"] is not None]
-    ok("R2b overnight telephone transfer: every settled-round return carries its true reach time",
-       all(rec.ret[id(o)]["received"] == rec.ret[id(o)]["reach"] for o in settled_out))
-    late_close = 0
-    for q, r in settled_rows:
-        if not r["received_at"]:
+# ---------------- B: travel-lane freezing and ice hours ----------------
+B = S["B"]
+frz_w = np.zeros((NS, NH), bool)
+ice_w = np.zeros((NS, NH), bool)
+for (t, lane, ser, model, a, b, port) in W["sensors"]:
+    if lane != "travel lane":
+        continue
+    k = codes.index(P.SITE[t])
+    i = P.TAGS.index(t)
+    for h in range(a, b):
+        if not W["have"][i, h]:
             continue
-        t = V.ts(r["received_at"])
-        rnd = pk.by_quarter[q]
-        if rnd["close_utc"] < t <= datetime.combine(rnd["close"], datetime.min.time(), timezone.utc) + timedelta(hours=17):
-            late_close += 1
-    ok("R2c UTC read as Brevland time: no settled return falls between the two readings of the close", late_close == 0)
-    ok("R2d regional review: the settled share needs no region (blanking every region code leaves it)",
-       abs(pk.settled_share(key=lambda r, h, rnd: "all")[0]["all"] - res["shares"]["settled"]) < 1e-12)
-    ok("R2e reissued panel IDs: no settled-round panel ID has two holders",
-       all(len(holders[int(r["panel_id"])]) == 1 for q, r in settled_rows))
-    ok("R2f reissued panel IDs: every invited firm has one holder on the panel now",
-       all(sum(1 for h in holders[pid] if h["left"] is None) == 1 for pid in inv))
-    ok("R2g the settled share is the same with telephone returns timed from the call records or the database",
-       abs(pk.settled_share(phone_from_calls=False)[0]["all"] - res["shares"]["settled"]) < 1e-12)
-    quarters = set(pk.out)
-    ok("R2h round labels: every outcomes quarter maps to one calendar round",
-       all(sum(1 for v in pk.rounds.values() if v["quarter"] == q) == 1 for q in quarters))
-    ok("R3a analyst test: the register as it stands, every filed rule applied, files five red and seven amber",
-       bands({g: sim_res[g]["R1"] for g in regs}) != call["levels"] and len([g for g in regs if V.band(sim_res[g]["R1"]) ==
-                                                                            "red"]) == 5)
-    ok("R3b the decisive step alone (settled share) files the golden; each lower correction does not",
-       bands({g: sim_res[g]["golden"] for g in regs}) == call["levels"] and
-       all(bands({g: sim_res[g][k] for g in regs}) != call["levels"] for k in ("casro", "recent", "allr", "unob")))
-    per_round = defaultdict(Counter)
-    for q, rows_ in pk.out.items():
-        for r in rows_:
-            per_round[q][r["mode"] or "none"] += 1
-    sig = [tuple(sorted(v.items())) for v in per_round.values()]
-    ok("R3c no copied block: no two rounds share a return profile", len(sig) == len(set(sig)))
+        sv = W["surf"][(t, lane)][h]
+        f_ = (int(round(sv * 10)) / 10.0) * 9 / 5 + 32 if model == "IRS-31" else float("%.1f" % (sv * 9 / 5 + 32))
+        frz_w[k, h] = f_ <= 32.0 + 1e-9
+        ice_w[k, h] = W["status"][(t, lane)][h] in ("ice warning", "ice watch")
+check("B1", (B["freezing"] == frz_w.sum(1)).all() and (B["ice"] == ice_w.sum(1)).all(),
+      "freezing and ice hours equal the truth at every station")
+check("B2", B["duplicates"] > 0, "re-sent pavement rows (%d) counted once" % B["duplicates"])
+check("B3", len({int(x) for x in B["freezing"]}) >= 28 and len({int(x) for x in B["ice"]}) >= 25,
+      "freezing and ice hours vary by station")
+old_heads = sorted(ser for (t, lane, ser, model, a, b, port) in W["sensors"] if b < NH)
+check("B4", B["unregistered"] == old_heads, "the heads that came out are the export's only unregistered serials: %s"
+      % old_heads)
+old_secs = sorted({reg["sites"][reg["idx"][P.SITE[t]]]["section"] for (t, lane, ser, model, a, b, port)
+                   in W["sensors"] if b < NH})
+check("B4", old_secs == secs, "a replaced head in every maintenance section")
+cb = A.pavement(TARGET, reg, drop_unregistered=True)
+for meas in ("freezing", "ice"):
+    gsec, csec = A.by_section(reg, B[meas]), A.by_section(reg, cb[meas])
+    check("B5", all(gsec[x] != csec[x] for x in secs), "dropping the old heads' rows moves every section's %s "
+          "station-hours: %s" % (meas, {x: gsec[x] - csec[x] for x in secs}))
+# the pavement export's stamps carry their zone: each is one UTC hour of the winter, one per hour
+stamps = set()
+with open(A.fpath(TARGET, "pavement"), newline="", encoding="utf-8") as f:
+    for r in csv.DictReader(f):
+        stamps.add(r["obs_time"])
+st = sorted(A.utc_of_local(x) for x in stamps)
+inside = all(P.WIN_START_UTC < x <= P.WIN_END_UTC for x in st)
+check("B7", inside and len(set(st)) == NH, "every pavement stamp is one hour of the winter with its zone, one per hour")
+amb = []
+with open(A.fpath(TARGET, "outages"), newline="", encoding="utf-8") as f:
+    for r in csv.DictReader(f):
+        for col in ("starts", "ends"):
+            d_ = dt.datetime.strptime(r[col][:16], "%Y-%m-%d %H:%M")
+            if d_.date() in (dt.date(2026, 11, 1), dt.date(2027, 3, 14)) and 1 <= d_.hour <= 3:
+                amb.append(r["notice_no"])
+check("B7", not amb, "no planned outage starts or ends in a repeated or skipped local hour")
+fwh = [h for ser, h in W["fw_change"].items()]
+check("B6", all(W["utc"][h] < P.DST_ON_UTC and W["utc"][h] >= P.DST_OFF_UTC for h in fwh),
+      "every firmware change falls inside standard time, so the MST export and the local applied times agree")
 
-    # ------------------------------------------------------------------------------- the asks
-    A_, B_, C_ = res["A"], res["B"], res["C"]
-    st = A_["stops"]
-    ok("A1 calls placed: counting rows misses every region", all(st["calls_rows"][g] != A_["calls"][g] for g in regs))
-    ok("A2 calls placed: one call per firm a day misses every region", all(st["calls_firmday"][g] != A_["calls"][g] for g in regs))
-    ok("A3 calls placed: dropping the reloaded records but keeping transfer legs misses most regions",
-       sum(st["calls_noid"][g] != A_["calls"][g] for g in regs) >= 9)
-    ok("A3b calls placed: every outbound record counted misses every region",
-       all(st["calls_outbound_rows"][g] != A_["calls"][g] for g in regs))
-    ok("A3c firms reached: outbound records only miss every region",
-       all(st["reached_outbound"][g] != A_["reached"][g] for g in regs))
-    ok("A4 firms reached: respondent codes only miss every region", all(st["reached_resp"][g] != A_["reached"][g] for g in regs))
-    ok("A5 firms reached: the bank's own records only miss every region",
-       all(st["reached_bcb"][g] != A_["reached"][g] for g in regs))
-    fields = ("team", "direction", "panel_id", "company_number", "region", "agent", "started_at", "duration_s", "outcome")
-    seprec = [r for r in pk.calls if r["round"] == "2026-09"]
-    keyc = Counter(tuple(r[f] for f in fields) for r in seprec)
-    dups = {k: n for k, n in keyc.items() if n > 1}
-    ok("A6 every reloaded record duplicates a 22 September contractor record, and nothing else duplicates",
-       len(dups) == rec.replay_n and all(n == 2 and k[0] == "OVF" and V.local_date(V.ts(k[6])) == records.REPLAY_DAY
-                                         for k, n in dups.items()))
-    ok("A7 the reload reaches every region", len({inv[pk.inv_by_core[V.core(k[3])]]["region"] for k in dups}) == 12)
-    inb = [r for r in seprec if r["direction"] == "in"]
-    ok("A8 inbound calls: all at the bank's own desk, none on the close day", all(r["team"] == "BCB" for r in inb) and
-       all(V.local_date(V.ts(r["started_at"])) != date(2026, 9, 25) for r in inb) and len(inb) > 0)
-    ok("B1 late returns: received_at as loaded misses every region",
-       all(B_["stops"]["late_received_at"][g] != B_["late"][g] for g in regs))
-    ok("B2 late returns: recorded_at misses every region", all(B_["stops"]["late_recorded_at"][g] != B_["late"][g] for g in regs))
-    ie = pk.interview_ends("2026-06")
-    june_phone = [r for r in pk.out["2026Q2"] if r["mode"] == "phone"]
-    ok("B3 every June telephone return has its interview in the call records, ending before its database load",
-       all(int(r["panel_id"]) in ie and ie[int(r["panel_id"])] < V.ts(r["received_at"]) for r in june_phone))
-    ok("B4 late shares sit clear of a rounding edge", all(abs((100.0 * B_["late"][g] / B_["returns"][g] * 10) % 1 - 0.5) > 0.02
-                                                          for g in regs))
-    groups = [g for g, _ in W.GROUPS]
-    ok("C4 recruited: reading Rev. 2.1 sections as survey groups misses J, M and N",
-       all(C_["stops"]["recruited_letters"][g] != C_["recruited"][g] for g in ("J", "M", "N")))
-    ok("C5 recruited: counting from the invitation lists misses most groups",
-       sum(C_["stops"]["recruited_invited"][g] != C_["recruited"][g] for g in groups) >= 7)
-    ok("C5b recruited: counting register rows misses most groups",
-       sum(C_["stops"]["recruited_rows"][g] != C_["recruited"][g] for g in groups) >= 5)
-    ok("C5c recruited: dropping every withdrawal before the first round misses most groups",
-       sum(C_["stops"]["recruited_kept"][g] != C_["recruited"][g] for g in groups) >= 7)
-    ok("C5d every duplicate recruitment record shares its company with another 2026 recruit and left before March",
-       all(d_["core"] == d_["duplicate_of"]["core"] and d_["left"] < date(2026, 3, 1) for d_ in rec.dups
-           if d_["joined"] == records.REFRESH_2026))
-    ok("C6 returned at least once: leaving out September misses every group",
-       all(C_["stops"]["returned_no_september"][g] != C_["returned"][g] for g in groups))
-    ok("C7 returned at least once: any return under the panel ID misses most groups",
-       sum(C_["stops"]["returned_any_id"][g] != C_["returned"][g] for g in groups) >= 7)
-    reissued = [pid for pid, hs in holders.items() if len(hs) > 1]
-    ok("C8 every reissued ID's earlier holder came from the 2024 expansion and left before July 2025",
-       all(min(holders[p], key=lambda h: h["recruited"])["wave"] == "2024 expansion" and
-           min(holders[p], key=lambda h: h["recruited"])["left"] < date(2025, 7, 1) for p in reissued))
-    # separation: the September receipts carry true reach times
-    sep_phone = [(pid, t) for pid, v in pk.sep.items() for t, m in v if m == "phone"]
-    ie9 = pk.interview_ends("2026-09")
-    ok("D3 September telephone returns carry the interview end", all(ie9.get(pid) == t for pid, t in sep_phone), len(sep_phone))
-
-    # ------------------------------------------------------------------------------- input gates and distractors
-    files = sorted(os.listdir(target))
-    fmts = {f.rsplit(".", 1)[1] for f in files}
-    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
-    meta = json.load(open(os.path.join(os.path.dirname(target), "metadata.json")))
-    ok("IG1 ten or more files, three or more formats", len(files) >= 10 and len(fmts) >= 3, (len(files), fmts))
-    ok("IG2 a file of 25,000 rows or more", big >= 25000, big)
-    ok("IG3 two or more distractors named in metadata.json", len(meta["distractor_files"]) >= 2 and
-       all(f in files for f in meta["distractor_files"]))
-    tmp = tempfile.mkdtemp()
-    try:
-        t2 = os.path.join(tmp, "t")
-        shutil.copytree(target, t2)
-        for f in meta["distractor_files"]:
-            os.remove(os.path.join(t2, f))
-        r2 = V.compute(t2)
-        same = (V.call_from(r2["ladder"]) == call and r2["A"]["calls"] == A_["calls"] and r2["A"]["reached"] == A_["reached"]
-                and r2["B"]["late"] == B_["late"] and r2["C"]["returned"] == C_["returned"] and
-                r2["C"]["recruited"] == C_["recruited"])
-    finally:
-        shutil.rmtree(tmp)
-    ok("IG4 deleting the distractors changes no answer", same)
-    from openpyxl import load_workbook
-    dwb = load_workbook(os.path.join(target, "BCS_data_dictionary.xlsx"), read_only=True)
-    listed = {r[0] for r in dwb["Files"].iter_rows(min_row=2, values_only=True) if r[0]}
-    ok("IG6 the dictionary names every other shipped file", listed == set(files) - {"BCS_data_dictionary.xlsx"},
-       listed ^ (set(files) - {"BCS_data_dictionary.xlsx"}))
-    late_clos = [pid for pid, r in inv.items() if V.core(r["company_number"]) in pk.clos
-                 and pk.clos[V.core(r["company_number"])][0] > V.FRAME]
-    ok("SF4c no invited firm's register closure has it trading on the frame date", not late_clos, late_clos)
-    man = json.load(open(os.path.join(target, "export_manifest.json")))
-    ok("IG5 the manifest names every other shipped file", {x["file"] for x in man["files"]} == set(files) - {"export_manifest.json"})
-
-    # ------------------------------------------------------------------------------- realism sweep
-    inv_n = Counter(r["region"] for r in inv.values())
-    ok("RS1 no two regions invite the same number of firms", len(set(inv_n.values())) == 12)
-    ok("RS2 no round headline totals", sum(inv_n.values()) % 100 != 0 and round(res["shares"]["settled"] * 1000) % 10 != 0)
-    ok("RS3 no two regions have the same late-return count and share",
-       len({(B_["late"][g], B_["share"][g]) for g in regs}) == 12)
-    allowed = {"BCS_round_calendar.xlsx"}
-    limit = datetime(2026, 9, 25, 23, 59, tzinfo=timezone.utc)
-    future = set()
-    for f in files:
-        if f.endswith(".csv"):
-            txt = open(os.path.join(target, f), encoding="utf-8").read()
-            for m in re.findall(r"\d{4}-\d\d-\d\d(?:T\d\d:\d\d:\d\dZ)?", txt):
-                tt = datetime.fromisoformat(m.replace("Z", "+00:00")) if "T" in m else \
-                    datetime.combine(date.fromisoformat(m), datetime.min.time(), timezone.utc)
-                if tt > limit:
-                    future.add(f)
-                    break
-    ok("RS4 no record dated after the extract outside the calendar", future <= allowed, future)
-    dash = []
-    for f in files:
-        p = os.path.join(target, f)
-        if f.endswith((".csv", ".json")):
-            if "\u2014" in open(p, encoding="utf-8").read() or "\u2013" in open(p, encoding="utf-8").read():
-                dash.append(f)
-        elif f.endswith((".xlsx", ".pptx")):
-            with zipfile.ZipFile(p) as z:
-                if any("\u2014".encode() in z.read(n) or "\u2013".encode() in z.read(n) for n in z.namelist()):
-                    dash.append(f)
-    for f in os.listdir(golden_dir):
-        with zipfile.ZipFile(os.path.join(golden_dir, f)) as z:
-            if any("\u2014".encode() in z.read(n) or "\u2013".encode() in z.read(n) for n in z.namelist()):
-                dash.append(f)
-    ok("RS5 no em or en dash in any shipped or golden file", not dash, dash)
-    import postprocess
-    sc = postprocess._scrubber()
-    bad = []
-    for d_ in (target, golden_dir):
-        for f in os.listdir(d_):
-            if f.endswith((".xlsx", ".pdf", ".pptx")):
-                names, out_band = sc.audit(os.path.join(d_, f), postprocess.FLOOR, postprocess.CEILING)
-                if names or out_band:
-                    bad.append((f, names, out_band))
-    ok("RS6 no writer signature or out-of-band stamp in any document", not bad, bad)
-    card = json.load(open(os.path.join(os.path.dirname(os.path.dirname(target)), ".claude", "skills", "fingerprint", "cards",
-                                       "task231.json")))
-    ok("RS7 every persona comes from the card", set(W.PEOPLE.values()) <= set(card["world"]["people"]))
-    ok("RS8 no artifact states a response rate, closure share or alert level for the round",
-       not any(re.search(r"response.?rate|alert", h, re.I) for v in hdrs.values() for h in v))
-    return out
+# ---------------- I: input gates and the realism sweep ----------------
+files = sorted(os.listdir(TARGET))
+check("I1", len(files) >= 10 and set(files) == set(P.FILES.values()), "%d files" % len(files))
+check("I2", len({os.path.splitext(f)[1] for f in files}) >= 3, "formats %s" % sorted({os.path.splitext(f)[1]
+                                                                                     for f in files}))
+big = max(sum(1 for _ in open(os.path.join(TARGET, f), encoding="utf-8")) for f in files if f.endswith(".csv"))
+check("I3", big >= 25000, "largest csv %d rows" % big)
+meta = json.load(open(os.path.join(TASK, "metadata.json")))
+check("I4", len(meta["distractors"]) >= 2 and all(d["name"] in files for d in meta["distractors"]), "distractors named")
+check("I5", not any(re.search(r"readme|dictionary|manifest|notes|schema|field_guide", f, re.I) for f in files),
+      "no file describes the data")
+from openpyxl import load_workbook  # noqa: E402
+sheets = []
+for f in files:
+    if f.endswith(".xlsx"):
+        sheets += load_workbook(os.path.join(TARGET, f), read_only=True).sheetnames
+check("I5", not any(re.search(r"readme|notes|dictionary|about|how to", s, re.I) for s in sheets), "sheets %s" % sheets)
+setting = dt.datetime(2027, 5, 18, 23, 59)
+with zipfile.ZipFile(os.path.join(TASK, "target.zip")) as z:
+    stamps = [dt.datetime(*zi.date_time) for zi in z.infolist()]
+check("I6", max(stamps) <= setting, "zip stamps no later than the setting")
+pdfs = [f for f in files if f.endswith(".pdf")]
+pdf_ok = all(b"ReportLab" not in open(os.path.join(TARGET, f), "rb").read() for f in pdfs)
+check("I6", pdf_ok, "no toolchain banner in the PDFs")
+alltext = ""
+for f in files:
+    if f.endswith((".eml",)):
+        alltext += open(os.path.join(TARGET, f), encoding="utf-8").read()
+tells = re.findall(r"\b(leverage|robust|comprehensive|seamless|delve|ensure|furthermore)\b", alltext, re.I)
+check("I7", not tells, "no LLM tells in the request")
+from collections import Counter  # noqa: E402
+big_w = Counter(int(x) for x in M["withheld"] if x >= 20)
+fr_in = [int(M["fr"][k]) for k in gold]
+check("I8", max(big_w.values()) <= 2 and len(set(fr_in)) == len(fr_in), "no withheld count shared by three stations, "
+      "no two re-tuned stations with the same false-rejection hours")
+dist_free = A.main_call(TARGET)
+check("I9", dist_free["retune"] == M["retune"], "the call is computed without either distractor")
+fig = json.load(open(os.path.join(HERE, "figures.json")))
+check("I10", fig["retune_count"] == len(gold) and fig["winter_hours"] == NH, "figures.json agrees")
+nfail = sum(1 for _, ok, _ in RES if not ok)
+print("checks: %d, failures %d" % (len(RES), nfail))
+sys.exit(1 if nfail else 0)

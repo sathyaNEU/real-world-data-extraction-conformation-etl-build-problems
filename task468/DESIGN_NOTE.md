@@ -1,358 +1,225 @@
-# task468 design note: the 2027 hospital quality bonus, on deaths the linkage found and the deaths it missed
+# task468 design note: Glenbrae Water's 2026 trade waste COD masses, converted from TOC on the samples' own chloride
 
-Status lives in `pipeline.json`; this note holds the design of architecture 4, drawn fresh on 2026-10-20 under the
-author's rule (no task is retired; a spent architecture is re-rooted until one ships). Read `## Tried and rejected`
-first: architectures 1 (transit nominations), 2 and 3 (specialty pharmacy staffing) are spent, each to an isolated reader
-who took the careful construction the record displayed.
+Status lives in `pipeline.json`; this note holds the design of architecture 6, drawn on 2026-11-01 as a batch 1
+re-root. Read `## Tried and rejected` first: architectures 1 to 4 (transit nominations, specialty pharmacy staffing, a
+Medicaid plan's linkage-corrected mortality bonus) and architecture 5 (Harrowmere's repeat-sales pressured wards, sent
+back by its stage 4 judge) are spent. Nothing of their worlds is kept.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task468.json` (architecture v4), registered 2026-10-20 after a pull. Guard
-  check WARN only after redrawing four blocked axes: the organisation family (government_agency, against task248 and
-  task177: the decision moved from the state Medicaid agency to a nonprofit Medicaid health plan), the role family
-  (policy_adviser, against task177: finance_controller), the forcing event (purchase_order_or_contract, against task177:
-  the plan's statutory filing of its 2027 value-based arrangements) and the decisive generator (G12 with population and
-  method selection is spent in task268 v2 and five older builds: G3, a link record is not a death, ahead of G12 and
-  G14), with differentiation lines against task126 v1, task450 v1 and task469. WARNs answered: method_or_model_selection
-  repeats task271 and is the Gate G of 9 of the last 12 builds (the decisive move is an estimator the record's two
-  control groups force, and no other Gate G is honest); the persona first name Nathan appears in task181.
-- **Pairing:** Healthcare Delivery & Health Economics / payment-claims-health-plan-analytics / Data Extraction &
-  Conformation (ETL). The plan's measure dataset is conformed from sources never designed to join: its own inpatient
-  claims extract (one row per bill, replacements and voids, a claims platform change on 1 January 2026), the delegated
-  Carrisford Medical Group's encounter file (pipe-delimited, its own member numbers, MM/DD/YY dates, replacements and
-  deletions), the enrollment extract, the members' service lines, the state Office of Vital Records' death linkage
-  return, the plan's HIMM 3.2 risk scores and the network hospital list; the call turns on what that dataset says each
-  hospital's 30-day deaths were.
-- **Shape:** 10, a scorecard: each of 14 network hospitals' fiscal 2026 mortality ratio (deaths over expected deaths)
-  against the bonus line of 1.15. Criteria: the count and the set (1), each hospital's verdict (14), the chart's parts
-  (the ratios, the line, the losers marked: 3), each hospital's bonus at stake (14), the network total (1) and the file
-  (1): 34.
-- **Strategy:** other (a linked outcome count corrected for the linkage's own false links and missed links, each
-  measured on a control group inside the record), decisive generator G3 (a link record is not a death), with G12 (no link
-  is not survival) and G14 (the error rates are conditional on the member's identifier class).
-- **World:** the United States, an unnamed state that covers adults regardless of immigration status through Medicaid
-  managed care, so members can be enrolled without a Social Security number. Halbrook Community Health Plan, a nonprofit
-  Medicaid plan, pays each of its 14 network hospitals a Hospital Quality Bonus of 2 per cent of inpatient payments in
-  contract year 2027 unless the hospital's ratio for fiscal 2026 index admissions (July 2025 to June 2026) exceeds 1.15
-  (specification 5.2). Deaths after discharge reach the plan through its own later bills and the state Office of Vital
-  Records' probabilistic linkage of plan members to the state death file (SSN pass, then name, date of birth and sex).
-  Varden Surgical Hospital's members without a number are young workers in for surgery or an injury, carrying the
-  commonest surnames in the plan; Mercy Valley Medical Center runs the region's dialysis program, and its members
-  without a number carry two-part surnames and die often; Brannock Medical Center's members without a number are mostly
-  two-part surnames too. Personas from `guard.py names --geo "United States" --seed 468`: Wendy James (Vice President,
-  Provider Contracting and Payment, who owns the call), Nathan Hawkins (the plan's quality measurement analyst) and Eric
-  Thomas (manager of the Office of Vital Records Linkage Unit).
-- **Forcing fact:** the plan files its 2027 value-based payment arrangements with the state by 1 November 2026; the
-  bonus is set on the fiscal 2026 index admissions, whose last 30-day window closed on 30 July 2026, with claims paid
-  through 30 September 2026 and the Office's return of 7 October 2026. The call faces forward (who is paid the 2027
-  bonus); its quantity is the closed fiscal 2026 year, which the bonus terms name as the basis (retrospective, with its
-  reason: a pay-for-performance bonus is earned on a closed measurement year).
-- **Forum and forcing event:** executive_team, statutory_or_regulatory_filing; organisation other (a nonprofit Medicaid
-  health plan); role finance_controller.
-- **Data-native sentence:** the linkage keys a member to the death file by Social Security number when the enrollment
-  file has one and by name, date of birth and sex when it does not, so for the members enrolled without one it links
-  living members with common names to other people's deaths and misses deaths for members whose surnames are written
-  in two parts; Varden's young workers without a number carry the commonest surnames and rarely die, and Mercy Valley's
-  and Brannock's members without a number carry two-part surnames, so one hospital's ratio is inflated by deaths that
-  did not happen and the others' deflated by deaths the linkage never found, and the plan's own records show both
-  errors only for the members whose later claims or bills happen to.
-- **The WHAT screen.** Population: the measure's index admissions at each hospital (specification 2.1 to 2.4); outcome:
-  death from any cause on or before day 30 after the admission date, in hospital or after discharge (3.1; a hospital's
-  deaths are the number of its index admissions that end in death, 3.2, the event and not a source); window: fiscal 2026
-  admissions; unit: deaths over the sum of HIMM 3.2 scores (4, 5.1); comparison: each hospital against 1.15 (5.2). The
-  decisive step settles none of them: it is how the deaths after discharge are estimated from a linkage the Office says
-  errs both ways (HOW, forced by the data's structure: links on members whose later records show them alive, and
-  deaths the bills record that the linkage did not find, both varying with the member's identifier class).
-- **Sources, one line each:**
-  - `stumping/references/client/layer2-rigor-patterns.md`, payment-claims: outcome ascertainment through linkage; here
-    the correction is the epidemiologist's misclassification estimator (the share linked among known deaths, the share
-    linked among the known living), stratified by what drives the linkage's error, which no build on file carries.
-  - task456 (three capacity feeds' miss and false-flag rates identified by agreement) and task455 v1 (an error matrix
-    from a medical examiner's review): both correct a classified count for its errors; here the errors are measured on
-    control groups the claims system creates by itself, and the decisive move is the stratification the error rates
-    need, not the identification of the rates.
-  - `dataset-generation/references/layer1-messiness.md`: two payers' layouts, replacements and voids, a platform change,
-    an NPI change, dates in four formats, a member crosswalk; each asserted neutral on the call.
+- **Card:** `.claude/skills/fingerprint/cards/task468.json`, architecture v6, registered 2026-11-01T01:02:25Z after a
+  pull; `guard.py check` PASS on the filed card. The first filings were refused on the window and redrawn honestly:
+  shape 10 (task231), pattern G4 (task146), G14 and the statutory filing (task445 v3, registered minutes earlier),
+  purchase order or contract (task145), G16 and G6 (same-puzzle and same-driver records); architecture 5 and the
+  earlier four are in the card's lineage.
+- **Pairing:** Physical & Environmental Sciences / emissions-inventory (serves ETL and DD) / Data Extraction &
+  Conformation (ETL). Healthcare delivery and survey research are spent for this slot; education's equating cell
+  carries task445 v3 (registered this hour) and three in-cell builds. The inventory is a utility's releases to sewer:
+  each trade waste customer's mass of chemical oxygen demand discharged in 2026, conformed from two laboratory
+  systems, hourly flow telemetry and the field job log.
+- **The ETL move:** conform a year of measurements made on two bases onto the agreement's reference basis. From
+  2 February 2026 the laboratory reports total organic carbon in place of dichromate COD; the policy makes the COD of
+  a TOC sample the COD the reference method would have reported, estimated from the samples tested both ways in the
+  October to December 2025 parallel run.
+- **World:** Glenbrae Water, a fictional regional water and sewerage utility in south-east Queensland, its trade
+  waste unit and its laboratory; its industrial customers, among them Coolabah Olives (an olive and pickle packer),
+  Tallowood Tannery, Mt Edwin Cheese, Glenbrae Meats (an abattoir), Riverbend Poultry and Sunvale Dairy Ingredients.
+- **Furniture:** forum customer_or_counterparty (the review notices go to the customers), forcing event
+  audit_or_inspection (the state regulator's audit of the trade waste programme in March 2027), organisation
+  utility_or_infrastructure; none repeats the last three builds.
+- **Personas** (`guard.py names --geo au --seed 468`): Erik Marks, Trade Waste Manager; Mitchell Boyd, Laboratory
+  Manager; Brent Fisher, Field Services Coordinator (the first draw's Diane sat in an older build and was redrawn).
+- **Retrospective quantity, forward call:** the agreement reviews and the regulator's audit fall in 2027; the test
+  reads the closed 2026 discharge year, as the policy files it.
+
+- **Shape other (a designation over a scorecard):** each customer's verdict against its limit (12), the set (1), the
+  chart's parts (the shares, the limit line, the exceeders marked: 3), the files (2), and the two asks (16 tankered
+  waste cells, 12 suspended solids masses).
+- **Data-native sentence:** Coolabah Olives brines its fruit in salt and Tallowood Tannery salts its hides, so their
+  effluent carries five to twelve grams of chloride a litre, which the dichromate COD test oxidises with the carbon
+  and the TOC analyser never sees; Mt Edwin Cheese started recovering its whey brine in May 2026 and Tallowood took
+  salted hides from a new supplier from March, so their chloride is not what their 2025 parallel samples carried.
+- **Abstraction sentence (tested against every approved build):** a quantity reported on a new measurement basis is
+  converted to the reference basis through the samples both bases measured, but the reference basis also reads a
+  constituent the new basis cannot see, at levels that differ between senders and that moved for some of them after
+  the overlap, so only a conversion carrying each sample's own level of the constituent places every sender.
+
+## Survivor anatomy
+
+Actor: the deciding property, how much of each 2026 sample's dichromate COD is chloride's demand, has no column in any file; LabWare reports TOC and chloride side by side, the policy names no constituent, and the property exists only as a relation the parallel samples carry between COD, TOC and chloride.
+Link: no key or sentence ties chloride to the conversion: the policy's section 5 asks for the COD the reference method would have read, estimated from the samples tested both ways, and chloride sits in both laboratory exports for its own reason (every compliance sample carries it), with no document naming it beside COD or TOC.
+Reflex: the field's method for a TOC to COD bridge is a COD to TOC ratio, pooled or, better practice, each site's own ratio from its parallel samples (the site-specific correlation laboratories issue); the pooled ratio and the pooled regression file Glenbrae Meats, Riverbend Poultry and Sunvale Dairy, each customer's own ratio files Coolabah Olives, Mt Edwin Cheese, Glenbrae Meats and Riverbend Poultry.
+Back-test: the site-specific ratio validates on the parallel run itself: each customer's own ratio reproduces its own October to December 2025 COD within its method noise, so nothing in the overlap refutes it; only the 2026 chloride, which moved for Mt Edwin and Tallowood, shows it no longer holds.
+Second use: every file the decisive step reads sits in the pack for its own reason: the legacy LIMS export carries the January COD and the parallel run the policy names, LabWare carries the TOC and the suspended solids the second ask needs, and deleting the decisive step leaves both in the pack.
+Shock: the customers whose verdict the decisive step moves are not the largest dischargers (Glenbrae Meats and Sunvale Dairy discharge more), Mt Edwin's 2026 COD to TOC ratio falls from 4.6 to about 3.3, and the golden set is not the top of any one-column sort (COD per kilolitre, TOC mass, chloride level or volume; asserted in checks.py).
+Pins: the WHAT sits in the policy (the calendar year in Queensland time, both meters across an exchange, the volume-weighted mass, duplicates out, re-issued results replacing, half the reporting limit, the COD the reference method would have read estimated from the samples tested both ways, a limit exceeded when the mass is greater); no filed sentence names chloride, an interference, a factor or a model.
 
 ## Default path
 
-1. Conform Halbrook's inpatient claims and Carrisford's encounters into stays (voided and deleted bills out, each stay
-   as last corrected, Carrisford member numbers through the enrollment file, both of Mercy Valley's NPIs), and keep the
-   index admissions of specification 2.1 to 2.4.
-2. Sum each hospital's HIMM 3.2 scores for the expected deaths.
-3. Count each index admission's death within 30 days: patient status 20 on the stay or a stay continuing it, and the
-   Office's linkage return for the deaths after discharge.
-4. The careful analyst's reflexes, since the Office says it misses deaths and links members to deaths not theirs: add
-   the deaths later bills record (status 20 inside the 30 days) that the linkage did not return, and drop each link a
-   later service line, admission or live discharge contradicts.
-5. Divide each hospital's deaths by its expected deaths and withhold the bonus above 1.15.
+1. Conform the two laboratory exports (the crosswalk, LabWare's UTC to Queensland time, duplicates out, re-issued results in) and the flow telemetry (both meters across each exchange, the job log's final and opening reads).
+2. Convert each 2026 TOC sample to COD with each customer's own COD to TOC ratio from its October to December 2025 parallel samples (the site-specific correlation).
+3. Apply the policy's mass formula: the year's volume times the volume-weighted mean COD of the year's samples, January on the measured COD.
+4. Compare each customer's mass with its agreement's limit.
 
-Ends on: four hospitals lose the bonus, Varden, Calloway, Northgate and Westover (Varden at 1.33), while Mercy Valley
-(1.05) and Brannock (1.03) keep it.
-Golden: each hospital's deaths after discharge corrected class by class (Social Security number on file; otherwise a
-single or a two-part surname): among the index admissions neither recorded dead nor seen alive after day 30, the links
-less the false links expected at the share of the class's living members linked, divided by the class's share of
-recorded deaths linked less that false-link share; five lose it, Calloway (1.33), Mercy Valley (1.30), Northgate
-(1.55), Brannock (1.25) and Westover (1.45), and Varden keeps it (1.03).
+Ends on: Coolabah Olives, Mt Edwin Cheese, Glenbrae Meats and Riverbend Poultry over their limits (Tallowood Tannery under)
+Golden: Coolabah Olives, Tallowood Tannery, Glenbrae Meats and Riverbend Poultry over their limits (Mt Edwin Cheese under)
 
 ## Stump sentence
 
-The default path counts each hospital's recorded deaths and the Office's links, adds the deaths later bills record and
-drops the links later claims contradict, and files four losers with Varden at 1.33 and Mercy Valley (1.05) and
-Brannock (1.03) keeping the bonus, because for members enrolled without a Social Security number the linkage links
-living members with common names to other people's deaths and misses the deaths of members with two-part surnames, and
-those repairs reach only the members whose later records happen to show the error; corrected class by class at the
-rates the recorded deaths and the living members measure, Varden keeps the bonus and Mercy Valley and Brannock lose
-it, five losers in all.
+The default path conforms both laboratory systems and the meters, converts each 2026 TOC result to COD with each customer's own COD to TOC ratio from its parallel samples and files Coolabah Olives, Mt Edwin Cheese, Glenbrae Meats and Riverbend Poultry; the step that lands it there is taking a customer's 2025 ratio as its conversion, when the dichromate test also oxidises the chloride brine effluents carry and TOC never sees, Mt Edwin cut its chloride with brine recovery in May 2026 and Tallowood's rose with salted hides from March, so with COD estimated on each sample's own TOC and chloride Tallowood is over its limit and Mt Edwin under.
 
 ## Three rules
 
-Task type: payment-claims-health-plan-analytics: a Medicaid plan's claims, a delegated group's encounters, enrollment, service lines and the state's death linkage conformed into a hospital outcome measure, a task type serving Data Extraction & Conformation (ETL).
-
-Domain test: the deciding quantity is each hospital's 30-day mortality ratio, deaths over expected deaths, where the deaths after discharge come from a probabilistic linkage to vital records, and the field's estimator corrects a linked outcome count for linkage error (the share of true deaths found and the share of the living falsely linked, each measured on a validation group and applied within the strata that drive the error, as outcome-ascertainment studies do); counting links, or repairing only the links the records contradict, moves three hospitals.
-
-Swap: "which schools lose a grant on the students who left without a diploma, as a state's enrollment records link them" keeps a count from a linkage but loses why it moves: no risk-adjusted 30-day mortality, no deaths the hospitals' own bills record as a validation group, no Social Security number missing by coverage rule, and no two-part surnames among a dialysis program's patients.
-
-Layer 1: Halbrook's claims extract with replacements (0117) and voids (0118) and a platform change on 1 January 2026; Carrisford's pipe-delimited encounters with its own member numbers, MM/DD/YY dates, replacements and deletions; Mercy Valley's NPI change; transfers forming one stay; deliveries, children and discharges against advice to leave out; risk scores keyed by member, date and NPI; four date formats. Each is the systems as they run, and each handled the wrong way leaves the five losers unchanged (checks.py SF1 to SF7).
-
-Layer 2: estimation_fit: the linked deaths corrected for the linkage's false links and missed links at rates measured on two control groups inside the record (the deaths the bills record, the members whose later records show them alive), stratified by the member's identifier class.
-
-Decisive step: estimating each hospital's deaths after discharge class by class from the links among the admissions no control reaches, removing the false links the class's living members show and dividing by the share of deaths the class's recorded deaths show the linkage finds, instead of counting the links, repairing only the contradicted ones, or correcting at a network or match-pass rate.
-
-Not semantics: every field and code read correctly (patient status 20, the replacements and voids, the linkage's passes, the enrollment's missing numbers, the specification's death within 30 days of admission, and the Office's sentence that its linkage misses deaths and links members to deaths not theirs) still leaves the careful route repairing the visible errors and filing Varden, Calloway, Northgate and Westover, because nothing marks which remaining links are false or which unlinked members died.
-
-Not rule application: the specification fixes the index admissions, the outcome, the expected deaths and the 1.15 line; no rule or procedure says how deaths after discharge are estimated from an imperfect linkage, and executing every filed rule with the linked and recorded deaths files four losers with Varden among them, so the step no rule performs is the correction and its stratification.
-
-Analyst test: a strong analyst who conforms both payers' stays, applies every specification rule, adds the deaths later bills record and drops the links later claims contradict files four losers, Varden (at 1.33), Calloway, Northgate and Westover, with Mercy Valley (1.05) and Brannock (1.03) keeping the bonus (the default path's Ends on); correcting the links class by class at the control groups' rates files five, Calloway, Mercy Valley, Northgate, Brannock and Westover.
-
-Estimand: the Hospital Quality Bonus measure specification (2.1 to 2.4 the index admissions; 3.1 and 3.2 a hospital's deaths are the number of its index admissions whose member died, of any cause, by day 30 after admission; 4.1 and 4.2 expected deaths the sum of HIMM 3.2 scores; 5.1 and 5.2 deaths over expected, over 1.15 loses), in HCHP_Hospital_Quality_Bonus_2027_Measure_Specification.pdf.
-
-No decoy: nothing is planted; the claims, encounters, enrollment and service lines are the systems' extracts as delivered, the linkage return and its methods note are the Office's own, the note's one sentence on error is the honest statement every linkage carries and gives no size, class or direction, and no memo, draft, dashboard or briefing ranks the hospitals on mortality or argues a method.
-
-No certified replay: no published or certified mortality figure ships; the quality dashboard's readmission ratios (a distractor) measure another outcome on other stays and rank nothing the call reads.
-
-Lesson: a linked outcome count is a classification with errors that vary with how well each record can be linked, so it is estimated, not counted, from the records' own validation groups within the strata that drive the error; repairing the errors you can see leaves the ones you cannot, which no build on file teaches.
+Task type: emissions-inventory (Physical & Environmental Sciences), which serves ETL: a utility's releases to sewer conformed from two laboratory systems, hourly meter telemetry across three meter exchanges and a field job log onto the agreements' reference basis.
+Domain test: the quantity that decides is each customer's mass of chemical oxygen demand discharged in 2026 on the dichromate reference method, the trade waste chemist's own load, and its conversion from TOC turns on how the dichromate test responds to chloride, which a water chemist knows and a reader of the files must find in the parallel samples.
+Swap: put hospitals' bed-days or a utility's megawatt-hours in place of effluent and there is no oxidant demand, no interfering ion, no parallel run of two methods and no conversion to carry; the task does not survive the swap.
+Layer 1: two laboratory exports in different layouts, codes and clocks (local before the migration, UTC after), a site code crosswalk, quality-control duplicates and re-issued results under suffixed identifiers, suspended solids below the reporting limit, hourly cumulative registers across three meter exchanges whose final and opening reads live only in the field job log, limits in tonnes for some agreements and kilograms for others, a receival log and the state's manifests in two systems' keys; each comes from the system that keeps it and every careful handling of it leaves the call.
+Layer 2: estimation_fit, a method bridge validated on its overlap: the reference method's reading carries a component the new method cannot see, so the conversion is a model of the reference reading on the new reading and the interfering constituent, fitted on the parallel samples and carried to each 2026 sample's own chloride.
+Decisive step: estimating each 2026 sample's dichromate COD from its own TOC and chloride through a regression on the October to December 2025 parallel samples, instead of a ratio per customer or for all.
+Not semantics: every field, code and unit read correctly still leaves the ratio routes, because no field marks chloride as part of COD; the residuals of any TOC-only conversion track chloride (correlation 0.98 on the parallel samples, asserted) and that relation exists only across the three columns.
+Not rule application: no filed rule names chloride, a factor or a model, so executing the policy on any defensible conversion runs; the enumerated family (a pooled ratio, a pooled regression on TOC, each customer's own ratio by sum or median, each customer's own regression, the chloride regression with or without a constant or weighted by the inverse square) files three answers: the pooled routes' three customers, the per-customer routes' four with Mt Edwin, and the golden four with Tallowood; the standing family (the chloride members) agrees on the golden four with every customer at least 6.4 per cent from its limit, and the ruling-out is done by the parallel samples' residuals and the 2026 chloride.
+Analyst test: a strong analyst who conforms both laboratory systems and the meters, applies every policy rule and converts with each customer's own parallel-run ratio files Coolabah, Mt Edwin, Glenbrae Meats and Riverbend; every field is read and every rule executed, and the call is wrong because Mt Edwin's and Tallowood's 2026 chloride is not what their 2025 ratios carried.
+Estimand: glw_trade_waste_policy_v4.pdf sections 2 to 6: population, every customer with an agreement in force for 2026; outcome, the mass of COD on the dichromate reference method discharged in the year; window, the 2026 calendar year in Queensland time; unit, the customer; comparison, greater than the agreement's annual limit.
+No decoy: nothing is planted to be caught: no memo, factor or published conversion argues any route; the brine customers' chloride is their own process's, recorded on every sample, and the changes are ordinary process changes the samples show.
+No certified replay: no certified or published 2026 COD mass or conversion ships; the laboratory's notice states only that both methods ran in the parallel period.
+Lesson: a method bridge validated only on its overlap carries every constituent the reference method reads; a model that gets this right learns to ask what the old reading responds to besides the thing the new one measures, and whether that has moved since the overlap, before trusting a ratio carried forward.
 
 ## Readability screen
 
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0, recorded deaths and the links (4 lose, Varden 1.91) | specification 3.3 names the Office's linkage as a source of deaths: fires | the return file's rows carry a date of death per admission: fires | counting linked deaths is the default: fires | none | none | one join: fires | readable |
-| R1, plus the deaths later bills record (4 lose) | 3.3 names the bills' status 20: fires | status 20 on later stays: fires | completing deaths from claims is a reflex: fires | none | none | one join: fires | readable |
-| R2, less the links later claims contradict, the default path (4 lose, Varden 1.33, Mercy Valley 1.05, Brannock 1.03) | the Office's sentence on links not theirs sends a reader to look for contradictions: fires | service lines dated after a linked death: fires | dropping impossible links is the hygiene reflex: fires | none | claims after death is a standard check: fires | one filter: fires | readable |
-| R3, one error corrected alone (false links only: 3 lose; missed deaths only: 6 lose) | the Office's sentence names both errors: fires | none | correcting the error one notices: fires | the recorded deaths or the living members: fires | none | one ratio: fires | readable |
-| R4, both corrected at a pooled rate (network rate: 4 lose; by number on file or the link's pass: 5 lose with Varden; each hospital's own rate: 6 lose) | the sentence names both errors: fires | the return's MATCH_PASS column offers the pass as the stratum: fires | an average rate or each unit's own rate is the reflex: fires | the two control groups give the rates: fires | none | one estimator per hospital or pass: silent | readable |
-| G (decisive), both corrected class by class (number on file; otherwise single or two-part surname), applied to the admissions neither control reaches (5 lose) | no document names a class, a surname's structure, a rate, a control group, a validation group or a correction (R3c): silent | no column carries a class: the surname's structure is read off the enrollment's last names, and the pass exists only on linked rows: silent | the reflex strata are the pass and the hospital: silent | the controls measure whatever strata a reader picks and refute nothing unless split by class: silent | every file reconciles, no row is anomalous: silent | an estimator per class and hospital over 34,500 admissions and three error rates: silent | silent |
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 1 a pooled ratio or regression on TOC | section 5 licenses an estimate | COD and TOC in the parallel rows | a conversion factor | none | runs it | one ratio | none | readable |
+| 2 each customer's own ratio from its parallel samples | section 5 | the same rows by site | the site-specific correlation | each ratio reproduces its own parallel run | runs it | one ratio per site | none | readable |
+| 3 (decisive) COD on each sample's own TOC and chloride | none names chloride | chloride sits in another column with no stated role | not the ratio reflex | no file states an interference | no battery item | the 2026 chloride carried sample by sample | the parallel run, kept for its own reason | silent |
 
 ## Semantic fork table
 
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | index admission | specification 2.1 to 2.4: both payers' stays as last corrected, adults, no delivery DRG, no status 07, each member's first | Carrisford left out; voided bills kept; every eligible admission; deliveries or discharges against advice kept | same call (asserted, SF1a to SF1e) | specification 2.1 to 2.3; the five losers unchanged under each |
-| SF2 | a hospital's deaths | the number of its index admissions whose member died by day 30 | the deaths the bills and the links record | the links as deaths file four losers with Varden | specification 3.1 and 3.2 (the event, not a source) and the Office's note: "some deaths of plan members are not found and some members are linked to a death that is not theirs" |
-| SF3 | within 30 days | day 0 the admission date, deaths through day 30 | through day 29 | same call (asserted) | specification 3.1 |
-| SF4 | expected deaths | the sum of the index admissions' HIMM 3.2 scores | another model or the scores of every admission | none ships; every index admission has a score (asserted) | specification 4.1 and 4.2 |
-| SF5 | exceeds 1.15 | strictly greater | at or above | same call: no ratio within 0.05 of the line (asserted) | specification 5.2 |
-| SF6 | a transfer | one index admission at the first hospital | the receiving stay counted apart | same call (asserted) | specification 2.4 |
-| SF7 | Mercy Valley's stays | both NPIs | the first NPI only | same call (asserted) | the network hospital list; the extract notes |
-| SF8 | the identifier class | number on file from ssn_last4; otherwise two-part surname from a space or hyphen in last_name | number on file split by surname too; a space only | same call (asserted, SF8a, SF8b) | the data: each reading selects the same five |
-| SF9 | seen alive after day 30 | a service line, an admission or a live discharge dated after day 30 | service lines only; day 30 counted | same call (asserted, SF9a, SF9b) | the data |
-| SF10 | the recorded deaths that measure the linkage's finding | every death the bills record inside the 30 days | deaths in hospital only | same call (asserted) | the data |
-| SF11 | whose rates | each class's rates pooled across the network | each hospital's own class rates where its controls allow | same call (asserted) | the data |
-| SF12 | the divisor | the share linked less the false-link share | the share linked | same call (asserted) | the data |
-| SF13 | contradicted links among the admissions no control reaches | kept, the class's false-link share removing them in expectation | dropped first | same call (asserted) | the data |
-| SF14 | which link is an admission's | the return row for that member and admission date | any of the member's links dated inside the 30 days | same call (asserted) | the Office's note ("Halbrook's member identifier and the admission date as Halbrook sent them") |
+| SF1 | the COD the reference method would have reported | estimated on each sample's TOC and chloride | a ratio per customer or for all | different sets (the ladder) | the parallel samples' residuals (C4); same call across the chloride family (C2) |
+| SF2 | the agreement year | the calendar year in Queensland time | UTC | same call (asserted) | policy section 2 |
+| SF3 | an exchanged meter | both meters, the job log's final and opening reads | the register's meter only | not computable: the installed meter has no reading before its exchange (asserted) | policy section 3 |
+| SF4 | the mass | volume times the volume-weighted mean | the unweighted mean | same call (asserted) | policy section 4 |
+| SF5 | duplicates and re-issues | duplicates out, re-issues replace | kept | same call (asserted) | policy section 4 and the laboratory notice |
+| SF6 | below the reporting limit | half the limit | the limit or zero | same call (no COD rides it) | policy section 4 |
+| SF7 | January 2026 | the measured COD | converted from TOC | no TOC in January | the laboratory notice |
+| SF8 | the limit's unit | tonnes or kilograms as the register states | all tonnes | same call (asserted) | the register's unit column |
+| SF9 | exceeded | greater than the limit | at or over | no customer within 6 per cent | policy section 6 |
 
 ## Ladder
 
-- **R0, the links as deaths (4 lose):** Varden 1.91, Calloway, Northgate, Westover; Mercy Valley 1.05 and Brannock
-  1.05 keep. Dies to the Office's sentence and the bills: deaths the bills record are missing from the links, and some
-  linked members are later seen alive.
-- **R1, plus the deaths later bills record (4 lose):** the same four. Dies to the contradicted links.
-- **R2, the default path: less the links later claims contradict (4 lose):** Varden 1.33, Calloway 1.31, Northgate 1.51,
-  Westover 1.43; Mercy Valley 1.05, Brannock 1.03. Dies to the record: among the members later seen alive the
-  linkage linked 20 of 1,179 single-surname members without a number and 12 of 21,855 with one, and it found 78 of 162
-  recorded deaths of two-part-surname members without a number against 829 of 836 with one; the repairs reach only the
-  members whose later records show the error.
-- **R3a, the false links removed alone (3 lose):** Calloway, Northgate, Westover; Mercy Valley 1.04 and Brannock 0.98
-  keep. Dies to the missed deaths.
-- **R3b, the missed deaths added alone (6 lose):** Varden 1.70 with the golden five. Dies to the false links.
-- **R4a, both corrected at one network rate (4 lose):** Varden 1.61; Mercy Valley 1.11 and Brannock 1.08 keep. Dies to
-  the classes: the network rate is the members with a number.
-- **R4b, both corrected by number on file, which is the link's pass (5 lose):** Varden 1.74 in, Brannock 1.12 out.
-  Dies to the surnames: without a number, single surnames are linked to others' deaths at 1.7 per cent and found at 92
-  per cent, two-part surnames at 0.5 and 48.
-- **R4c, both corrected at each hospital's own rates (6 lose):** Varden 1.43 in; by number on file within each
-  hospital, Varden 1.28 in. Dies to the controls: Varden's members are mostly alive and its recorded deaths have no
-  member without a number, so its own rates borrow the network's or the pass's.
-- **G, both corrected class by class (5 lose):** Calloway 1.33, Mercy Valley 1.30, Northgate 1.55, Brannock 1.25,
-  Westover 1.45; Varden 1.03, Fairhaven 1.09 the highest keeper. Every hospital's class among the admissions no
-  control reaches carries at least the links its false-link share expects, so no class's estimate falls below zero and
-  a floored and an unfloored correction agree to the decimal (checks.py C1, C1b).
-- **Margins:** every golden ratio at least 0.05 from 1.15 (Fairhaven 1.09 the nearest); every reading in the fork
-  table files the same five; R2's distinguishing hospitals sit 0.18 (Varden), 0.10 (Mercy Valley) and 0.12 (Brannock)
-  from the line.
-- **Position and dominance:** R0 to R2 differ from the golden on the same three hospitals; R3 and R4 each fix one of
-  them and keep another wrong; only the class-by-class correction moves Varden down and Mercy Valley and Brannock up
-  together.
-- **Worth on the graded quantities:** the call (10), each verdict (2): R2 keeps 11 of 14 verdicts (main 22 of 38),
-  R3b and R4c 13 of 14 (26 of 38).
-- **Grid:** every partial correction and every pooling is a named wrong set (R3a, R3b, R4a, R4b, R4c); the Layer 1
-  mishandlings leave the five (SF1, SF6, SF7).
+| Rung | Construction | Files | Dies to |
+|---|---|---|---|
+| 1 | a pooled COD to TOC ratio or regression | Glenbrae Meats, Riverbend Poultry, Sunvale Dairy | the brine customers' parallel samples sit far off any TOC-only line |
+| 2 | each customer's own parallel-run ratio (sum, median or regression) | Coolabah, Mt Edwin, Glenbrae Meats, Riverbend | Mt Edwin's and Tallowood's 2026 chloride is not their 2025 chloride |
+| 3 (decisive) | COD on each sample's own TOC and chloride, fitted on the parallel run | Coolabah, Tallowood, Glenbrae Meats, Riverbend | the golden |
+
+- **Margins on the cut pack** (asserted in checks.py): on the golden route every customer sits at least 6.5 per cent
+  from its limit (Sunvale Dairy the nearest, under); the chloride family members (no constant, inverse-square
+  weights) keep at least 6.4 per cent.
+- **No free parameter.** The decisive model has no knob: the chloride term enters linearly, its coefficient (0.23
+  mg/L of COD per mg/L of chloride) is fitted, and every family member files the same set.
 
 ## Closure table
 
-| # | Axis | Reading and closure |
+| Axis | Reading | Closure |
 |---|---|---|
-| 1 | Population | index admissions under specification 2.1 to 2.4, both payers (SF1); members not yet seen are irrelevant, the year is closed |
-| 2 | Unit of account | the index admission; a hospital's deaths a count of admissions ending in death (3.2) |
-| 3 | Attribution window | admissions July 1, 2025 to June 30, 2026; a death on or before day 30 (3.1, SF3) |
-| 4 | As-of dating | claims paid through September 30, 2026; scores of October 2; the Office's return of October 7; every window closed July 30 |
-| 5 | Version basis | each stay as last corrected; voided and deleted bills out (2.1, SF1b) |
-| 6 | Denominator | expected deaths, the sum of HIMM 3.2 scores (4.2, SF4) |
-| 7 | Weighting | none: each admission counts once in deaths and in expected deaths |
-| 8 | Window length | 30 days after admission (3.1) |
-| 9 | Boundary inclusivity | day 30 counts (3.1: on or before the 30th day); same call without it (SF3) |
-| 10 | Rounding path | ratios unrounded against 1.15, reported to two decimals; no ratio within 0.05 of the line (SF5); each bonus figure 15 to 35 dollars off its cell's centre and the total 49 from its edge (checks.py A2, A2b, A3) |
-| 11 | Tie-break | none: each hospital stands on its own ratio |
-| 12 | Maturity and censoring | every window closed; the claims run two to fourteen months past day 30, the evidence of life after day 30 is what the record shows (SF9) |
-| 13 | Order of operations | conform, index, expected, recorded deaths, classes, rates, correction, ratio |
-| 14 | Row order | no dependence |
-| 15 | Duplicate resolution | a duplicate bill voided, a duplicate encounter deleted; a death linked to several of a member's records counted once, on the index admission's record (SF14) |
-| 16 | Identity normalisation | Carrisford member numbers through the enrollment file; Mercy Valley's two NPIs (SF7) |
-| 17 | Netting | none on the call; the ask's payments net replacements and voids as each system recorded them (filed in the extract notes) and add each dispute award once |
-| 18 | Dimensional units | probabilities summed to deaths; dates in four formats |
-| 19 | Code and status semantics | patient status 20 a death in the stay, 02 a transfer, 07 against advice; delivery MS-DRGs; never the stump |
-| 20 | Integerisation | none on the call; the bonus figures to the nearest $100 |
-| 21 | Clause scope | specification 2 to 5 for the call, 5.3 and the prompt for the bonus at stake |
-| 22 | Forward window contents | the 2027 bonus, set on the closed fiscal 2026 year |
+| 1 Population | every customer with an agreement in force for 2026 | the register |
+| 2 Unit of account | the customer | policy section 6 |
+| 3 Attribution window | samples and discharge by local date | policy section 2 |
+| 4 As-of dating | the exports as issued in January 2027 | the files' dates |
+| 5 Version basis | a re-issued result replaces the earlier one | policy section 4 (SF5) |
+| 6 Denominator | the year's volume-weighted sample volume | policy section 4 (SF4) |
+| 7 Weighting | each sample by its day's volume | policy section 4 |
+| 8 Window length | the calendar year | policy section 2 |
+| 9 Boundary inclusivity | greater than the limit | policy section 6 (SF9) |
+| 10 Rounding path | masses unrounded against the limit; volumes to the kilolitre, suspended solids to 0.1 t | the prompt |
+| 11 Tie-break | none needed | no customer within 6 per cent |
+| 12 Maturity and censoring | the 2026 results all authorised by the exports | the exports |
+| 13 Order of operations | conform, convert, weight, compare | C1 |
+| 14 Row order | file order | none needed |
+| 15 Duplicate resolution | duplicates do not report the sample | policy section 4 (SF5) |
+| 16 Identity normalisation | legacy codes and points through the crosswalk | the crosswalk |
+| 17 Netting against gross | none | not applicable |
+| 18 Dimensional units | mg/L, kL, tonnes and kilograms | the files (SF8) |
+| 19 Code and status semantics | -D and -R suffixes, the less-than flag | the laboratory notice |
+| 20 Integerisation | none on the call | not applicable |
+| 21 Clause scope | section 5 governs every TOC sample | policy section 5 |
+| 22 Forward window contents | the 2027 reviews follow the 2026 verdicts | policy section 6 |
 
 ## Literal reader
 
-Executed word for word, the specification fixes the index admissions (2.1 to 2.4), the outcome as the member's death
-by day 30 whatever its source (3.1, 3.2), the expected deaths (4) and the line (5.2), and the Office's note says its
-linkage both misses deaths and links members to deaths not theirs, so the links are not the deaths and one thing is
-left open: how each hospital's deaths after discharge are estimated. The candidates are the links counted (R0), with
-the bills' deaths added (R1) and the contradicted links dropped (R2), one error corrected alone (R3), both corrected at a
-network, pass or hospital rate (R4) and both corrected class by class (G). The data separates them: within the
-members without a number, single surnames are linked to others' deaths at 1.7 per cent of the living and two-part
-surnames at 0.5, and the linkage finds 92 per cent of the former's recorded deaths and 48 per cent of the latter's, so
-a rate pooled across them misstates the hospitals whose members without a number are mostly one or the other; every
-reading of the class-by-class correction in the fork table (four classes, a space only, each hospital's own class rates,
-recorded deaths in hospital only, the plain divisor, contradicted links dropped first, evidence of life by service line
-only or from day 30, links by member and date, deaths to day 29) files the same five (checks.py SF3, SF8 to SF14). Every
-write-up step names the file and the rule it executes.
+Executing the policy word for word gives each customer's mass of COD on the dichromate reference method for the 2026
+calendar year in Queensland time, from both meters across an exchange and the volume-weighted mean of the year's
+compliance samples, with each TOC sample's COD the COD the reference method would have read, estimated from the
+samples tested both ways; no file states how that estimate is formed, so every literal reading has to fit it, and
+every fit that carries each sample's chloride files Coolabah, Tallowood, Glenbrae Meats and Riverbend, while a ratio
+per customer or for all (an easy estimate of the same literal quantity, not a reading of a sentence) files another set.
 
 ## Oracles
 
-None. No file ranks the hospitals on mortality or states a death count, a ratio or a linkage error rate; the quality
-dashboard (a distractor) gives readmission ratios on other stays and ranks nothing the call reads; the hospital profiles
-(a distractor) list services; the Office's note states that the linkage errs and no size or direction; the control
-groups measure whatever strata a reader picks and refute nothing unless split by class.
+- The parallel run ties every route on its own samples within method noise except the pooled ones on the brine
+  customers; it refutes the pooled routes and not the per-customer ones.
+- January's measured COD ties every route (no conversion).
+- none ties only under the golden.
 
 ## Ask sheet
 
-- **Ask A, each hospital's bonus at stake, 2 per cent of what Halbrook paid it for inpatient stays discharged in fiscal
-  2026 (nearest $100), and the network total: fifteen figures.** H18 home: specification 5.3 states each hospital's
-  bonus at stake in its notice and in the 2027 budget; the figure is the dollars each verdict moves. Use: the notices
-  and the budget line. Path: hchp_ip_claims_extract_2026-10-05.csv (claim_number, type_of_bill,
-  original_claim_number, billing_npi, statement_thru_date, paid_date, paid_amount), the extract notes (the two systems'
-  replacement and void conventions), HCHP_Provider_Dispute_Log_IP_2026-10-01.xlsx (Provider NPI, Claim No., Discharge
-  Date, Determination, Additional Payment, Payment Date), the network hospital list (both NPIs), the specification (5.3)
-  and Carrisford's file layout (not Halbrook's payments): six files, sixteen columns.
-  Primary device: D1, the same payment in two sources. Provider Disputes logs every determination with the additional
-  payment it found and the day that payment was made. An overturned DRG dispute is paid by reprocessing the bill at the
-  hospital's DRG, so its payment is also the replacement bill in the claims extract, paid that day and changing the
-  stay's payment by exactly the award; a settled DRG dispute and every outlier and rate award are paid by Finance outside
-  the claims system and appear only in the log. Neither file says which: the log's notes define the additional payment
-  and its day, the extract notes the bills. Adding every paid award counts each reprocessed one twice; leaving the log
-  out misses Finance's awards. The records show which is which: of the paid awards on bills in the extract, 212 are a
-  replacement of the disputed claim paid on the award's day whose change equals the award to the cent, 266 have no bill
-  after their determination, and none is neither (checks.py A16).
-  Hazards: the replacement and void conventions (filed in the extract notes since the judge's first pass), decisions not
-  yet paid and disputes pending, the amount disputed against the amount awarded, the award's payment day against the
-  stay's discharge, Carrisford's own payments (5.3 leaves them out), the admission date for the discharge date, Mercy
-  Valley's second NPI.
-  Stops (asserted, checks.py A5 to A15 and generator/ceiling.py): every paid award added, the cracker's handling, misses
-  all 15 (each hospital $261 to $2,157 high); the log left out misses all 15 ($303 to $2,059 low); every award decided,
-  paid or not, misses all 15; the amount disputed misses all 15; awards by the day they were paid keeps 7 of 15; a
-  replacement in its original's place, every line summed, every replacement added, the admission basis and Carrisford's
-  payments added each miss all 15; the golden gives all 15 and equals the clean truth (A4).
-  Realism: a plan's dispute unit logs every determination and its payment while the claims unit and Finance pay by their
-  own routes; an analyst who reconciles the log with the claims finds the reprocessed awards, one who adds the log to the
-  claims counts them twice.
-- **The construction layer:** the call, the fourteen verdicts and the chart; the cracker has them.
-- **Main population zero-counts (asserted):** the call reads no paid amount and no dispute: with every paid_amount
-  blanked, or the dispute log emptied, the determination is unchanged (checks.py S1, S3).
-- **Hazard table (asserted):** the dispute log's two channels move all 15 figures; the conventions move all 15 when
-  misread; Carrisford's payments move the six delegated hospitals and the total; the admission basis moves all 15;
-  Mercy Valley's second NPI unmapped moves Mercy Valley and the total; none moves the call.
-- **Referee:** none; no file states a payment total or ties the log to the bills.
+Two asks in the figures workbook, each sited on rows the call never reads, each with a primary device that only a
+reconstruction across two systems finds. Figures are the generator's (`generator/figures.json`, `ask_a`, `ask_b`);
+deltas are asserted in `checks.py` (C6 to C10).
 
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
-|---|---|---|
-| A, each hospital's bonus at stake and the network total | keeps each bill as the system that paid it recorded it (the filed conventions), leaves Carrisford's stays out, takes stays discharged in fiscal 2026, maps both of Mercy Valley's NPIs, and adds every additional payment the dispute log shows made on those stays, so each award a reprocessed bill already carries is counted twice | miss |
+**Ask A, the volume of each kind of tankered liquid waste the treatment plant received in each quarter of 2026 (16
+figures).**
+- H18 home: the annual return reports the liquid waste the plant received beside the trade waste customers.
+- Files and columns: the receival station's log (docket, received, truck, transporter, volume, status) and the state
+  waste tracking manifests (manifest, waste code, receival docket).
+- Primary (D6, an event recorded on two lines that one record covers): when the pit's high-level alarm stops a
+  discharge the driver finishes the load in a second pass minutes later under a second docket, and the manifest
+  carries only the first; the waste code of a second pass is read from the same truck's pass before it, an identity
+  no field states.
+- Hazards: dockets of loads rejected at the gate; manifests collected the day before receival.
+- Pin test: the sentence pins the waste, the quarter and "received"; the device sits in which dockets are one load.
 
-- Mirror leakage: 0.0 per cent of ask weight (every rung builds the payments the cracker's way and misses all 15:
-  generator/ceiling.py).
-- Pair ceiling: 39.0 (weights 38 / 7 / 55: the call 10, each verdict 2, each of the 15 bonus figures 55/15; the cracker
-  keeps the main block and instructions, 45.0; the best mirror, R3b or R4c, keeps 13 of 14 verdicts, 33.0; average
-  39.0), rerun from the generated rubric at ship.
-- Measured by: generator/ceiling.py on the cut pack.
+**Ask B, the mass of suspended solids each customer discharged in 2026 (12 figures).**
+- H18 home: the suspended solids line of the same return.
+- Files and columns: both laboratory exports, the inspections log, the meters.
+- Primary (D4, a population boundary evidenced in another file): trade waste officers take grab samples at their
+  inspection visits and LabWare registers them in the same series at the same points; they carry suspended solids and
+  pH only, and the policy's mass reads the compliance composites, so the grabs are found by the analytes they lack and
+  the inspections log's visits, neither enough alone.
+- Hazards: quality-control duplicates and re-issued results (filed); results below the reporting limit.
+- Pin test: the sentence pins the customer, the year and the mass; the device sits in which samples are compliance
+  samples.
 
-## Pre-ship check
+**Separation (asserted, C10):** no grab carries COD, TOC or chloride, so no device row enters the call's population;
+the receival log and the manifests are not read by the call.
 
-- **Three rules, re-read against the built pack.** Domain: the deciding quantity is each hospital's fiscal 2026 30-day
-  mortality ratio, deaths over HIMM 3.2 expected deaths, with the deaths after discharge estimated from the Office's
-  linkage corrected for its false and missed links class by class, the way outcome-ascertainment studies correct a
-  linked count; on the clean truth the easy route files the default path's four and the correction alone the golden
-  five (checks.py R1, R2). Two layers: the Layer 1 items in `## Three rules`, each asserted neutral on the call (SF1 to
-  SF7, SF9, SF14); the ask's device lives in the dispute log and the paid amounts, which the call never reads (S1, S3).
-  The decisive step is none of the three banned kinds: not a plant (R3c: no document names a class, a rate, a control
-  group or a correction; no memo, draft or briefing ships), not data semantics (every term in the fork table read right
-  still leaves the reflex repair on four losers), not rule application (R3: every filed rule executed with the links as
-  deaths files a wrong set).
-- **Convergence.** Every hospital's class among the admissions no control reaches carries at least its expected false
-  links, so a floored and an unfloored estimate agree to the decimal (C1, C1b): the judge's first-pass difference
-  (Calloway, Varden, Fairhaven at the first decimal) cannot recur under either reading.
-- **Gates.** 14 files in 4 formats (csv, pdf, txt, xlsx); the service-line extract at 324,402 rows; two distractors
-  (the readmissions dashboard and the hospital profiles), unread by the solution (S2); checks.py 70 rows green;
-  verify.py from the bundle alone matches; two builds byte-identical (target.zip f511b179e6742bf8); figures_check.py,
-  precut.py and voice-check.py exit 0; leak.py REVIEW, no LEAK; guard heart WARN (Gate G overuse, a first name in an
-  older build), the surface screen promoting the same six card-axis pairs as at the draw, each answered by the
-  differentiation lines on the card, the adjudicated clone check the author's to call; the containers normalised in
-  build.py.
-- **Bonus figures.** Each hospital's bonus 15.9 to 34.9 dollars off its cell's centre and the total 48.9 from its edge
-  (A2, A2b, A3); the payments no longer land near round figures.
-- **Pair ceiling.** 39.0 by generator/ceiling.py (the cracker adds every paid award and misses all 15; the best mirror on
-  R3b or R4c, 33.0), mirror leakage 0; both shipping-pack readers kept 0 of 15.
+| Ask figures | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at rung 2) | Verdict |
+|---|---|---|---|
+| A, 16 cells | joins dockets to manifests and drops the unmatched: 0 of 16 kept | the same join: 0 of 16 | miss |
+| B, 12 customers | every LabWare sample of the year a compliance sample: 0 of 12 kept | the same, duplicates kept: 0 of 12 | miss |
+
+The full includer (second passes given their truck's preceding code, the grabs set aside) keeps 28 of 28; it is a
+stress row, not the gate.
+
+Pair ceiling: 28.5 (the cracker on the call at 45.0, the mirror off it at 12.0, keeping 0 and 0 of 28 ask figures).
+Mirror leakage: 0.0 per cent of the ask weight.
+Measured by: generator/ceiling.py (run on the cut pack)
 
 ## Leak check
 
-`leak.py --asof 2026-10-09`: REVIEW, no LEAK. Each REVIEW line answered: the specification carries the hospital names
-and the bonus's name (Exhibit A and section 1, the contract itself) and ranks nothing; the profiles list beds and
-services; the layout, the specification, the Office's note and the extract notes share the measure's own words (deaths,
-members, records, admissions, the Office) and name no class, rate, control group or correction; the dispute log and the
-readmissions dashboard name the hospitals beside dispute amounts and readmission ratios, neither on the call.
-
-Readers on the shipping pack (two, each on its own fresh unzip, scored; answers in `leak_check_report.md`): both missed
-the call on the default path's four (Calloway, Northgate, Varden, Westover), each dropping the name-pass links a later
-service line contradicts and adding no missed deaths; both kept 0 of 15 bonus figures, adding every paid dispute award
-($7,086,700 against the golden $7,073,300); score_reader exit 0 twice. Question 1 quoted nothing that names the step;
-question 6 an analytical choice both times; question 3 named the service-line extract (the plan's own member claims
-activity, used by both for the reflex repair) and the Office's note (its one sentence on error is the incompleteness a
-completed source must state). Round 1, on the earlier pack, had missed the call and read the then-unfiled conventions
-off the amounts; that device is in `## Tried and rejected`.
-
-Judge, pass 1 (`determinism_check_report.md`): DETERMINISTIC, FIX_NOW: file the replacement convention, align step 6
-with the estimator (the floor), fix the encounter file's late copy and the near-round payment totals; all four fixed in
-one generator pass. Pass 2 (`determinism_check_report_pass2.md`), the single re-judge on target.zip f511b179e6742bf8:
-DETERMINISTIC, every graded figure reproduced (the five, all 14 bonus figures, the $7,073,300 total); Gate G
-statistical_rigor and analytical_non_defect, Gate H domain, layers and decisive step pass. Its two wording items were
-fixed in the write-up with the pack unchanged: the losers' subtotal (a figure no ask owes, its rounded rows and its
-rounded sum a hundred apart) dropped, and step 8 now states the replacement's change for both systems. Its residual
-note, Varden 3 deaths under the line on the measured rates, is the margin the call stands on; every estimator in the
-fork table files the same five.
+`leak.py task468 --asof 2027-01-12` on the final cut: REVIEW, no LEAK. Each REVIEW line, ruled:
+- Sweep 1, the register's Notes sheet: the Trade Waste unit's two lines on the agreements in force and who prepared
+  the register; it names no column of any other file. Harmless.
+- Sweep 4, the laboratory notice and the policy: the stump terms are the documents' own words (method, sample,
+  reference, laboratory, and chloride as an analyte the laboratory reports on every compliance sample); neither names
+  an interference, a factor, a model or a conversion. Harmless; the reader's question 1 asks it cold.
+- Sweep 6, the register, the field jobs, the inspections and the production returns name the customers beside
+  numbers: limits, reads, visits and production, none a COD mass or a verdict. Harmless.
+- Sweep 9, the register's review dates in 2027: the agreements' forward review dates, a register's planned dates.
+  Harmless.
+- Sweep 11, the prompt's question form over the corpus quota (a voice-check WARN, PASS).
 
 ## Tried and rejected
 
@@ -472,4 +339,59 @@ fork table files the same five.
   Filing a floor would be rule application on the decisive step; instead each such class now carries the links its
   false-link share expects (one more of its members found by the Office), so floored and unfloored agree (C1, C1b). The
   call is unchanged; Varden moves to 1.03 and Fairhaven to 1.09.
-
+- 2026-10-31, architecture 4 retired at the batch audit (re-rooted, not repaired): it fell short of the survivor
+  anatomy on the Reflex. Its golden was the field's own linkage-error correction (each class's false-link and
+  missed-link rates applied to the Office's matches), so the field's named method sat at the top of the ladder,
+  where a reader who knows record linkage applies it as a first move, and the Office's shipped match file was the key
+  the link rode on; architecture 5 is drawn fresh in another client domain.
+- 2026-10-31, architecture 5 draw: a constant-quality house price designation on hedonic attributes or a stock
+  aggregation is spent (task482 architectures 4 and 5, both landed by readers who fitted the handbook's model); the
+  draw keeps the field's repeat-sales index at rung 1 and moves the decisive step to the identifying assumption no
+  sales file shows, the dwelling unchanged between its sales.
+- 2026-10-31, architecture 5 stage 2: the developers' works at four to five residual standard deviations on a
+  noise-only price model: a 3-sd residual trim on every pair dropped them and landed the golden set without the
+  register; each dwelling now drifts about its ward's path (a spread growing with the holding period, as repeat-sales
+  records show) and the works add 14 to 23 per cent, so no filter on the sales sees them (SF9).
+- 2026-10-31, architecture 5 stage 2: owner works of every kind in the register, structural alterations among them:
+  a reading that counts only enlarging work moved Kestrel Rise's published change by 0.2, a fork at the graded
+  decimal; owners' works are now extensions, lofts and garage conversions, and every reading of "building work"
+  files the same figures (SF2).
+- 2026-10-31, architecture 5 stage 2: June 2021 postcode recodes split pairs across the recode and moved two wards'
+  figures at the decimal between the literal address and a linked reading: dropped (SF4b).
+- 2026-10-31, architecture 5 stage 2: a block of flats certified at its last flat's date let a flat's first sale
+  precede its block's certificate, so a postcode-and-number match set aside pairs the full address kept (Calder Bank
+  8.0 against 8.1): each block is now certified complete on one date (SF4).
+- 2026-10-31, architecture 5 asks: the register's ward column holding the 2019 wards (a label stored before the
+  boundary review) as Ask A's primary: an asking sentence naming the May 2023 wards kills it, and without one the
+  register's own column is a literal reading of "ward", a fork; the column now carries the current wards and the
+  primary is the approver's blank loss.
+- 2026-10-31, architecture 5 asks: Ask B as a count of additional entries: every handling of the update reproduces
+  the count (the battery's latest-version rule), so the count carried no device; the ask is the money paid.
+- 2026-10-31, architecture 5 asks: Ask C's re-claims as one-to-one repeats of Brackwell's claims (postcode, start and
+  homes): the battery's re-keyed-record match finds them; Brackwell now claims its sites phase by phase and
+  Calderstone each site once, so a re-claim equals only the phases' sum.
+- 2026-10-31, architecture 5 shock: Pellbury's 2024 and 2025 company purchases made it the largest count of
+  additional entries in those years; the city-centre and student-let wards now carry their own company buying, and
+  Pellbury sits second of the twelve.
+- 2026-10-31, architecture 5 leak screen: the price paid field guide (a PDF listing every column) is a dictionary
+  under leak sweep 1 and 12; dropped, and the price paid files carry the publisher's header row instead.
+- 2026-11-01, architecture 5 dead at its stage 4 judge (NOT_DETERMINISTIC, SEND_BACK): Harrowmere's pressured wards on a
+  repeat-sales index with the pairs spanning building work set aside. The methodology's section 3, executed word for
+  word, pairs every two consecutive sales, so Pellbury reads 6.0 per cent and the uplift splits four ways; the golden's
+  set-aside rested on the intent phrase "same dwelling at the same quality", a narrower certificate reading (new
+  dwellings and conversions only) was equally licensed, and filing the set-aside would have made linking the
+  completions register a rule executed (task445 architecture 2's death). Ask 3's net additional dwellings also failed
+  to reproduce (365 against 348). An inclusion or exclusion over a second source has no safe filing; the report is
+  kept as determinism_check_report_arch5.md, and architecture 6 re-roots into another domain with the decisive step an
+  estimate.
+- 2026-11-01, architecture 6 at stage 3, every free gate green but one: `guard.py heart` BLOCKs the pairing, the
+  subdomain, the role, the context artifact and the forcing event against task456 v2 (a US flexible packaging
+  converter's 2026 VOC emissions, physical-environmental-sciences / emissions-inventory ETL), registered at
+  01:00:52Z, 93 seconds before this card, its DRAWN commit reaching main only after this card's `guard.py check` passed
+  on a fresh pull. The guard forbids relabelling a card or waiting for the window, and this world has no honest
+  draw outside the physical-environmental-sciences cell, so architecture 6 re-roots unless the author has task456
+  yield the cell; the build is kept whole on target.zip for that decision.
+- 2026-11-01, architecture 6 at stage 4: the leak reader named three generator tells (agreement numbers stepping by
+  exactly 37, one stock technician note on every meter exchange, inspection narratives drawn from a few stock
+  phrases); the numbers are now irregular, most jobs carry no note and each site's visits have their own narratives,
+  figures.json identical.

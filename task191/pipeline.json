@@ -1,47 +1,70 @@
 {
  "task": "task191",
  "status": "SHIPPED",
- "domain": "general-statistics-data-science/multiple-testing-selective-inference",
+ "domain": "banking-credit-financial-risk/fraud-aml-detection",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-25",
- "stump": "A competent solver cleans the panel, excludes the booked maintenance evenings, takes the quarter's worst evening window at 318 kbps on HVT-01, judges it against that interconnect's own evening spread (28 per cent above its own quarterly 99th percentile, z about 3) and files fund the augment on HVT-01, where 318 kbps is the smallest of the nine quarterly worst windows the same seven interconnects have produced and the call is to fund nothing.",
- "architecture": 1,
- "loops": 1,
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-31",
+ "stump": "each scenario's productivity read over the alerts already decided (or the undecided ones projected at that share, or at the decided investigations' share) sends RMF-P2P, MUL-INF and MER-RND to the 2027 tuning beside CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV; read by how alerts undecided at the same age ended in the scenario's own history, the three slow scenarios' open investigations are mostly SARs to come and they clear the floor",
+ "architecture": 4,
+ "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-17"
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "REVIEW, clause numbers and domain nouns only, four lines answered in the design note",
-  "reader": "wave 8 audit: call landed 1 of 1 and 111 of 119 ask figures, scored by score_reader.py; the reader's decisive step was the port's own prior-record 99th percentile at 330.2 kbps, which is one of the 48 licensed constructions and holds"
+  "leak_py": "REVIEW on e5ddad41, one line ruled",
+  "reader": "read 1: no leak, question 6 analytical"
  },
  "duplicate_check": {
-  "heart": "PASS after the forum was redrawn",
-  "nearest": "0.05 task130 v3"
+  "heart": "WARN (repeat.gate_g against task130 v5, answered on the card and in the note)",
+  "surface": "exit 0; one pair promoted for adjudication, task474 (surface 0.101, the gap label time in common, a different driver); personas Katherine Cobb, Miguel Swanson and Leah Berg, all on the card"
  },
  "judge": {
-  "verdict": "r2 DETERMINISTIC (r1 NOT_DETERMINISTIC FIX_NOW), Gate G and Gate H pass",
-  "disposition": "r2 FIX_NOW on two write-up figures and one ask pin, all three fixed in the generator: the window counts computed from the data (1,851 and 1,809), step 6's pooled-statistics overclaim replaced by the 282 of 15,330 record windows at or above the quarter, and clause 7.2 pinned to the commitment in force on the quarter's last day",
-  "report": "/tmp/determinism-check-task191-r2/verdict.md"
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (architecture 4)"
  },
- "returned": [],
- "resume": "STATUS CORRECTED 2026-10-25. This build was marked FAILED_TO_STUMP, which build-pipeline defines as a shipped build the portal list leaves out. No portal list has ever covered this lane: the ledger's portal record runs task100 to task132 plus task500, dated 10-05 to 10-11, and every build here was delivered 10-12 or later, so no list could have left it out. `portal` and `portal_status` are empty on all of them. The status was an in-house judgement filed as a portal outcome. True state: delivered, pending review. IN-HOUSE EVIDENCE, which is not a portal result and must not be recorded as one: one isolated blind reader at medium effort, holding only a fresh unzip of target.zip, the prompt and a key list with the call's own member paths stripped, scored by score_reader.py: call LANDED, asks 111 of 119 at 93.3 per cent. Owed: re-root the decisive step. Prior resume line follows. Architecture 1 refused on measurement, screened before any redesign (see DESIGN_NOTE.md '## Measured refusal' and generator/screen_estimator_family.py). Next step is a stage 1 re-root: new draw, architecture 2, loops reset, guard.py mechanisms and check first. The re-root may not reuse clause 4.2's filed comparison criterion in any wording, a reference built as a statistic of a statistic over the same panel, a two-year rollup of the same quantity shipped beside the quarter compared with it, or a decisive step whose only output is a binary while every graded figure is invariant to it. The ask layer is re-cut inside the re-root: 49 of its 119 graded figures are the deliverable's own worst-window grid and chart, which carry no device.",
+ "returned": [
+  {
+   "date": "2026-10-31",
+   "portal": "none: batch 1 re-root; architecture 1's decisive step measured as landed in-house, never a portal result",
+   "repair": "re-root",
+   "commit": "DRAWN (task191) architecture 2"
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "none: architecture 2 spent at stage 2 with no data cut (the drafting was interrupted by a safety classifier)",
+   "repair": "re-root",
+   "commit": "DRAWN (task191) architecture 3"
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "architecture 3 (Lorvega's bus depots): stage 4 judge DETERMINISTIC with SEND_BACK on Gate G and Gate H3, the decisive step catching four fixed structures that inflated the raw warning rates (planted_defect_flip); Layer 1 mess carried the stump",
+   "repair": "re-root",
+   "commit": "DRAWN (task191) architecture 4"
+  }
+ ],
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-17",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "architecture_spent": true,
- "screen": {
-  "date": "2026-10-21",
-  "harness": "generator/screen_estimator_family.py",
-  "double_run_md5": "2b3635593d0488408a01958568840c89",
-  "estimator_family": "48 licensed constructions of clause 4.2's reference; 35 of 48 file the committed hold, 34 of the 38 read off the prior record do; graded-figure spread 0.0 kbps on the decided 318, on all 21 grid cells, on the closest interconnect and on the 14 evenings; only the binary call moves",
-  "cheapest_construction": "max over the eight quarterly worst windows equals one column maximum of the same rows, difference 0.000e+00, an identity; the one-group-by route is one idxmax over 17,139 kept rollup rows",
-  "lever_vs_ceiling": "the ladder needs the decided figure above 248.0 kbps and Gate C needs it at or below the same 248.0 kbps; admissible window [262.9, 234.0], empty by 28.9 kbps",
-  "verdict": "the decisive step has no estimator content; architecture 1 refused"
- }
+ "architecture_spent": false,
+ "gates": {
+  "date": "2026-10-31",
+  "checks": "79 checks, 0 FAIL (generator/checks.py: the three rules on the clean world, the ladder, SF1 to SF16, the history window held from 120 to 450 days, the asks' devices, separation, documents, realism, input gates)",
+  "verify": "0 failed (generator/verify.py: pandas and an Aalen-Johansen estimate, the call, both asks and the goldens recomputed from target/)",
+  "rebuilds": "two byte-identical builds of target/, golden/, submission.md, metadata.json and figures.json; target.zip cut from the final build",
+  "figures_check": "85 figures in blocks 1 to 4, 0 absent",
+  "voice_check": "PASS",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "ceiling": "pair ceiling 30.3, both on the call 48.6, mirror leakage 0.0 per cent (generator/ceiling.py on target.zip)",
+  "target_zip_sha256": "e5ddad411ae0fbcb5b206518af786febd8315cb3d73141612402951bc7375eb6",
+  "rebuild": "python3 task191/generator/make.py"
+ },
+ "zip_sha256_16": "e5ddad411ae0fbcb"
 }

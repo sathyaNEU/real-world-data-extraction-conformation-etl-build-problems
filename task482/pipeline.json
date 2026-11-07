@@ -1,38 +1,60 @@
 {
  "task": "task482",
  "status": "SHIPPED",
- "domain": "healthcare-delivery-health-economics",
+ "domain": "physical-environmental-sciences / emissions-inventory (client physical-environmental-sciences)",
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-25",
- "stump": "The default path conforms the three payers' feeds, computes each practice's October interim measure (section 4.1, the payers' completion factors) and carries it to the year by the practice's own 2025 run-out at the same cut, entering ten practices; but the stays still open on 31 August are billed at discharge and show only as their physicians' daily professional claims, and the members in them (premature triplets in a neonatal unit at Mallowcrest Pediatrics, a crash family in trauma intensive care at Garrowdale Family Practice) are each already past the USD 250,000 member cap, so both practices come in over their thresholds and eight enter.",
- "architecture": 14,
- "loops": 1,
+ "updated": "2026-11-07",
+ "stump": "the homogenizing furnace's gas by its loads' firing hours, not their tonnes: 6082 billet at 0.263 over the 0.235 limit, the premium EUR 342,000 against the per-tonne route's EUR 456,000",
+ "architecture": 16,
+ "loops": 0,
  "precut": {
-  "result": "51 checks, 0 FAIL, 0 WARN (2026-10-25, final pack)",
-  "pair_ceiling": 28.5,
-  "mirror_leakage": 0.0
+  "exit": 0,
+  "date": "2026-10-31",
+  "checks": "61 of 61, no FAIL or WARN"
  },
  "leak": {
-  "leak_py": "REVIEW (2026-10-25, no LEAK; zip 2c0f8d35561fc8c2)",
-  "reader": "round 1 (zip cc4a6fbd): readers A and B both filed the default ten and missed the call; reader A rebuilt every payer's runs and kept all 52 ask figures (score FAIL), reader B 0 of 52. Fix pass: Kesselcrest's level review moved onto a claim adjustment line, one visit a member a day, the fee ask withdrawn (precut's cracker kept it whole). Round 2 (zip 04486b1a): readers C and D both filed the default ten again and kept 0 of 13 ask figures (score_reader PASS, exit 0 twice); every REVIEW line answered harmless by all four readers. Their realism tells (claim numbers in one scheme across the payers, roster NPIs rising by practice) fixed in the generator for the shipped cut, every figure unchanged (figures.json identical)"
+  "leak_py": "REVIEW 2026-10-31 on target.zip 433ff500 (--asof 2027-01-28, no LEAK; sweeps 1 and 4 ruled in the note's Leak sweep)",
+  "reader": "read 1 on 433ff500, isolated, pack and prompt only: no leak, question 6 analytical (attributing the single site meter's gas to the processes); leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN (2026-10-25)",
-  "surface": "4 pairs promoted for adjudication (task484, task480, task231, task234 on card axes); the adjudicated clone-check is author-triggered"
+  "guard_check": "WARN 2026-10-31 on the registered card (how-much repeats task306; nearest driver 0.12, task484 v3)",
+  "heart": "WARN 2026-10-31 on the final cut (driver.near 0.12 against task484 v3, a fuel read from the period before)",
+  "surface": "exit 0 on the final cut 2026-10-31 (no BLOCK; the card's three personas only: Reece Parker, Rosemary Kent, Tony Coleman)"
  },
  "judge": {
-  "verdict": "pass 1 (v14r1, zip cc4a6fbd) DETERMINISTIC, FIX_NOW (Callowglen's share at its rounding boundary under same-day duplicate visits, the chart graded on sign); pass 2 (v14r2, zip 04486b1a) DETERMINISTIC, APPROVE, Gate G forecasting and analytical_non_defect, Gate H domain pass, layers pass, decisive_step analytical",
+  "pass": 1,
+  "date": "2026-10-31",
+  "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md"
+  "report": "task482/determinism_check_report.md",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "residual": "the family intensities are method-dependent at the second decimal (6063 0.21 to 0.22, 6082 0.26 to 0.27, the castings 0.36 to 0.52 across regression grains) and no family crosses the limit under any variant; the write-up grades each family's side of the 0.235 limit and the memo shows the intensities unrounded, as the design note's rounding row files (writeup.py, the pack unchanged)"
  },
- "returned": [],
- "resume": "shipped 2026-10-25 (zip 2c0f8d35, judged on 04486b1a with every graded figure identical): wait for the author's portal list; a determinism finding goes to /fix-determinism, a rubric over 50 with the call held to /fix-rubric",
+ "returned": [
+  {
+   "date": "2026-11-07",
+   "portal": "inputs: both PDFs' Subject the library placeholder (unspecified) and their Producer and Creator the issuing companies; domains fit: the task read as lookups, a threshold comparison and totals",
+   "repair": "both PDFs keep ReportLab in Producer and Creator and its header comment, with a real Subject and the company as Author; no data file, golden or graded figure changed. The domains-fit finding is with the author",
+   "commit": "RESHIPPED (task482), 2026-11-07"
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "inputs: both PDFs exposed ReportLab as their generator (Producer, Creator and the header comment); the reviewer asked for PDFs from a word processor",
+   "repair": "both PDFs are now written as Word documents and exported by LibreOffice Writer (Producer LibreOffice 24.2, Creator Writer, no library header), Subject real, Author the issuing company; officepdf.py fixes the creation date, checksum and file ID so builds stay byte-identical; no data file, golden or graded figure changed",
+   "commit": "RESHIPPED (task482), LibreOffice-exported PDFs, 2026-11-07"
+  }
+ ],
+ "resume": "Reshipped 2026-11-07 with both PDFs exported by LibreOffice Writer (target.zip b4b2c904, figures unchanged). The portal's domains-fit finding waits on the author's call.",
  "approved": null,
- "delivered": "2026-10-25",
+ "delivered": "2026-10-31",
  "portal": null,
- "source_note": "re-root keeping architecture 13's world; architectures 1 to 13 spent at stage 4",
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "source_note": "re-root into a new world (a West Midlands secondary aluminium works' product-family direct emissions for a car maker's 2027 low-carbon premium); architectures 1 to 15 spent",
  "lineage_v11": {
   "zip": "ce5456c3620c70081c8372bb8f8231421d635c03a6e7d284bc3af350eac671f7",
   "leak": {
@@ -69,5 +91,75 @@
    "report": ""
   }
  },
- "zip": "2c0f8d35561fc8c2a2d88e6ae2995fae"
+ "lineage_v14": {
+  "zip": "2c0f8d35561fc8c2a2d88e6ae2995fae",
+  "delivered": "2026-10-25",
+  "precut": {
+   "result": "51 checks, 0 FAIL, 0 WARN (2026-10-25, final pack)",
+   "pair_ceiling": 28.5,
+   "mirror_leakage": 0.0
+  },
+  "leak": {
+   "leak_py": "REVIEW (2026-10-25, no LEAK; zip 2c0f8d35561fc8c2)",
+   "reader": "round 1 (zip cc4a6fbd): readers A and B both filed the default ten and missed the call; reader A rebuilt every payer's runs and kept all 52 ask figures (score FAIL), reader B 0 of 52. Fix pass: Kesselcrest's level review moved onto a claim adjustment line, one visit a member a day, the fee ask withdrawn (precut's cracker kept it whole). Round 2 (zip 04486b1a): readers C and D both filed the default ten again and kept 0 of 13 ask figures (score_reader PASS, exit 0 twice); every REVIEW line answered harmless by all four readers. Their realism tells (claim numbers in one scheme across the payers, roster NPIs rising by practice) fixed in the generator for the shipped cut, every figure unchanged (figures.json identical)"
+  },
+  "duplicate_check": {
+   "heart": "WARN (2026-10-25)",
+   "surface": "4 pairs promoted for adjudication (task484, task480, task231, task234 on card axes); the adjudicated clone-check is author-triggered"
+  },
+  "judge": {
+   "verdict": "pass 1 (v14r1, zip cc4a6fbd) DETERMINISTIC, FIX_NOW (Callowglen's share at its rounding boundary under same-day duplicate visits, the chart graded on sign); pass 2 (v14r2, zip 04486b1a) DETERMINISTIC, APPROVE, Gate G forecasting and analytical_non_defect, Gate H domain pass, layers pass, decisive_step analytical",
+   "disposition": "APPROVE",
+   "report": "determinism_check_report.md"
+  },
+  "fate": "spent 2026-10-31: the repair's judge pass 2 FIX_NOW (two thresholds a cent off) and the re-judge (the cap claim false under a pooled per-day reading, thin margins, the stay amount unfiled); a FIX_NOW that failed its second pass"
+ },
+ "lineage_v15": {
+  "stump": "The default path prices each maximum on a continuance of the 2025 claims re-priced at the 2027 fees and files a 3,000 dollar maximum at 1.23 dollars per covered person month; the members who reached the 1,500 dollar maximum put off the crowns, bridges and implants their dentists had predetermined until the January reset, work that shows only as a relation between the 2025 estimates and the 2026 claims, and with that work in the plan year 3,000 dollars costs 2.34 and only 2,000 dollars (1.55) stays inside the resolution's 1.90.",
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-31"
+  },
+  "leak": {
+   "leak_py": "REVIEW 2026-10-31 (no LEAK, --asof 2026-10-16)",
+   "reader": ""
+  },
+  "duplicate_check": {
+   "guard_check": "PASS 2026-10-31 on the registered card",
+   "heart": "PASS 2026-10-31",
+   "surface": "clean 2026-10-31 (personas Audrey Bautista, Barry Rowland, Marvin Jordan)"
+  },
+  "judge": {
+   "verdict": "",
+   "disposition": "",
+   "report": ""
+  },
+  "build": {
+   "zip_sha256": "52554e779f515e00a7ef872fca409a6f41b12763727ae9958eed96f5adac3370",
+   "rebuild": "python3 task482/generator/build.py",
+   "gates": "checks.py 0 failures; verify.py every figure recomputes; two byte-identical builds (26 files); figures_check.py 80 of 80; precut.py exit 0; voice-check.py PASS; leak.py REVIEW; guard.py surface clean and heart PASS; producer scrub clean; ceiling 39.5, mirror leakage 20.0"
+  },
+  "source_note": "re-root into a new world (a Missouri manufacturer's employee dental plan, costing the union's proposal); architectures 1 to 14 spent",
+  "spent": "2026-10-31 at stage 4: the judge NOT_DETERMINISTIC, SEND_BACK (a withheld costing rule: F-17 word for word files 3,000; the golden's 2,000 needed the put-off work added back)"
+ },
+ "build": {
+  "zip": "433ff500dd8e84b789b2ac3f42cdb0060c6f1b351b9fce363f62eb7b8c81b6ed",
+  "rebuild": "python3 task482/generator/make.py",
+  "gates": "two byte-identical builds; generator checks 47 of 47; the independent verifier on every graded figure; figures_check.py 79 of 79; precut.py 61 of 61; voice-check.py PASS; leak.py REVIEW with no LEAK; guard.py heart WARN and surface as recorded; pair ceiling 28.5 and mirror leakage 0.0 by generator/ceiling.py",
+  "call": "EUR 342,000 on 7,200 t of 6063 billet and 1,800 t of LM25 ingot"
+ },
+ "history": [
+  {
+   "date": "2026-10-31",
+   "event": "SHIPPED: architecture 16, EUR 342,000 on 7,200 t of 6063 billet and 1,800 t of LM25 ingot; judge DETERMINISTIC, APPROVE; target.zip 433ff500"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "RESHIPPED: both PDFs' metadata made honest per the portal's input feedback"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "RESHIPPED: both PDFs exported by LibreOffice Writer instead of written by ReportLab, per the portal's provenance feedback"
+  }
+ ]
 }

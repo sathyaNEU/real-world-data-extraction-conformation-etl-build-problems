@@ -60,14 +60,10 @@ def build(out, quiet=False, docs=True):
     if docs:
         import docs as DC
         import postprocess as PP
-        n["dict"] = P.write_dictionary(f("dict"))
-        n["manifest"] = P.write_manifest(f("manifest"), n)
         DC.write_policy(f("policy"))
         DC.write_guide(f("guide"))
         PP.normalize_ooxml(f("export"), "COI Disclosure System", "COI Disclosure System", "2027-01-21T21:12:00Z",
                            "2027-01-21T21:14:37Z", excel=True, company=W.ORG)
-        PP.normalize_ooxml(f("dict"), W.PEOPLE["analyst"], W.PEOPLE["analyst"], "2026-08-11T14:05:00Z",
-                           "2027-01-21T21:36:20Z", excel=True, company=W.ORG)
         PP.normalize_pdf(f("policy"), b"D:20240611101503-04'00'", b"D:20240611103218-04'00'")
         PP.normalize_pdf(f("guide"), b"D:20261102091544-05'00'", b"D:20261102094810-05'00'")
     stamp = STAMP.timestamp()

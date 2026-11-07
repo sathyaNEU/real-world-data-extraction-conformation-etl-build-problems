@@ -74,7 +74,8 @@ python3 .claude/skills/reduce-house-fixes/scripts/scrub_producer_metadata.py <di
 ```
 
 Audit first: the producer and date are the fiction's and cannot be guessed. Never re-save through the
-writing library.
+writing library. `--producer` is for OOXML and images only: a PDF input is exported by LibreOffice Writer, which
+names itself in Producer and Creator, with the organisation in Author and a real Subject (`reduce-house-fixes` H1).
 
 ## Part 4. Honest texture only
 

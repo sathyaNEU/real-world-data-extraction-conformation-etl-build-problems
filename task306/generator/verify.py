@@ -1,347 +1,142 @@
-"""Independent verifier: unzip target.zip into a scratch folder and recompute every graded figure from the bundle with
-code that shares nothing with solve.py, then compare with figures.json and the write-up.
+"""An independent verifier: pandas over target/ only, written apart from analysis.py, recomputing the call, every
+graded figure and both asks, and comparing them with figures.json.
 
-    python3 task306/generator/verify.py [target.zip]
+    python3 task306/generator/verify.py
 """
-import calendar
-import datetime as dt
 import json
+import math
 import os
 import re
 import sys
-import tempfile
-import zipfile
 
 import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
+T = os.path.join(os.path.dirname(HERE), "target")
+BAD = []
 
 
-def ym_add(d, k):
-    y, m = d.year + (d.month - 1 + k) // 12, (d.month - 1 + k) % 12 + 1
-    return dt.date(y, m, min(d.day, calendar.monthrange(y, m)[1]))
+def check(name, cond, detail=""):
+    print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "   " + str(detail)))
+    if not cond:
+        BAD.append(name)
 
 
-def call(T):
-    reg = pd.read_csv(os.path.join(T, "rdw_gekentekende_voertuigen_20260630.csv"), dtype=str)
-    log = pd.read_csv(os.path.join(T, "accuvervangingen_2014_2026.csv"), dtype=str)
-    cv = pd.read_csv(os.path.join(T, "levensduurcurves_tractieaccu.csv"))
-    from pypdf import PdfReader
-    txt = " ".join(p.extract_text() for p in PdfReader(os.path.join(T, "garantievoorwaarden_tractieaccu_2026.pdf")).pages)
-    plat = {"VOLTA": "Volta hatch", "KESTREL": "Kestrel SUV", "PLOVER": "Plover saloon", "MIRA": "Mira city car",
-            "TERN": "Tern van"}
-    years = {p: int(re.search(re.escape(p) + r"\s+(\d+)\s+years", txt).group(1)) for p in plat.values()}
-    ages = cv["pakketleeftijd_jaar"].to_numpy(float)
-    tab = {c: cv[c].to_numpy(float) for c in cv.columns[1:]}
-    ref = cv.columns[-1]
-    reg["p"] = reg["merk"].map(plat)
-    reg["fa"] = pd.to_datetime(reg["datum_eerste_toelating"], format="%Y%m%d").dt.date
-    reg["nl"] = pd.to_datetime(reg["datum_eerste_tenaamstelling_in_nederland"], format="%Y%m%d").dt.date
-    log["k"] = log["kenteken"].str.replace("-", "", regex=False)
-    log["d"] = pd.to_datetime(log["vervangdatum"]).dt.date
-    log = log.sort_values(["k", "d"], kind="stable")
-    by = {k: list(zip(g["d"], g["geplaatst_pakket"])) for k, g in log.groupby("k")}
-
-    def wend(fa, p):
-        try:
-            return fa.replace(year=fa.year + years[p])
-        except ValueError:
-            return fa.replace(year=fa.year + years[p], day=28)
-
-    def chance(start, curve, we, frm, worked):
-        y0, y1 = dt.date(2027, 1, 1), dt.date(2028, 1, 1)
-        lo = max(y0, frm, we)
-        a0, a1, a_s = [(x - start).days / 365.25 for x in (lo, y1, worked)]
-        if a1 <= a0:
-            return 0.0
-        F = lambda a: float(np.interp(a, ages, tab[curve]))
-        return max(0.0, F(a1) - F(a0)) / max(1 - F(a_s), 1e-9)
-
-    def pack(k, fa, p, before, strict):
-        ev = [e for e in by.get(k, []) if (e[0] < before if strict else e[0] <= before)]
-        if not ev:
-            return fa, p
-        d, kind = ev[-1]
-        return d, (ref if kind == "Voltwerk revisie" else p)
-
-    snap = dt.date(2026, 6, 30)
-    fc = {p: 0.0 for p in plat.values()}
-    for r in reg.itertuples():
-        s, c = pack(r.kenteken, r.fa, r.p, snap, False)
-        fc[r.p] += chance(s, c, wend(r.fa, r.p), snap, snap)
-    base = dict(fc)
-    win = reg[(reg.fa < reg.nl) & (reg.nl > dt.date(2025, 6, 30)) & (reg.nl <= snap)]
-    months = [(2026, m) for m in range(7, 13)] + [(2027, m) for m in range(1, 13)]
-    for r in win.itertuples():
-        s, c = pack(r.kenteken, r.fa, r.p, r.nl, True)
-        we = wend(r.fa, r.p)
-        for y, m in months:
-            arr = dt.date(y, m, min(r.nl.day, calendar.monthrange(y, m)[1]))
-            off = arr - r.nl
-            fc[r.p] += chance(s + off, c, we + off, arr, arr) / 12.0
-    tot = sum(fc.values())
-    raw = {p: 3000 * v / tot / 50 for p, v in fc.items()}
-    fl = {p: int(np.floor(x)) for p, x in raw.items()}
-    left = 60 - sum(fl.values())
-    for p in sorted(raw, key=lambda p: raw[p] - fl[p], reverse=True)[:left]:
-        fl[p] += 1
-    return {p: 50 * v for p, v in fl.items()}, int(round(tot / 100) * 100), base
+def london(ts):
+    t = pd.to_datetime(ts, utc=True)
+    return t.dt.tz_convert("Europe/London").dt.date
 
 
-def asks(T):
-    fy = lambda s: ("2025-07-01" <= s[:10] <= "2026-06-30")
-    wo = pd.read_csv(os.path.join(T, "mes_werkorders_2025-26.csv"), dtype=str).set_index("werkorder")
-    code = {"VH": "Volta hatch", "KS": "Kestrel SUV", "PS": "Plover saloon", "MC": "Mira city car", "TV": "Tern van"}
-    st = pd.read_csv(os.path.join(T, "magazijn_mutaties_2025-26.csv"), dtype=str)
-    st["aantal"] = st["aantal"].astype(int)
-    rc = pd.read_csv(os.path.join(T, "magazijn_ontvangsten_2025-26.csv"), dtype=str)
-    rc["aantal"] = rc["aantal"].astype(int)
-    parts = pd.read_excel(os.path.join(T, "artikelstam_modules.xlsx")).set_index("artikelnummer")
-    sh = pd.read_csv(os.path.join(T, "verzendingen_2025-26.csv"), dtype=str)
-    sh = sh[sh["verzonden_op"].map(fy)]
-    shipped = sh["werkorder"].map(lambda w: code[wo.loc[w, "platformcode"]]).value_counts()
-    st = st[st["geboekt_op"].map(fy)].copy()
-    over = set(st.groupby("partij")["aantal"].sum().loc[lambda s: s > rc.groupby("partij")["aantal"].sum()
-                                                        .reindex(s.index).fillna(1e9)].index)
-    st["mod"] = st["aantal"] * st["artikelnummer"].map(parts["modules_per_eenheid"])
-    st["p"] = st["werkorder"].map(lambda w: code[wo.loc[w, "platformcode"]])
-    rep = st[(st["soort"] == "UITGIFTE") & st["partij"].isin(over)]
-    grp = rep.groupby(["picklijst", "partij", "aantal"])
-    drop = []
-    for _, g in grp:
-        if len(g) >= 2:
-            drop.extend(g.index[1:])
-    a = st.drop(index=drop).groupby("p")["mod"].sum()
-    A = {p: 50.0 * a[p] / shipped[p] for p in code.values()}
-    eol = pd.read_csv(os.path.join(T, "eol_testlog_2025-26.csv"), dtype=str)
-    bms = pd.read_csv(os.path.join(T, "mes_bms_koppelingen_2025-26.csv"), dtype=str)
-    eol["wo"] = eol["pakket_id"].map(dict(zip(bms["bms_serienummer"], bms["werkorder"])))
-    first = eol[eol["resultaat"] != "ABORT"].sort_values(["start", "run_id"]).groupby("wo").head(1)
-    first = first[first["start"].map(fy)]
-    first["p"] = first["programma"].str.split("-").str[1].map(code)
-    B = (100.0 * first.groupby("p")["resultaat"].apply(lambda s: (s == "PASS").mean())).to_dict()
-    ink = pd.read_csv(os.path.join(T, "kernen_inname_2025-26.csv"), dtype=str)
-    ink = ink[ink["ontvangen_op"].map(fy)]
-    ink["p"] = ink["label_platform"].str.split().str[0].map({"VOLTA": "Volta hatch", "KESTREL": "Kestrel SUV",
-                                                             "PLOVER": "Plover saloon", "MIRA": "Mira city car",
-                                                             "TERN": "Tern van"})
-    built = set(wo["kerncode"])
-    ink["rej"] = (ink["keuring"] == "AFGEKEURD") & ~ink["kerncode"].isin(built)
-    C = (100.0 * ink.groupby("p")["rej"].mean()).to_dict()
-    return A, B, C
-
-
-def texts(T):
-    """every document the call or the asks lean on, read back through one extractor per format, each with a positive
-    control from the writer's own text"""
-    from pypdf import PdfReader
-    import zipfile as zf
-    out = {}
-    for f in ("garantievoorwaarden_tractieaccu_2026.pdf", "rdw_extract_veldbeschrijving.pdf",
-              "prijslijst_revisiepakketten_2026.pdf"):
-        out[f] = " ".join(p.extract_text() for p in PdfReader(os.path.join(T, f)).pages)
-    with zf.ZipFile(os.path.join(T, "tooling_plan_2027_draft.docx")) as z:
-        x = z.read("word/document.xml").decode("utf-8")
-    out["tooling_plan_2027_draft.docx"] = re.sub(r"\s+", " ", " ".join(re.findall(r"<w:t[^>]*>([^<]*)</w:t>", x)))
-    out["lijn_exports_toelichting.md"] = open(os.path.join(T, "lijn_exports_toelichting.md"), encoding="utf-8").read()
-    for k in out:
-        out[k] = re.sub(r"\s+", " ", out[k])
-    return out
-
-
-def sf_rows(T, fig, A):
-    """SF25 to SF27 recomputed from the bundle with this file's own code: the projection cells the 2027 fleet's later
-    registrations converge over (SF25), the pack-per-car readings (SF26) and the lot stock rule on ask A (SF27)"""
-    bad = []
-    reg = pd.read_csv(os.path.join(T, "rdw_gekentekende_voertuigen_20260630.csv"), dtype=str)
-    log = pd.read_csv(os.path.join(T, "accuvervangingen_2014_2026.csv"), dtype=str)
-    cv = pd.read_csv(os.path.join(T, "levensduurcurves_tractieaccu.csv"))
-    from pypdf import PdfReader
-    txt = " ".join(p.extract_text() for p in PdfReader(os.path.join(T, "garantievoorwaarden_tractieaccu_2026.pdf")).pages)
-    plat = {"VOLTA": "Volta hatch", "KESTREL": "Kestrel SUV", "PLOVER": "Plover saloon", "MIRA": "Mira city car",
-            "TERN": "Tern van"}
-    years = {p: int(re.search(re.escape(p) + r"\s+(\d+)\s+years", txt).group(1)) for p in plat.values()}
-    ages = cv["pakketleeftijd_jaar"].to_numpy(float)
-    tab = {c: cv[c].to_numpy(float) for c in cv.columns[1:]}
-    ref = cv.columns[-1]
-    reg["p"] = reg["merk"].map(plat)
-    reg["fa"] = pd.to_datetime(reg["datum_eerste_toelating"], format="%Y%m%d").dt.date
-    reg["nl"] = pd.to_datetime(reg["datum_eerste_tenaamstelling_in_nederland"], format="%Y%m%d").dt.date
-    log["d"] = pd.to_datetime(log["vervangdatum"]).dt.date
-    log["k"] = log["kenteken"].str.replace("-", "", regex=False)
-    by = {k: sorted(zip(g["d"], g["geplaatst_pakket"])) for k, g in log.groupby("k")}
-    y0, y1, snap = dt.date(2027, 1, 1), dt.date(2028, 1, 1), dt.date(2026, 6, 30)
-
-    def wend(fa, p):
-        try:
-            return fa.replace(year=fa.year + years[p])
-        except ValueError:
-            return fa.replace(year=fa.year + years[p], day=28)
-
-    def F(curve, a):
-        return float(np.interp(a, ages, tab[curve]))
-
-    def p27(start, curve, we, frm):
-        lo = max(y0, frm, we)
-        a0, a1, a_s = (lo - start).days / 365.25, (y1 - start).days / 365.25, (frm - start).days / 365.25
-        return 0.0 if a1 <= a0 else max(0.0, F(curve, a1) - F(curve, a0)) / max(1 - F(curve, a_s), 1e-9)
-
-    def pack(k, fa, p, before, strict):
-        ev = [e for e in by.get(k, []) if (e[0] < before if strict else e[0] <= before)]
-        return (fa, p) if not ev else (ev[-1][0], ref if ev[-1][1] == "Voltwerk revisie" else p)
-
-    def split(fc):
-        tot = sum(fc.values())
-        raw = {p: 3000 * v / tot / 50 for p, v in fc.items()}
-        fl = {p: int(np.floor(x)) for p, x in raw.items()}
-        for p in sorted(raw, key=lambda p: raw[p] - fl[p], reverse=True)[:60 - sum(fl.values())]:
-            fl[p] += 1
-        return {p: 50 * v for p, v in fl.items()}, int(round(tot / 100) * 100)
-
-    base, start_of_day = {p: 0.0 for p in plat.values()}, {p: 0.0 for p in plat.values()}
-    for r in reg.itertuples():
-        s, c = pack(r.kenteken, r.fa, r.p, snap, False)
-        base[r.p] += p27(s, c, wend(r.fa, r.p), snap)
-        s, c = pack(r.kenteken, r.fa, r.p, snap, True)
-        start_of_day[r.p] += p27(s, c, wend(r.fa, r.p), snap)
-    imp = reg[reg.fa < reg.nl]
-    horizon = [(2026, m) for m in range(7, 13)] + [(2027, m) for m in range(1, 13)]
-
-    def window(months):
-        return imp[(imp.nl > ym_add(snap, -months)) & (imp.nl <= snap)]
-
-    def carry(win, rate_months, placing):
-        out = {p: 0.0 for p in plat.values()}
-        for r in win.itertuples():
-            s, c = pack(r.kenteken, r.fa, r.p, r.nl, True)
-            we = wend(r.fa, r.p)
-            for when, w in placing(r):
-                off = when - r.nl
-                out[r.p] += w / rate_months * p27(s + off, c, we + off, when)
-        return out
-
-    same_day = lambda r: [(dt.date(y, m, min(r.nl.day, calendar.monthrange(y, m)[1])), 1.0) for y, m in horizon]
-    mid_month = lambda r: [(dt.date(y, m, 15), 1.0) for y, m in horizon]
-    mid_quarter = lambda r: [(dt.date(y, m, 15), 3.0) for y, m in horizon if m % 3 == 2]
-    later = lambda r: [(d, 12.0) for d in (ym_add(r.nl, 12), ym_add(r.nl, 24)) if snap < d < y1]
-    cells = {"trailing 6 months": carry(window(6), 6, same_day), "trailing 24 months": carry(window(24), 24, same_day),
-             "trailing 36 months": carry(window(36), 36, same_day), "trailing 12 months, mid-month": carry(window(12), 12, mid_month),
-             "trailing 12 months by quarter, mid-quarter": carry(window(12), 12, mid_quarter),
-             "the last 12 months replayed": carry(window(12), 12, later)}
-    gold = carry(window(12), 12, same_day)
-    for k, a in cells.items():
-        slots, total = split({p: base[p] + a[p] for p in base})
-        if slots != fig["slots"] or total != fig["total"]:
-            bad.append("SF25 %s files %s and %d" % (k, slots, total))
-    reg_slots, reg_total = split(base)
-    if reg_slots != fig["register_only"]["slots"] or reg_slots == fig["slots"]:
-        bad.append("SF25 the register-only reading files %s" % reg_slots)
-    if int(round(sum(base.values()))) != fig["base_total"] or int(round(sum(start_of_day.values()))) == fig["base_total"]:
-        bad.append("SF26 the register's figure %.1f, at the start of 30 June %.1f" % (sum(base.values()), sum(start_of_day.values())))
-    if split({p: start_of_day[p] + gold[p] for p in base}) != (fig["slots"], fig["total"]):
-        bad.append("SF26 the start-of-day reading of 30 June moves the call")
-    # SF27: running stock by lot, receipts first on their day
-    st = pd.read_csv(os.path.join(T, "magazijn_mutaties_2025-26.csv"), dtype=str)
-    st["aantal"] = st["aantal"].astype(int)
-    rc = pd.read_csv(os.path.join(T, "magazijn_ontvangsten_2025-26.csv"), dtype=str)
-    rc["aantal"] = rc["aantal"].astype(int)
-    if rc["partij"].duplicated().any():
-        bad.append("SF27 a lot with two receipt rows")
-    got = dict(zip(rc["partij"], rc["aantal"]))
-    day = dict(zip(rc["partij"], rc["datum"]))
-    rep = st[(st["soort"] == "UITGIFTE")].groupby(["picklijst", "partij", "aantal"]).filter(lambda g: len(g) >= 2)
-
-    if (st[st["partij"].isin(got)]["geboekt_op"].str[:10] < st[st["partij"].isin(got)]["partij"].map(day)).any():
-        bad.append("SF27 a line booked against a lot before the lot was received")
-
-    def below(collapse):
-        out = set()
-        for lot, g in st[st["partij"].isin(got)].sort_values("geboekt_op", kind="stable").groupby("partij"):
-            if collapse:
-                dup = rep[rep["partij"] == lot]
-                g = g.drop(index=[i for _, h in dup.groupby(["picklijst", "aantal"]) for i in h.index[1:]])
-            if (got[lot] - g["aantal"].cumsum()).min() < 0:
-                out.add(lot)
-        return out
-
-    low = below(False)
-    if len(low) != 8 or below(True) & low:
-        bad.append("SF27 lots below zero as written %s; after counting each repeated quantity once %s" % (sorted(low), sorted(below(True) & low)))
-    wo = pd.read_csv(os.path.join(T, "mes_werkorders_2025-26.csv"), dtype=str).set_index("werkorder")
-    code = {"VH": "Volta hatch", "KS": "Kestrel SUV", "PS": "Plover saloon", "MC": "Mira city car", "TV": "Tern van"}
-    parts = pd.read_excel(os.path.join(T, "artikelstam_modules.xlsx")).set_index("artikelnummer")
-    sh = pd.read_csv(os.path.join(T, "verzendingen_2025-26.csv"), dtype=str)
-    sh = sh[(sh["verzonden_op"] >= "2025-07-01") & (sh["verzonden_op"] <= "2026-06-30")]
-    shipped = sh["werkorder"].map(lambda w: code[wo.loc[w, "platformcode"]]).value_counts()
-    fy = st[(st["geboekt_op"].str[:10] >= "2025-07-01") & (st["geboekt_op"].str[:10] <= "2026-06-30")].copy()
-    tot = fy.groupby("partij")["aantal"].sum()
-    k = {lot: got[lot] / tot[lot] for lot in low}
-    fy["mod"] = fy["aantal"] * fy["partij"].map(lambda x: k.get(x, 1.0)) * fy["artikelnummer"].map(parts["modules_per_eenheid"])
-    capped = fy.groupby(fy["werkorder"].map(lambda w: code[wo.loc[w, "platformcode"]]))["mod"].sum()
-    for p in code.values():
-        if abs(50.0 * capped[p] / shipped[p] - A[p]) > 1e-9:
-            bad.append("SF27 %s brought back to its receipts %.3f against %.3f" % (p, 50.0 * capped[p] / shipped[p], A[p]))
-    return bad
-
-
-CONTROLS = {
-    "tooling_plan_2027_draft.docx": ["in calendar 2027", "largest-remainder rule", "read by straight lines",
-                                     "taken to stay in use", "whether or not our own warranty still covers it",
-                                     "those first registered here from 1 July 2026 to the end of 2027",
-                                     "at the end of 30 June 2026", "a pack fitted in its place later is left out"],
-    "garantievoorwaarden_tractieaccu_2026.pdf": ["wherever in the EU", "does not start a new period",
-                                                 "Mira city car 5 years"],
-    "rdw_extract_veldbeschrijving.pdf": ["first admitted to the road", "first registered to a holder in the Netherlands"],
-    "lijn_exports_toelichting.md": ["an aborted run is no test of the pack", "the date on the quarantine tag",
-                                    "carries a negative quantity", "no lot's stock goes below zero",
-                                    "one row per supplier lot"],
-    "prijslijst_revisiepakketten_2026.pdf": ["price list 2026"],
-}
-
-
-def main(zpath=None):
-    zpath = zpath or os.path.join(TASK, "target.zip")
+def main():
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    with tempfile.TemporaryDirectory() as tmp:
-        with zipfile.ZipFile(zpath) as z:
-            z.extractall(tmp)
-        T = os.path.join(tmp, "target") if os.path.isdir(os.path.join(tmp, "target")) else tmp
-        slots, total, _ = call(T)
-        A, B, C = asks(T)
-        docs = texts(T)
-        rows = sf_rows(T, fig, A)
-    bad = list(rows)
-    for f, needles in CONTROLS.items():
-        if not docs.get(f):
-            bad.append("%s reads back empty" % f)
-        for s in needles:
-            if s not in docs.get(f, ""):
-                bad.append("%s lacks %r" % (f, s))
-    if slots != fig["slots"]:
-        bad.append("slots %s" % slots)
-    if total != fig["total"]:
-        bad.append("total %s" % total)
-    for p in slots:
-        if int(round(A[p])) != fig["ask_a"][p]:
-            bad.append("ask A %s %.3f" % (p, A[p]))
-        if round(B[p], 1) != fig["ask_b"][p]:
-            bad.append("ask B %s %.3f" % (p, B[p]))
-        if round(C[p], 1) != fig["ask_c"][p]:
-            bad.append("ask C %s %.3f" % (p, C[p]))
-    sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
-    for p, v in fig["slots"].items():
-        if "%s: %s" % (p, "{:,}".format(v)) not in sub:
-            bad.append("write-up lacks %s %s" % (p, v))
-    if bad:
-        print("VERIFY FAIL: " + "; ".join(bad))
-        return 1
-    print("verify: the bundle recomputes every graded figure (slots, total, 15 ask figures); %d documents read back with "
-          "their filed sentences; SF25 six projection cells, SF26 the start-of-day reading and SF27 the lot stock rule "
-          "recomputed" % len(CONTROLS))
-    return 0
+    master = pd.read_csv(os.path.join(T, "wealdmoor_security_master_2026-11-30.csv"), dtype=str).fillna("")
+    band = dict(zip(master["sedol"], master["index_band"].map({"FTSE 100": "L", "FTSE 250": "M", "FTSE SmallCap": "S"})))
+    cons = {}
+    for s, note in zip(master["sedol"], master["corporate_action_note"]):
+        m = re.search(r"(\d\d)/(\d\d)/(\d{4})", note)
+        if m:
+            cons[s] = pd.Timestamp(int(m.group(3)), int(m.group(2)), int(m.group(1))).date()
+    mk = pd.read_parquet(os.path.join(T, "lse_daily_market_data_2025-2026.parquet"))
+    mk["trade_date"] = pd.to_datetime(mk.trade_date).dt.date
+    mk = mk.sort_values(["sedol", "trade_date"])
+    mk["value"] = mk.close_gbx / 100.0 * mk.volume_shares
+    mk["ret"] = np.log(mk.close_gbx / mk.groupby("sedol").close_gbx.shift(1))
+    mk.loc[[cons.get(s) == d for s, d in zip(mk.sedol, mk.trade_date)], "ret"] = np.nan
+    g = mk.groupby("sedol")
+    mk["adv20"] = g.value.transform(lambda x: x.shift(1).rolling(20, min_periods=20).mean())
+    mk["vol60"] = g.ret.transform(lambda x: x.shift(1).rolling(60, min_periods=10).std()) * 1e4
+    look = mk.set_index(["sedol", "trade_date"])[["adv20", "vol60"]]
+
+    od = pd.read_csv(os.path.join(T, "oms_orders_2025-2026.csv"), dtype={"order_id": str})
+    fl = pd.read_csv(os.path.join(T, "oms_fills_2025-2026.csv"), dtype={"order_id": str})
+    fl = fl.drop_duplicates("exec_id")
+    fl["px"] = np.where(fl.price_unit == "GBP", fl.fill_price * 100.0, fl.fill_price)
+    od["day"] = london(od.created_utc)
+    filled = fl.groupby("order_id").fill_qty.sum()
+    od["filled"] = od.order_id.map(filled).fillna(0).astype(int)
+    term = od[od.status == "TERMINATED"].copy()
+    term["left"] = term.order_qty - term.filled
+    rec = od[od.source == "BACKUP-RECOVERY"]
+    key = ["account_code", "sedol", "side", "day"]
+    mm = rec.merge(term[key + ["left", "order_id"]].rename(columns={"order_id": "orig"}), left_on=key + ["order_qty"],
+                   right_on=key + ["left"], how="left")
+    parent = dict(zip(mm.order_id, mm.orig))
+    fl["oid"] = [parent.get(o) if isinstance(parent.get(o), str) else o for o in fl.order_id]
+    fl["pv"] = fl.fill_qty * fl.px
+    agg = fl.groupby("oid").agg(q=("fill_qty", "sum"), pv=("pv", "sum")).reset_index()
+    ex = agg.merge(od, left_on="oid", right_on="order_id")
+    ex["avg"] = ex.pv / ex.q
+    ex["sgn"] = np.where(ex.side == "BUY", 1.0, -1.0)
+    ex["sf"] = ex.sgn * (ex.avg - ex.arrival_mid_gbx) / ex.arrival_mid_gbx * 1e4
+    ex["value"] = ex.q * ex.arrival_mid_gbx / 100.0
+    lv = look.reindex(list(zip(ex.sedol, ex.day)))
+    ex["part"] = ex.value.values / lv.adv20.values
+    ex["vol"] = lv.vol60.values
+    ex["band"] = ex.sedol.map(band)
+    coef = {}
+    for b in "LMS":
+        sub = ex[ex.band == b]
+        X = np.column_stack([np.ones(len(sub)), sub.vol * np.sqrt(sub.part)])
+        coef[b], *_ = np.linalg.lstsq(X, sub.sf.values, rcond=None)
+    check("each band's coefficient on volatility times the square root of participation sits near 0.85",
+          all(0.75 < coef[b][1] < 0.95 for b in "LMS"), {b: round(float(coef[b][1]), 3) for b in "LMS"})
+
+    summ = pd.read_excel(os.path.join(T, "research_backtests_2027_candidates.xlsx"), sheet_name="Summary")
+    alpha = dict(zip(summ["Strategy code"], summ["Annualised gross alpha, 2015 to 2026"].astype(str).str.rstrip("%").astype(float)
+                     / 100))
+    tr = pd.read_csv(os.path.join(T, "backtest_rebalance_trades_2025-2026.csv"))
+    tr["d"] = pd.to_datetime(tr.rebalance_date).dt.date
+    tr = tr[(tr.d >= pd.Timestamp(2025, 12, 1).date()) & (tr.d <= pd.Timestamp(2026, 11, 30).date())]
+    tr["sedol"] = tr["isin"].map(dict(zip(master["isin"], master["sedol"])))
+    lt = look.reindex(list(zip(tr.sedol, tr.d)))
+    v = tr.traded_weight.abs() * 400e6
+    p = v.values / lt.adv20.values
+    a = np.array([coef[band[s]][0] for s in tr.sedol])
+    k = np.array([coef[band[s]][1] for s in tr.sedol])
+    tr["cost"] = v.values * (a + k * lt.vol60.values * np.sqrt(p)) / 1e4
+    cost = tr.groupby("strategy_code").cost.sum()
+    for k in ("SCM", "MCV", "LCQ"):
+        net = alpha[k] * 400e6 - cost[k]
+        check("%s alpha kept GBP %dm" % (k, fig["candidates"][k]["net_gbp_m"]),
+              int(round(net / 1e6)) == fig["candidates"][k]["net_gbp_m"], round(net / 1e6, 3))
+        check("%s gross GBP %dm" % (k, fig["candidates"][k]["gross_gbp_m"]),
+              int(round(alpha[k] * 400)) == fig["candidates"][k]["gross_gbp_m"])
+    nets = {k: alpha[k] * 400e6 - cost[k] for k in ("SCM", "MCV", "LCQ")}
+    order = sorted(nets, key=lambda k: -nets[k])
+    check("the call and the runner-up", order[0] == fig["call"] and order[1] == fig["runner_up"], order)
+
+    reg = pd.read_csv(os.path.join(T, "trading_account_register.csv"), dtype=str).fillna("")
+    live = ["UK Equity Income", "UK Mid Cap Growth", "UK Smaller Companies", "UK Dynamic"]
+
+    def owner(acc, d):
+        for _i, r in reg[reg.account_code == acc].iterrows():
+            if pd.Timestamp(r.opened).date() <= d and (r.closed == "" or d <= pd.Timestamp(r.closed).date()):
+                return r.account_name
+        return None
+    al = pd.read_csv(os.path.join(T, "oms_block_allocations_2025-2026.csv"), dtype={"block_order_id": str})
+    blk = ex[ex.order_id.isin(set(al.block_order_id))].merge(al, left_on="order_id", right_on="block_order_id")
+    blk["account_code"] = blk["account_code_y"]
+    blk["value"] = blk.allocated_qty * blk.arrival_mid_gbx / 100.0
+    blk["pv"] = blk.allocated_qty * blk.avg
+    keep = ex[~ex.order_id.isin(set(al.block_order_id))]
+    ex = pd.concat([keep, blk[keep.columns]], ignore_index=True)
+    e26 = ex[[d.year == 2026 for d in ex.day]].copy()
+    e26["who"] = [owner(a, d) for a, d in zip(e26.account_code, e26.day)]
+    e26 = e26[e26.who.isin(live)]
+    e26["q"] = [(d.month - 1) // 3 + 1 for d in e26.day]
+    e26["h"] = [1 if d.month <= 6 else 2 for d in e26.day]
+    sf = e26.groupby(["who", "q"]).apply(lambda x: (x.sf * x.value).sum() / x.value.sum(), include_groups=False)
+    tv = e26.groupby(["who", "h"]).pv.sum() / 100.0
+    bad_a = [k for k in fig["ask_shortfall_bps"] if round(float(sf[(k.rsplit(" ", 1)[0], int(k[-1]))]), 1)
+             != fig["ask_shortfall_bps"][k]]
+    bad_b = [k for k in fig["ask_traded_gbp_m"] if int(round(tv[(k.rsplit(" ", 1)[0], int(k[-1]))] / 1e6))
+             != fig["ask_traded_gbp_m"][k]]
+    check("ask A: every quarter's shortfall recomputes", not bad_a, bad_a)
+    check("ask B: every half's traded value recomputes", not bad_b, bad_b)
+    print("verify:", "PASS" if not BAD else "FAIL (%d)" % len(BAD))
+    sys.exit(1 if BAD else 0)
 
 
 if __name__ == "__main__":
-    sys.exit(main(*sys.argv[1:]))
+    main()

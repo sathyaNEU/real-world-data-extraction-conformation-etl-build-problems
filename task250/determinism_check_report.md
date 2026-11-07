@@ -1,62 +1,52 @@
-# determinism-check report, task250 (architecture 2), 2026-10-20
-
-One report per build, replaced in place at each pass. Passes on architecture 2: pass 2 FIX_NOW (the visit left to the
-reader, asks 3 and 4); pass 3 SEND_BACK (cancelled orders with readings and lost orders, asks 3 and 4), the ask layer
-rebuilt as v3; pass 4 SEND_BACK (a drift's growth after its check left unfiled), section 9 filed; pass 5 FIX_NOW (the
-plan's visit pinned as a check in place, a step against the spring round); pass 6 below, on the shipped pack.
+# determinism-check report, task250, 2026-10-31
 
 ## Verdict
-DETERMINISTIC
-**Disposition:** APPROVE
-**Stumping type:** mechanism: forecasting (censoring-corrected forward projection), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+DETERMINISTIC (no SOLUTION_WRONG)
+**Disposition:** APPROVE (optional prompt pin for the courier-event window, see Findings)
+**Stumping type:** mechanism: decomposition_attribution (etl_conformance asks), stumping_family: analytical_non_defect, surface_read_dependency: no (borderline), sole_data_defect: no
 
-Gate H line: domain: pass, layers: pass, decisive_step: analytical.
-
-Judge thread: one pass, sonnet, medium, isolated at /tmp/determinism-check-task250-pass6/ (verdict.md there). target.zip sha256 19727806195dcfb76610c8656ec1a2d43c334929bcca6429ae2d7559a32c4ecd.
+Thread verdict: /tmp/determinism-check-task250-1793475852/verdict.md. target.zip sha256 1b8dcbc7...d803b (architecture 3).
 
 ## Why
-Every committed answer reproduces from the shipped files. QC-02 s7 (most sensitive setting whose yearly alerts fit the 28 visits), s9 (an uncorrected drift keeps growing) and the sensor history force the call. A plain re-run on the 131-station network gives 23 at 3.5, which fits 28. Adding the 30 drifts the record's own 3.0 alerts repaired before the 3.5 limit was reached gives 33, which does not fit. 4.0 gives 18 and fits. The choice of 4.0 survived every operationalisation the judge tried.
+Every graded figure reproduced from the bundle alone. The alert set Sosnowiec, Strykow, Pruszkow follows once an unscanned parcel is charged to the hub of the unloading it came off: all 300 door unloadings carry one hub on their sorted parcels, and idle thresholds of 1 to 29 minutes give the same split. The competing routes (sort-plan hub, depot-morning split, mixed mornings dropped) are each ruled out by a shipped fact.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Kept network | 131 | 131 (148 less 17 baja_prevista 2027-12-31), registro_estaciones.xlsx | yes |
-| Re-run alerts a year at 3.0/3.5/4.0/4.5 | 66, 23, 7, 3 | 197, 69, 21, 8 over three years = 65.7, 23.0, 7.0, 2.7 | yes |
-| Repaired drifts at kept stations | 35 | 35 of 38 (Historial sensor T) | yes |
-| Drifts never reached by the re-run | 10, 30, 33, 34 | 10, 30, 33, 34 | yes |
-| Alerts a year | 69, 33, 18, 14 | 69, 33, 18, 14 | yes |
-| 2027 drift-alert visits / days by district (8 districts) | 3/9, 6/25, 7/26, 5/25, 9/34, 2/4, 3/8, 5/16 | identical (40 visits, 147 days) | yes |
-| 2027 breakdown visits at kept stations by district | 14, 15, 20, 14, 23, 12, 12, 5 | identical (115) | yes |
+| October parcels | 91,324 | 92,161 rows less 837 re-sent = 91,324 (depot_scan_events) | yes |
+| Hub table (parcels/missed/rate) | HPOZ 12,600/61/0.48; HWRO 11,963/95/0.79; HKTW 16,530/222/1.34; HKRK 13,628/86/0.63; HLDZ 12,178/189/1.55; HWAW 24,425/301/1.23 | identical | yes |
+| Two-trailer mornings | 24; 1,440 parcels, 130 missed; HWAW own 205 | identical | yes |
+| Sent twice per depot | 5,270 total (581, 125, 600, 272, 324, 375, 97, 200, 127, 599, 292, 942, 736) | identical | yes |
+| Never picked up per depot | 106, 257, 162, 139, 110, 195, 43, 86, 170, 189, 309, 145, 346 | identical (needs de-duplicated pickups; else 15 low) | yes |
 
 ## Competing answers that survived
-No fork changes the call or a graded figure except as follows.
-- Peak-year rather than three-year mean for "alerts a year": the setting is still 4.0, but the figure would be 23 instead of 18. The judge rates this weak (prompt and plan read as a mean).
-- Window end at the alert day rather than the adjustment day: 3.0 and 3.5 cells move to 74 and 34, and 4.0 and 4.5 are unchanged. The adjustment day is the correct end because the repair stops the growth. Small risk on two graded cells.
-- Closed by the files: limit sd from the re-run statistic (s6 and the dictionary say recorded), and visit day = order visit_date (contradicted by the calibration readings and the in-air check in the plan).
-- Plain re-run (3.5, 23) is the intended wrong route, excluded by s9 and the 35 repaired drifts.
+- Courier-event window (ask 2, sent-twice column only): prompt gives none. Golden counts every record in the extract (30 Sep to 3 Nov). Restricting to 1 to 31 Oct gives 5,179 and moves KRK1 92, LDZ1 579, POZ1 569, WAW1 926, WAW2 727, WRO1 595. Literal reading (TDS-4 3.1 and 5.1, the platform as extracted) matches the golden. Does not touch the main call. Not in the design note's fork table (SF17 covers duplicates only, not the window).
+- Hub-routes (plan hub, depot-morning split, exclusion): do not survive.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files, formats, large file | 10+, 3+, one 25,000+ rows | 12 files, 6 formats, estaciones_diario 160,279 rows | yes |
-| Distractors | 2+ named in metadata.json, none in a file name | entregas_plataforma_2027.csv, boletin_et0_2027.csv; neither name labels a distractor | yes |
-| Distractor weight | unused, relevant, ruled out by a shipped fact | judge: relevant to the setting, unused | yes (not separately tested for a graded-quantity answer) |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, png), both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | whole numbers stated in the prompt; per-district cuts | yes |
-| Prompt shape and 25+ criteria | identifiable, 25+ | shape 04 per metadata; criterion count not generated at this stage | not verifiable here |
-| Not LLM-reading, realistic goldens | yes | judge found work-order notes, duplicates, decimal commas real | yes |
+| Files / formats / large file | 10+, 3+, 25k rows | 11 files; 5 formats (csv, eml, parquet, pdf, xlsx; the thread said 6, I count 5); 280,378-row parquet | yes |
+| Distractors | 2+ named in metadata, no file name labels | customer_claims, hub_sorter_availability; neither has a labelling name; unused by solution, no bearing on figures | yes |
+| Deliverables | 1 to 3, all in golden | xlsx + pptx, both in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | hub table, 13-depot pair, chart; prompt states per cent, two decimals, whole counts | yes |
+| Rubric 25+ criteria | 25+ | not generated here; per-hub (6x4) and per-depot (13x2) cells exceed 25 | yes (by shape) |
+| Prompt shape | identifiable | shape 10 in metadata | yes |
+| Reads as real work product / not LLM | yes | thread found system-extract mess, coherent timeline, no provenance leakage | yes |
 
 ## Gate G reconciliation
-Thread: mechanism forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note: the stump is the analyst's reading of the record as censored by its own repairs; Not semantics, Not rule application and No decoy lines are present and agree with the thread (the plain re-run and the replay both file 3.5; the 2027 summary counts only 3.0 alerts, which every route reproduces). The thread did not name the declared distractors as carrying the task. No mismatch.
+Thread: mechanism decomposition_attribution, family analytical_non_defect, surface_read_dependency no (borderline), sole_data_defect no. Design note: stump is attribution of unscanned parcels to the unloading's hub; the sort plan is declared an ordinary route of record, not a decoy. The sort plan is not a declared distractor in metadata (distractors are claims and sorter availability), and the thread names it as the easy route, not as carrying the task: it is a Layer 1 artifact the unloadings refute. Match. No distractor is too load-bearing; Gate G is satisfied since the plan is correct as a plan and states no rate.
+
+## Gate H line
+domain: pass, layers: pass, decisive_step: analytical. Matches the card (stump_class analytical) and the note's Three rules (No decoy, Not semantics, Not rule application). Mild flag from the thread: the convention is recovered from timing structure, not filed, so a strict reader could call it a hidden rule. The note's answer is that TDS-4 files the WHAT and the data's unloadings force the HOW.
 
 ## Stump power (Gate F)
-Moderate to good. A solver who does not see that 3.0 alerts cut drifts short lands on 3.5 and 23. The s9 sentence hints at the mechanism, which may lower difficulty. The bath-reading exclusion in the visit-day rule is demanding and inferable from the plan's in-air check and the tmin/tmax columns. Not a textbook-method case: the correction is not a filed or standard procedure.
+Moderate. The sort plan, depot-morning split and exclusion routes each end on a wrong alert set (Strykow under the line); only the unloading reconstruction from door timestamps lands it. Discoverable from the data (register's manual sort hall is a faint pointer). The asks add layered reconstruction (clock by handheld model, piece labels, de-duplicated pickups, replaced depot).
 
 ## Findings, ranked
-1. None blocking.
-2. Optional: file "alerts a year" as the three-year mean to close the peak-year reading (23 vs 18).
-3. Optional: note the window end (adjustment day) so the 69 and 33 cells are not disputed. Both would be edits to a verified build; they are not required.
-4. data_dictionary.md is a solver-facing aid but names no trap.
+1. Courier-event window not filed in the prompt or the fork table (ask 2, sent-twice column, six depots move). Fix, either: add a fork-table row (window = every record in the extract, TDS-4 3.1 and 5.1) asserted in checks.py, or add a prompt clause; the prompt clause changes what solvers see and needs a rerun. Not blocking.
+2. Mild hidden-rule flag on the decisive convention, answered by the design note; no change needed.
+3. Format count in the thread's hygiene section is 6, actual 5; passes either way.
 
 ## Next action for the author
-Proceed to stage 5 (ship); no re-judge is needed.
+Add the courier-window row to the design note's fork table and assert it in checks.py (no prompt change); then proceed to ship.

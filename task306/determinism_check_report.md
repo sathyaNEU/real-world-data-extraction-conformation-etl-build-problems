@@ -1,58 +1,65 @@
-# determinism-check report, task306, 2026-10-24
+# determinism-check report, task306 (architecture 4, pass 2 re-judge), 2026-10-31
+
+Pass 1 of architecture 4 is kept as determinism_check_report_arch4.md. This pass judges target.zip sha256 7f2aba0203b068e17d4e9f34b8d8a86f19cc4ca361c02f18128409d045b2ad35 (rebuilt byte-identically) after the FIX_NOW. Judge thread output: /tmp/determinism-check-task306-225642/verdict.md.
 
 ## Verdict
 DETERMINISTIC
 **Disposition:** APPROVE
-**Stumping type:** mechanism: forecasting, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Gate H:** domain: pass, layers: pass, decisive_step: analytical
 
 ## Why
-One isolated sonnet judge thread (scratch /tmp/determinism-check-task306-1792824984/, verdict.md there) executed the prompt and the tooling plan word for word. The estimand is "pack fails in 2027 on a car in use in the Netherlands, OEM warranty ended", which includes used imports not yet arrived. The warranty PDF (first admission anywhere in the EU) and the RDW field sheet (first admission "in the Netherlands or elsewhere") support it. Soft spot: the plan's "a car in use is taken to stay in use through 2027" can be read as freezing the 30 June register, but "in use in 2027" favours the golden. The judge called it forced.
+IC-07 section 2 files the estimand: the 2015 to 2026 gross alpha as the workbook reports it, less the implementation shortfall of the twelve months of rebalances to 30 November 2026, scaled to GBP 400 million. It also files that costs are estimated from the desk's executions in the index band the candidate trades. TCA standard sections 1 to 3 fix shortfall, value, participation and volatility, including the consolidation day giving no return and the 60-session history. The judge rebuilt everything from the raw files. UK Mid Cap Value wins, UK Large Cap Quality is runner-up and the gap is GBP 2 million under every band-wise form tried, and all workbook figures reproduce.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Register-car failures | 3,448 | 3,448.4 | yes |
-| Import failures (Mira) | 363 (360) | 363.1 (359.8) | yes |
-| Platform forecasts M/V/P/K/T | 1,829/1,144/425/322/91 | 1,828.9/1,144.5/425.5/322.1/90.5 | yes |
-| Total to nearest 100 | 3,800 | 3,811 -> 3,800 | yes |
-| Slots | 1,450/900/350/250/50 | same | yes |
-| Ask 3 modules per 50 (V/K/P/M/T) | 167/274/190/149/224 | 167.1/274.3/189.7/149.2/223.8 | yes |
-| Ask 4 first-run pass share | 92.6/88.2/94.0/88.3/90.5 | identical | yes |
-| Ask 5 intake reject share | 8.9/5.9/11.0/14.7/8.3 | 8.91/5.92/10.99/14.70/8.33 | yes |
+| Rebalance value at GBP 400m (SCM / MCV / LCQ) | 1211 / 524 / 485 | same (12, 4, 4 rebalance dates; no traded ISIN on the ESG list; every ISIN joins to a SEDOL) | yes |
+| Gross alpha (Summary column "Annualised gross alpha, 2015 to 2026") | 20 / 12 / 7 | 20.2 / 12.08 / 7.36 | yes |
+| Band-wise cost with intercept | not filed as a figure | 15.3 / 4.09 / 1.46 | n/a |
+| Kept alpha | 5 / 8 / 6 | 4.9 / 7.99 / 5.9 | yes |
+| Runner-up and gap | LCQ, 2 | LCQ in all band-wise variants; gap 2 in 15 of 16 unrounded (1.78 in the other, which also rounds to 2) | yes |
+| Conformance: duplicates, pence/pounds, backup merge, blocks, consolidations | as filed | 122 duplicate rows; 15,584 pound fills; 494 backup orders one to one; block allocations sum exactly; 8 consolidation days match 8 jumps of about 10x | yes |
+| Workbook ask 1 (16 cells) | as filed | matches every cell | yes |
+| Workbook ask 2 (8 cells) | as filed | matches every cell | yes |
 
 ## Competing answers that survived
-None on the main call. Sensitivity (age divisor 365/365.2425, import rate +-10%, last-6-month rate, taxis excluded) leaves the slots unchanged. Only a -15% import rate moves them (Tern 100, Mira 1,400). The total sits 39 below the 3,850 rounding edge; a rate about +10% would round to 3,900, but yearly import counts are stable (1,205 to 1,389), so that is not a reasonable estimate.
-Traps, not forks: register only (3,400; 1,250/1,000/350/300/100); unconditional hazard (about 2,700; 1,300/900/400/300/100).
-Asks: ask 3 without the pick-list dedupe (283/150/195/238/171) is contradicted by eight supplier lots whose receipts the dedupe reproduces exactly. Ask 4 per pakket_id (87.2/88.0/94.2/91.3/92.3) is contradicted by the toelichting (BMS swap gives a new pakket_id). Ask 5: the dock-2 "does not scan rejects" fact is in no shipped file and is recoverable only by inference from the data (see Findings).
+Recorded residual (not a blocker): the form of the cost curve is not filed. Fitted without an intercept, UK Smaller Companies Momentum (SCM) keeps 3.64, which rounds to 4 instead of 5. The call, the runner-up and the gap are unchanged. The data separate the forms: the SmallCap R2 is 0.77 with an intercept against 0.68 without, and free-exponent fits recover 0.46 to 0.51 with intercepts of about 3, 9 and 22 to 25 bps. So the intercept form is the one the data favour. It touches only SCM's figure in deck ask 4 and critical component 3.
+Considered and closed:
+- A pooled all-band fit makes SCM the runner-up, but IC-07 section 2 excludes it ("stocks of the index band the candidate trades").
+- The arithmetic mean of the Annual alpha sheet differs from the Summary column. IC-07 says "as the workbook reports it", and the Summary column carries that label.
+- Sample against population standard deviation, and 59 against 60 returns across a consolidation day: every rounded figure is stable.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 18 | yes |
-| Formats | 3 or more | csv, xlsx, pdf, docx, md | yes |
-| Large file | 25,000 rows or more | rdw_gekentekende_voertuigen 88,128 rows | yes |
-| Distractors in metadata.json, none named by file | 2 or more | prijslijst_revisiepakketten_2026.pdf, module_levertijden_2026.xlsx; file names do not label them | yes |
-| Distractors unused yet weighable, none answering a graded quantity | yes | price list and module lead times, not used in any golden figure; neither reproduces a graded quantity (judge found no arithmetic route) | yes |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, png), both in golden/ | yes |
-| Asks multi-dimensional, unit and rounding stated | yes | 3 per-platform asks plus total and slots; prompt states hundred, whole modules, one decimal of a per cent | yes |
-| Prompt shape and 25+ criteria | identifiable, 25 or more | shape "other" (slots plus sized demand plus per-lot measures); about 25 gradable figures (call, 5 slots, total, 15 platform shares/counts, chart items); at the floor, not independently counted | yes, thin |
-| Not LLM-generated, goldens realistic | yes | judge found clean metadata, no authoring disclosure; golden realism not re-read here | yes |
+| Files | 10 or more | 13 | yes |
+| Formats | 3 or more | 5 | yes |
+| Large file | 25,000 rows or more | market data 329,800; fills 61,700 | yes |
+| Distractors | 2 or more, named in metadata.json, none labelled by file name | broker_commission_schedule_2026.xlsx, esg_exclusions_2026.csv | yes |
+| Distractors unused yet weighed; ruled out by a shipped fact | required | commissions are excluded by IC-07. No traded ISIN is on the ESG list, so it is now inert | yes |
+| Deliverables | 1 to 3, each in the golden | 2 (pptx, xlsx) | yes |
+| Asks | multi-dimensional, unit and rounding stated | deck asks 1 to 6, workbook 24 cells; rounding stated in the prompt | yes |
+| Prompt | one paragraph, question first, under 1,000 characters, no data counts | 608 characters | yes |
+| Rubric of 25 or more criteria | required | not generated here; the 6 deck asks and 24 workbook cells make it plausible | not verified |
+| Reads as real, not LLM generated | required | the judge found authentic operational mess and no authoring leakage | yes |
 
 ## Gate G reconciliation
-Thread: mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note: strategy `maturity_censoring`, Gate G `forecasting`, decisive step the full import arrival stream (G13), nothing planted. Match. The declared distractors (price list, lead times) were not named as the surface read carrying the task. The thread's surface-read trap is the register-only split, which is the intended default path, not a shipped artifact ranking candidates wrongly. The ladder's "1,350 (either half of the stream)" fork in the note is not a literal-reading fork; the judge's rate/window sensitivities support the standing family. metadata.json carries no `stump_class`, `analyst_test` or `domain_test` keys; the card was not located in this pass, so the card side of the comparison is incomplete and the note's `## Three rules` was used instead.
+The design note and card were read after the thread returned. Thread: method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no. Note and card: a size-dependent shortfall curve, stump_class analytical, with the band-average capacity check as the default path that files SCM. These match.
+- The declared distractors are not the surface read carrying the task.
+- Pass 1's mismatches are closed. The consolidation skip is now filed in the TCA standard (SF12, SF13), the ESG list is inert (SF14), and the index band is filed in IC-07 (SF11).
+- One mild gap in the note: it asserts that kept alphas hold across 31 variants. The no-intercept form moves SCM from 5 to 4, which is the recorded residual above. The note's fork table should carry that form as a row.
 
-## Gate H (the three rules)
-domain: pass; layers: pass; decisive_step: analytical.
-The thread's decisive step (carry the monthly import inflow into the 2027 pool with conditional hazard, rather than the 30 June register) matches the note's. Both Not-semantics and Not-rule-application lines in the note stand: no filed sentence rules out the register-only route, only the register's two date columns do. No decoy.
+## Gate H
+domain pass, layers pass, decisive_step analytical. This agrees with the card's `analyst_test` and `domain_test`. Layer 1 is the order conformance. Layer 2 is a participation-scaled cost curve per band, read at the size the desk never traded.
 
 ## Stump power (Gate F)
-Moderate to good, per the thread. Two analytical traps move the call: the register-only population (Mira 1,250 to 1,450) and the unconditional hazard (understated total). The thread found no hint that imports keep arriving beyond the RDW "elsewhere" and warranty wording. The note's pre-draw probes (four of four missed the step) agree. The decisive step is not "the field's standard method applied with no judgment", so no landable-call discount applies. The asks add reconciliation traps (ask 3 dedupe, ask 5 dock 2).
+The thread rates it good. Even after correct cleaning, the easy route of a flat desk-average shortfall on turnover files SCM (cost about 7 against 20.2 gross), and the right analysis overturns it to about 5. The thread classed the decisive step analytical. IC-07 now files the population (the candidate's own index band) but not the curve's shape, so the shape is still read from the executions. For the main thread to weigh: a per-band square-root fit is the field's textbook impact route, so a strong solver can reach the call. The quarterly and half-year workbook asks add independent multi-cell reconstruction through the account register, backup merge and block allocations. The main thread weighs this against the design note's ladder.
 
 ## Findings, ranked
-1. Soft spot: "a car in use is taken to stay in use through 2027" admits a register-frozen reading. The judge calls the golden forced; the real reviewer may see it as an open fork. Consider a closure sentence only if the main session wants more margin, and file the WHAT (population), not the HOW.
-2. Ask 5: the dock-2 "does not scan rejects" fact appears in no shipped file; the 119 recycler lines enter numerator and denominator only by inference (the judge reached it from the data). A literal reader could leave them out (ask 5 then differs). Risk of an `answer_contradicts_files` reading on ask 5.
-3. Hygiene: lijn_exports_toelichting.md says the exports were pulled on 1 July 2026, but afvoer_recycler_2025-26.xlsx has collections dated 8, 14 and 15 July 2026 (outside the window, non-decisional).
-4. Total margin: 39 below the 3,850 rounding edge; slots margin 0.263 lots worst (Plover over Tern 0.27 in the judge's count).
+1. Residual, recorded: the cost-curve intercept is unfiled. The no-intercept fit gives SCM kept 3.64, rounding to 4 against the golden's 5. The data favour the intercept (R2 0.77 against 0.68). The main call, runner-up, gap and every workbook figure are unaffected.
+2. Note hygiene: the "31 variants" claim and SF3 should record the no-intercept fit.
+3. The thread offered an optional prompt or IC-07 touch naming the curve's form. It is not taken. Naming the form would file the HOW and turn the decisive step into rule application.
 
 ## Next action for the author
-Fix the toelichting pull date in the generator and, if wanted, state the dock-2 non-scanning fact in lijn_exports_toelichting.md (a fact about the data, not the method), then rebuild; no re-judge is needed for the call.
+None required. Approve and proceed. Optionally, add the no-intercept form as a fork-table row in the design note, citing that the data separate the forms. Do not name the curve's form in the prompt or IC-07.

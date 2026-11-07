@@ -17,8 +17,6 @@ FILES = {
     "plan": "tbt_dust_management_monitoring_plan_rev3.pdf",
     "asr2026": "asr2027_table_a3_no2_2026.pdf",
     "bgmap": "background_maps_2027_thornmouth_extract.csv",
-    "dict": "DATA_DICTIONARY.md",
-    "readme": "README.md",
     "deliv_xlsx": "thornmouth_pm10_2027_data_capture_review.xlsx",
     "deliv_pdf": "asr2027_pm10_data_capture_note.pdf",
 }

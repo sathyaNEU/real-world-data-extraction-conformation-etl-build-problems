@@ -78,13 +78,26 @@ stated score deciding the call is a backdrop at any depth. In General Statistics
 of the method: the deciding quantity is the task type's own statistical object, and replacing it with a
 generic summary must change the call.
 
+**The literal standard is the golden.** A governing standard executed word for word gives the golden; a golden
+that needs an adjustment the standard does not ask for (a behavioural add-on, a correction for an artefact) files
+a withheld rule, and the judge reads it so. task482's costing standard, executed on the year's claims, filed 3,000
+where the golden added back the work members put off and filed 2,000. An artefact that inflates the raw figures
+is Layer 1 even when the method that removes it is the field's own: removing it is catching a defect, a planted
+flip (task191: four fixed structures firing on a quarter of their passes decided the depot).
+
 **The `Not rule application:` line carries three numbers.** "Does a filed rule name the method?" is not the
 test; **"is anything left to decide once every filed rule and the data are read?"** is. The line gives the
 spread of the **enumerated** family (every construction a competent analyst would reach for), the spread of
 the **standing** family (the subset the data and the filed rules leave defensible) and the loudness of
 whatever does the ruling-out. A standing spread of zero on the graded figure means the step is a reflex,
 whatever the documents say, and the build is drawn elsewhere; eleven builds answered the first question
-truthfully, measured a standing spread of zero and were landed (`evidence.md` 1.1).
+truthfully, measured a standing spread of zero and were landed (`evidence.md` 1.1). A filed estimand that names
+the members one source misses (every death, registered or not), shipped beside a second source that lists them,
+leaves nothing to decide: linking that source executes the rule, and the judge reads it so (task445 v2, Gate H3).
+The deciding quantity is one no shipped source lists, an estimate the filed WHAT leaves to the analyst.
+A decisive step that is an inclusion or exclusion over a second source has no safe filing: filed, it is a rule
+executed (task445 v2); left to an intent phrase, it is a withheld rule and the literal reading files the default
+(task468 v5, the repeat-sales pairs across building work). Draw the decisive step as an estimate instead.
 
 **Convergence and reach are one dial wherever the easy route is itself a member of the licensed family.**
 Where the decisive step is a choice among estimators, making the family agree (Gate C) makes the easy route

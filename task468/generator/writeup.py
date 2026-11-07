@@ -1,106 +1,106 @@
-"""submission.md, drafted from generator/figures.json: every figure the write-up states comes from there."""
+"""task468 architecture 6: figures.json, submission.md and metadata.json, every figure from the solved pack."""
 import json
 
-import world as W
+import golden as GD
 
-WORD = {3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 9: "nine"}
-CLS = {"ssn": "Social Security number on file", "simple": "no number, single surname",
-       "compound": "no number, two-part surname"}
+SOURCES = {
+    "lims_old": "synthetic: a water utility laboratory's legacy LIMS export of trade waste results, January 2025 to "
+                "February 2026, local times",
+    "lims_new": "synthetic: the laboratory's LabWare export of trade waste results from February 2026, UTC",
+    "telemetry": "synthetic: hourly cumulative register reads of the trade waste flow meters, UTC",
+    "register": "synthetic: the trade waste agreements register with each agreement's COD limit",
+    "policy": "synthetic: the utility's trade waste policy, version 4",
+    "lab_notice": "synthetic: the laboratory's notice of the move from COD to TOC",
+    "crosswalk": "synthetic: the legacy site codes to LabWare sampling points",
+    "jobs": "synthetic: the field service job log with the meter exchanges",
+    "request": "synthetic: the Trade Waste Manager's request email",
+    "rain": "synthetic: daily rainfall at the utility's gauge",
+    "returns": "synthetic: customers' quarterly production returns",
+    "inspections": "synthetic: the trade waste officers' inspection visits",
+    "receival": "synthetic: the treatment plant's liquid waste receival station log",
+    "manifests": "synthetic: the state waste tracking system's manifests for loads delivered to the plant",
+}
+TYPE_NAMES = {"GT": "grease trap waste", "SE": "septage", "PL": "portable toilet waste", "LL": "landfill leachate"}
+WHY = {"rain": "rainfall says how wet the catchment was, not what a customer discharged through its meter",
+       "returns": "production returns are the customers' own activity figures; the policy measures mass from the "
+                  "utility's meters and samples"}
 
 
-def _join(xs):
-    return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
+def figures(R):
+    custs = R["D"]["custs"]
+    return {"over": R["over"],
+            "verdict": {c: ("over" if c in R["over"] else "within") for c in custs},
+            "ask_a": {t: [int(round(x)) for x in R["liquid"][t]] for t in R["liquid"]},
+            "ask_b": {c: "%.1f" % R["ss"][c] for c in custs},
+            "cod_t_shown": {c: round(R["cod"][c], 1) for c in custs},
+            "limit_t": {c: R["D"]["limit"][c] for c in custs},
+            "fit": [round(float(x), 4) for x in R["fit"]], "n_parallel": R["n_parallel"],
+            "stated": {"ss_reporting_limit": 5, "ss_below_limit_counts_at": 2.5,
+                       "chloride_per_mg_2dp": round(float(R["fit"][2]), 2), "toc_per_mg_1dp": round(float(R["fit"][1]), 1),
+                       "second_pass_window_hours": 2}}
 
 
-def money(v):
-    return "${:,}".format(v)
+def t(x):
+    return "{:,}".format(x)
 
 
-def write(fig_path, out_path):
-    f = json.load(open(fig_path, encoding="utf-8"))
-    hs = {r["short"]: r for r in f["hospitals"]}
-    lose = [hs[s] for s in f["lose"]]
-    keep = [r for r in f["hospitals"] if r["verdict"] == "keeps"]
-    top_keep = max(keep, key=lambda r: r["ratio"])
-    rt = f["rates"]
-    reflex_extra = [s for s in f["reflex"]["lose"] if s not in f["lose"]]
-    reflex_miss = [s for s in f["lose"] if s not in f["reflex"]["lose"]]
-    lines = [
-        "## Tags",
-        "",
-        "**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: a Medicaid "
-        "plan's hospital pay-for-performance measure conformed from its claims, a delegated group's encounters and the "
-        "state's death record linkage, the linked deaths corrected for the linkage's own errors).",
-        "**Analytical objective:** Data Extraction & Conformation (ETL).",
-        "",
-        "## 1. Final Recommendation",
-        "",
-        "**%s of Halbrook's 14 network hospitals lose the 2027 Hospital Quality Bonus: %s. The other %s keep it.**" % (
-            WORD[f["count_lose"]].capitalize(), _join([r["name"] for r in lose]), WORD[14 - f["count_lose"]]),
-        "Their fiscal 2026 mortality ratios run from %.2f to %.2f against the 1.15 line; the highest ratio among the "
-        "hospitals that keep it is %s's %.2f. Not the %s hospitals that the deaths on the bills and the Office of Vital "
-        "Records' links give, even with every link a later claim contradicts dropped and every death a later bill "
-        "records added (%s), because for members enrolled without a Social Security number the linkage links living "
-        "members with common names to other people's deaths and misses the deaths of members with two-part surnames, "
-        "and those repairs reach only the members whose later claims happen to show it: corrected at the error rates "
-        "the record's recorded deaths and living members measure, %s keeps the bonus and %s lose it." % (
-            min(r["ratio"] for r in lose), max(r["ratio"] for r in lose), top_keep["name"], top_keep["ratio"],
-            WORD[f["reflex"]["count"]], _join(f["reflex"]["lose"]), _join(reflex_extra), _join(reflex_miss)),
-        "",
-        "## 2. Critical Components",
-        "",
-        "1. The linkage's error rates by identifier class, measured on the index admissions whose deaths the bills "
-        "record and on the members seen alive after day 30: %s." % "; ".join(
-            "%s, **%d of %d** recorded deaths linked and **%d of %s** living members linked" % (
-                CLS[k], rt[k]["pos_linked"], rt[k]["pos"], rt[k]["neg_linked"], "{:,}".format(rt[k]["neg"]))
-            for k in ("ssn", "simple", "compound")),
-        "2. The hospitals that lose the bonus, deaths over expected deaths: %s." % "; ".join(
-            "%s **%.1f** over **%.1f**, ratio **%.2f**" % (r["name"], r["deaths"], r["expected"], r["ratio"])
-            for r in lose),
-        "3. %s, which the uncorrected links put over the line: **%.1f** deaths over **%.1f** expected, ratio "
-        "**%.2f**." % (_join([hs[s]["name"] for s in reflex_extra]), hs[reflex_extra[0]]["deaths"],
-                       hs[reflex_extra[0]]["expected"], hs[reflex_extra[0]]["ratio"]),
-        "",
-        "## 3. Step-by-Step Solution",
-        "",
-        "1. Conformed %s and %s into stays, each as last corrected with voided and deleted bills dropped, Carrisford "
-        "member numbers mapped through %s and both of Mercy Valley's NPIs through %s." % (
-            W.FILES["claims"], W.FILES["encounters"], W.FILES["enrollment"], W.FILES["roster"]),
-        "2. Kept the index admissions of specification 2.1 to 2.4 (%s in all): adults, no delivery DRGs, no patient "
-        "status 07, each member's first, a transfer joined to the first hospital's stay." % "{:,}".format(
-            f["index_total"]),
-        "3. Summed each hospital's HIMM 3.2 scores from %s, keyed by member, admission date and NPI." % W.FILES["scores"],
-        "4. Counted the deaths the bills record (patient status 20 on the stay, its transfer stay or a later stay ending "
-        "within the 30 days) and joined %s on member and admission date." % W.FILES["linkage"],
-        "5. Classed each member by %s (Social Security number on file; otherwise single or two-part surname) and "
-        "measured each class's share of recorded deaths linked and share of members with a service line in %s, an "
-        "admission or a live discharge after day 30 linked." % (W.FILES["enrollment"], W.FILES["activity"]),
-        "6. For each hospital and class, estimated the deaths among the admissions neither recorded dead nor seen alive "
-        "after day 30 as (links less the false-link share times the admissions) over (the share linked less the "
-        "false-link share), and added the recorded deaths.",
-        "7. Divided each hospital's deaths by its expected deaths and marked the hospitals over 1.15 (specification "
-        "5.2).",
-        "8. Took 2 per cent of each hospital's Halbrook payments for stays discharged in fiscal 2026 (Carrisford's out): "
-        "each stay its original plus a CPS replacement's change or a platform replacement's full amount, a voided bill "
-        "nothing, plus each additional payment in %s made by September 30 on those stays, except one the disputed "
-        "claim's replacement bill paid that day already carries: the replacement's change to the stay's payment (a CPS "
-        "replacement's amount, or a platform replacement's amount less the original's) equals the additional payment."
-        % W.FILES["disputes"],
-        "",
-        "## 4. Deliverable Answers",
-        "",
-        "### %s" % W.GOLDEN["workbook"],
-        "",
-        "1. Hospitals that lose the 2027 bonus: **%d**: %s." % (f["count_lose"], _join([r["name"] for r in lose])),
-        "2. Each hospital, 2027 bonus and bonus at stake (2 per cent of fiscal 2026 inpatient payments, nearest $100):",
-    ]
-    for r in f["hospitals"]:
-        lines.append("   - %s: %s, %s" % (r["name"], r["verdict"], money(r["bonus"])))
-    lines += [
-        "3. Total bonus at stake across the network: %s." % money(f["total_bonus"]),
-        "4. Bar chart of the 14 hospitals' fiscal 2026 mortality ratios against the 1.15 line, the five that lose the "
-        "bonus highlighted.",
-        "",
-    ]
-    with open(out_path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(lines))
+def submission(fig, path):
+    S = GD.SHORT
+    over = [S[c] for c in fig["over"]]
+    within = [S[c] for c in fig["verdict"] if fig["verdict"][c] == "within"]
+    L = ["## Tags", "",
+         "**Domain:** Physical & Environmental Sciences (emissions inventory: a water utility's releases to sewer, "
+         "trade waste chemical oxygen demand on the agreements' reference method).",
+         "**Analytical objective:** Data Extraction & Conformation (ETL).", "",
+         "## 1. Final Recommendation", "",
+         "**%s exceeded their agreements' 2026 COD limits and go on the annual return with a notice of agreement "
+         "review; no other customer did.**" % (", ".join(over[:-1]) + " and " + over[-1]),
+         "The dichromate COD the agreements limit also reads chloride, which TOC does not, so each 2026 TOC sample is "
+         "converted on its own chloride; Mt Edwin Cheese's chloride fell after its brine recovery started in May and "
+         "Tallowood Tannery's rose from March, so the ratios their 2025 parallel samples carried misstate both.", "",
+         "## 2. Critical Components", "",
+         "1. The COD equivalent of a TOC sample carries the sample's chloride: fitted on the parallel samples, COD "
+         "rises **about 0.23 mg/L per mg/L of chloride** beside about 2.8 per mg/L of TOC.",
+         "2. Customers over their limits: **%s**." % ", ".join(over),
+         "3. Within their limits: %s." % ", ".join(within), "",
+         "## 3. Step-by-Step Solution", "",
+         "1. Laboratory: the legacy LIMS (local times, site codes through the crosswalk) and LabWare (UTC to "
+         "Queensland time, point identifiers), duplicates (-D) dropped, re-issued results (-R) replacing the "
+         "originals, suspended solids below 5 mg/L at 2.5.",
+         "2. Conversion: COD regressed on TOC and chloride over the samples tested both ways in October to December "
+         "2025, with a constant, applied to each 2026 TOC sample with its own chloride.",
+         "3. Volume: each meter's hourly register read in Queensland time over the local year; across an exchange "
+         "the removed meter to its final read and the installed meter from its opening read, both from the field "
+         "job log.",
+         "4. Mass: the year's volume times the volume-weighted mean concentration of the year's compliance samples "
+         "(24-hour composites; the inspection grabs, which carry suspended solids and pH only, are not compliance "
+         "samples), each weighted by its day's metered volume, January on the measured COD.",
+         "5. Exceedance: each COD mass against the register's limit (kilograms read as such).",
+         "6. Tankered waste: accepted receival dockets of 2026 by local receival date, each docket's waste code from "
+         "the manifest that carries it, a second pass of a load (the same truck within two hours, no manifest of its "
+         "own) taking the code of the pass before it.", "",
+         "## 4. Deliverable Answers", "",
+         "### %s" % GD.MEMO, "",
+         "1. Customers that exceeded their 2026 COD limit: %s." % ", ".join(over),
+         "2. Customers within their limit: %s." % ", ".join(within),
+         "3. Chart of each customer's 2026 COD mass as a share of its limit, the exceeders marked.", "",
+         "### %s" % GD.BOOK, "",
+         "1. Tankered liquid waste received at the treatment plant by quarter of 2026, kL:"]
+    for c in fig["ask_a"]:
+        q = fig["ask_a"][c]
+        L.append("   - %s: Q1 %s, Q2 %s, Q3 %s, Q4 %s" % ((TYPE_NAMES[c],) + tuple(t(x) for x in q)))
+    L.append("2. Suspended solids discharged in 2026, t:")
+    L.append("   - " + "; ".join("%s %s" % (S[c], fig["ask_b"][c]) for c in fig["ask_b"]))
+    open(path, "w", encoding="utf-8").write("\n".join(L) + "\n")
+
+
+def metadata(path, files, distractors):
+    out = {"task": "task468", "architecture": 6, "setting": "2027-01-12",
+           "files": sorted([{"name": n, "role": "distractor" if k in distractors else "evidence",
+                             "source": SOURCES[k], "date": "2027-01-12",
+                             "license": "CC0 1.0 (synthetic, authored for this task)"} for k, n in files.items()],
+                           key=lambda f: f["name"]),
+           "distractors": [files[k] for k in distractors],
+           "distractor_reasons": {files[k]: WHY[k] for k in distractors},
+           "deliverables": [GD.MEMO, GD.BOOK]}
+    json.dump(out, open(path, "w"), indent=1)

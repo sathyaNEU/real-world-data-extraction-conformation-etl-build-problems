@@ -1,278 +1,328 @@
-"""Every assertion the generator makes about the pack it just cut."""
+"""Assertions on the cut pack and the clean world: the three rules, the call and every rung of the ladder, the fork
+rows, the history window held at every defensible value, the asks' devices and their separation from the call, the
+documents, the realism sweep and the input gates.
+
+    python3 task191/generator/checks.py
+"""
+import csv
 import datetime as dt
 import json
 import os
 import re
+import subprocess
+import sys
+import zipfile
 
-import pandas as pd
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import analysis as A   # noqa: E402
+import common as C     # noqa: E402
+import pack as Pk      # noqa: E402
+import world as Wd     # noqa: E402
 
-import golden as G
-import sim
-import world as W
-
+GOLD = ["CRY-OFF", "CSH-VEL", "DRM-REA", "PRF-DEV"]
+TRAPS = ["MER-RND", "MUL-INF", "RMF-P2P"]
+DEFAULT = sorted(GOLD + TRAPS)
+Q = ["2025 Q4", "2026 Q1", "2026 Q2", "2026 Q3"]
+M = ["2026-%02d" % m for m in range(1, 11)]
+FAILS = []
 N = [0]
 
 
-def A(cond, msg):
+def check(label, ok, detail=""):
     N[0] += 1
-    if not cond:
-        raise AssertionError(msg)
+    print(("PASS  " if ok else "FAIL  ") + label + ("" if ok else "   " + str(detail)))
+    if not ok:
+        FAILS.append(label)
 
 
-def doc_text(target, name):
-    from pypdf import PdfReader
-    t = " ".join(p.extract_text() or "" for p in PdfReader(os.path.join(target, name)).pages)
-    return re.sub(r"\s+", " ", t)
+# ------------------------------------------------------------------ the clean truth (the world before any record)
+def clean_year(W):
+    """The tuning year's alerts in the clean world: no re-run copies, every alert under its own scenario and business
+    date, its state on the extract read from the world's own clocks."""
+    X = C.EXTRACT_UTC
+    case = {c["case_id"]: c for c in W["cases"]}
+    out = {c: [] for c in C.CODES}
+    hist = {c: [] for c in C.CODES}
+    for a in W["alerts"]:
+        if a["dup"] or a["bdate"] < C.DATA0:
+            continue
+        if a["triage"] == "NSA":
+            dec = a["triage_end"]
+        else:
+            dec = case[a["case"]]["decided"]
+        done = dec <= X
+        r = dict(sar=a["outcome"] == "SAR", decided=done, age=int((X - a["gen"]).total_seconds() // 86400),
+                 dage=int((dec - a["gen"]).total_seconds() // 86400), inv=a["triage"] == "ESC")
+        if r["age"] >= 330 and done:
+            hist[a["scenario"]].append((r["dage"], r["sar"]))
+        if C.P0 <= a["bdate"] <= C.P1:
+            out[a["scenario"]].append(r)
+    return out, hist
 
 
-def run(target):
-    N[0] = 0
-    g = G.compute(target)
-    (panel, rollup, register, maint, health, edge, commit, amend,
-     sessions, rebuf, inc, res, releases) = G.load(target)
-    fw = doc_text(target, "network_capacity_framework.pdf")
-    std = doc_text(target, "delivered_quality_standard.pdf")
-    dic = doc_text(target, "telemetry_dictionary.pdf")
-    task = os.path.dirname(os.path.abspath(target.rstrip("/")))
-    meta = json.load(open(os.path.join(task, "metadata.json"), encoding="utf-8"))
-    kept, every = G.shortfalls(rollup, register, maint)
-    q = "2027Q1"
-    this = kept[kept["reporting_quarter"] == q]
+def clean_reads(W):
+    year, hist = clean_year(W)
+    res = {}
+    for code in C.CODES:
+        al = year[code]
+        n = len(al)
+        sar = sum(r["sar"] and r["decided"] for r in al)
+        dec = sum(r["decided"] for r in al)
+        und = [r for r in al if not r["decided"]]
+        h = sorted(hist[code])
 
-    # ---- the call ------------------------------------------------------------------------------
-    A(g["fund"] == "none", "the call is not the hold")
-    A(g["decided_shortfall"] < g["record_shortfall"],
-      "the quarter's worst window is not inside the record")
-    A(g["record_shortfall"] / g["decided_shortfall"] >= 1.06,
-      "the record stands only %.1f per cent above the quarter's worst window"
-      % (100 * (g["record_shortfall"] / g["decided_shortfall"] - 1)))
-    A(len(g["quarterly_worst"]) == 8, "the record holds %d earlier quarters"
-      % len(g["quarterly_worst"]))
-    A(float(g["decided_shortfall"]).is_integer(), "the decided shortfall is not a whole kbps")
-    # Clause 4.2 names the record the comparison is against and not which figure of it to take, so
-    # every figure of it a careful analyst would take has to give the same call, with margin.
-    prior = kept[kept["reporting_quarter"] != q]
-    qmax = prior.groupby("reporting_quarter")["shortfall"].max()
-    pp = prior.groupby(["reporting_quarter", "line"])["shortfall"].max()
-    dec = g["decided_shortfall"]
-    for lbl, v in (("the largest quarterly worst window", float(qmax.max())),
-                   ("the mean of the quarterly worst windows", float(qmax.mean())),
-                   ("the median of the quarterly worst windows", float(qmax.median())),
-                   ("the smallest quarterly worst window", float(qmax.min())),
-                   ("the 90th percentile of the quarterly worst windows", float(qmax.quantile(0.9))),
-                   ("the pooled windows' 99th percentile", float(prior["shortfall"].quantile(0.99))),
-                   ("the pooled windows' 99.9th percentile",
-                    float(prior["shortfall"].quantile(0.999))),
-                   ("the pooled windows' 99.99th percentile",
-                    float(prior["shortfall"].quantile(0.9999))),
-                   ("the per-port quarterly maxima, 90th percentile", float(pp.quantile(0.9))),
-                   ("the per-port quarterly maxima, median", float(pp.median())),
-                   ("the per-port quarterly maxima, largest", float(pp.max()))):
-        A(v / dec >= 1.06,
-          "the call is not forced: %s is %.0f kbps, only %.1f per cent above the quarter's %.0f"
-          % (lbl, v, 100 * (v / dec - 1), dec))
-    # and the record plainly produces this quarter's worst window, many times over
-    A(g["record_windows_at_or_above"] > 200,
-      "the record holds only %d windows at or above the quarter's worst"
-      % g["record_windows_at_or_above"])
-    A(g["windows_assessed"] < g["windows_in_quarter"],
-      "the booked evenings take nothing out of the quarter's windows")
-    A(g["rank_of_nine"] == 9,
-      "the quarter's worst window ranks %d of nine, not the quietest" % g["rank_of_nine"])
-    # and no grid cell ties, so no tie-break convention can be needed
-    for line, gl in this.groupby("line"):
-        for win, gw in gl.groupby("window_from"):
-            top = gw["shortfall"].max()
-            A(int((gw["shortfall"] == top).sum()) == 1,
-              "a grid cell ties at %s %s, so a tie rule would be needed" % (line, win))
+        def f(age):
+            later = [s for d, s in h if d > age]
+            return sum(later) / len(later) if later else 1.0
+        inv = [r for r in hist[code] if True]
+        res[code] = {"decided_only": 100.0 * sar / dec, "open_as_no": 100.0 * sar / n,
+                     "project": 100.0 * (sar + len(und) * sar / dec) / n,
+                     "golden": 100.0 * (sar + sum(f(r["age"]) for r in und)) / n,
+                     "truth": 100.0 * sum(r["sar"] for r in al) / n}
+    return res
 
-    # ---- the three rules, executed ---------------------------------------------------------------
-    # R1 the easy route on the pack's own rows files the named wrong answer, and the decisive step
-    # alone files the golden
-    A(g["rung0_port"] != g["fund"] and g["rung0_shortfall"] > g["record_shortfall"],
-      "R1 keeping the booked evenings does not file a confident wrong fund")
-    A(g["decided_port"] != g["rung0_port"], "R1 the booked evenings change nothing")
-    A(g["rung2_port"] not in (g["decided_port"], g["rung0_port"]),
-      "R1 the quarter mean names a path another rung already names")
-    A(g["rung2_mean"] / g["rung2_next"] >= 1.06,
-      "R1 the quarter mean is a coin flip between two paths")
-    own = g["own_99th"][g["decided_port"]]
-    A(g["decided_shortfall"] / own >= 1.06,
-      "R1 the worst window does not clear its own path's record, so rung 1 is not a confident fund")
-    # R2 nothing in the pack names a selection, a maximum of maxima, a tempo or a correction
-    blob = ""
-    for f in sorted(os.listdir(target)):
-        if f.endswith(".pdf"):
-            blob += " " + doc_text(target, f)
-        elif f.endswith((".csv", ".json")):
-            blob += " " + open(os.path.join(target, f), encoding="utf-8", errors="ignore").read()
-    low = re.sub(r"\s+", " ", blob).lower()
-    for banned in ("multiple testing", "selective", "selection", "multiplicity", "family wise",
-                   "familywise", "bonferroni", "maximum of", "worst of", "false discovery",
-                   "null distribution", "per comparison", "look elsewhere"):
-        A(banned not in low, "R2 a shipped file says '%s'" % banned)
-    # R3 no shipped artifact ranks the interconnects on the decision question
-    for f in sorted(os.listdir(target)):
-        if f.endswith(".pdf"):
-            t = doc_text(target, f).lower()
-            for w in ("ranked", "ranking", "league", "scorecard", "worst performing",
-                      "most congested"):
-                A(w not in t, "R3 %s says '%s'" % (f, w))
-    A("not broken down by interconnect" in doc_text(
-        target, "published_quarterly_quality_report.pdf"),
-      "R3 the published report does not say it carries no interconnect breakdown")
 
-    # ---- the semantic fork table -----------------------------------------------------------------
-    # SF1 the interconnect: the renamed port is one interconnect
-    nm = G.port_now(register)
-    A(W.RENAMED[0] in nm and nm[W.RENAMED[0]] == W.RENAMED[1],
-      "SF1 the renamed port does not resolve to the interconnect in service")
-    A(len(set(nm.values())) == len(W.PATHS), "SF1 the register resolves to %d interconnects"
-      % len(set(nm.values())))
-    A((rollup["port_code"] == W.RENAMED[0]).any() and (rollup["port_code"] == W.RENAMED[1]).any(),
-      "SF1 the record carries only one of the two codes")
-    # SF2 the evening windows, filed
-    A("19:00 to 19:59, 20:00 to 20:59 and 21:00 to 21:59, each in local time" in fw,
-      "SF2 clause 4.3 does not file the three windows")
-    for win in ("19:00", "20:00", "21:00"):
-        s = this[this["window_from"] == win]
-        A(float(s["shortfall"].max()) <= g["record_shortfall"],
-          "SF2 the %s window on its own would fund an augment" % win)
-    # SF3 the shortfall's sign and basis, filed
-    A("less the median of the evening window" in std, "SF3 the standard does not file the shortfall")
-    A("The reference band is 12:00 to 14:59 local time" in std, "SF3 the reference band is not filed")
-    # SF4 the clock: the windows are local and the stamps are UTC, both filed
-    A("in UTC" in dic and "summer time on the last Sunday in March" in dic,
-      "SF4 the dictionary does not file the clock")
-    A("each in local time" in fw, "SF4 the framework does not file the windows as local")
-    # the rollup already carries local evenings, so the two readings of the panel converge on it
-    A(set(rollup["window_from"]) == {"19:00", "20:00", "21:00"},
-      "SF4 the rollup's windows are not the framework's")
-    # SF7 the booked evenings, filed, and they are the only ones dropped
-    A("is not evidence of congestion there, and the planning desk leaves those evenings out" in fw,
-      "SF7 clause 4.4 is not filed")
-    booked = set()
-    for r in maint.itertuples():
-        if int(r.window_to[:2]) > W.EVENING_BAND[0] and int(r.window_from[:2]) < W.EVENING_BAND[1]:
-            booked.add((r.port_code, r.work_date_local))
-    A(len(every) - len(kept) == len(booked) * len(W.WINDOWS),
-      "SF7 %d window rows were dropped against %d booked evenings"
-      % (len(every) - len(kept), len(booked)))
-    A(len({p for p, d in booked}) >= 4,
-      "SF7 the booked evenings sit on %d ports, so the exclusion reads as a pointer"
-      % len({p for p, d in booked}))
-    # SF8 the quarter, filed
-    A("the reporting quarters are the calendar quarters" in fw, "SF8 clause 4.1 is not filed")
-    A(set(this["evening_date_local"].str[:7]) == {"2027-01", "2027-02", "2027-03"},
-      "SF8 the quarter's evenings are not the calendar quarter's")
-    # SF11 ties: the nine quarterly worst windows are distinct
-    vals = list(g["quarterly_worst"].values()) + [int(g["decided_shortfall"])]
-    A(len(set(vals)) == 9, "SF11 two quarters share a worst window")
-    # SF12 the flag: there is no flag file in this build, and no artifact scores a path
-    A(not any("flag" in f for f in os.listdir(target)), "SF12 the pack ships a flag file")
-    # SF5 every interconnect is in service across the whole quarter
-    A(set(this["line"]) == set(nm.values()), "SF5 an interconnect is missing from the quarter")
+def call_of(d, key):
+    return sorted(c for c in C.CODES if d[c][key] < C.FLOOR)
 
-    # SF6 a usable evening: a collector loss takes a whole band, so every band the panel holds is
-    # whole and no completeness rule can select a different set of evenings
-    p = panel.copy()
-    p["t"] = pd.to_datetime(p["measured_at_utc"].str[:19])
-    off = p["t"].dt.date.map(lambda x: 2 if x >= W.DST_SPRING else 1)
-    p["lh"] = (p["t"] + pd.to_timedelta(off, unit="h")).dt.hour
-    p["lday"] = (p["t"] + pd.to_timedelta(off, unit="h")).dt.date.astype(str)
-    p["band"] = ["evening" if h >= W.EVENING_BAND[0] else "day" for h in p["lh"]]
-    sizes = p.groupby(["port_code", "lday", "band"]).size()
-    A(set(sizes) == {180}, "SF6 a band in the panel is not whole: sizes %s" % sorted(set(sizes)))
-    A(int(health["minutes_missing"].astype(int).sum()) % 180 == 0,
-      "SF6 the collector lost part of a band")
-    # SF9 worst: clause 4.2 files the largest shortfall, and ranking on the lowest evening bitrate
-    # names a different interconnect
-    A("the largest any interconnect in service at the quarter end shows in any evening window" in fw,
-      "SF9 clause 4.2 does not file which figure the decision is taken on")
-    low = this.loc[this["evening_median_kbps"].astype(float).idxmin()]
-    A(low["line"] != g["decided_port"],
-      "SF9 the lowest evening bitrate names the same interconnect as the largest shortfall")
-    # SF10 comes closest: the mean reading names another interconnect, which clause 4.2 rules out
-    A(g["rung2_port"] != g["closest_port"],
-      "SF10 the quarter mean names the interconnect that comes closest anyway")
-    # SF13 the earlier quarters: the record is the eight whole quarters before this one, and the
-    # trailing eight ending with this one give the same call
-    qs = sorted(set(rollup["reporting_quarter"]))
-    A(len(qs) == 9 and qs[-1] == q, "SF13 the rollup covers %d quarters" % len(qs))
-    trailing = kept[kept["reporting_quarter"].isin(qs[1:])]
-    tw = trailing.groupby("reporting_quarter")["shortfall"].max()
-    A(float(tw.drop(q).max()) > g["decided_shortfall"],
-      "SF13 the trailing eight quarters move the call")
-    # SF14 the reference band: the panel retains nothing outside the two bands, so the wider
-    # reading cannot be computed at all
-    A(set(p["lh"]) == set(range(W.DAY_BAND[0], W.DAY_BAND[1])) |
-      set(range(W.EVENING_BAND[0], W.EVENING_BAND[1])),
-      "SF14 the panel retains a minute outside the two bands")
-    A("The reference band is 12:00 to 14:59 local time" in std,
-      "SF14 the standard does not name the reference band")
 
-    # ---- the asks --------------------------------------------------------------------------------
-    # A1 the percentile rank and the accepted commitment are filed
-    A("the 1,296th highest sample of the quarter" in fw, "A1 clause 7.1 does not file the rank")
-    A("an amendment the peer has not accepted is not billed on" in fw,
-      "A1 clause 7.2 does not file which commitment is billed")
-    A("that is in force on the last day of the quarter" in fw,
-      "A1 clause 7.2 does not pin which date an amendment inside the quarter is read at")
-    A(any(a.effective_from > W.Q_FROM.isoformat() and a.effective_from <= W.Q_TO.isoformat()
-          and a.status.startswith("accepted") for a in amend.itertuples()),
-      "A1 no accepted amendment falls inside the quarter, so the pin is idle")
-    A("taken over the peer's traffic and not over one port of it" in fw,
-      "A1 clause 7.1 does not file the grain")
-    A(len(g["a1_peers"]) == 7, "A1 covers %d peers" % len(g["a1_peers"]))
-    A(sum(1 for v in g["a1_peers"].values() if v["overage_eur"] > 0) >= 5,
-      "A1 too few peers run over their commitment")
-    two = [p for p in set(register["peer"]) if
-           len([r for r in register.itertuples() if r.peer == p and r.status == "in service"]) > 1]
-    A(len(two) == 2, "A1 %d peers hold more than one port" % len(two))
-    A((amend["status"] == "delivered, not accepted").any(),
-      "A1 no amendment is unaccepted, so the version device is absent")
-    # A2 one version number covers two builds
-    vs = [b["build_version"] for b in releases["builds"]]
-    A(len(vs) != len(set(vs)), "A2 no version number is reissued")
-    A(len(g["a2_builds"]) == len(releases["builds"]), "A2 does not cover every build")
-    A(len(set(sessions["build_version"])) < len(releases["builds"]),
-      "A2 the sessions file already separates the builds")
-    # A3 the restoration standard and the causes are filed
-    A("four hours from the time an incident was opened to the time service was restored" in fw,
-      "A3 clause 5.1 does not file the standard")
-    A("an incident for which no restoration time was recorded is not counted as restored" in fw,
-      "A3 clause 5.1 does not file the absent restoration")
-    A("sit outside the platform" in dic, "A3 the dictionary does not say which causes are outside")
-    A(len(res) < len(inc), "A3 every incident carries a restoration time")
-    for k, v in g["a3_incidents"].items():
-        A(0 < v["restored_inside_standard"] < v["opened"], "A3 %s is degenerate" % k)
-        A(0 < v["cause_outside_platform"] < v["opened"], "A3 %s has no split of causes" % k)
+def main():
+    fig = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
+    P = A.Pack(C.TARGET)
+    W = Wd.build()
+    gold, prod = P.call("golden")
 
-    # ---- closure axes ----------------------------------------------------------------------------
-    for perm in (1, 2, 3):
-        sh = rollup.sample(frac=1.0, random_state=perm).reset_index(drop=True)
-        k2, _ = G.shortfalls(sh, register, maint)
-        A(len(k2) == len(kept), "axis 14 row order changes the population")
-        A(float(k2[k2["reporting_quarter"] == q]["shortfall"].max()) == g["decided_shortfall"],
-          "axis 14 row order changes the decided figure")
-    A((pd.to_numeric(rollup["evening_median_kbps"]) % 1 == 0).all(),
-      "axis 10 a band median is not a whole kbps")
-    A(not panel["measured_at_utc"].duplicated().any() or True, "axis 15 placeholder")
-    A(len(panel.drop_duplicates(subset=["measured_at_utc", "port_code"])) == len(panel),
-      "axis 15 the panel holds a repeated minute for one port")
-    A(W.AS_OF > W.Q_TO and W.COMMITTEE > W.AS_OF, "axis 4 the dates do not run extract then board")
-    A(int(health["minutes_missing"].astype(int).sum()) > 0,
-      "axis 12 the collector lost nothing, so the panel has no gaps")
-    A(int(health["minutes_captured"].astype(int).sum()) == len(panel),
-      "axis 12 the health log and the panel disagree on what was captured")
+    # ---------------------------------------------------------------- R: the three rules, executed
+    hdr = open(os.path.join(C.TARGET, Pk.FILES["alerts"]), encoding="utf-8").readline()
+    check("R1 the pack ships each alert's raise and triage stamps and each investigation's opening and decision",
+          all(k in hdr for k in ("created_at_utc", "triage_closed_at_utc", "case_id"))
+          and all({"opened_at", "decided_at", "status", "disposition"} <= set(c) for c in P.cases.values()))
+    heads = []
+    for k, fn in Pk.FILES.items():
+        if fn.endswith(".csv"):
+            heads.append(open(os.path.join(C.TARGET, fn), encoding="utf-8").readline().lower())
+    check("R1 no shipped column holds a productivity, conversion or SAR rate",
+          not any(re.search(r"productivity|conversion|sar_rate|sar_share|hit_rate", h) for h in heads)
+          and not any(b"roductivity" in z.read(n) for fn in (Pk.FILES["catalogue"], Pk.FILES["capacity"])
+                      for z in [zipfile.ZipFile(os.path.join(C.TARGET, fn))] for n in z.namelist()))
+    cr = clean_reads(W)
+    check("R3a the analyst test: the decided-alert reading on the clean world files the default answer",
+          call_of(cr, "decided_only") == DEFAULT, call_of(cr, "decided_only"))
+    check("R3a the undecided projected at the decided share on the clean world files the default answer",
+          call_of(cr, "project") == DEFAULT, call_of(cr, "project"))
+    check("R3b the decisive step alone (each undecided alert read by how alerts undecided at its age ended) files the "
+          "golden on the clean world", call_of(cr, "golden") == GOLD, call_of(cr, "golden"))
+    check("R3b the undecided read as not ending in a SAR stays on a wrong answer on the clean world",
+          call_of(cr, "open_as_no") != GOLD, call_of(cr, "open_as_no"))
+    check("R3b the clean world's truth is the golden", call_of(cr, "truth") == GOLD, call_of(cr, "truth"))
+    for label, kw in (("R2 UTC dates for business dates", {"by": "utc"}),
+                      ("R2 the Eastern calendar date for the business date", {"by": "eastern"}),
+                      ("R2 the re-run copies kept", {"dups": True}),
+                      ("R2 alerts added to an investigation they did not open read as no SAR", {"opener_only": True})):
+        st, _ = P.call("golden", **kw)
+        check(label + ": the call stands", st == gold, st)
+    check("R2 the replaced scenario read apart: XB-HRJ and XB-HRJ2 each above the floor",
+          all(P.productivity(c, "golden", apart=True) > C.FLOOR + 0.5 for c in ("XB-HRJ", "XB-HRJ2")))
+    th = open(os.path.join(C.TARGET, Pk.FILES["thread"]), encoding="utf-8").read()
+    pdf = subprocess.run(["pdftotext", "-layout", os.path.join(C.TARGET, Pk.FILES["procedure"]), "-"],
+                         capture_output=True, text=True).stdout
+    check("R3c no document names a scenario or quotes a scenario's figure",
+          not any(c in th or c in pdf for c in C.CODES + ["XB-HRJ2"]))
+    rows = list(csv.DictReader(open(os.path.join(C.TARGET, Pk.FILES["alerts"]), encoding="utf-8")))
+    seq = [(r["scenario_code"], r["customer_no"], r["alert_score"]) for r in rows if r["triage_outcome"] != "DUP"]
+    blocks = {}
+    rep = 0
+    for i in range(0, len(seq) - 6):
+        k = tuple(seq[i:i + 6])
+        if k in blocks:
+            rep += 1
+        blocks[k] = i
+    check("R3c no copied block of alert rows outside the re-run's duplicates", rep == 0, rep)
 
-    # ---- input gates -----------------------------------------------------------------------------
-    files = sorted(os.listdir(target))
-    A(len(files) >= 10, "input gate: %d files" % len(files))
-    exts = {os.path.splitext(f)[1] for f in files}
-    A(len(exts) >= 3, "input gate: %d formats" % len(exts))
-    A(len(panel) >= W.TARGET_ROWS, "input gate: the largest file holds %d rows" % len(panel))
-    A(len(meta["distractor_files"]) >= 2, "input gate: too few declared distractors")
-    for d in meta["distractor_files"]:
-        A(d["file"] in files, "input gate: declared distractor %s is not in the pack" % d["file"])
-    return N[0]
+    # ---------------------------------------------------------------- the call and the ladder
+    check("the golden tuning set", gold == GOLD, gold)
+    check("figures.json carries the golden", fig["call"]["tuning"] == GOLD)
+    check("the golden is the world's truth", sorted(c for c in C.CODES if fig["truth"][c] < C.FLOOR) == GOLD)
+    check("every golden productivity at least half a point from the floor",
+          min(abs(prod[c] - C.FLOOR) for c in C.CODES) >= 0.5, min(abs(prod[c] - C.FLOOR) for c in C.CODES))
+    check("every true productivity at least half a point from the floor",
+          min(abs(fig["truth"][c] - C.FLOOR) for c in C.CODES) >= 0.5)
+    lad = fig["ladder"]
+    names = list(lad)
+    for k in names[:4]:
+        check("ladder %s files a wrong answer with every trap in" % k.split()[0],
+              lad[k]["tuning"] != GOLD and set(TRAPS) <= set(lad[k]["tuning"]), lad[k]["tuning"])
+    check("ladder R0 is the default answer, each trap at least 0.25 below the floor",
+          lad[names[0]]["tuning"] == DEFAULT and max(lad[names[0]]["productivity"][t] for t in TRAPS) <= C.FLOOR - 0.25)
+    check("ladder R4 is the golden", lad[names[4]]["tuning"] == GOLD)
+    check("the traps are the scenarios with the slowest SAR decisions",
+          sorted(sorted(C.SCEN, key=lambda s: -s[5])[i][0] for i in range(3)) == TRAPS)
+
+    # ---------------------------------------------------------------- the fork rows
+    st, _ = P.call("golden", by="utc")
+    st2, _ = P.call("golden", by="eastern")
+    check("SF1 business date, UTC date and Eastern date file one call", st == gold and st2 == gold)
+    check("SF2 the re-run copies dropped or kept file one call", P.call("golden", dups=True)[0] == gold)
+    check("SF3 the replaced scenario together or apart stays out of the tuning",
+          "XB-HRJ" not in gold and P.productivity("XB-HRJ", "golden", apart=True) > C.FLOOR
+          and P.productivity("XB-HRJ2", "golden", apart=True) > C.FLOOR)
+    check("SF4 an alert added to an investigation ends with it; read as no SAR the call is unchanged",
+          P.call("golden", opener_only=True)[0] == gold)
+    sar_cases = {s["case_id"] for s in P.sars}
+    closed = {cid for cid, c in P.cases.items() if c["status"] == "CLOSED" and c["decided_at"] >= "2025-07-01"}
+    check("SF5 the SAR log and the case manager agree on which investigations filed (continuing reports and "
+          "corrections add no SAR)",
+          all((c in sar_cases) == (P.cases[c]["disposition"] == "SAR filed") for c in closed))
+    check("SF6 the twelve months by business date hold every run from 1 October 2025 to 30 September 2026",
+          sum(1 for r in P.runs.values() if C.P0.isoformat() <= r["business_date"] <= C.P1.isoformat()
+              and r["run_type"] == "SCHEDULED") == (C.P1 - C.P0).days + 1)
+    check("SF7 strict or inclusive floor, and rounding to one decimal before comparing, file one call",
+          sorted(c for c in C.CODES if round(prod[c], 1) <= C.FLOOR) == gold)
+    held = [m for m in range(120, 451, 15) if P.call("golden", min_age=m)[0] == gold]
+    check("SF8 the history window holds the call at every age from 120 to 450 days", len(held) == 23, held)
+    check("SF8 the mature-cohort reading holds the call from 4 to 9 months",
+          all(P.call("mature", months=mo)[0] == gold for mo in (4, 5, 6, 7, 8, 9)))
+    check("SF8 a prior-quarter or every-open-investigation reading files the same call",
+          P.call("prior_quarter")[0] == gold and P.call("all_open_investigations_sar")[0] == gold)
+    check("SF9 no alert of the year is still in triage on the extract",
+          sum(1 for a in P.alerts if a["triage"] == "OPEN" and C.P0 <= a["bdate"] <= C.P1) == 0)
+    late = [c for c in P.cases.values() if c["decided_at"] and "2026-11-02T11:00:00Z" < c["decided_at"]]
+    check("SF10 nothing is decided between the alert extract and the case export", not late, len(late))
+    check("SF11 the only duplicates are the re-run's copies, one per alert of its night",
+          sum(1 for a in P.alerts if a["outcome"] == "DUP") == int(P.runs["TMR-20260310-02"]["alerts_raised"])
+          and all(a["run"] == "TMR-20260310-02" for a in P.alerts if a["outcome"] == "DUP"))
+
+    # ---------------------------------------------------------------- the asks
+    ga = P.ask_investigations()
+    cells = [(c, q) for c in C.CODES for q in Q]
+    hits = lambda o: sum(1 for k in cells if o.get(k, 0) == ga.get(k, 0))
+    by_case = {}
+    for a in P.alerts:
+        if a["case"]:
+            by_case.setdefault(a["case"], []).append(a)
+    win = [c for c in P.cases.values()
+           if C.P0 <= C.to_eastern(A._t(c["opened_at"])).date() <= C.P1]
+    first_esc = all(min(by_case[c["case_id"]], key=lambda a: a["tclosed"])["tclosed"] == A._t(c["opened_at"])
+                    and sum(1 for a in by_case[c["case_id"]] if a["tclosed"] == A._t(c["opened_at"])) == 1 for c in win)
+    check("SF12 each investigation's opening alert is unique and is its earliest escalation", first_esc)
+    check("SF12 the case's lowest alert number is another scenario's alert in many investigations (ask A cracker "
+          "keeps at most 6 of 56 cells)", hits(P.ask_investigations(attribute="lowest_id")) <= 6,
+          hits(P.ask_investigations(attribute="lowest_id")))
+    check("ask A every scenario among an investigation's alerts keeps no cell",
+          hits(P.ask_investigations(attribute="every")) == 0)
+    check("ask A the quarter of the alert's business date keeps at most 3 cells",
+          hits(P.ask_investigations(quarter="alert")) <= 3)
+    check("SF13 the opening's UTC and Eastern dates give one quarter table", P.ask_investigations(clock="utc") == ga)
+    check("SF16 XB-HRJ's row differs from its old code alone, so the replacement is read with it",
+          sum(1 for a in P.alerts if a["code"] == "XB-HRJ2" and a["opener"]) > 0)
+    check("ask A every cell is a count of 40 or more", min(ga[k] for k in cells) >= 40, min(ga[k] for k in cells))
+    gb = P.ask_sars()
+    bc = [(m, k) for m in M for k in ("initial", "continuing")]
+    hb = lambda o: sum(1 for k in bc if o.get(k, 0) == gb.get(k, 0))
+    check("SF14 the prior-report field read alone (the ask B cracker) keeps no cell", hb(P.ask_sars(read="field")) == 0)
+    check("ask B every filing citing a prior read as continuing keeps no cell", hb(P.ask_sars(read="prior_only")) == 0)
+    kinds = P.sar_kinds()
+    blank = {}
+    corr = {}
+    for s in P.sars:
+        d = C.to_eastern(A._t(s["filed_at_utc"])).date()
+        if d.year == 2026 and d.month <= 10:
+            if kinds[s["bsa_id"]] == "continuing" and not s["prior_bsa_id"]:
+                blank[d.month] = blank.get(d.month, 0) + 1
+            if kinds[s["bsa_id"]] == "correction":
+                corr[d.month] = corr.get(d.month, 0) + 1
+    check("ask B every month holds continuing activity reports with an empty prior-report field",
+          all(blank.get(m, 0) >= 2 for m in range(1, 11)), blank)
+    check("ask B every month holds a correction", all(corr.get(m, 0) >= 1 for m in range(1, 11)), corr)
+    check("ask B no correction or initial report has an empty prior field where it cites one",
+          all(s["prior_bsa_id"] for s in P.sars if kinds[s["bsa_id"]] == "correction"))
+    check("SF15 the filing's UTC and Eastern dates give one month table", P.ask_sars(clock="utc") == gb)
+    pc = {s["bsa_id"]: s for s in P.sars}
+    check("ask B every empty-field continuing report follows an earlier filing on its investigation in the log",
+          all(any(t["case_id"] == s["case_id"] and t["filed_at_utc"] < s["filed_at_utc"] for t in P.sars)
+              for s in P.sars if not s["prior_bsa_id"] and kinds[s["bsa_id"]] == "continuing"))
+    P2 = A.Pack(C.TARGET)
+    P2.sars = []
+    check("separation: the call reads nothing from the SAR log", P2.call("golden")[0] == gold
+          and all(abs(P2.productivity(c) - prod[c]) < 1e-12 for c in C.CODES))
+    check("separation: the call is unchanged whichever alert an investigation is credited to",
+          P.call("golden")[0] == P.call("golden", opener_only=False)[0])
+
+    # ---------------------------------------------------------------- the goldens' quoted facts
+    for t in TRAPS:
+        f = P.p_sar_given_open(t)
+        check("%s: an alert undecided at 60 days has mostly ended in a SAR" % t, f(60) > 0.5, f(60))
+    check("the paper's undecided counts are the figures'", all(fig["counts"][t]["undecided_in_investigation"]
+                                                              == P.counts(t)["undecided_in_investigation"] for t in TRAPS))
+
+    # ---------------------------------------------------------------- documents and realism
+    data = open(os.path.join(C.TARGET, Pk.FILES["procedure"]), "rb").read()
+    check("procedure PDF scrubbed of its writer", b"ReportLab" not in data and b"reportlab" not in data)
+    cd = re.search(rb"/CreationDate \(D:(\d{14})", data).group(1)
+    md = re.search(rb"/ModDate \(D:(\d{14})", data).group(1)
+    check("procedure PDF created before modified, both before the extract", cd < md < b"20261102000000", (cd, md))
+    wide = [l for l in pdf.splitlines() if len(l) > 120]
+    check("procedure PDF reads back with no line past the margin", not wide, wide[:2])
+    stamps = []
+    for fn in (Pk.FILES["catalogue"], Pk.FILES["capacity"]):
+        core = zipfile.ZipFile(os.path.join(C.TARGET, fn)).read("docProps/core.xml").decode()
+        c0 = re.search(r"<dcterms:created[^>]*>([^<]+)<", core).group(1)
+        m0 = re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1)
+        stamps.append((c0, m0))
+    check("each workbook created before modified, stamps distinct per workbook",
+          all(c0 < m0 for c0, m0 in stamps) and len(set(stamps)) == len(stamps), stamps)
+    ids = [int(r["alert_id"][1:]) for r in rows]
+    steps = {b - a for a, b in zip(ids, ids[1:])}
+    check("alert numbers rise by varying steps, in the order the alerts were raised",
+          len(steps) >= 3 and all(b > a for a, b in zip(ids, ids[1:])), sorted(steps)[:6])
+    cs = sorted(int(c[4:]) for c in P.cases)
+    check("investigation numbers rise by varying steps", len({b - a for a, b in zip(cs, cs[1:])}) >= 2)
+    bs = [int(s["bsa_id"]) for s in sorted(P.sars, key=lambda s: (s["filed_at_utc"], s["bsa_id"]))]
+    check("BSA IDs rise in filing order by varying steps",
+          all(b > a for a, b in zip(bs, bs[1:])) and len({b - a for a, b in zip(bs, bs[1:])}) > 50)
+    secs = {r["started_at_utc"][-3:-1] for r in P.runs.values()} | {r["completed_at_utc"][-3:-1] for r in P.runs.values()}
+    check("run start and completion times carry varied seconds", len(secs) > 30)
+    check("every run completes after its last alert", all(
+        max(a["gen"] for a in P.alerts if a["run"] == rid) < A._t(r["completed_at_utc"]) for rid, r in P.runs.items()))
+    stamp_cols = []
+    for fn, cols in ((Pk.FILES["alerts"], ("created_at_utc", "triage_closed_at_utc")),
+                     (Pk.FILES["sars"], ("filed_at_utc",)), (Pk.FILES["runs"], ("started_at_utc", "completed_at_utc"))):
+        for r in csv.DictReader(open(os.path.join(C.TARGET, fn), encoding="utf-8")):
+            stamp_cols.extend(r[c] for c in cols if r[c])
+    for c in P.cases.values():
+        stamp_cols.extend(e["at"] for e in c["events"])
+    check("no record dated after the case export", max(stamp_cols) <= "2026-11-02T11:20:00Z", max(stamp_cols))
+    check("no round totals: the year's alert counts are not multiples of ten",
+          sum(fig["counts"][c]["alerts"] % 10 == 0 for c in C.CODES) <= 2)
+
+    per_run = {}
+    for r in rows:
+        per_run[r["run_id"]] = per_run.get(r["run_id"], 0) + 1
+    check("the run log's alerts raised tie to the alert export run by run",
+          all(per_run.get(rid, 0) == int(r["alerts_raised"]) for rid, r in P.runs.items()))
+    share = {c: fig["counts"][c]["undecided"] / float(fig["counts"][c]["alerts"]) for c in C.CODES}
+    top = sorted(C.CODES, key=lambda c: -share[c])[:3]
+    check("the traps are not the scenarios with the most undecided alerts for their size", sorted(top) != TRAPS, top)
+
+    # ---------------------------------------------------------------- input gates
+    files = sorted(os.listdir(C.TARGET))
+    meta = json.load(open(os.path.join(C.TASK, "metadata.json"), encoding="utf-8"))
+    check("ten or more files", len(files) >= 10, len(files))
+    check("three or more formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3)
+    check("one file of 25,000 rows or more", len(rows) >= 25_000, len(rows))
+    check("two or more distractors named in metadata.json", len(meta["distractors"]) >= 2)
+    src = open(os.path.join(HERE, "analysis.py"), encoding="utf-8").read() + open(os.path.join(HERE, "verify.py"),
+                                                                                  encoding="utf-8").read()
+    check("no distractor is read by the golden or the verifier",
+          not any(Pk.FILES[k] in src or ('"%s"' % k) in src for k in Pk.DISTRACTORS))
+    check("no file name carries the word distractor", not any("distract" in f for f in files))
+    zp = os.path.join(C.TASK, "target.zip")
+    if os.path.exists(zp):
+        check("target.zip holds exactly target/", sorted(zipfile.ZipFile(zp).namelist()) == files)
+    print("%d checks, %d failed" % (N[0], len(FAILS)))
+    return 1 if FAILS else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

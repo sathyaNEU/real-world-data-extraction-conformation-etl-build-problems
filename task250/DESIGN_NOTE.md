@@ -2,336 +2,340 @@
 
 ## Draw
 
-Card `cards/task250.json` (architecture 2, re-rooted 2026-10-20 from architecture 1, spent at stage 4; see Tried and
-rejected). Guard verdict WARN, no BLOCK. test.same_driver_older is a NOTE, differentiated on the card against task157
-(members still away returning on a calendar earlier waves kept) and task231 (exits reaching the record a year late);
-the card also carries lines against task469 (a duration censored by its own allowance, read where allowances were
-already short), task190 v4 (a setting valued by each episode's remaining volume at its firing), task229 v2 (unit states
-seen through checks that set them right), task101 and this slot's architecture 1. The one WARN, answered:
-repeat.question_form (which, after task249 v5, spent and never shipped): the decision is a pick from the filed menu of
-settings, so the question asks which. Nearest driver 0.13 (this slot's architecture 1, differentiated); next 0.07
-(task189).
+Card `.claude/skills/fingerprint/cards/task250.json`, architecture 3, registered 2026-10-31 (a re-root: architecture 2,
+the agro-climatic station network's 2028 drift-alert setting, drew a determinism SEND_BACK at its batch 1 repair and
+moved to the card's lineage as spent, with architecture 1 already there; that world is left, two architectures spent
+in it). Guard `check` on the draft: WARN only, `repeat.gate_g` (decomposition_attribution after task181 v5): task181
+splits dengue cases between home and workplace barangays; here the split is of unscanned parcels between sort hubs by
+the trailer each came off, a different quantity under the same mechanism key, which is the honest one (a correctly
+reported absence assigned to the right unit). Nearest driver 0.07 (task229 v1, task273 v1), no slot note mentions
+parcels, linehaul, missed scans or route plans (`guard.py slots`, mechanism and setting nouns both).
 
-- **Pairing.** Physical & Environmental Sciences / sensor-calibration-measurement, a task type serving Data Quality
-  Monitoring & Alerting; drawn for Data Quality Monitoring & Alerting. The object is the health of the network's
-  temperature record, watched by the daily quality control, and the call is a monitoring decision: the drift-alert
-  setting the quality control runs in 2028.
-- **The seed, re-found.** DQ23 gave the world (a station network with per-station drift alerts), the decision (the
-  setting, against a budget) and the quantity (alerts a year). Its pitfall (the multiplicity of a per-station rule) is
-  the reflex every competent analyst applies, so replaying the filed rule over the record is the default path; the
-  decisive step is re-found in the record's own structure.
-- **Niche.** The Consorcio Agroclimático del Ebro Medio, a consortium of irrigation communities in Aragón, runs 148
-  automatic weather stations feeding its irrigation advice. Each morning its quality control reads every station's
-  daily air-temperature anomaly against the inverse-distance estimate from its three nearest reporting stations,
-  keeps the 14-day mean of the departure as the drift statistic and raises a drift alert past a setting times the
-  station's configured spread; each alert sends a technician who checks the sensor against the transfer standard and
-  adjusts or replaces it. On 31 December 2027 the rural development programme that paid for 34 stations ends: the
-  irrigation communities take over 17 and the other 17 close, and the second technician's post goes with the funding.
-- **The call.** Which setting the quality control runs from its January 2028 configuration, the most sensitive whose
-  drift alerts in 2028 fit the visits the field plan leaves for them (QC-02 section 7), and how many drift alerts a
-  year it will raise, planned on the 2025 to 2027 record.
-- **Shape.** 04, one dial: each of the four settings' drift alerts a year (4), the setting and its count (2), a chart
-  of the settings against the plan's visits (5 to 6 named parts), the asks by district (24) and the two files: about
-  36 criteria. Decision dial_setting, answer named_option, question form which.
-- **Strategy.** maturity_censoring: the record was produced by the policy the call replaces, and every drift that
-  policy caught was repaired within days, so the record holds the drifts cut short below the wider limits they would
-  otherwise have reached. G12 decisive (no alert at 3.5 in the record is not a record of no alert at 3.5: the 3.0
-  alert's repair removed the drift first), G3 (the record's residuals and policy are 2025 to 2027's, not 2028's: the
-  network re-run is the first rung), G17; gap time (the drifts' course after the repair is censored), then
-  population (the 2028 network); Gate G forecasting (the correctly read past does not pin 2028's alerts); calibration
-  none; context artifact monitoring_export; Layer 2 family estimand_identification, pattern
-  own:alert-policy-censoring-of-a-drift-record.
-- **The two keys.** Each alone leaves 3.5 inside the plan's visits; only both put it over. The network re-run (the
-  stated change, landed by architecture 1's reader) is a rung; the decisive move is the second, data-native one.
-- **Forum, event, organisation.** line_manager_or_team (the network manager signs the January configuration),
-  cutover_or_migration (the 2028 configuration goes live on 15 January 2028 with the programme's stations gone),
-  cooperative_or_member_body. Role capacity_planner (the network quality coordinator).
-- **People** (`guard.py names --geo Spain --seed 250`, locale es_ES): Celia Hernando, the network quality coordinator,
-  who asks; Teodoro Falcó, the field team's lead; Inés Dávila, who runs the quality-control software. None appears in
-  the prompt.
-- **Data-native sentence.** A temperature sensor's drift is a persistent offset that accumulates until a technician
-  recalibrates it against the transfer standard, while the weather's spatial residual reverts by itself; every drift
-  in the 2025 to 2027 record was repaired within days of the 3.0 alert that found it, so a setting of 3.5 or 4.0
-  replayed on that record misses drifts that, left running in 2028, would have grown until they crossed it, one alert
-  each; and the estimate of a station whose near neighbour closes is drawn from farther stations in 2028, so its
-  residual spreads wider than the limit set from the record.
-- **As-of.** Wednesday 5 January 2028, before the configuration goes live on 15 January.
-- **Sources.** The client's two-layer standard; calibration-interval analysis (as-found and as-left records read as
-  renewals the adjustments impose: NCSL RP-1); spatial-consistency checks of surface station networks (the spatial
-  regression and inverse-distance tests used by state mesonets and national services). `guard.py slots` for the
-  driver's terms: no slot holds the mechanism.
+- **Pairing.** Supply Chain & Logistics (house domain) in its client domain General Statistics & Data Science, task
+  type missing-data-censoring-measurement-error, which serves Data Quality Monitoring & Alerting. The object is the
+  health of the carrier's tracking data (the share of parcels that crossed a sort hub without a sort scan), and the
+  call is a monitoring decision: whose scan alerts fire for October under the carrier's tracking data standard.
+- **Niche.** Kurier Warta sp. z o.o., a regional parcel carrier in Poland: thirteen delivery depot codes in October
+  (Krakow-Zablocie moved to Krakow-Rybitwy on 12 October), six sort hubs (Komorniki, Bielany Wroclawskie, Sosnowiec,
+  Modlniczka, Strykow, Pruszkow), a destination-hub network in which every parcel is sorted once, at the hub that serves
+  its delivery depot, by the sort plan. On the heaviest October nights Pruszkow's sorter is at capacity and linehaul
+  control moves whole roll cages of the Warsaw-bound flow to Strykow, which sorts them on its manual line and trucks
+  them to the two Warsaw depots on a trailer of its own. Each depot unloads an inbound trailer at one door, every parcel
+  read off it by that door's fixed reader in one run.
+- **The call.** Whether the standard's scan alert fires at any hub for October, and at what hubs: a hub's alert fires
+  when its missed sort scans exceed 1.00 per cent of the parcels it sorted among the parcels its delivery depots
+  unloaded on the mornings of 1 to 31 October (TDS-4, the carrier's tracking data standard). A monitoring call on the
+  closed month's record; the alert sends a scan audit to the hub in the first two weeks of the peak (crews from 9
+  November), which is why the window is the closed month and the call is retrospective by construction.
+- **Shape.** 10, a scorecard of six hubs against one tolerance: each hub's parcels handled, missed sort scans, rate and
+  verdict (24), the call (1), the chart's named parts (3), the two files (2); the asks add, for each of the thirteen
+  depot codes, its courier events sent twice (13) and its pre-advised October parcels never picked up (13): 56
+  criteria. Decision designation_set, answer set_of_items, question form whether.
+- **Strategy.** population_selection: the rate's denominator is the parcels each hub sorted, and which hub an unscanned
+  parcel passed is unrecorded; the plan of record names one hub, the night's routing another. Gap time (decisive: the
+  route of record is standing, the routing changed night by night on the overflow nights) then population; generators
+  G17 (statistical rigor: a missingness that depends on the stratum it hides, so the stratum is imputed from the
+  auxiliary grouping and never split as if missing at random) decisive, G3 (record versus operation, the default
+  path's plan of record), G12 (absence of record against record of absence: a parcel with no sort scan at its plan's
+  hub never reached that hub); Gate G decomposition_attribution; calibration none; context artifact operations_log
+  (the sorters' availability by hub night, a distractor); Layer 2 family estimand_identification, pattern
+  own:latent-route-denominator.
+- **Forum, event, organisation.** committee_or_panel (the operations board takes the scorecard), season_or_peak (the
+  peak crews from 9 November), logistics_or_3pl. Role operations_director (the director of network operations, who
+  rosters the scan audits a fired alert sends to a hub in the first two weeks of the peak).
+- **People** (`guard.py names --geo Poland --seed 250`, locale pl_PL): Krzysztof Konieczek, director of network
+  operations, who asks; Inga Blaut, head of tracking data quality, who owns TDS-4 and took the extract; Aurelia
+  Pieczyrak, shipper integration, who takes the depot lines to the shippers' integration teams. None appears in the
+  prompt.
+- **Deliverables.** The scorecard workbook (the hubs and the depots) and one slide for the operations board (the chart
+  of the six rates against the line, beside the hub table): xlsx and pptx.
+- **Data-native sentence.** A sort scan is the only record of a hub on a parcel's history and the sort plan is the
+  only record of its route, but on the overflow nights Pruszkow's sorter ran full while Strykow sorted the overflow by
+  hand and trucked it to the Warsaw depots itself, so an unscanned parcel unloaded at a Warsaw depot on those mornings
+  may have missed either hub, and only the unloading it came off, whose sorted parcels all carry one hub's sort scan,
+  says which; the same nights are the nights Pruszkow's own sorter missed most (1.55 per cent against 0.86 on its
+  other mornings), so the nights' excess over Pruszkow's usual rate is not Strykow's.
+- **Abstraction sentence** (the one a reviewer holding this build beside its nearest approved build would say is the
+  same, without domain nouns): none writable. Against task229 (units' states seen through checks), task235 (an item
+  lost only once its device had its next chance to send), task236 (capture read against an independent protocol) and
+  task242 (detection fading with time since the event) the quantity here is not a detection probability or a state
+  but the route of each unrecorded unit, read from the batch it was unloaded in.
+- **Same-puzzle and library tests.** Gap time, pattern G3 and designation_set repeat no build in the last twelve and
+  no older one (`check`); the stump is not a named correction applied as a card states it: no rigor card carries a
+  denominator rebuilt from the unload a unit belongs to.
+- **Sources.** Carriers' scan-compliance practice (missed scans counted against the expected scan events of a parcel's
+  route); the client's two-layer standard; at-least-once delivery in event integrations (re-sent events); EDI
+  pre-advice matching against collection scans; trailer collections at large shippers without a per-parcel pickup scan.
 
 ## Default path
 
-The path a competent analyst takes after reading every file and filed rule correctly, the pack cleaned (the daily
-export's repeats dropped, the register read for the 2028 network, the export's statistic and limits checked against
-section 8).
+1. Read TDS-4 (sections 2 to 4), the sort plan (each delivery depot's hub, with the revision moving Opole to Sosnowiec
+   from the night of 19 October) and the platform's feeds: the parcels unloaded at a delivery depot on the mornings of
+   1 to 31 October (the re-sent arrival rows of 21 October dropped as the same rows), each parcel's sort event.
+2. Give each parcel its hub: the hub of its sort event, and for a parcel with none the hub the plan in force on its
+   night names for its delivery depot (the carriers' scan-compliance count against the route of record; the parcels
+   Strykow sorted for the Warsaw depots show where the sorted overflow went).
+3. Count per hub the parcels, the parcels without a sort event and the rate; fire the alert above 1.00 per cent.
 
-1. Read QC-02 (sections 4 to 8), the field plan (28 visits for drift alerts in 2028), the register (17 stations with a
-   baja_prevista of 31/12/2027) and the quality-control export.
-2. Set each kept station's 2028 limit by section 6: the setting times the standard deviation (n - 1) of its
-   estadistico_14d over 2025 to 2027.
-3. Re-run sections 4, 5 and 8 on the export's anomalies with the 131 kept stations as the network (the careful step;
-   the record replayed as it ran gives 12 at 3.5) and count the kept stations' alerts: 66, 23, 7 and 3 a year at 3.0,
-   3.5, 4.0 and 4.5.
-4. Choose the most sensitive setting within the 28 visits.
+Ends on: alerts at Sosnowiec and Pruszkow, Strykow under the line (its overflow misses charged to Pruszkow).
 
-Ends on: 3.5 at 23 drift alerts a year
-Golden: 4.0 at 18 drift alerts a year
+Golden: alerts at Sosnowiec, Pruszkow and Strykow, each unscanned parcel charged to the hub whose trailer it came off
+at its delivery depot, read from its unloading.
 
 ## Stump sentence
 
-A competent solver re-runs the filed quality control on the 2025 to 2027 export with the 131 stations the network
-keeps, counts 23 drift alerts a year at 3.5 against the field plan's 28 visits and files 3.5; every drift in the record
-was repaired within days of the 3.0 alert that found it, so 30 of the 35 drifts the sensor history shows repaired at
-kept stations never reached the 3.5 limit before their repair and would in 2028 have kept growing until they did, one
-alert each, which puts 3.5 at 33 a year, over the visits, and files 4.0 at 18.
+A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night,
+and ends on alerts at Sosnowiec and Pruszkow with Strykow under the line; Strykow sorted Pruszkow's overflow by hand on
+the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route
+charges to Pruszkow came off Strykow's trailers, and only the unloading each unscanned parcel came off at its delivery
+depot fires Strykow as well.
 
 ## Three rules
 
-Task type: sensor-calibration-measurement (Physical & Environmental Sciences), a task type the taxonomy tags for Data
-Quality Monitoring & Alerting; the call is the network's drift-alert setting, a monitoring decision on the health of
-the temperature record.
+Task type: missing-data-censoring-measurement-error (General Statistics & Data Science), the client domain the house
+domain supply-chain-logistics sits in, a task type the taxonomy tags for Data Quality Monitoring & Alerting.
+Domain test: the deciding quantity is each hub's missed-scan rate, the parcel network's scan-compliance measure, worked the way the field works missing data whose missingness hides its own stratum: the denominator is the parcels a hub sorted, and for a parcel with no sort scan the hub it passed is itself missing, so it is imputed from the auxiliary record that carries it.
+Swap: "which wards' October handover logs miss more than 1 per cent of the patients who passed through them" keeps a completeness rate but loses the overnight trailer unloaded at one door in one run, the overflow trailer between sort hubs and the sort plan as the route of record, so nothing ties an unrecorded patient to a ward and the call stops reading the same.
+Layer 1: the carrier's systems produce it: three feeds each written its own way (hub sort events in UTC with a second read when a parcel goes round the sorter loop, depot arrival scans in local time across the end of summer time, courier events in local time); one morning's arrival rows re-sent by two depot servers on 21 October as the same rows; the Krakow depot's code changed on its move; the sort plan revised for Opole; contract shippers' piece labels (consignment number and piece number) and marketplace order numbers kept to 20 characters by the handheld; pre-advice messages superseded by later versions; each is neutral on the call (asserted) and none is placed to be caught.
+Layer 2: estimand_identification: the missed-scan rate's population is the parcels each hub sorted, a latent stratum for exactly the parcels that went unscanned; the methodological choice is how to impute it, from the plan of record, from the depot morning's sorted split (missing at random), from the mornings with one hub only (complete cases), from the nights' excess over a hub's usual rate, or from the unloading each parcel belongs to.
+Decisive step: imputing each unscanned parcel's stratum from the auxiliary grouping it travelled in, the run of arrival reads at its delivery depot's door whose sorted members all carry one hub's sort scan, because here the missingness depends on the stratum itself (Strykow's manual line missed 9.03 per cent, Pruszkow's sorter 1.55 on the same mornings).
+Not semantics: every field read right (the plan's hub per night with its revision, the event types, the three clocks, the depot codes, the number formats) still leaves the solver charging an unscanned parcel to its plan's hub or to the morning's sorted split: no field of an unscanned parcel names the hub it passed, and the plan is an accurate statement of the route of record.
+Not rule application: TDS-4 files the estimand (a missed sort scan is one of a hub's parcels with no sort event; the rate is over the parcels it sorted among those unloaded in the month; the alert above 1.00 per cent) and nothing filed says how an unscanned parcel's hub is known; the enumerated family (route of record, the morning's sorted split, the month's split, the one-hub mornings only, the nights' excess charged to Strykow, the unloading) spreads Strykow's rate from 0.49 to 2.30 per cent and Pruszkow's from 0.86 to 1.76 and names four alert sets; the standing family on a careful read without the unloadings keeps the first five, because only the unloadings refute them, and nothing points at the unloadings.
+Analyst test: a strong analyst who cleans the feeds and reads TDS-4 and the plan correctly takes each parcel's hub from its sort scan or its plan and ends on alerts at Sosnowiec and Pruszkow, Strykow under the line at 0.49; on the generator's clean truth the same route files the same pair and only the unloading fires Strykow (checks.py R-block).
+Estimand: TDS-4 sections 2.1 to 2.3 (TDS-4_tracking_data_standard.pdf): a hub's parcels for the month are the parcels it sorted among those the delivery depots unloaded on the mornings of the month, a missed sort scan is one of them with no sort event on the platform, the rate is the missed over the parcels, and the alert fires above 1.00 per cent.
+No decoy: nothing is planted: the sort plan is the carrier's ordinary route of record and correct as a plan, the overflow is linehaul control's ordinary capacity practice with nothing announcing it beyond the reads it leaves, no memo, draft, earlier scorecard or stakeholder figure ranks the hubs, and no file is shipped to carry the wrong answer.
+No certified replay: the method is not recovered by reproducing a published figure: no file states a hub's October rate, parcels or misses, and nothing filed is reproduced to recover the imputation.
+Lesson: a completeness rate whose denominator is a latent stratum for exactly the missing records is imputed from the auxiliary record that carries the stratum (here the unloading a parcel belongs to), never from the plan of record, a missing-at-random split or an excess the same overload produced; no build on file rebuilds a missing record's stratum from the batch it travelled in.
 
-Domain test: the deciding quantities are measurement-network ones: a temperature sensor's drift is a persistent offset
-that accumulates until a technician sets it right against the transfer standard (calibration-interval analysis reads
-an instrument's as-found record as renewals the adjustments impose), while the weather's spatial residual reverts by
-itself; and a station's spatial-consistency residual widens when the nearest stations its estimate draws on close.
+## Survivor anatomy
 
-Swap: in a hospital's or a call centre's nouns there is no transfer standard, no recalibration that resets a monotone
-drift to zero and no interpolated neighbour estimate whose error grows as the network thins, so neither key, nor the
-count they decide, carries over.
-
-Layer 1: the daily export in Spanish headers with decimal commas and re-sent rows repeated; clock-change days short or
-long and five-minute loggers after a firmware upgrade; the maintenance contractor changed in July 2027 and the work
-orders' sheet, language and statuses with it; the new contractor checks a spare sensor at the workshop under the
-station's order before going out; the tablets carried a station's last order forward onto some visits' readings; drift
-orders closed from the office with the system's closing date in the visit column; route orders carrying two
-stations; breakdowns reset remotely closed with a visit date; the register's sensor history mixing adjustments,
-replacements and shield cleanings.
-
-Layer 2: two keys. The first is the stated change: the 17 closing stations leave the quality control's neighbour pool,
-so the record is re-run with the 2028 network (architecture 1's decisive step, landed by a reader, now a rung). The
-second is the decisive one: the record was produced by the policy being replaced, and every drift in it was cut
-short by the visit that policy's 3.0 alert sent, so at a wider setting each would have grown until it crossed, one
-alert each.
-
-Decisive step: adding, at each setting, one alert for every drift the sensor history shows adjusted or replaced at a
-drift-alert visit to a kept station that the re-run's alerts at that setting never reached before the repair (30 of 35
-at 3.5); with the re-run alone 3.5 stays inside the 28 visits, and with the cut-short drifts alone (no network
-re-run) it stays inside too.
-
-Not semantics: every field reads plainly (the history's motivo and as-found error, the register's baja_prevista, the
-export's statistic and alert); a reader who reads them all correctly, and executes every filed rule, still files 3.5,
-because no field or definition says the record's drifts were cut short: section 9 says only that a drift grows until a
-check sets it right, a property of sensors that neither the replay nor the re-run has any use for.
-
-Not rule application: no filed rule adds the cut-short drifts or says how a setting's alerts are to be estimated;
-section 7 names the three years the plan rests on, section 8 how an alert is raised and section 9 that a drift grows
-until a check sets it right, and executing all three on the record, with or without the 2028 network, files 3.5; the
-step is the analyst's reading of the record as censored by its own policy.
-
-Analyst test: a strong analyst who cleans the pack and reads every rule re-runs the quality control with the 2028
-network against the section 6 limits, counts 23 alerts a year at 3.5 inside the 28 visits and files 3.5 at 23 (or 22
-with the cut-short drifts added to the record as it ran); only both keys put 3.5 at 33 and file 4.0 at 18.
-
-Estimand: each setting's drift alerts in 2028 at the 131 stations the network keeps, against the January 2028
-configuration's limits (section 6), planned on the 2025 to 2027 record (section 7), a year; the setting is the most
-sensitive whose count fits the plan's 28 visits.
-
-No decoy: no document argues for the replay or the re-run, nothing certifies a count at any setting but 3.0 (the 2027
-alert summary counts the alerts raised at 3.0, which every route reproduces), and no sentence says how a setting's
-alerts are estimated beyond section 7's three years.
-
-No certified replay: the replay reproduces the export's own 3.0 alerts, as any route does; the record itself refutes
-it at 3.5, where the history shows 30 drifts repaired at kept stations that the 3.5 limit never reached (validated_decoy
-false).
-
-Lesson: task249 v1 to v5 and this slot's architecture 1 were landed by careful readers on a single stated change or a
-named reflex; here the stated change is a rung and the decisive move is a second, data-native one, each key alone
-leaving 3.5 inside the visits by five.
+Actor: which hub an unscanned parcel passed has no column in any file; it is a relation between the parcel's arrival read and the other arrival reads at the same depot door that morning, whose sort events name one hub.
+Link: each unscanned parcel is tied to the unloading it belongs to, a grouping of arrival reads by depot door and pause in time that no key offers (no event carries a trailer, a trip or a route) and no sentence invites.
+Reflex: the field's own scan-compliance count, each parcel's expected sort read from its route of record (the sort plan of its night), and the field's missing-data reflexes (a missing-at-random split within the depot morning, complete cases) sit at rungs 0 to 2 and file alerts at Sosnowiec and Pruszkow (`Ends on:`) or at Sosnowiec alone, not the golden three.
+Back-test: every check the record offers passes on the plan route: every sorted parcel was sorted at its plan's hub on every night without overflow, the sorted overflow parcels sit on the nights Strykow sorted for the Warsaw depots, each hub's parcels reconcile to its sort events and the depots' arrivals, so the plan reads as the complete route of record.
+Second use: every file the step reads sits in the pack for its own reason: the depot arrival scans are the month's population every rate is over, the hub sort events are the numerators, the register gives the hubs, depots and door readers every grouping needs, and TDS-4 is the standard the call runs on; the courier events, the pre-advices and the handheld register carry the asks.
+Shock: the movement the step recovers reads as ordinary: Pruszkow's high rate on its heavy nights is its own sorter running full, Strykow's overflow is 1,440 parcels of a month's 24,425 at Pruszkow, and sorted on any shipped statistic (rate on the route of record, volume, nights) the golden set is not an interval.
+Pins: TDS-4 files the WHAT (the population, the window, the rate and the tolerance) in the carrier's own standard; no filed sentence names the plan, the overflow, a trailer, a door, an unloading or how an unscanned parcel's hub is known.
 
 ## Readability screen
 
-| Rung | Where a reader meets it | Verdict |
-|---|---|---|
-| 1. The record replayed as it ran (3.5 at 12) | the export's statistic and alert column, sections 6 and 8 | readable |
-| 2. The 2028 network re-run (3.5 at 23) | the register's baja_prevista, the plan's 131 stations, section 4's nearest stations | readable |
-| 3. (decisive) The drifts the record cut short (3.5 at 33) | nothing names it: the history lists adjustments by date, motivo and as-found error, the export lists alerts, and only the analyst's reading of the two together, with what a drift does if left alone, shows the record censored by its own policy | silent |
+Seven tests per rung (stumping 2.1): 1 a filed sentence names the decisive quantity or sends the solver to it; 2 a
+column, key or marker makes it a row predicate or a header-found join; 3 an opponent reflex reaches it; 4 a control
+or corpus scores the rules or refutes the naive read; 5 the hygiene battery finds it; 6 one subtraction, ratio or
+half of a reported figure; 7 a file the step alone reads.
+
+| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Bench | 5 Hygiene | 6 Linear | 7 Second use | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 0 (default) the plan's hub for a parcel without a sort event: Sosnowiec and Pruszkow, Strykow 0.49 | TDS-4 2.1 says the hub that sorted it and the plan names one per depot and night | the plan's delivery depot and nights join to every arrival | yes, the route of record | none refutes it | no | a lookup | the plan sits in the pack for this | readable |
+| 1 the depot morning's unscanned split by its sorted parcels' hubs: Sosnowiec and Pruszkow, Strykow 0.77 | none | the sort events by depot and day | yes, missing at random within the cell | none | no | a share | none | readable |
+| 2 the mornings with two hubs left out: Sosnowiec alone, Pruszkow 0.86 | none | the same grouping | yes, complete cases | none | no | a filter | none | readable |
+| 2 the two-hub mornings' excess over Pruszkow's rate on its other mornings charged to Strykow: Sosnowiec and Strykow, Pruszkow 0.86 | none | the same grouping | yes, an excess over a baseline | none | no | one subtraction | none | readable |
+| 3 (decisive) each unscanned parcel's hub from its unloading at the delivery depot, because the missingness depends on the hub | no sentence names an unloading, a door, a trailer or how an unscanned parcel's hub is known | no column holds a trailer, a trip or a hub for an arrival; the reader id and the second are the only keys | no: the reflexes are the plan, the split and the complete cases | nothing scores it | no | not linear: a per-parcel grouping by door and pause | the arrivals are the population file | silent |
 
 ## Semantic fork table
 
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | drift alert | a section 8 alert, the hold applied | every day beyond the limit | alert-days file 4.5 | section 8's hold; the export's alert column replays exactly |
-| SF2 | planned on | the three calendar years 2025 to 2027 | 2027 alone | not computed | section 7, the three previous calendar years |
-| SF3 | the 2028 network | the 131 stations with no baja_prevista | the 148 | the re-run's pool | the plan: the network runs 131 stations in 2028 |
-| SF4 | the limit | setting times SD (n - 1) of the recorded statistic, 2025 to 2027 | 2027's statistic alone | same call | section 6 |
-| SF5 | most sensitive | the lowest setting | the highest | not a reading | section 7: a lower setting catches a drift sooner |
-| SF6 | fit | at or under 28 | under 28 | same call | no setting sits at 28 |
-| SF7 | the hold | 14 days | 13 days | same call | section 8, any of the 14 days before |
-| SF8 | read day | the statistic on read days only | every day with 10 residuals | not a reading | section 5 |
-| SF9 | the estimate's stations | the three nearest with an anomaly that day within 75 km | the nearest three regardless | not a reading | section 4 |
-| SF10 | distance | straight line between the register's UTM coordinates | great circle | same call | section 4; no two stations share a position |
-| SF11 | anomaly | the export's anomalia | recomputed from normals | not computable | no normals ship |
-| SF13 | the year's turn | the hold carries across | lifted each January | not a reading | section 8: a new year's configuration does not lift it |
-| SF14 | a year | the three years' count divided by three | a fraction | same figures | every three-year count divides by three |
-| SF15 | the record's first fortnight | the statistic from 10 residuals, version 4 in force from 1 January 2025 | a full 14-day window | same call, 3.0 at 68 | section 5's at least 10 |
-| SF16 | rounding of the limit | unrounded | k times the spread to three decimals | same figures | asserted |
-| SF17 | district | the register's comarca | the order's own field | not a field | every order's station is in the register |
-| SF18 | n - 1 | sample standard deviation | population | same figures at 3.5 to 4.5, 3.0 at 69 | section 6 |
-| SF19 | radius and ties | the 75 km radius never binds, no ties | not a reading | same call | asserted |
-| SF20 | either side | two-sided | one side | 3.5 | section 8: either side |
-| SF21 | beyond | strictly beyond | at or beyond | same figures | the export's alert column replays strictly |
-| SF22 | set right | an adjustment or a replacement both end a drift | the replacement starts a new sensor | not a reading | section 9: one beyond 0.2 is adjusted, one more than 1.0 out is replaced |
-| SF23 | the drifts cut short | every drift-alert row of the history with an as-found error | adjustments only | 4.0 | section 9; asserted |
-| SF24 | the alert a repair answered | the station's latest alert within 10 days before | an earlier one | not a reading | one alert within 30 days, asserted |
-| SF25 | never reached before its repair | from a fortnight before the alert to the repair | 30, 60 or 90 days before | same figures | asserted |
-| SF26 | one alert per drift | the cut-short drifts added to the re-run's count | every drift once, the re-run's drift alerts dropped | same figures | asserted |
-| SF27 | a drift after its repair | set right by the check; left alone it goes on growing at its own rate | stops at the size the history records | 3.5 | section 9: a sensor's drift does not stop on its own and grows until a check sets it right |
-| SF28 | the spring round before a cut-short drift's crossing | none comes first: each drift crosses the 3.5, 4.0 and 4.5 limits 62 days or more before its station's next round | a round sets one right first | 4.5 at 13 | asserted (the audit redraws any drift whose next round could come first) |
+| SF1 | October | parcels unloaded on the mornings of 1 to 31 October, the 30 September night's sorts in | parcels sorted on October nights | same call | TDS-4 2.1; same call (asserted) |
+| SF2 | parcels handled | the distinct parcels the hub sorted among the month's, unscanned included | the hub's sort-event rows (loop re-reads counted) over the sorted only | same call | TDS-4 2.1 and 2.2; same call |
+| SF3 | missed sort scan | no sort event on the platform at the extract | a sort event that reached the platform after it | same call | every record received before 07:40 on 6 November (asserted) |
+| SF4 | missed-scan rate | per cent of the hub's parcels | per cent of its sorted parcels | same call | TDS-4 2.2; same call |
+| SF5 | above 1.00 per cent | strictly above | at or above | same call | no hub within 0.2 points of the line |
+| SF6 | rounding | the verdict on the unrounded rate, the rate shown to two decimals | the verdict on the two-decimal rate | same call | same call |
+| SF7 | the re-sent arrival rows | one parcel once | each row a parcel | same call | the rows are the same rows; same call |
+| SF8 | Krakow's two depot codes | two depots | one depot | same call | the call is per hub; same call |
+| SF9 | the arrival clock | local, as the depot server writes it | UTC | same call | every unloading between 03:00 and 09:00, the same morning either way |
+| SF10 | the sort clock | UTC, as the column is named | local | same call | the call never reads the sort time |
+| SF11 | the hub of a parcel without a sort event | the hub that sorted it | the hub the plan names for its depot and night | Sosnowiec and Pruszkow | TDS-4 2.1 (a hub handles a parcel when it sorts it; a plan is not a sort), the unloadings each holding one hub's sorted parcels |
+| SF12 | our sort hubs | the six hubs of the network register | none | same call | TDS-4 1 (every hub in the register) |
+| SF13 | the as-of | the extract of 6 November, 07:40 | records arriving later | same call | TDS-4 5.1; none arrives later (asserted) |
+| SF14 | a parcel in the call | each piece label | a consignment once | same call | TDS-4 4.1 (each piece is one parcel); same call |
+| SF15 | whether its alert fires | one verdict per hub | none | same call | TDS-4 2.3 |
+| SF16 | an unloading | a door's run of arrival reads | the depot's run whatever the door | same call | the same unloadings either way (asserted) |
+| SF17 | sent twice | an event counted once however many further records arrive | each further record | same figures | TDS-4 3.1; no scan sent three times |
+| SF18 | the depot of a courier event | the depot the event names | the register's depot for the handheld | moves Krakow's two rows | TDS-4 3.2 |
+| SF19 | pre-advised for October collection | the latest version's collection date in October | any version's date | moves ask B | TDS-4 4.1 and 4.2 |
+| SF20 | the depot of a pre-advice | the replacing depot for a replaced code from the day it opened | the code as the shipper sent it | moves Krakow's two rows | TDS-4 4.3 and the register's Depots sheet |
+| SF21 | parcels in ask B | pieces | consignments | moves every contract depot | TDS-4 4.1 |
+| SF22 | never picked up | never collected from the shipper | no pickup scan | moves every depot | TDS-4 4.4; a parcel sorted, unloaded or delivered was collected |
+| SF23 | the courier events in the depot column | every record of the month's extract (events dated 30 September to 3 November) | the events dated in October only | moves six depots | the prompt (the extract's courier events) and TDS-4 3.1 |
 
 ## Ladder
 
-| Route | 3.0 | 3.5 | 4.0 | 4.5 | Files |
-|---|---|---|---|---|---|
-| The record replayed as it ran, kept stations | 49.0 | 12.3 | 2.7 | 1.0 | 3.5 at 12 |
-| The whole network replayed | 54.3 | 14.3 | 3.3 | 1.3 | 3.5 at 14 |
-| Key 1: the 2028 network re-run | 65.7 | 23.0 | 7.0 | 2.7 | 3.5 at 23 |
-| Key 2 alone: the cut-short drifts added to the record as it ran | 52.3 | 22.3 | 13.7 | 12.3 | 3.5 at 22 |
-| Both keys, the closing stations' drifts counted too | 70.0 | 34.0 | 19.0 | 15.0 | 4.0 at 19 |
-| Both keys, every adjustment in the history counted | 71.7 | 35.7 | 20.7 | 16.7 | 4.0 at 21 |
-| Golden: both keys | 69 | 33 | 18 | 14 | 4.0 at 18 |
+Four routes past the default, each a defensible way of giving an unscanned parcel a hub, each dying to one shipped
+fact (rates per cent of the hub's parcels; the line at 1.00; figures measured on the shipped pack, asserted in
+`checks.py`).
 
-The record re-lived at each setting with the 2028 network, every drift left to grow until that setting's alert sent its
-visit or the spring round found it, raises exactly the golden's count (207, 99, 54 and 42 over the three years,
-asserted). Three fresh years on the same stations, the record's drifts again, give the same direction out of sample
-(asserted in checks.py).
+| Rung | Construction | Answer | Dies to |
+|---|---|---|---|
+| 0 (default) | the plan's hub (Q4-2 in force) for a parcel without a sort event | Sosnowiec 1.34 and Pruszkow 1.76 fire; Strykow 0.49 | the unloadings: on 24 depot mornings the Warsaw depots unloaded a second trailer whose sorted parcels all carry Strykow's sort event |
+| 0b (hazard) | the first plan issue all month | adds Bielany Wroclawskie at 1.05; Strykow 0.49 | the plan's Issues sheet (Q4-2, Opole at Sosnowiec from the night of 19 October) |
+| 1 | each depot morning's unscanned parcels split by its sorted parcels' hubs; or by the depot's month | Sosnowiec and Pruszkow (1.62; 1.67); Strykow 0.77; 0.67 | the unloadings: Strykow's trailers carry 9.1 per cent of the two-trailer mornings' sorted parcels and 38.8 per cent of their missing sort scans |
+| 2 | the two-trailer mornings left out | Sosnowiec alone; Pruszkow 0.86, Strykow 0.55 | TDS-4 2.1: the month's parcels are every parcel unloaded, and the cut drops the mornings Pruszkow ran full |
+| 2 | the two-trailer mornings' excess over Pruszkow's rate on its other mornings (0.86) charged to Strykow | Sosnowiec and Strykow 2.30; Pruszkow 0.86 | the unloadings: Pruszkow's own trailers missed 205 of 13,223 (1.55 per cent) on those mornings |
+| 3 (golden) | each unscanned parcel's hub from its unloading | Sosnowiec 1.34, Strykow 1.55 and Pruszkow 1.23 fire | |
+
+- **Margins.** The golden's nearest hubs are Pruszkow at 1.23 (1.23x) and Bielany Wroclawskie at 0.79 (1.27x); every
+  verdict on rungs 0, 1 and 2 stands 1.15x or more from the line (Bielany at 0.85 on the month's split, 1.18x); the
+  hazard rung is wrong at Strykow by 2.04x whichever side Bielany falls (asserted).
+- **Purity.** All 300 unloadings hold one hub's sorted parcels and at least one sorted parcel; any pause from one to 29
+  minutes, with or without the door, gives the same unloadings (the longest pause inside an unloading is under a
+  minute, the shortest between two at a door over 30 minutes).
+- **Position.** The default path's one wrong verdict (Strykow under the line) sits 2.04x from it; no rung reaches the
+  golden; the rungs name four different wrong sets.
+- **Worth.** The decisive step moves 130 parcels from Pruszkow to Strykow and decides one verdict.
 
 ## Closure table
 
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | the 131 kept stations; drifts at closing stations out | filed (baja_prevista, the plan); C1 |
-| 2 | Unit of account | an alert (section 8), a visit (a technician at the station) | filed |
-| 3 | Attribution window | 2025 to 2027, alerts and limits | filed (sections 6, 7); C1 at the edges (no drift open at the end) |
-| 4 | As-of dating | 5 January 2028 | filed |
-| 5 | Version basis | QC-02 version 4 from 1 January 2025 | filed |
-| 6 | Denominator | three years | filed (section 7) |
-| 7 | Weighting | none | not applicable |
-| 8 | Window length | 14 days, 10 residuals | filed (section 5) |
-| 9 | Boundary inclusivity | strictly beyond; the hold of 14 days | filed; SF21, SF7 |
-| 10 | Rounding path | whole numbers a year from three-year counts divisible by three | C1 by construction |
-| 11 | Tie-break | none open | asserted (no tied distances) |
-| 12 | Maturity and censoring | the record's drifts cut short by its own repairs (the decisive step, forced by the design: each drift persists until set right and the history dates every repair) | C1 over windows and formulations (SF25, SF26); the counterfactual equality |
-| 13 | Order of operations | re-run, then limits from the recorded statistic | filed (section 6) |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | the daily export's repeats are exact | C1 |
-| 16 | Identity normalisation | station codes one scheme | C1 |
-| 17 | Netting against gross | either side counted once | filed (section 8) |
-| 18 | Dimensional units | degrees C throughout | data |
-| 19 | Code and status semantics | motivo, Estado, status | dictionary; never the stump |
-| 20 | Integerisation | whole alerts | C1 |
-| 21 | Clause scope | section 8's hold across the year's turn | filed |
-| 22 | Forward window contents | 2028 planned on 2025 to 2027 (the spring round each year, the 2028 plan the same) | filed (section 7, the plan) |
+| Axis | Reading here | Move |
+|---|---|---|
+| 1 Population | the parcels unloaded on the mornings of 1 to 31 October, unscanned included | filed, TDS-4 2.1; C1 under the sort-night reading (SF1) |
+| 2 Unit of account | a parcel (a piece label), per hub | the question and TDS-4 4.1; C1 (SF14) |
+| 3 Attribution window | the unloading morning | filed, TDS-4 2.1; C1, every unloading 03:00 to 09:00 (SF9) |
+| 4 As-of dating | the extract of 6 November 07:40 | filed, TDS-4 5.1; every record received before it (SF13) |
+| 5 Version basis | pre-advices at their latest version; the plan in force on the night | filed, TDS-4 4.1 (asks); the golden never reads the plan |
+| 6 Denominator | the hub's parcels | filed, TDS-4 2.2; C1 (SF4) |
+| 7 Weighting | none: counts | n/a, asserted on the figures |
+| 8 Window length | one month | filed, TDS-4 2.1 |
+| 9 Boundary inclusivity | above 1.00, strict | C1, no hub within 0.2 points (SF5) |
+| 10 Rounding path | the verdict on the unrounded rate, rates shown to two decimals once | C1 (SF6) |
+| 11 Tie-break | none | no two hubs or depots share a count (asserted) |
+| 12 Maturity and censoring | the month closed six days before the extract | C1, nothing received after the extract |
+| 13 Order of operations | the same rows collapsed, then grouped | C1, the re-sent rows are the same rows (SF7) |
+| 14 Row order | the unloadings sort by door and time | C1, the grouping sorts its input |
+| 15 Duplicate resolution | the re-sent arrival rows once; a scan sent twice counted once | C1 (SF7); filed for the asks, TDS-4 3.1 (SF17) |
+| 16 Identity normalisation | full tracking numbers in the call; piece labels and cut references in ask B | C4: every sort event matches an arrival (asserted); the asks' keys are their devices |
+| 17 Netting against gross | none | n/a |
+| 18 Dimensional units | parcels only | n/a |
+| 19 Code and status semantics | ARRIVED and sort events in the call; a failed pickup is not a collection in ask B | the call reads two codes; filed for the ask, TDS-4 4.4 (SF22) |
+| 20 Integerisation | counts whole; rates two decimals | C1 by construction |
+| 21 Clause scope | TDS-4 2 for the call, 3 and 4 for the asks | filed |
+| 22 Forward window contents | none: a closed month | the call is retrospective by construction (Draw) |
 
 ## Literal reader
 
-Executing the prompt and every filed sentence word for word (sections 4 to 9, the register's baja_prevista and sensor
-history, the plan's 28 visits), with the record read for what a wider setting would have met, gives the golden: section
-9 files that a drift grows until a check sets it right, so a drift the record's 3.0 alert sent a check to would have
-gone on to a wider setting's limit; the only open move, counting the drifts the record cut short, converges over every
-window from a fortnight to 90 days and over counting every drift once (SF25, SF26), and the record re-lived with each
-drift left to grow raises exactly the golden's count at every setting (C1, asserted).
+Executed word for word, TDS-4 2.1 to 2.3 make each hub's parcels the month's parcels it sorted and its missed sort
+scans those with no sort event; the one step the text leaves open is which hub sorted a parcel the platform holds no
+sort event for, and every route that identifies the hub that sorted it gives the golden (the unloadings are pure and
+threshold-free, asserted) while the plan, the morning's split, the complete cases and the excess each name the hub
+planned or an estimate, not the hub that sorted it; SF1 to SF22 close every term and convention.
 
 ## Oracles
 
-- The 2027 alert summary counts the alerts raised at 3.0 by district and month; every route reproduces it.
-- The export's alert column replays exactly under section 8 on its own statistic and limits; every route passes it.
-- The history's as-found errors tie to the calibration database's readings; every route passes it.
-- No document carries a count at any setting but 3.0, and none ranks the settings.
+None. No file states a hub's October rate, misses or parcels, or any depot's re-sends or uncollected pre-advices; the
+sorters' availability file (a distractor) records scheduled and down minutes per hub night and ranks nothing on the
+decision basis; the claims file (a distractor) holds claims by tracking number; the request names no hub.
 
 ## Ask sheet
 
-Ask A: by district, the drift-alert visits made in 2027 and the days their alerts waited (16 figures). Ask B: by
-district, the breakdown visits made in 2027 at the kept stations (8 figures). Neither reads the call's rows: the call
-reads the quality control's export and the register; the asks read the work orders, the calibration database and the
-loggers' daily export, none of which moves the call (separation and deletion tests asserted).
+Two asks, 26 figures, decoupled from the call: the call reads the depot arrival scans, the hub sort events, the
+register's hubs and TDS-4 section 2; the asks read the courier events, the handheld register, the pre-advices and TDS-4
+sections 3 and 4, files and sections the call never reads.
 
-What a visit is, filed once each: the plan counts visits by station, a visit being a day a technician is at a
-station; section 9 puts a check of the sensor against the transfer standard at every visit a drift alert calls, and
-the plan at every visit since July 2027; the dictionary gives the old contractor's Visita as the day the technician
-visited (blank on a cancelled order and on one closed without a visit) and the new contractor's visit_date as the date
-the order was closed on its app. So the old sheet's visits are its closed orders with a Visita, and the new
-contractor's are the days a technician read a station's sensor there while an order was open. No cancelled order has a
-reading under it, every reading sits under an order the two sheets hold, and every reading a technician took at a
-station lies inside the range the station's logger recorded that day (all asserted): the pass 3 judge's
-Visita-against-readings conflict and the lost orders are gone.
+**Main population (zero device rows, asserted):** the depot arrivals and the sort events. Deleting the courier events,
+the pre-advices, the accounts, the claims, the sorters' availability and the request leaves the call unchanged
+(asserted).
 
-The device, silent. The new contractor checks a spare sensor at the workshop before a technician goes out (three
-paired readings at the ice point, three at 40 degrees in the dry block), and the calibration database enters them
-under the station's order like a visit's: on the false alert the desk then closed in six districts, on a breakdown
-then reset remotely at a kept station in every district, and before two drift-alert visits (Cinco Villas, Monegros).
-Nothing marks them: no flag, note, technician, count or order type, and the dictionary describes the database as every
-paired reading of a temperature sensor against the transfer standard. Only a cut nothing invites finds them: the
-readings against the range the station's logger recorded that day, both points 3 degrees or more outside it, on
-weekdays the logger delivered in full and on no day a technician read the station there. Fair: that one test, on the
-order-led route and on the alert-led route alike, reproduces the field truth exactly (both asserted), and block 3
-steps 6 and 7 name it for the grader. Hazards on the same rows: the desk's closures and remote resets with nothing
-under them, readings under the station's previous order (never as many in a district as the orders holding only a
-workshop check, so the two never net out on the order-key path), route orders carrying two stations, weekend alerts,
-the new contractor's visit_date after the visit, and drift alerts answered at the spring round.
+| Ask | Figures | H18 home | Use | Primary devices (family) | Hazards | Path (files, columns) | Stops |
+|---|---|---|---|---|---|---|---|
+| A: each depot's courier events its handhelds sent twice | 13 | an audit of the platform's intake from the depots' handhelds | the shipper-integration lead's call with the integration teams | D8, a clock on a subset: a re-send carries the first record's time as the handheld queued it, cut to the minute, in local time from a TC52 and in UTC from a TC51 (two hours behind until 25 October, one after); every depot runs both models; D1 over-cleaning: a parcel taken off the first loop and loaded on the second, and a failed attempt taken out on the afternoon wave, are new scans the same day on the same handheld | the Krakow move (the event names its depot, TDS-4 3.2) | courier events (tracking number, depot, courier, handheld, event, time, received), register Handhelds (model), TDS-4 3: 3 files, 8 columns | exact duplicates (0 to 27 per depot); the battery's near-exact duplicate, same minute (the TC52 re-sends only: 42 to 662 against 97 to 942); same parcel, event and handheld on the day (the second loops and waves counted: 166 to 1,335); within 5 minutes; within 3 hours; the TC51 shift fixed at two hours all month (keeps D-KRK1 only, closed before 25 October); the answer |
+| B: each depot's parcels pre-advised for October collection it never picked up | 13 | a reconciliation of the shippers' pre-advices against the network's own records | the same call: the uncollected pre-advices each shipper's system keeps sending | D4, absence evidenced in a file the habitual join never reaches: the largest label-printing shippers at every depot load trailers on some days, so their parcels carry no pickup scan yet are sorted, unloaded and delivered; and a courier who found nothing ready records a failed pickup against the pre-advised number; D7, the true key elsewhere: a contract shipper's parcels carry the consignment number plus a three-digit piece number, some consignments short of their pre-advised pieces, and marketplace order numbers kept to 20 characters by the handheld, orders of a seller's day sharing their first 20 | versions superseded (the latest stands, TDS-4 4.1); the replaced Krakow code (4.3); September and November collection dates; re-sent pickup events | pre-advices (consignment, version, depot, date, number, pieces, reference), courier events (number, event, reference, depot), hub sort events and depot arrivals (number), register Depots (replaced code, opened), TDS-4 4: 5 files, 14 columns | every line on exact keys (334 to 5,161 per depot); latest versions on exact keys (240 to 4,717); labels and references matched by prefix, any match (240 to 1,233); pieces and references counted against the pickup events (the cracker: 240 to 1,245 against 43 to 346); every courier event as a collection (the failed pickups counted collected: 30 to 274); the answer |
 
-| Path (no test of a reading against the logged range) | Visits | Days | Breakdowns | Keeps |
-| --- | --- | --- | --- | --- |
-| readings at the station while the order was open | 2 of 8 | 1 of 8 | 0 of 8 | 3 of 24 |
-| the same, the order's notice as the alert | 2 | 0 | 0 | 2 |
-| the same, the old orders by their readings | 2 | 1 | 0 | 3 |
-| readings under the order only | 1 | 1 | 0 | 2 |
-| readings under the order, else the visit_date | 2 | 1 | 0 | 3 |
-| every closed order on its visit_date | 2 | 1 | 0 | 3 |
-| alert-led (first reading day within 9, 14 or 21 days) | 2 | 1 | 0 | 3 |
+- **Span:** seven files and 22 column uses across the asks; no shared primary or path (A reads clocks and handhelds,
+  B numbers, pieces and references).
+- **Shared hazards:** the courier re-sends repeat pickup events, so counting pickup rows against a marketplace order
+  understates its uncollected orders; the Krakow move moves both asks' Krakow rows.
+- **Realism:** an older handheld's app writing its retry queue in UTC, a second loop and an afternoon wave, trailer
+  collections at large shippers, failed collections keyed from the pickup list, piece labels under a consignment
+  number and a handheld field of 20 characters are records these systems make with no task in mind.
+- **Referee:** none.
 
-The figures every path keeps are the two districts with no drift alert the desk closed since July 2027 (Cinco Villas
-and Somontano de Barbastro, whose visit counts no device can reach) and Somontano's days (no drift alert there since
-July 2027).
+| Ask figure | Where the cracker's path goes | Mirror (stops at rung 0) | Cracker (lands the call, runs the battery) |
+|---|---|---|---|
+| A courier events sent twice, every depot (13) | drops the near-exact duplicates (same parcel, event, courier, handheld and minute), which finds the TC52 re-sends and none of the TC51's | counts the same parcel, event and handheld on the day, second loops and waves included | miss |
+| B pre-advised parcels never picked up, every depot (13) | applies the latest version and the replaced code, matches piece labels and cut references and counts them, against the pickup events the ask names; every trailer-collected parcel counts as never picked up | matches labels and references by prefix, any match | miss |
 
-| Ask | Cracker (the best of the paths above) | Verdict |
-| --- | --- | --- |
-| A visits | 2 of 8 (Cinco Villas and Somontano de Barbastro) | miss |
-| A days | 0 to 1 of 8 (Somontano de Barbastro) | miss |
-| B breakdowns | 0 of 8 on every path | miss |
-
-Pair ceiling: 35.4 ((51.9 + 18.9) / 2), the cracker keeping 3 of 24 ask figures on the call and the mirror the same.
-Mirror leakage: 12 per cent of ask weight.
-Measured by: generator/pair.py on the cut pack (target.zip 19727806). The device's resolution (the temperature test)
-lands all 24 on both routes; a reader who finds it keeps the ask layer, and the stage 4 readers are the measurement.
+- **Cracker keeps:** 0 of 26 ask figures (every depot's figure in both asks is moved by a device off the battery).
+- Mirror leakage: 34.0 per cent of ask weight, counting the hub rows the plan route gets right inside the ask weight (17 of 24); 0 of the 26 depot figures.
+- Pair ceiling: 51.1 (the hub rows counted as asks: C = 38 + 7 + 55 x 0.48 = 71.4, S = 5 + 7 + 55 x 0.34 = 30.7; with the hub rows inside the call's components, C = 45.0, S = 12.0 and the pair 28.5).
+- Measured by: generator/ceiling.py on the cut pack (pack digest printed with the sheet).
 
 ## Pre-ship check
 
-- Free gates (stage 3, round 3): generator checks 514 passed (the counterfactual equality at every setting, the
-  ladder, R1 to R3 with three fresh years, SF1 to SF26, the separation line and deletion tests, the asks against the
-  field truth with every reading inside its station's logged range and every workshop reading outside it, the link
-  window from 2 to 14 days, the alert-led route with the range test landing the same 24 figures, every natural path
-  at 6 of 24 or fewer, the documents read back, the realism sweep with no negative zero, the dates); verify.py 0
-  failures; two builds byte-identical (target.zip 19727806); figures_check 79 of 79; precut 51 of 51; voice-check
-  PASS.
-- leak.py REVIEW, no LEAK, every line answered harmless as in the earlier rounds: the procedure lists the four
-  settings (the filed menu, which section 7 needs); the 2027 summary names the setting in force (3.0, the record's
-  own); the call's vocabulary in the procedure and the plan is the field's ordinary wording; the stump-paragraph terms
-  are the network's ordinary nouns; the ET0 bulletin and the register carry the candidates only as numbers of other
-  meaning. No filed document names a workshop, bench, spare, ice point or dry block (asserted).
-- guard heart WARN (question form which, after task476 v2 and task477: the decision is a pick from a filed menu);
-  surface PASS on people (Red Agroclimática is the network's name, not a person).
-- Containers clean (no producer signature, no out-of-band timestamp) in target/ and golden/.
-- Golden realism: the workbook leads with the finding as its title, carries the per-setting split, the district sheet
-  with a network total and a note on what a visit is (the workshop's spare checks named there, for the grader), and a
-  notes sheet; the chart splits each bar into the re-run's alerts and the drifts the 3.0 alerts' visits set right
-  first, the 4.0 bar marked, the plan's 28 visits as a labelled line.
-- Open risk, stated: a reader who tests the readings against the logged range lands both asks; a reader who turns both
-  keys lands the call. The stage 4 readers are the measurement.
+1. Domain: the call stands on each hub's missed-scan rate with the hub of every unscanned parcel imputed from the
+   auxiliary record that carries it (the unloading), because the missingness depends on the hub (9.03 per cent on
+   Strykow's manual line against 1.55 on Pruszkow's sorter the same mornings); with wards for hubs there is no trailer
+   unloaded in one run and nothing to impute from.
+2. Two layers: Layer 1 (three clocks, the re-sent arrival rows, the Krakow move, the Opole revision, loop re-reads,
+   piece labels, cut references, superseded pre-advices) is neutral on the call, each item asserted (R2, SF rows);
+   Layer 2 is the imputation of a missing stratum from its auxiliary grouping, asserted alone to move the default path
+   to the golden (R3b).
+3. No banned stump decides: nothing is planted (the overflow is recorded only as the reads it leaves); not semantics
+   (the default path reads every field right and files Sosnowiec and Pruszkow, asserted on the clean truth, R3a); not
+   rule application (TDS-4 files the population, the rate and the line and names no way of knowing an unscanned
+   parcel's hub).
+4. Gate G: no shipped artifact rates, flags or ranks a hub; the two distractors carry no rate.
+5. Determinism: every route that identifies the hub that sorted each parcel gives the golden counts exactly (pure,
+   threshold-free unloadings); SF1 to SF22 closed; every rate at least 0.2 points from the line; counts are integers.
+6. Asks: A (13) and B (13) are moved in every figure by a device the battery does not repair (the TC51 clock at every
+   depot; trailer collections and failed pickups at every depot), the call reading neither file (asserted).
+7. Input gates: 11 files in five formats, the courier events at 280,378 rows, two distractors named in metadata.json;
+   the generator's checks with the realism sweep; the verifier (nearest neighbours at the door, a hand-written clock,
+   merges) green; two builds byte-identical.
+
+## Leak review
+
+`leak.py task250 --asof 2026-11-06`: REVIEW, no LEAK; each line ruled here.
+
+- Answer figures: TDS-4 carries 1.00, the filed tolerance (TDS-4 2.3), which the chart draws as its line; harmless.
+- Design-note vocabulary: TDS-4's matching words (record, parcel, sorted, network, nights, mornings) are the filed
+  population's own (2.1: every parcel sorted by one hub on the night before, the parcels unloaded on the mornings of
+  the month); it names no unloading, door, trailer, overflow or plan; harmless.
+- Dates after the setting: the sort plan's Q4 rows run to 31 December, the plan's validity; harmless.
 
 ## Tried and rejected
+
+- 2026-10-31, architecture 2 (the agro-climatic network's 2028 drift-alert setting, the drifts cut short by the 3.0
+  alerts' repairs): spent at the batch 1 repair; the determinism judge returned NOT_DETERMINISTIC, SEND_BACK: the 4.0
+  call counted every repaired drift the re-run never reached as exactly one later alert, which no shipped file
+  forces; a rate model built from the sensor history (onset at the previous clean check) puts slow drifts hundreds of
+  days from the wider limits and gives 14 to 16 a year at 4.0, not 18; and the new contractor's visit day rested on
+  an inference. Filing the counting rule would make the decisive step rule application, so the world is left after
+  two architectures.
+- 2026-10-31, the draw's first card (gap population, G3 decisive): `test.same_puzzle` and `test.same_driver` BLOCK
+  against task270 v8, task464 and four older builds; the decisive gap is time (the route of record is standing and the
+  routing changed night by night), the honest reading, which clears both.
+- 2026-10-31, a bypass mechanism (depot-to-depot direct trailers skipping every hub): on the route of record each
+  direct-loaded parcel is a miss at its plan's hub, a loud rate a solver investigates, and the lane-night correction
+  that follows lands that hub's verdict; dropped before any data, the overflow alone carries the step.
+- 2026-10-31, overflow nights on which Pruszkow's own scanning is unaffected: the overflow nights' excess of unscanned
+  parcels at the Warsaw depots over Pruszkow's usual rate is then Strykow's unscanned overflow, a one-subtraction route
+  to the call; Pruszkow's own misses now rise with its sorter's load on the same nights, so the excess route charges
+  Strykow with Pruszkow's own misses and clears Pruszkow.
+- 2026-10-31, a linehaul trip log in the pack: it is a second, timed route to each trailer and nothing else reads it,
+  so its presence would announce the step (readability test 7); the unload bursts carry the trailer on their own.
+- 2026-10-31, the first ask A (each hub's sort events its interface sent twice): a re-sent batch of sort events is the
+  battery's near-exact duplicate and sits on the call's own file; the ask moved to the courier events per depot.
+- 2026-10-31, one handheld model per depot (TC51 at the contract depots only): the battery's near-exact duplicate then
+  lands every TC52 depot's re-sends exactly; every depot now runs both models.
+- 2026-10-31, ask B matched against every courier event: with trailer collections as the only absence, any courier
+  event is evidence of collection and that shortcut lands all 13 depots; couriers now record a failed pickup against the
+  pre-advised number, which is no collection.
+- 2026-10-31, marketplace order numbers drawn per seller for every marketplace: two sellers on one marketplace then
+  share an order number and a pickup is counted against the wrong order; the marketplaces that number orders globally
+  now do so.
+- 2026-10-31, Strykow's own sorter at 0.61 per cent: the morning's sorted split left Strykow at 0.87, 1.148x from the
+  line; at 0.56 per cent it sits at 0.77.
+- 2026-10-31, the card as drawn at the heart screen (G3 decisive, the head of tracking data quality asking, a PDF note
+  beside the workbook): `guard.py heart` BLOCKed ban.pattern and ban.role against task470's later re-draw, and warned
+  the shell (whether, each, pdf and xlsx) repeated task245; the measured ladder puts the decisive step past the
+  missing-at-random split (rung 1), so the decisive generator is G17 and G3 is the default path's; the requester is
+  redrawn to the director of network operations and the chart goes to the board on a slide.
+- 2026-10-31, the claims file opened claims up to five days after the extract (`leak.py`, dates after the setting): a
+  claim not yet opened on 6 November is not in a 6 November extract, and a claim opened in its last five days is open.
+
+Architecture 2 and earlier, carried from the agro-climatic note:
+
 
 - The seed's own pitfall (a per-station two-sigma rule against a network budget): the multiplicity reflex; it is the
   default path, not a stump.

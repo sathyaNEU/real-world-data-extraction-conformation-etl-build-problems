@@ -1,509 +1,255 @@
-# task172 design note
-
-Architecture 1, wave 7 (new), Forecasting lane (sathya8571), numbered from seed FC43. The seed (a technology
-company's mobility team quoting, in its benefits portal, the wait within which four in five of next quarter's
-work-permit renewals will have their decision) was read at its header and Situation only. Its world, decision and
-quantity are kept. Its mechanism (whether USCIS still holds a filer's fingerprints, read off the record) is not used:
-the share of renewals that need a new fingerprint appointment is stable within each category across the record (most
-(c)(9) renewals reuse the adjustment's fingerprints, most (c)(26) renewals go to an appointment) and moves the quote
-only inside its half month. The pitfall is re-found from how a renewal's wait ends since the automatic extension
-stopped: a renewal still pending around the day the filer's current card expires gets an expedite request from the
-team and is decided about a week later, and USCIS now sets fingerprint appointments so far out that about nine in ten
-of next quarter's renewals that need one will reach that day before the review that follows the appointment ends.
+# task172 design note (architecture 2)
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task172.json`, architecture v1, registered 2026-10-18T11:34:04Z; `guard.py check` WARN on the registered card (overuse.objective,
-   the lane's objective; driver.near 0.13 against task127 v2, differentiated on the card). Nearest drivers: task127 v2
-   0.13, task501 v3 0.10, task254 v3 0.07, task148 v2 0.07.
-2. Pairing: General Statistics & Data Science (client domain) / `regression-classification-model-diagnostics` /
-   Forecasting & Predictive Modeling. The setting is another field's (employer immigration operations), so the swap
-   is of the method: the deciding object is a duration model's out-of-sample diagnostic, whether the stage model the
-   record supports, with the appointment delay now being set added, still describes renewals that reach the card's
-   expiry undecided. Free against the last three registrations (task246 general-statistics x data-quality-monitoring,
-   task170 healthcare-delivery x forecasting, task244 survey-research x data-quality-monitoring).
-3. Niche: a Bellevue software company's global mobility team quoting, in its benefits portal, the wait within which
-   four in five of the work-permit renewals it files from January to March 2027 will have USCIS's decision, now that a
-   pending renewal no longer extends the card and USCIS is setting fingerprint appointments about seventeen weeks
-   after receipt.
-4. Call and shape: the wait quoted from 15 December 2026 for the renewals filed 1 January to 31 March 2027, in months
-   to the nearest half month (`quantity_figure`, `date_or_period`, question form what). Shape `other`: the call with
-   its critical components, two ask tables on rows the call never reads, and a chart on an ask's quantity; criteria
-   counted in `## Ask sheet`.
-5. Mechanism keys: gap time (the decided record is about renewals whose appointments came four to five weeks after
-   receipt; the quote bets on a quarter whose appointments come about seventeen weeks out); decisive generator G3 (for
-   most of next quarter's renewals that need an appointment the decision is ended by the team's expedite request at the
-   card's expiry, not by the review the record's waits measure), then G16 (which model of the wait the record supports, chosen on the
-   renewals filed since the rule change that were still pending at their card's expiry), G13 (the forward window's
-   appointment delay, which no decided renewal met), G17 (censoring); Gate G `method_or_model_selection`; strategy
-   `forecast_method_backtest` (the natural fit is wrong out of sample under the new appointment regime, and the honest
-   history chooses the model). Time with G16 decisive is spent in four older builds and time with G13 is task162's
-   inside the batch, so G3 leads; the choice is honest because the step that decides is who ends each forward wait.
-6. Layer 2: `forecast_uncertainty` (model choice on out-of-sample error), pattern
-   `own:stage-model-cut-at-each-filers-card-expiry-plus-the-expedite-response`.
-7. Furniture: forum `other` (the mobility standard gives the quote to the analytics lead, who publishes it; no meeting
-   decides it); forcing event `launch_or_rollout` (the portal's quarterly content release on 15 December); organisation
-   family `software_or_platform`; role family `research_desk` (the global mobility analytics lead); context artifact
-   `planning_thread` (the team's December thread on the release); calibration `none`. Each is free against task246,
-   task170 and task244, and none takes a value task165 (built, not yet registered) carries: its composition_mix,
-   purchase_order_or_contract, register, local_government, operations_director, line_manager_or_team, G14 and
-   single-figure are all avoided.
-8. Spine: counsel's case-management export of every USCIS notice and case-status event on the renewal matters
-   (case x notice), 72,572 rows, constructed in the layout of an immigration law firm's export.
-9. Deliverables: `q1_2027_renewal_quote.xlsx` (the quote, its components and the ask tables) and
-   `q1_2027_expiring_permits.svg` (a chart on an ask's quantity, never on the quote).
-10. World: Sallowmere Software (invented; no company of that name found), Bellevue, Washington; its Global Mobility team
-    files renewals of work permits (Form I-765) through outside counsel (Marrowby Teale LLP, invented; no firm of
-    that name found) for employees whose green-card applications are pending (category (c)(9)) and for the spouses of
-    employees in H-1B status ((c)(26)), about 800 a quarter in the record and about 1,150 in the coming quarter, about
-    half of them (c)(9), when the 18-month (c)(9) cards issued from 5 December 2025 first come due. Post-rule (c)(9)
-    renewal history does not exist under the real validity rules: a (c)(9) card approved before 27 September 2023 ran
-    out by September 2025, so its renewal reached USCIS by spring 2025, and later cards ran five years or, from 5
-    December 2025, 18 months, first due in June 2027; the record's (c)(9) renewals are the 2024 and 2025 ones. Two real events are used as the standard and
-    the thread state them, never as USCIS's own words: the end of automatic extension for renewals filed on or after
-    30 October 2025 (DHS interim final rule of that date), and the 18-month cap on (c)(9) cards approved from 5 December
-    2025. Card validities follow the real rules: (c)(9) cards approved before 27 September 2023 run two years, those to
-    4 December 2025 five years, later ones 18 months; (c)(26) cards run to the H-4 end date. Personas from `guard.py
-    names --geo "United States" --seed 172`: Melinda Yang (benefits portal content lead), Brandon Zamora (immigration
-    case coordinator), Jasmin Sims (head of global mobility, the standard's owner); Raymond Navarro appears only as the
-    H-1B calendar's author, and the case log carries the coordinators' initials. Barbara Davis and Sandra Weiss were
-    passed over (first names on task460 and task130).
-11. As-of: the case system's export pulled on Friday 4 December 2026; the quote goes live on Tuesday 15 December 2026.
-12. Sources read for the domain (stumping 1.3): task127 (a delay fusing two concurrent waits, valued by the later of
-    two dates; here the stages run in series and the wait is cut at a per-filer deadline, the earlier of two clocks),
-    task148 (a queue drained by abandonment, patience estimated over every wait; here no unit leaves), task162 (a
-    release-week reach set by a monthly restart burst; no calendar burst here), task153 (a site's draw built segment by
-    segment between visits; no segments here), task142 (an upper percentile of a period's total built from arrivals
-    and stays; here a percentile of each filer's own wait), task167 (two latent call schedules read from each fund's
-    first year; here no latent class decides, the share needing new fingerprints is stable), task130 v2 (a queue rank
-    against cumulative supply; no queue order here), task124 (an intervention holding down the analogs' measured
-    values; here the forward units meet the intervention far more often than the record's did).
-13. Data-native sentence: the deadline lives in a different record from the wait, each renewed card's expiry in the
-    team's register and the team's expedite request in its own case-action log, while counsel's notice export the quote
-    is naturally built from carries only USCIS's notices, so the cut shows only where a renewal's decision is laid
-    against the expiry of the card it renews, and in the record that happened only on the slowest tail (181 of the
-    2,665 renewals filed since the rule change on the old appointment lead, 6.8 per cent).
+- **Card:** `.claude/skills/fingerprint/cards/task172.json`, architecture v2, registered 2026-10-31 and filed anew after
+  the design screens (guard check WARN only: the question form repeats task191's, and the lineage shell repeats
+  task256 v1's).
+- **Pairing:** Biomedical & Clinical Research, task type `survival-time-to-event-analysis`, objective Forecasting &
+  Predictive Modeling; biomedical x forecasting is a pairing no build has drawn.
+- **Niche:** TALON-2, an investigator-led, charity-funded phase 3 trial coordinated by the Kesterton University Cancer
+  Trials Unit (KUCTU), randomises patients with advanced biliary tract cancer 1:1 to ravolimab (an investigational
+  immune checkpoint antibody from Halvorsen Therapeutics) or placebo, each with gemcitabine and cisplatin. The primary
+  endpoint is progression-free survival assessed by blinded independent central review (BICR); the final analysis is
+  the stratified log-rank test at 330 events. The Ashgrove Cancer Research Trust funds the trial in two tranches, and
+  Schedule 2 to its funding agreement sets three bands on the interim conditional power: below 20 per cent the
+  funding ends (stop for futility), from 20 to below 80 per cent the Trust funds an extension to 420 events, from 80
+  per cent the trial continues to 330 events as planned.
+- **Quantity:** the conditional power the DMC charter defines in section 4.1: the chance that the final stratified
+  log-rank test at its 330th event rejects at one-sided 2.5 per cent, given the interim data, for the trial as it will
+  run from the cut, with each arm's progression over the remaining follow-up as the interim data estimate it. Forward
+  facing: the final analysis's events have not happened.
+- **Decision:** continue as planned (golden, band C), extend (band B) or stop for futility (band A).
+- **Shell:** question form whether (a gate with three outcomes), second-sentence opener "The", rounding opener "The",
+  deliverables pdf+csv.
+- **Setting:** first patient randomised 1 December 2025, last 25 September 2026 (all 450); the interim cut is
+  17 November 2026, the date of the 165th BICR-confirmed event; the snapshot is 1 December 2026 and the DMC meets on
+  9 December 2026.
+- **Data-native sentence:** an event-driven look at half the information arrives while most patients have had only
+  their first two or three scans, so the events it holds are early-follow-up events, and the events the final
+  analysis still needs come from the same patients later in their follow-up: the look and the remainder sample
+  different stretches of each patient's own clock.
 
-## Screens (stumping 1.2, as code)
+## Survivor anatomy
 
-Measured by `generator/ladder.py` and the screens script on the clean world; `generator/checks.py` re-asserts each.
+Actor: the deciding property is where each patient still at risk at the cut stands in their own follow-up against the arms' change in progression rate between the week-12 and week-18 assessments, and no file stores it: the BICR export lists reads by timepoint, the IRT export randomisation times in UTC, the status workbook deaths and withdrawals, and the follow-up still to come is a forward relation across those files that no column holds (no column holds a follow-up period, an interval rate, a projected event or an effect estimate).
 
-- `guard.py slots --driver` (the card's driver): hits on task127 (concurrent waits, the later of two clocks; already
-  differentiated on the card) and task130 (claims-made windows priced by report lag, a different mechanism); the other
-  ten slots share vocabulary only (charging, mortality review, trimming, irrigation, garage queues, lead lines,
-  collections). No slot records this mechanism dying.
-- Dispersion: the decisive quantity is a level (the forward 80th percentile), not a spread; the estimator family is
-  closed on the pack, seventeen constructions from 5.39 to 5.53 months, all in the 5.5 bin (the margin rule in
-  `## Residual`).
-- Variance-only: the decisive step moves the point estimate (7.0 on the default path, 5.5 with the cut), it does not
-  widen an interval; of 18 conservative reflexes on the record (buffers, multiples, high percentiles, mean plus sd)
-  one lands by coincidence (the record plus 1.5 months) and one more by quoting a 97.5th percentile against the
-  standard's four in five.
-- Common-exposure subset: one decided renewal filed since the rule attains the forward exposure (appointment leads
-  at or past the forward tenth percentile of 96 days), too few to read a percentile from; the honest reason is the
-  rule itself, since once a pending renewal no longer extends the card a reschedule past the card's expiry costs the
-  employee leave, so applicants' reschedules fall from about one appointment in twenty-two to one in a hundred and
-  seventy and coordinators send conflicts to walk-in biometrics. The whole record's nine (filed before the rule,
-  their cards extended, so never cut) give 6.8 months. Below the exposure the long-lead subsets since the rule give
-  4.7 (42 days or more out, 176 renewals) and 5.1 (56 days, 25); at 70 days or more there are 6. The whole record's
-  give 5.0, 5.8, 6.1 and 6.2 at 42 to 84 days. The subset of renewals expedited at expiry lands (5.4), but choosing it
-  is the decisive step itself.
-- Truncation direction: the record's censoring and the cut both hide the top (open renewals are the recent and the
-  long ones; a cut renewal's natural wait runs past its decision), so the forward percentile needs the latent upper
-  part, which is the case the screen keeps alive.
+Link: the signal is read through a comparison the field's conditional-power route never asks for: each arm's events per patient-month at each assessment visit (BICR timepoints crossed with every patient's exposure, built from UTC randomisation times converted to the site's local date through the site register) set against the follow-up position of every patient still at risk; the B-value takes one z and one ratio, and no key, column or sentence crosses the interim's events with the at-risk set's future.
+
+Reflex: the field's method for the deciding quantity sits at rung 0 and files a wrong answer here: conditional power from the B-value with the stratified log-rank z (or the stratified Cox ratio) as the trend gives 5.3 per cent, band A; its patient-by-patient version under one ratio gives 8.7 per cent and one constant rate per arm 13.6 per cent, both band A; the sample-size ratio the charter excludes gives 53.8 per cent, band B.
+
+Back-test: the textbook route validates on the checks a DMC statistician runs before the conditional power: the stratified log-rank z and the stratified Cox ratio agree (0.58 and 0.91, 95 per cent CI 0.67 to 1.24), the eCRF strata, the UTC dates and the not-evaluable censoring rule each leave the band where it is, and the investigator reads point the same way; what separates the routes is a cut no step of the B-value route makes, the events per patient-month by assessment visit read against where the remaining patients stand.
+
+Second use: every file the decisive step reads sits in the pack for a reason of its own: the BICR export, the IRT export and the status workbook are every rung's data (the event count, the cut, the log-rank test, the Cox ratio), the site register converts every randomisation time and names every site's central laboratory, and the charter, the SAP and Schedule 2 file what every rung computes and compares; deleting the decisive step drops no file.
+
+Shock: the movement the step recovers reads as ordinary: the stratified ratio's confidence interval spans 0.67 to 1.24, ravolimab's early excess at the week-6 and week-12 assessments sits within what a 165-event look carries, and an immunotherapy added to chemotherapy whose arms run together for the first scans is the field's familiar picture; sorted on any shipped statistic (by arm, stratum, site, country or month of randomisation) nothing singles the later follow-up out.
+
+Pins: the charter files the WHAT in its own genre (section 4.1: the stratified log-rank test of BICR progression-free survival at its 330th event, one-sided 2.5 per cent, given the interim data, for every patient still at risk and every patient still to be randomised followed to the 330th event, with each arm's progression over that remaining follow-up as the interim data estimate it, not under the sample-size ratio); Schedule 2 files the bands; no filed sentence names a follow-up period, a change in rate, a ratio that varies, proportional hazards, a model or a crossing (asserted on all three PDFs in checks.py).
 
 ## Default path
 
-1. Join counsel's notices to the register, keep each renewal's receipt date, its latest appointment notice and its
-   decision, leave out withdrawn renewals, censor open renewals at the export and stopped ones at the stop.
-2. The record's own 80th percentile, Kaplan-Meier: 4.0 months (3.98 to 4.11 over every window).
-3. Read the appointment notices on the newest receipts: about seventeen weeks out against four to five before, 89
-   days more than the post-rule record's median.
-4. Add the extra 89 days to the appointment-route waits of the renewals filed since the rule change and take the 80th
-   percentile: 6.9 months, quoted 7.0 (the same path reweighted to the quarter's categories gives 6.5).
+1. From the DMC charter (section 4.1 and Appendix A) and Schedule 2: the conditional power of the final stratified
+   log-rank test at 330 events, one-sided 2.5 per cent, given the interim data, compared with the bands (below 20 per
+   cent stop, from 20 extend, from 80 continue as planned); from the SAP, the PFS definition and censoring table and
+   the IRT strata.
+2. Build BICR progression-free survival from the BICR export and the Deaths sheet, convert the IRT's UTC times to the
+   site's local date, apply the censoring table, find the cut as the 165th event (17 November 2026) and drop every
+   read and death after it.
+3. Run the stratified log-rank test (z 0.58) and the stratified Cox model with Efron ties (hazard ratio 0.91, 95 per
+   cent CI 0.67 to 1.24).
+4. Conditional power from the B-value at information fraction 0.5 with the observed trend: 5.3 per cent (the Cox
+   ratio as the drift gives the same; simulated patient by patient under that one ratio, 8.7 per cent).
+5. Band A: recommend stopping for futility.
 
-Ends on: 7.0 months
-Golden: 5.5 months
+Ends on: about 5 per cent conditional power and a futility stop (band A)
+Golden: 99.96 per cent, 100 to the nearest 10 per cent, continue as planned (band C)
 
 ## Stump sentence
 
-A competent solver who sees the fingerprint appointments now being set about seventeen weeks out adds the thirteen
-extra weeks to the record's appointment-route waits and quotes 7.0 months (the record's own waits, open cases
-censored, give 4.0); about nine in ten of the quarter's renewals that need an appointment will reach the filer's card
-expiry undecided, and since the automatic extension ended the renewals pending at expiry have been decided about a
-week after the expedite request the team files around the day the card expires, so the quarter's 80th percentile is
-5.5 months.
+Carrying the interim's stratified Cox hazard ratio of 0.91 into the rest of the trial, as the B-value's trend
+does, files a conditional power of about 5 per cent and a futility stop, because the look's 165 events fell mostly
+in the first weeks of follow-up, where ravolimab's arm progresses no more slowly than placebo's (rate ratio 1.34
+through the week-12 assessment), while 200 of the 267 patients still at risk are past the week-12 assessment, where
+ravolimab's arm progresses at 0.38 times placebo's; followed forward on each arm's own rates, the final test rejects
+in more than 99 per cent of continuations and the trial continues as planned.
 
 ## Three rules
 
-- Task type: regression-classification-model-diagnostics (General Statistics & Data Science), serving Forecasting: the
-  call is a forecast whose decisive step is a model's out-of-sample diagnostic.
-- Domain test: the forward 80th percentile of a censored duration under the stage model the record supports, chosen by
-  how the rival models predict the renewals filed since the rule change that were still pending at their card's
-  expiry; the field's estimator is a Kaplan-Meier stage model with the cut at each filer's own expiry.
-- Swap: "the wait within which four in five renewals will have a decision" reads with hospital nouns ("the wait within
-  which four in five referrals will be seen"), but no referral is cut short at its own card's expiry by a request the
-  team files that day, so the swapped task has no deadline to decide it and the call becomes the record's percentile.
-- Layer 1: counsel's matter numbers against the register's case references across its April 2025 system change (RN and
-  GM, a crosswalk column), dates as text in the earlier sheet, rescheduled appointment notices (the latest stands),
-  notices logged days after their date, receipt notices issued days after the received date, renewals stopped when an
-  employee leaves, withdrawn renewals, transfers, requests for evidence, card mailing events with carrier re-scans,
-  rejection notices with no receipt number in the same export, and the register lagging counsel's notices.
-- Layer 2: forecast_uncertainty; the methodological choice is the forward model of the wait, a stage model cut at each
-  filer's card expiry plus the expedite response, against the record's pooled percentile and the uncapped stage model.
-- Decisive step: recognising that the appointment delay now being set pushes about nine in ten of the renewals that
-  need an appointment past their card's expiry, so each of those forward waits ends at the team's request around that
-  expiry plus the expedite response, a cut the record shows only on its slowest tail.
-- Not semantics: every field, code and date in the pack read correctly (the receipt date, the latest appointment, the
-  decision notice, the card's expiry, the case log's expedite requests) still leaves the default path on 7.0, because
-  no field says that the forward renewals will be cut; that is a forecast about who ends each wait.
-- Not rule application: the standard files what the quote is (filed on the receipt date, the wait to the decision
-  notice, four in five, months of 30.4 days, the nearest half month, withdrawn renewals out) and that an employee whose
-  card lapses goes on leave; no filed sentence says the team expedites at expiry or how USCIS answers, so executing
-  every stated rule gives 7.0 or 4.0, never 5.5.
-- Analyst test: a strong analyst who joins the notices to the cases, keeps the latest appointment notice, censors open
-  cases, reads the standard correctly and sees the appointment delay now being set adds that delay to the record's
-  appointment-route waits and quotes 7.0 months, where the card expiries those renewals will reach first, each
-  followed about a week later by a decision on the team's expedite request, put the quarter at 5.5 (5.4 to 5.5 over
-  every construction, the quarter's category mix moving it by four days inside the half month).
-- Estimand: mobility_renewal_standard.pdf 2.3 and 4.1 to 4.3 (the renewals Global Mobility files in the coming
-  quarter, filed on the receipt date, the wait to USCIS's decision notice, four in five, months of 30.4 days, nearest
-  half month, withdrawn renewals left out), with the prompt naming January to March 2027.
-- No decoy: nothing is planted to be caught; the thread states only that appointment letters run to late January into
-  March and that the 18-month (c)(9) cards come due; no memo, draft, briefing or stakeholder figure carries a quote,
-  and the team's own posted-time capture is a declared wrong-basis distractor ruled out by its own header.
-- No certified replay: the method is not recovered by reproducing a certified or published figure; no prior quote
-  ships, and the posted times are USCIS's national figures for another population that no construction reproduces.
-- Lesson: when a regime change makes a deadline-triggered intervention binding for most future units, the forward
-  percentile is set by the deadline plus the intervention's response, so the stage times laid on the record overstate
-  it and the record's own waits understate it; no build on file teaches a per-unit deadline cut, task127's later of
-  two concurrent clocks being the nearest.
+Task type: survival-time-to-event-analysis in biomedical-clinical-research, which serves forecasting: the conditional power is a forecast of the outcome of an event-driven final analysis, made from the interim's time-to-event data by arm and the trial's remaining follow-up.
+
+Domain test: the deciding quantity is the conditional power of an event-driven final analysis, worked inside the group-sequential machinery a data monitoring committee applies (the information fraction, the B-value, the stratified log-rank test at its final event count) from time-to-event data by arm (Kaplan-Meier curves, events per patient-month by assessment visit); the call compares it with the funder's bands.
+
+Swap: "should the retailer keep its loyalty pilot, judged on the share of members who churn?" keeps the sentence's shape and loses its substance: a churn pilot has no event-driven final analysis, no information fraction and no conditional power band, and its members' remaining exposure is not a set of patients at known places on their own follow-up, so the deciding quantity stops making sense.
+
+Layer 1: IRT randomisation times in UTC for sites from Perth to Oslo, the SAP dating randomisation by the site's local date; BICR reads, investigator reads and deaths beyond the cut in the snapshot; IRT strata keyed differently from the eCRF for nine patients; reads the BICR recorded as not evaluable; pharmacovigilance case versions, recoded terms and nullified cases; Nordic local liver panels in microkatal per litre with their own limits; the EDC's dosing pages behind the IRT. Nothing is planted, and the call's construction is mess-neutral (UTC dates, eCRF strata, no not-evaluable rule, no withdrawal, an unstratified final test: every reading keeps the golden's band and bin, asserted).
+
+Layer 2: the data's real structure in a time-to-event comparison read forward: the arms' ratio of progression rates is not one number over follow-up, and the information still to come sits at a different place in each patient's follow-up from the information the look observed, so the forecast of the final test is a projection over the at-risk set's own follow-up, not the look's average carried forward.
+
+Decisive step: recognise that the interim's one ratio averages an early stretch of follow-up holding most observed events with a later stretch holding most of the events still to come, so estimate each arm's progression rate per patient-month before and after the gap between the week-12 and week-18 assessments, carry every patient still at risk forward from the last adequate assessment on those rates (withdrawal at the observed rate) to the 330th event and recompute the final stratified log-rank test: 99.96 per cent of 20,000 continuations reject, 100 per cent to the nearest 10.
+
+Not semantics: every field, code and definition read correctly (BICR rather than investigator reads, the censoring table, the local randomisation date, the IRT strata, reads and deaths after the cut dropped) still leaves the B-value route at about 5 per cent, because where the remaining patients stand in their follow-up is not a field: it is a relation the analyst has to see the forecast depends on and rebuild across three files.
+
+Not rule application: no filed rule says the ratio changes over follow-up or tells the analyst how to project the remaining follow-up, so executing charter 4.1 and Schedule 2 word for word with the field's B-value files band A; the enumerated family (the B-value on the z or the Cox ratio, the patient-level projection under one ratio, one constant rate per arm, the sample-size ratio, the later-period ratio carried in the B-value, and the projection on each arm's rates split anywhere from 91 to 183 days, by assessment visit, at two breaks, with Weibull fits, without withdrawal, unstratified, on eCRF strata or UTC dates) spreads from 5.3 to 100 per cent and splits the call three ways; the standing family (every projection that follows each arm's own observed rates) spreads 96.9 to 100 per cent, unanimous on band C and the 100 bin.
+
+Analyst test: a strong analyst who reads every field and rule correctly builds BICR progression-free survival under the SAP's table, converts the UTC times, applies the cut, fits the stratified Cox model (0.91), and computes the charter's conditional power from the B-value with the observed trend, files about 5 per cent, band A and a futility stop; followed forward on each arm's own rates from where each remaining patient stands, the final test rejects in more than 99 per cent of continuations and the trial continues as planned.
+
+Estimand: the charter (`talon2_dmc_charter_v3.0.pdf`, section 4.1) files it: the probability that the stratified log-rank test of BICR-assessed progression-free survival at its 330th event rejects at one-sided 2.5 per cent, given the data at the interim analysis, for every patient still at risk at the cut and every patient still to be randomised up to 450 followed until the 330th event, with progression in each arm over that remaining follow-up as the interim data estimate it, not under the sample-size ratio; Schedule 2 and the charter's Appendix A file the bands, and the SAP files the endpoint, the censoring table and the final test.
+
+No decoy: nothing is planted to be caught: no memo, briefing or stakeholder states a conditional power, a ratio by period or a recommendation; the protocol's sample-size ratio appears only in the SAP's power statement and the charter excludes it by name; the investigator reads and the EDC adverse event pages are distractors named in metadata.json that rank nothing.
+
+No certified replay: no published or certified figure is reproduced: no table in the pack carries a conditional power, a ratio by assessment visit or a projected event count, and the projection is rebuilt from raw timepoint reads, UTC randomisation times and status pages.
+
+Lesson: an interim estimate is an average over the follow-up the look has seen, so a forecast of an event-driven final test has to be made over the follow-up still to come, which sits later in each patient's clock than the look's; no build on file forecasts a sequential test's outcome from where the remaining units stand in their own exposure.
 
 ## Readability screen
 
-| Rung | What the move needs | Pointer in the pack | Verdict |
-|---|---|---|---|
-| 0 to 1, the posted time to the team's own record | the quote is the team's renewals (standard 4.1) | standard 4.1 | readable |
-| 1 to 2, open renewals censored | Kaplan-Meier on the record | none; the field's method | silent |
-| 2 to 3, the appointment delay now being set | the newest appointment notices | the thread's appointment letters | readable |
-| 3 to 4 (decisive), the cut at each card's expiry plus the expedite response | the register's card expiry, the case log's requests, the decisions a week later | none; the cut is visible only by laying decisions against expiries | silent |
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 B-value with the stratified log-rank z or Cox ratio as the trend | charter 4.1 invites a conditional power | `BICR_OVRL_RESP` and the strata | the field's conditional power | the z and the ratio agree | the UTC dates and the cut | one formula | none | readable |
+| R0b patient-level projection under one ratio | charter 4.1 names the remaining patients | the reads and the status pages | an event-prediction reflex | validates with R0 | none | one simulation | none | readable |
+| R0c one constant rate per arm | none | the reads | the blinded event-prediction reflex | none | none | one ratio of rates | none | readable |
+| R1 the sample-size ratio | the SAP's power statement | none | the design-alternative reflex | none | none | one formula | none | readable |
+| R2a the later-period ratio in the B-value | none | none | a delayed-separation reflex | none | none | one ratio in one formula | none | readable |
+| R2 (decisive) each remaining patient followed forward on each arm's own rates before and after the week-12 to week-18 gap | silent: no sentence names a follow-up period, a change in rate, a varying ratio or a model (asserted on all three PDFs) | silent: no column holds a period, an interval rate or a projected event | silent: the field's conditional power takes one trend for the remaining information | silent: no file scores a projection, and the B-value route passes every check it runs | silent: no duplicate, clock or key issue points at it | silent: a projection of 267 patients' remaining follow-up to the 330th event, not one ratio | silent: the BICR export, the IRT export, the status pages, the site register and the three documents each serve every rung | silent |
 
 ## Semantic fork table
 
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | "we file" | received by USCIS (receipt date) | the date the packet left the mailroom | 5.5 (same call) | standard 2.3 |
-| SF2 | "January to March 2027" | receipts 1 January to 31 March 2027 | dispatches in the quarter | 5.5 (same call) | standard 2.3, same call |
-| SF3 | "four in five" | the 80th percentile of the wait | the median | not a reading | prompt and standard 4.1 |
-| SF4 | "USCIS's decision" | approval or denial notice | approval only | 5.5 (same call) | standard 4.2 |
-| SF5 | the wait | receipt to the decision notice's date | receipt to the card's delivery | 6.0 | standard 4.2 |
-| SF6 | the month | 30.4 days | 365.25/12 days | 5.5 (same call) | standard 4.3 |
-| SF7 | rounding | nearest half month, once | nearest month | not a reading | prompt and standard 4.3 |
-| SF8 | withdrawn renewals | left out | kept as censored | 5.5 (same call) | standard 4.2 |
-| SF9 | renewals stopped on an employee's departure | in the quarter, wait unobserved | left out | 5.5 (same call) | same call |
-| SF10 | the two categories | one quote over both | one per category | not a reading | standard 4.1 (the renewals) |
-| SF11 | members not yet observed | every renewal received in the quarter, none observed at the export | the renewals already opened | 5.5 (same call) | standard 4.1 (the coming quarter) |
-| SF12 | percentile convention | empirical 80th percentile of the simulated wait | interpolated | 5.5 (same call) | same call, mid-bin |
-| SF13 | the as-of | the export of 4 December 2026 | the release date of 15 December | 5.5 (same call) | same call, no record after the export |
-| SF14 | the latest appointment notice | the latest notice stands | the first notice | 5.5 (same call) | dictionary Codes, same call |
-| SF15 | the decision date | counsel's decision notice | the register's decided_on | 5.5 (same call) | the two agree on all 9,245 cases both hold (asserted) |
-| SF16 | the quarter's categories | the quarter's own mix (about half (c)(9)) | the record's mix, or the post-rule (c)(26) share | 5.5 (same call) | a construction, not a reading; every construction in the family lands (`## Residual`) |
-| SF17 | ask A, "work permits held by" | each person's card approved most recently, held to its last day | every card in hand; the latest-ending card | pinned | GM-07 1.4 |
-| SF18 | ask A, the card's category | the category on its approval | the roster's entry | pinned | GM-07 1.4 |
-| SF19 | ask A, "current employees" and their spouses | Active on HR's program roster at the export; a spouse while her household's employee is | Benefits coverage; any record of employment | pinned | GM-07 1.3 |
-| SF20 | ask B, "within 30 days" | received no later than the 30th day after the notice date | day 30 excluded | pinned, and moot: no refiling lands on day 30 or 31 (asserted) | GM-07 2.4 |
-| SF21 | ask B, "filed again" | USCIS's receipt of the renewal | the packet's dispatch | pinned | GM-07 2.3 and 2.4 |
-| SF22 | the appointment lead a (c)(9) renewal sent to an appointment meets in the quarter | the support centre's queue now set, about seventeen weeks | the record's (c)(9) lead, about five weeks (5.0) | misconstruction | an appointment is a support centre's slot, not a category's: the October and November lead stands at four to five times the 2025 lead in every state the receipts reached (asserted); no record has a queue by category |
-| SF23 | ask A, a domestic partner Benefits covers | the household's spouse | not a spouse (180 / 184 / 755) | pinned | GM-07 1.3 (the one person Global Mobility took into its care with the employee's household, however Benefits covers her; no other dependant is tracked) |
-| SF24 | ask A, the household a spouse belongs to where records disagree | Global Mobility's records | Benefits | pinned, and no record disagrees: a child's ID that matched a spouse's was a generator fault, now repaired (asserted) | GM-07 1.3 |
-| SF25 | ask A, a card the benefits portal files under a spouse's Benefits ID where Global Mobility's records carry her under another | her card: the household has one spouse, so the two IDs are one person, counted once by her latest card (September (c)(26) 771) | a Benefits-only spouse never taken into care, left out (769, the round 3 judge), or a second person (202 / 200 / 803) | pinned | GM-07 1.3 (the one person Global Mobility took into its care with the employee's household, however Benefits covers her); each of the 897 households with a Benefits spouse ID no Global Mobility record carries has exactly one Global Mobility spouse ID, and the 97 spouses Benefits covers in households Global Mobility never took in hold no card on any record (asserted) |
-| SF26 | ask A, a spouse who is also a current employee | one person and one permit, the one card number HR's roster carries under her employee ID and her spouse ID | two permits, one per role (every cell up: 12 and 10, 6 and 9, 4 and 34) | pinned by the ask's unit | "work permits held by" counts cards; 605 card numbers sit under an employee ID and a spouse ID with the same validity, and no other number repeats (asserted) |
-| SF27 | ask A, a (c)(9) card no approval notice or register approval holds | the card the tracker's approval records, in (c)(9) | an older card, or the roster's (c)(26) label | pinned | GM-07 1.4 (the card USCIS approved most recently, in its approval's category; the tracker records the approval); every adjustment-package case in the register closed with no decision (asserted) |
-| SF28 | ask A, a household employee under two employee IDs | one employee, current under the ID HR's program roster shows as Active | not current (the ID the team knew has ended) | pinned | GM-07 1.3 (current while HR's program roster shows the employee as Active); 352 benefits enrollments under two IDs, one ending the day before the other began, same work state, job family and basis (asserted) |
-| SF29 | ask B, a renewal the applicant filed herself, registered as a case of its own | filed again: USCIS received the renewal, the card it renews for the person | not refiled (the team's case is closed Rejected - not refiled) | pinned | GM-07 2.4 (filed again when USCIS receives it, the rejected renewal, not the team's case); 16 renewals under two current cases, each the team's closed case and the applicant's (asserted) |
-| SF30 | ask B, a forwarded rejection dated outside its renewal's packets | not a lockbox rejection of a renewal packet | counted with the renewal's rejections | pinned | GM-07 2.3 and 2.4 (a packet the lockbox rejects is not filed: before the renewal's first packet left the mailroom, or once USCIS has the renewal, no packet of it is rejected); 93 forwarded rejections so dated, none of counsel's (asserted) |
+| SF1 | "BICR-confirmed event" | BICR progressive disease or death without it (SAP section 2) | the investigator reads | another event count and cut | the charter and SAP name BICR; the investigator file is a named distractor (asserted: 183 against 152 progressions) |
+| SF2 | the censoring table | as filed, the not-evaluable rule included | the not-evaluable rule ignored | 167 events, PH 7.9 per cent, golden 100: same call | same call (asserted) |
+| SF3 | data after the cut | not used (SAP table, last row) | reads and deaths after the cut kept | same band for the B-value route | SAP; same call (asserted) |
+| SF4 | the randomisation date | the site's local date (SAP section 2) | the IRT's UTC date | 99.95 per cent: same call and bin | SAP; same call (asserted) |
+| SF5 | the strata | as recorded in the IRT (SAP section 4) | the eCRF's | 99.95 per cent: same call and bin | SAP; same call (asserted) |
+| SF6 | the final test | stratified log-rank at 330 events, one-sided 2.5 per cent | unstratified | 99.95 per cent: same call and bin | SAP section 4; same call (asserted) |
+| SF7 | "as the interim data estimate it" | each arm's observed progression | the sample-size ratio of 0.70 | 53.8 per cent, band B | charter 4.1: "not computed under the hazard ratio assumed for the sample size" (asserted band B) |
+| SF8 | the follow-up periods of each arm's rates | split in the gap between the week-12 and week-18 assessments | any split from 91 to 183 days, one rate per assessment visit, two splits, Weibull fits | 96.9 to 100 per cent: same call and bin | same call and bin (asserted for every member) |
+| SF9 | withdrawal in the projection | the observed rate per patient-day | none | 100 per cent: same | same call (asserted) |
+| SF10 | patients still to be randomised | none: all 450 randomised by the cut | none | same | the IRT export (asserted) |
+| SF11 | "80 per cent or more" | inclusive | exclusive | same: 99.96 is far from 80 | same call (asserted) |
+| SF12 | the nearest 10 per cent | 99.96 to 100 | none | same | the prompt's rounding sentence; the standing family's minimum is 96.9 (asserted) |
+| SF13 | the Monte Carlo | 20,000 continuations, one seed | another seed, 2,000 runs | 100: same | same bin (asserted) |
+| SF14 | ask A's source | the pharmacovigilance database (SAP section 6) | the EDC adverse event pages | other counts | SAP section 6; the EDC listing is a named distractor |
+| SF15 | ask A's window | onset on or after randomisation and on or before the cut | the date received | equals the truth (asserted) | SAP section 6 |
+| SF16 | ask A's coding | the latest report's preferred term and class | the initial report's | equals the truth (asserted) | SAP section 6 |
+| SF17 | a nullified case | not an event | counted | equals the truth (asserted) | SAP section 6 |
+| SF18 | a re-screened patient's earlier screening number | the same patient (site, sex, year of birth and initials) | a screen failure | equals the truth (asserted: 16 links, each unique) | the screening log's two attempts and the case dates after randomisation |
+| SF19 | ask B's window | samples after the day of the first dose to the cut | the first dose day included | equals the truth (asserted) | SAP section 6 and the prompt |
+| SF20 | ask B's limits | each laboratory's own upper limit, local units kept | one limit for all | equals the truth (asserted) | SAP section 6 |
+| SF21 | the first dose | the earliest dose of any study treatment | the first ravolimab or placebo dose | same date for every patient (asserted) | SAP section 3 |
+| SF22 | a central sample's date | its collection date (the EDC's central laboratory kit log) | the transfer's COLLECTION_DATE | equals the truth (asserted: Melbourne's dates follow collection, Edinburgh's equal it) | the SAP's baseline rule dates the sample taken |
+| SF23 | "doses given" | every administered dose by the cut, once per patient and day | the EDC pages only | equals the truth (asserted: every EDC dose has its IRT administration) | the IRT's administration log |
+| SF24 | "patients who received study treatment" | any dose of any study treatment by the cut | ravolimab or placebo only | equals the truth (asserted) | SAP section 3 |
 
 ## Ladder
 
-| Rung | Route | Quote (months) | Rounds to |
+| Rung | Route | Conditional power | Band |
 |---|---|---|---|
-| 0 | USCIS's posted time, latest capture (Potomac, Vermont, Nebraska, the NBC line) | 4.0, 5.0, 3.0, 4.5 | miss |
-| 1 | the record's own waits, Kaplan-Meier, all receipts / since the rule / last 12 months | 4.05 / 4.08 / 4.11 | 4.0 |
-| 1 | decided renewals only / decided in September to November / mean plus one sd | 4.01 / 4.57 / 4.26 | 4.0, 4.5, 4.5 |
-| 2 | default: the new delay laid on the post-rule appointment-route waits / reweighted to the quarter's categories | 6.91 / 6.55 | 7.0, 6.5 |
-| 2 | the record since the rule plus the new delay, flat / times the record's appointment share | 6.97 / 5.96 | 7.0, 6.0 |
-| 3 | the stage model with the new delay, uncapped / at the quarter's categories | 6.94 / 6.58 | 7.0, 6.5 |
-| 3 | renewals with appointments 42 / 56 / 70 / 84 days or more out (whole record) | 5.04 / 5.84 / 6.11 / 6.15 | 5.0, 6.0, 6.0, 6.0 |
-| 3 | the same since the rule, 42 / 56 days (176, 25 renewals; 6 at 70 days or more) | 4.74 / 5.11 | 4.5, 5.0 |
-| 4 | golden: stage model cut at each filer's request plus the expedite response, the quarter's category mix | 5.39 | 5.5 |
-| 4 | the record's own route share / the post-rule share, no category mix | 5.53 / 5.53 | 5.5 (same call) |
-| 4 | cut at expiry with no response time / every renewal cut / renewals expedited at expiry | 5.23 / 5.56 / 5.43 | 5.0, 5.5, 5.5 (contain the cut) |
-| flag | the record plus 1.5 months / the post-rule 97.5th percentile | 5.55 / 5.33 | 5.5 (no analysis; not four in five) |
-| flag | the record (since the rule, or all receipts) plus the new delay times the quarter's appointment share (0.475) | 5.44 / 5.44 | 5.5 (a mean added to a percentile; coincidence) |
-| flag | an expedite response assumed at 14 / 21 days | 5.59 / 5.76 | 5.5, 6.0 (the log says a week) |
-| misread | the response read from USCIS's reply date / every expedite accepted / the quarter's mix keeping approved adjustments | 5.33 / 5.33 / 5.39 | 5.5 (asserted; none in the family) |
+| R0 | B-value, the stratified log-rank z as the trend | 5.3 | A, stop |
+| R0b | patient-level projection under the stratified Cox ratio | 8.7 | A, stop |
+| R0c | patient-level projection, one constant rate per arm | 13.6 | A, stop |
+| R1 | B-value under the sample-size ratio (excluded by charter 4.1) | 53.8 | B, extend |
+| R2a | B-value with the later-period ratio as the trend | 100.0 | C, by a shortcut that needs the step first |
+| Golden | each arm's rates split in the week-12 to week-18 gap, every remaining patient followed forward, 20,000 continuations | 99.96 | C, continue as planned |
+| Standing | splits from 91 to 183 days, per visit, two splits, Weibull fits, no withdrawal, unstratified, eCRF strata, UTC dates, another seed | 96.9 to 100 | C, 100 bin |
 
-Back-test at depth (the 154 renewals filed since the rule change that were pending at their card's expiry and had an
-accepted expedite): decided a median of 7 days after the request, 97 per cent within 14; the uncapped stage model
-fitted on the renewals filed before the change predicts a median remaining wait of 20.0 days for them, a mean absolute
-error of 14.1 days against 2.8 for the cut model.
+Separation: the highest band-A rung (13.6) sits 6.4 points under the 20 per cent edge and the sample-size rung 26.2
+under 80; the lowest standing member (96.9) sits 16.9 over the 80 per cent edge and 1.9 over the 95 per cent bin edge.
+No route that takes one trend for the whole follow-up reaches band C; R2a reaches it only after seeing that the ratio
+changes, which is the decisive step's first half.
 
 ## Closure table
 
-| Axis | Name | Reading on this build | Move |
-|---|---|---|---|
-| 1 | Population | the renewals received 1 January to 31 March 2027, none observed at the export | filed, standard 4.1 and 2.3; the prompt's quarter |
-| 2 | Unit of account | one renewal (one receipt) | the standard's renewals; C1 (one receipt per renewal) |
-| 3 | Attribution window | the receipt date places a renewal in the quarter | standard 2.3; C1 |
-| 4 | As-of dating | the export of 4 December 2026 | the manifest's extract dates; same call to 15 December |
-| 5 | Version basis | the latest appointment notice stands | dictionary Codes; C1 (the first notice gives the same call) |
-| 6 | Denominator | every renewal received in the quarter, withdrawn ones out | standard 4.2 |
-| 7 | Weighting | each renewal once | the standard's percentile over renewals; C1 |
-| 8 | Window length | the record's components from every window give one bin | C3 over the lead and card-gap windows (5.39 to 5.40) |
-| 9 | Boundary inclusivity | receipts on 1 January and 31 March are in | C1; no forward receipt record ships |
-| 10 | Rounding path | once, the quote to the nearest half month | prompt and standard 4.3 |
-| 11 | Tie-break | none; one figure | not applicable, asserted single value |
-| 12 | Maturity and censoring | open renewals censored at the export, stopped ones at the stop | the field's method (Layer 2), C3 (decided-only gives the same bin) |
-| 13 | Order of operations | the cut applies after the natural wait is drawn | the model's structure; C1 |
-| 14 | Row order | none | C1, asserted over the export's order |
-| 15 | Duplicate resolution | one receipt per renewal; carrier re-scans and repeated appointment notices collapse | C1, asserted |
-| 16 | Identity normalisation | counsel's client reference to the register through RN and GM references | the register's legacy_case_id; C1 |
-| 17 | Netting against gross | none | not applicable |
-| 18 | Dimensional units | days throughout, months of 30.4 days at the end | standard 4.3; C3 (365.25/12 gives the same bin) |
-| 19 | Code and status semantics | approval and denial notices are decisions; a withdrawal acknowledgement is not | dictionary Codes, standard 4.2 |
-| 20 | Integerisation | none in the quote | not applicable |
-| 21 | Clause scope | standard 2.3 defines filing for every renewal | the clause's own words |
-| 22 | Forward window contents | the coming quarter's appointment delay, from the newest notices, and its categories, from the permits whose renewals reach USCIS in it | the export's appointment notices for receipts from October 2026; the current permits by last day; C3 (the record's mix gives the same call) |
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | every patient still at risk at the cut and every patient still to be randomised | filed: charter 4.1 (SF10) |
+| 2 Unit of account | the final analysis's rejection, one trial | filed: charter 4.1 |
+| 3 Attribution window | from the cut to the 330th event | filed: charter 4.1 |
+| 4 As-of dating | data to the cut of 17 November 2026 | filed: charter section 4 and the SAP table; C1 (SF3) |
+| 5 Version basis | one snapshot of each system | C1 |
+| 6 Denominator | BICR events as the SAP defines them | filed: SAP section 2 (SF1) |
+| 7 Weighting | each continuation counts once | C1 |
+| 8 Window length | the whole interim record | C1 |
+| 9 Boundary inclusivity | "80 per cent or more" | C1: same call (SF11) |
+| 10 Rounding path | the simulated share, rounded once to the nearest 10 | filed: the prompt (SF12) |
+| 11 Tie-break | no tie at a band edge or a bin edge | C1: 99.96 against 80 and 95 |
+| 12 Maturity and censoring | the SAP's censoring table at the cut | filed: SAP section 2; C1 (SF2) |
+| 13 Order of operations | rates, projection, final test | C1: the steps commute |
+| 14 Row order | reads by scan date | C1 |
+| 15 Duplicate resolution | one read per timepoint | C1 |
+| 16 Identity normalisation | the randomisation number throughout the efficacy files | C1 |
+| 17 Netting against gross | none | C1 |
+| 18 Dimensional units | days and patient-months | C1 |
+| 19 Code and status semantics | PD, NE, CR, PR, SD as RECIST 1.1 | filed: SAP section 2 |
+| 20 Integerisation | a share, rounded once | filed: the prompt |
+| 21 Clause scope | the bands apply to the conditional power alone | filed: Schedule 2 and charter 4.2 |
+| 22 Forward window contents | each arm's progression over the remaining follow-up as the interim data estimate it; not the sample-size ratio | filed: charter 4.1 (SF7); C2: every member following each arm's own rates keeps the bin (SF8) |
 
 ## Literal reader
 
-Executed word for word, the standard defines the quantity (the 80th percentile of the receipt-to-decision wait of the
-renewals filed in the coming quarter, in months of 30.4 days, to the nearest half month) and leaves the forecast to
-the analyst; no clause names a method, so no literal reading files a number. Every licensed reading of the estimand
-(SF1 to SF16; SF17 to SF21 are the asks' pins) gives 5.5 under the cut model, the readings that differ (SF5, the
-card's delivery) violate standard 4.2, and the easy answers (4.0 and 7.0) come from easy methods on the same estimand,
-never from another reading.
+On paper and on the cut pack: the prompt asks for the call and the conditional power that decides it; charter 4.1
+files the quantity and its WHAT (the final stratified log-rank test at its 330th event, given the interim data, for
+every remaining patient followed to the 330th event, with each arm's progression over the remaining follow-up as the
+interim data estimate it, not under the sample-size ratio), and Schedule 2 the bands. Executed word for word, the
+WHAT leaves open only how each arm's progression over the remaining follow-up is estimated, and the record forces it:
+the arms' events per patient-month run at 1.37 and 1.29 times through the week-12 assessment and at 0.47, 0.62 and
+0.21 times from the week-18 assessment on, so one ratio is not what the interim data estimate for the remaining
+follow-up, and every projection that follows each arm's own observed rates lands 96.9 to 100 per cent. Every literal
+reading of a convention on the call (SF1 to SF13) gives the golden's band and bin or is ruled out by a quotable
+sentence, and every ask reading (SF14 to SF24) equals the world's own truth. Pass.
 
 ## Oracles
 
-No control ties only under the golden. The manifest's row counts tie under every handling; the register's statuses
-and counsel's notices agree whatever model is fitted; no prior quote, scorecard or published figure ships; the posted
-processing times are USCIS's figures for all filers, a declared wrong-basis distractor that no construction reproduces;
-the thread carries no figure about the wait.
+- The world's own truth: the PFS the simulation generated equals the reader's PFS for every patient (asserted), and
+  the clean-truth easy route files band A (z 0.61 on the true strata, asserted).
+- The asks: every ask A, B and C figure equals the world's own truth (22 of 22, asserted).
+- No shipped oracle: no file ties only under the golden reading; the sample-size ratio is excluded by name; the
+  investigator reads and the EDC adverse event listing agree with the B-value route's picture and are distractors.
 
 ## Ask sheet
 
-Criteria: the quote (1), three critical components (the appointment lead now set, 17 weeks against 4 through 2024 and
-2025; about nine in ten of the quarter's appointment-route renewals reaching the card's expiry undecided; the expedite
-response, about a week), ask A's six cells (three months by two categories), the chart's six labelled bars, ask B's
-eight cells (four quarters by rejected and refiled within 30 days) and the two files: 26.
+Pair ceiling: 28.5 (the cracker 45.0, the mirror 12.0, on the planning weights of 38, 7 and 55)
+Mirror leakage: 0.0 per cent of the ask weight
+Measured by: generator/ceiling.py, run on the cut pack
 
-The stage 4 round 4 reader, scored with `score_reader.py`, kept 14 of 14 ask figures on the round 3 pack while missing
-the call (6.5): three rounds of pins had put every device on the careful path (the register's approvals carried the
-cards the roster lacks, Benefits and GM-07 1.3 joined a spouse's two IDs, the case log's forwarded rejections and the
-register's receipts carried the applicants' own notices and filings). The layer below is that layer re-sited under
-supplemental-stumping 1.1c: each device sits on another file, grain or join, no ask or rounding is reworded, every pin
-stands, and the call side is byte-identical to the round 3 commit (every renewal row, component, route and the
-quarter's mix, 674 and 562, recomputed and compared).
+| Ask | Primary device | Golden | The cracker's figures | Cracker |
+|---|---|---|---|---|
+| A, serious adverse events by arm: patients, events, four system organ classes (12 figures) | D7: sixteen patients were randomised at a second screening; six had their serious adverse event forms filed under the first, screen-failed number, which the randomisation export does not carry; only the screening log's two attempts (same site, sex, year of birth and initials) and the cases' onset dates after randomisation tie them back | placebo 113 patients, 170 events; ravolimab 132, 222; classes 18 to 74 | every figure low by 1 to 5 (cases dropped as screen-failure events) | miss |
+| B, liver tests by arm: ALT and AST above 5 x ULN, bilirubin above 3 x ULN after the day of the first dose (6 figures) | D8: the Melbourne laboratory's transfer carries the date it received each sample in COLLECTION_DATE, so a pre-dose sample taken on the morning of the first dose reads as on treatment; the collection date sits only in the EDC's central laboratory kit log | placebo 2, 1, 10; ravolimab 10, 10, 16 | every figure high by 2 | miss |
+| C, exposure by arm: patients who received study treatment, ravolimab or placebo doses given (4 figures) | D4: the EDC's administration pages run behind the IRT, and three sites' pages stop when their research nurse post fell vacant; every administration sits in the IRT's log | placebo 223 and 1,455; ravolimab 226 and 1,501 | 220 and 1,378; 225 and 1,439 | miss |
 
-- Ask A, permits expiring July to September 2027 by category, each current person's permit as GM-07 1.3 and 1.4 pin it
-  (the card USCIS approved for the person most recently, in its approval's category, held to its last day; current
-  while HR's program roster shows the employee, or the spouse's household employee, as Active). Rows: HR's roster,
-  counsel's approval notices, the register's approvals, the green-card tracker, HR's program roster, Benefits'
-  dependants. The call reads the same card records only for the quarter's category mix: through the careful path's
-  handling it reads 5.461 and through the roster-only handling 5.428, both inside the construction family with one
-  sigma (asserted). Silent devices, each a join the careful path does not make:
-  A1 (D5, re-sited to the tracker): the first (c)(9) card comes in the adjustment package the green-card counsel
-  files; the register closes those cases once USCIS has them, with no decision, and counsel's export never holds them,
-  so the approval is on record only in the green-card tracker (467 current (c)(9) cards in the window), the roster
-  holding 105 of the spouses' under the (c)(26) label of their first entry and lacking 27; without the tracker every
-  cell moves (the roster's label puts the switchers' cards in (c)(26)).
-  A6 (D1, re-sited to the employee population): a spouse in the team's care who took a job at Sallowmere during the
-  life of her current card is a current employee of her own; her I-9 at hire records the card she presented and she
-  uploads it on the spouse side too, so 605 card numbers sit on HR's roster under an employee ID and a spouse ID with
-  the same validity (no other number repeats); counted twice, every cell moves up (12 and 10 in July, 6 and 9 in
-  August, 4 and 34 in September, (c)(9) and (c)(26)).
-  A2 (D7, re-sited to HR's IDs): an H-1B employee of an H-4 household moved to another Sallowmere entity in 2026 has a
-  new employee ID from the move, the old one ending the day before, the benefits enrollment carried over (352
-  enrollments under two IDs, same work state, job family and basis); the team's records, all made before the move,
-  name the old ID as the spouse's household, so keying the household by that ID drops 6, 9 and 39 from the (c)(26)
-  cells.
-  The careful path misses all six cells (82, 34 and 8 under in (c)(9), 84, 35 and 18 over in (c)(26)), and so does it
-  with any one device found; with two found it lands at most the three (c)(9) cells (the tracker and the card
-  numbers). Hazards the careful path resolves (texture): a spouse's MP- and Benefits IDs (GM-07 1.3, one spouse per
-  household; two September (c)(26) cards sit only under the Benefits ID, SF25), A5 (GM-07 1.4 names the roster's
-  category as not always the approval's), A3 (GM-07 1.4 keeps a permanent resident's last card to its last day), the
-  household link from any record (SF19, SF24).
-- Ask B, lockbox rejections October 2025 to September 2026, filed again as GM-07 2.3 and 2.4 pin it (USCIS's receipt
-  no later than the 30th day after the notice's date). Rows: counsel's rejection and receipt notices, the case log's
-  forwarded notices, the register's cases and receipts, the mailroom's dispatch log; the call reads no rejection notice
-  and no dispatch row. Devices:
-  B6 (D7 and D9, re-sited to another case): since April 2025 the register holds a renewal the applicant filed herself
-  as a case of its own, filed by the applicant, and closes the team's case as Rejected - not refiled, true of the
-  team's packet; 16 renewals sit under two current cases (2, 2, 3 and 1 in the asked quarters, beside 11 team cases
-  closed not refiled with no other case), so receipts keyed by the case miss a refile in every quarter.
-  B4 (D5, re-sited into the case log's scope): applicants forward the lockbox's rejections of their own other filings
-  too (an I-539 or I-131 they sent themselves), and the coordinator logs them on the case they are in the team's care
-  for, each dated from that filing's own trip to the lockbox: sent a week to a month before the renewal's first
-  packet (she forwards it with her receipt notice) or after USCIS received the renewal (with her biometrics letter);
-  93 forwarded rejections fall outside their renewal's packets and none of counsel's does, so counting every
-  forwarded rejection puts 9, 7, 13 and 7 too many in the quarters and, through the earlier ones, too many refiles
-  as well.
-  The careful path (counsel's and the forwarded rejections, one per case and notice date, receipts by case) misses all
-  eight cells; with the applicant's own case found it still misses all eight, with the other filings found it lands
-  the four rejected cells only. Hazards: applicant-only rejections reach the team only as a forwarded notice (the
-  careful path unions them), B1 (D2: from 2 March 2026 the new dispatch system writes a resend over the packet's row),
-  B3 (D5: the earlier dispatch system's Returned holds courier returns beside lockbox rejections), B7 (applicants'
-  copies of rejections counsel also holds). A matter the team closed on an employee's departure is never filed again
-  and the mailroom marks a packet Receipted only where USCIS's receipt is on record (both asserted).
+The full includer (re-screen links, sample-tracking dates, IRT administrations, a stress row) keeps 22 of 22. Every
+ask reads rows the call never reads (pharmacovigilance cases, central and local laboratory results, sample tracking,
+dosing pages and the IRT's administrations), and no device sits on a BICR read, a randomisation record or a status
+page (asserted). Hazards: case versions and nullified cases (filed, handled by the cracker), recoded terms on follow-up,
+Nordic local panels in microkatal per litre with their own limits, replaced and withheld kits in the IRT log, reads
+and deaths after the cut.
 
-How each ask enters the call (H18): ask A is the population behind the quote's quarter, the permits whose renewals
-Global Mobility opens from January to March 2027 under GM-07 2.1 (cards expiring July to September 2027), the
-page's recurring chart; ask B is the audit trail of the filing date the quote counts from, the renewal packets the
-lockbox returned before USCIS received them (GM-07 2.3) and how fast they were filed again.
+## Build record
 
-Pair ceiling: 33.1 (the cracker, the round 4 reader's measured path on the cut pack, keeps 0 of 20 ask cells; credited
-with any one more device it keeps at most 4, the rejected counts once the other filings' rejections are found, 20.0
-per cent of ask weight; the best response off the call keeps none; with both top responses on the call and no device
-found, 44.0)
-Mirror leakage: 0.0 per cent of ask weight
-Measured by: generator/cracker.py
-
-| Ask | Cracker sheet (the round 4 reader's path: every pin, every spouse link, the roster with counsel's and the register's approvals) | Hits | Verdict |
-|---|---|---|---|
-| Ask A, six cells | each current person's card approved most recently in the roster, counsel's notices and the register | 0 of 6 | miss |
-| Chart, six labelled bars | the same counts | 0 of 6 | miss |
-| Ask B, rejected, four quarters | counsel's and the forwarded rejection notices, one per case and notice date | 0 of 4 | miss |
-| Ask B, refiled within 30 days, four quarters | each case's next receipt within 30 days of the notice date | 0 of 4 | miss |
-
-## Residual
-
-Re-centre rule, fixed on 2026-10-18 before any outcome of the stage 4 rework was measured: after the realism changes
-(the appointment lead's drift, the reschedules, the expedite handling, the (c)(9) fingerprint reuse share, the
-paperwork tail), the mean of the main paperwork component (opening to dispatch, in whole days from 12 to 30, its sd a
-third of the mean) is set to the value at which the generator's process 80th percentile for the quarter (every
-renewal received in the quarter, its own category, state and card gap, the process re-run 200 times) is nearest 5.50
-months. No other parameter moves to place the bin. If no value in that range leaves every construction a quarter-bin
-from both edges with one sigma, the rework is reported, not loosened.
-
-Applied, in two passes, both on the full range 12 to 30. The first pass picked 23 days (process 167 days, 5.49) with an
-artifact in the generator: a request for evidence not yet issued at the team's expedite request still held the decision
-back to its response. With the artifact removed, the value nearest 5.50 is 22 (process 5.49), and there the family
-fails the margin: the constructions that read the quarter's category mix sit at 163 to 164 days, 0.11 from the 5.25
-edge with one sigma. The rule's gate reads over the range, so the family (fixed in `ladder.py` before the scan:
-seventeen constructions, the margin taken with the golden's largest one-sigma move) was run at every value: 18, 19 and
-21 clear it, and 21 is the one whose process is nearest 5.50 (168 days, 5.53). Adopted: PAPER_MEAN 21. The scan is
-`generator/recentre.py` (about forty minutes; exit 0 when the chosen value is the world's). Run again after round 2
-held the summer 2026 lead rise to about a week: 18, 19 and 21 clear again, 21 is chosen again (process 5.53), exit 0.
-
-What stays open after the rework, and why each is accepted:
-
-- The record-based constructions sit one to four days under the generator's process (golden 164 days, process 168,
-  the realised quarter 167). The record reads USCIS's expedite response on renewals close to their own natural
-  decision, so a share of the record's responses are the earlier of the two and the response reads short (median 7
-  days against a drawn median of about 9). Every construction carries the same bias, so it does not open a fork, and
-  the bias keeps the truth inside the golden's half month.
-- The family spans 5.39 to 5.53 (164 to 168 days). Its width is the quarter's category mix: about half the quarter is
-  (c)(9), whose renewals mostly reuse fingerprints, against a record nine in ten (c)(26); a solver who ignores the mix
-  quotes 5.53, one who reads it 5.39 to 5.46. With one sigma the family runs 5.38 to 5.54, 0.128 and 0.214 from the
-  edges; the golden is 4.4 days above the 5.25 line (159.6 days) and 10.8 under the 5.75 line. The margin is
-  integer-day: one day is 0.033 months.
-- The (c)(9) appointment lead in the quarter (SF22): a judge's one exit (the backlog skipping (c)(9) renewals that
-  need fingerprints, 157 days, 5.0) is a misconstruction. An appointment is a support centre's slot: the October and
-  November lead stands at four to five times the 2025 lead in every state the receipts reached, and no record keeps a
-  queue by category.
-- An expedite response assumed rather than measured: 14 days gives 5.59 (lands), 21 days 5.76 (6.0). The case log's
-  189 requests say a week, and say it in the busiest request month (September 2026, 60 decided requests, median 6
-  days, against 7 in the rest) and after the appointment queue tripled; the forward quarter needs about two and a half
-  times the record's busiest month, under the same appointment regime the autumn's ran.
-- Coincidental landings, flagged and asserted, none a construction of the family: the record's 80th percentile plus
-  the new delay times the quarter's appointment share (0.475), 5.44 since the rule or over every receipt (a mean
-  added to a percentile; the record's own share gives 6.0); the record plus 1.5 months (5.55); the post-rule 97.5th
-  percentile (5.33). Misreads that land, asserted: the response read from USCIS's reply to the service request
-  rather than the decision notice (5.33, standard 4.2 rules it out), every expedite accepted (5.33), the quarter's mix
-  keeping the (c)(9) cards of approved adjustments (5.39).
-- The long-lead analogs since the rule are thin: 6 decided renewals with appointments 70 days or more out, 1 at the
-  forward exposure (96 days or more). Reschedules after the rule are rare because a reschedule past the card's expiry
-  now costs the employee leave.
-- A spouse's MP- and Benefits IDs are texture now, not a device: GM-07 1.3's one spouse per household resolves them on
-  the careful path (the round 4 reader did), the 897 households the pack shows with two spouse IDs each carry them for
-  one spouse (asserted against the world), and 560 share a card to the day. A same-day pair of approvals exists for
-  one current person; neither card ends from June to September 2027. GM-07 1.3 files the spouse as the one person
-  Global Mobility took into its care with the household, however Benefits covers her, and no other dependant (SF23,
-  SF24, SF25).
-- The ask layer re-sited in round 4 (supplemental-stumping 1.1c), each device forced by a figure on the cut pack:
-  the tracker's approvals (467 current (c)(9) cards in the window no approval notice or register approval holds, the
-  register's adjustment-package cases all closed with no decision), one card under two IDs (605 card numbers on HR's
-  roster under an employee ID and a spouse ID, the same validity, no other repeat), an employee's two IDs (352
-  enrollments under two employee IDs, one ending the day before the other began), the applicant's own case (16
-  renewals under two current cases, each the team's case closed Rejected - not refiled and the applicant's filing),
-  the other filings' rejections (93 forwarded rejections outside their renewal's packets, none of counsel's). No
-  shipped sentence adjudicates any of them: each turns on GM-07 1.3, 1.4, 2.3 or 2.4 as filed and a join the records
-  force. The goldens did not move (the world is the same; only where its evidence lives and how it must be joined
-  changed), and the call side is byte-identical to the round 3 commit. No subset of the careful path's mishandlings
-  composes back to a golden cell: in the refiled cells the other filings' rejections add refiles that the
-  applicant's own case takes away, and the net misses in every quarter, alone and together (asserted).
-- Ask A's September 2027 (c)(26) cell is 771 (round 3 judge 769, settled). The two are the spouses of employees
-  723523 (MP-75243 on Global Mobility's records, D8711081 in Benefits) and 425305 (MP-28124, D7713094). Each joined
-  Benefits after her household came into Global Mobility's care, and the benefits portal filed her latest card
-  (approved 26 February and 4 January 2024, both ending 30 September 2027) under the Benefits ID only; her
-  Global Mobility ID's latest card ended 25 May and 6 April 2024. The judge counted persons by ID and left out the
-  Benefits IDs no Global Mobility record carries as spouses never taken into care, which drops exactly these two
-  (asserted, SF25). GM-07 1.3 forces 771: the spouse is the one person Global Mobility took into its care with
-  the household, however Benefits covers her, and every household with such a Benefits ID has one Global Mobility
-  spouse; the spouses Benefits covers in households never taken in exist (97) but hold no card. Submission step
-  5 names the people counted and left out and the two cards.
-- Ask B's Q3 2026 refiled count is 14: the three matters a judge read as refiled (SLW-2026-03819, -03932, -04941)
-  were closed on the employee's departure before any refile; the generator had shipped refile packets after Stop work
-  and marked them Receipted though USCIS's receipt was never on record. The world now sends nothing after a stop and
-  the mailroom marks Receipted only with a receipt on record (asserted); every other figure of both tables is unchanged.
-- No post-rule (c)(9) renewal history exists (the real validity rules, `## Draw` 10); the (c)(9) route share is read on
-  the 2024 and 2025 renewals, and the route share is a property of the category, stable across the rule for (c)(26)
-  (0.70 before the rule, 0.72 after).
-
-## Strength
-
-P(one strong solver lands 5.5): about 0.29 (0.21 to 0.39). P(both): about 0.105 (0.07 to 0.15), above the independent
-0.085 because the same signals drive both. The round 2 recheck put them at 0.30 and 0.11 on the earlier pack, the
-insight about 0.24 and the bypasses about 0.06 (the coincidental mix route about 0.03, the flagged reflexes about
-0.02, the thin analog about 0.01). Round 2's lever, the summer 2026 lead rise held to about a week (medians 33 to 34
-days in June to August, against 37 to 41), takes the share of renewals filed since the rule that carry an expedite
-request from 7.5 to 6.8 per cent (181 of 2,665), keeps the September cluster (73 requests) and 154 measured
-responses, and leaves the thin analog with 6 renewals, so it is no longer a route; most of the visibility comes from
-the paperwork tail and the request timing, which the round 1 audit asked for, so the lever moves P(both) by about
-0.005, not to 0.09. The coincidental mix route cannot be closed cheaply (moving the (c)(9) appointment share far
-enough breaks the domain or the low-edge margin), so it is flagged and asserted. P(both) stays at the 0.1 line, not
-clearly under it, and the asks carry the bar (pair ceiling 33.1, both on the call with no device cracked 44.0).
+- World seed 24 (`generator/world.py`), records streams 1 to 6 (`generator/records.py`); `generator/build.py` builds the
+  pack, the goldens, metadata.json, figures.json and submission.md twice, compares them byte for byte, cuts
+  target.zip, then runs `checks.py` (48 assertions) and `verify.py` (an independent recomputation with pandas,
+  statsmodels PHReg and its own projection, against the golden CSV and PDF).
+- Pack: 16 files in four formats (CSV, XLSX, PDF, JSON); the central laboratory transfer is the largest file
+  (39,530 rows); distractors `talon2_investigator_tumour_assessments.csv` and `talon2_edc_adverse_events.csv`.
 
 ## Leak sweep
 
-`leak.py --asof 2026-12-04` on the shipped cut (target.zip f20b583e): REVIEW, no LEAK; one line per REVIEW:
-- Sweep 3, `mobility_renewal_standard.pdf` carries 7 of 10 distinctive words of the call: the portal-quote vocabulary
-  the prompt itself uses; the standard files the estimand (4.1 to 4.3) and states no figure, no pick and no method.
-- Sweep 4, the standard carries 9 of 25 stump-paragraph terms (standard, mobility, receipt, global, counsel, review):
-  the company's name and the filing vocabulary of a renewal standard; no sentence names the expiry cut, the expedite
-  or the appointment queue.
-- Sweep 9, dates after 4 December 2026 in the tracker, the H-1B calendar, counsel's notices, the register and the
-  roster: card expiries, scheduled appointments and the 2027 H-1B calendar, forward by nature; every event a system
-  logs stops at the export.
-- Sweep 10, container metadata: no writer signature (the producer scrub is clean on the pack and the goldens).
+`leak.py --asof 2026-12-01` on the final cut (target.zip 0b377dd6): REVIEW, no LEAK. Each REVIEW line, ruled:
 
-**The round 5 judge's regularity** (Files/Hygiene, low severity): the 16 forwarded rejections of one family sat exactly
-12 days after the renewal's receipt. The generator dated every forwarded copy of a biometrics letter at receipt plus
-12 days, while counsel's copy of the same letter was drawn around 12 days, so a case holding both carried two dates for
-one notice, and the other filing's rejection forwarded with the letter took that date. Fixed at the source: a forwarded
-copy of a notice counsel logged carries counsel's date for it (523 copies, none with another date), a copy counsel never
-logged is dated as USCIS issues that notice (a biometrics reuse notice for a renewal that reused fingerprints, the
-notice that exists for a denied or a withdrawn renewal), and the other filing's rejection is dated from its own
-trip (40 after the renewal's receipt over 27 different day gaps, 53 before the first packet over 15), every new draw
-from its own named stream; checks.py asserts the spread. The call side is byte-identical and no golden moved.
-
-**Readers.** Round 4, scored, on the round 3 pack: the call missed (6.5), 14 of 14 ask figures kept, `score_reader.py`
-exit 1, so the ask layer was re-sited (`## Ask sheet`). Round 5, a fresh blind scored reader on the re-sited pack: the
-call missed (4.0, the censored Kaplan-Meier route) and 0 of 14 ask figures (it found the tracker's approvals, an
-employee's two HR IDs and the applicant's own case, and missed the card under two IDs and the other filings'
-rejections), exit 0. The round 5 judge: DETERMINISTIC, APPROVE, Q1 2026 refiled settled at 26 on GM-07 2.4's receipt
-reading.
+- Sweep 3, the final event count 330 in Schedule 2, the charter and the SAP: harmless. It is the design's filed event
+  count, part of the WHAT the call executes; no document states a conditional power, a ratio by period or a
+  direction.
+- Sweep 3, the call's words in the same three documents (continue, final analysis, 330 events, as planned,
+  conditional power, per cent): harmless. They are the bands' own wording; Schedule 2 and the charter's Appendix A list
+  all three outcomes side by side and rank none of them.
+- Sweep 4, stump-paragraph nouns in the charter and the SAP (record, months, stratified, log-rank): harmless. They are
+  each document's own nouns for the endpoint and the final test; neither names a follow-up period, a change in rate, a
+  varying ratio or a model (asserted in checks.py on all three PDFs).
+- Sweep 1 flagged an earlier cut's file name for the EDC's central laboratory kit page (the word sample); the file is
+  `talon2_edc_central_lab_kit_log.csv` on the final cut and the sweep is clean.
+- The stage 4 reader appends its solver's-eye section to the report.
 
 ## Tried and rejected
 
@@ -600,3 +346,19 @@ reading.
   law 7): every forwarded copy of a biometrics letter was dated receipt plus 12 days, counsel's copy of the same letter
   was not, and the other filing's rejection inherited the fixed date (16 of them exactly 12 days after receipt); now a
   copy carries counsel's date for the notice, or the date USCIS issues it, and the other filing's rejection its own trip.
+- Architecture 1 (Sallowmere Software's work-permit renewal wait quote), retired 2026-10-31 by the batch audit before
+  any portal result: it was designed before the survivor anatomy gate and its note carries no Actor, Link or Reflex
+  line; the decisive cut (the team's expedite request filed at each card's expiry) was a deadline the case log shows
+  rather than a quantity the record must be modelled to give, and its stump power was argued from the retired scored
+  reader; re-rooted in a new domain so the portal sees one strong build.
+- Architecture 2 draft A, extensive-stage small cell lung cancer with platinum-etoposide (2026-10-31, on paper): a
+  control median near five months puts the 165th event before recruitment closes, so most of the events still to
+  come are new patients' early events and the projection rides the early-period estimate; moved to advanced biliary
+  tract cancer, where recruitment closes seven weeks before the cut.
+- Architecture 2 draft B, the golden in the middle band (2026-10-31, design screen, never cut): with early harm and the
+  interim ratio above 1, the projection landed about 45 per cent, but on one world the split point alone moved it
+  from 0.4 to 99 per cent (a split at 3 or 4 months put the week-18 events in the late period); a free parameter a
+  defensible value flips, so the golden moved to band C, where every projection on each arm's own rates agrees.
+- Architecture 2 draft C, two bands with a 20 per cent futility bound (2026-10-31, design screen): the sample-size
+  ratio, which a solver may take whatever the charter says, gave about 54 per cent and landed the call by an excluded
+  route; Schedule 2 now carries the extension band from 20 to 80 per cent, which that route lands instead.
