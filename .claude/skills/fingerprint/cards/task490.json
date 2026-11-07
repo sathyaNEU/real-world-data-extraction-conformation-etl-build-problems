@@ -1,0 +1,97 @@
+{
+  "task": "task490",
+  "architecture": "v1",
+  "drawn": "2026-11-07",
+  "slot_note": "",
+  "domain": "general-statistics-data-science",
+  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a waterways charity's lockage at its canal summits over the 2026 boating season, rebuilt from the lock counters' boat movements, the lock-keepers' logs and the lock register into one ledger of chamber fillings, to site the 2027/28 back-pumping scheme",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G1",
+    "G19"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the counter records, stitches the keepers' log into the camera outage, reads the lock register correctly and charges each summit a lockful for every boat, or replays each summit lock's chamber one boat at a time, names Harnock, because two boats that share a broad chamber are two records and one filling.",
+  "domain_test": "The deciding quantity is lockage, the water a summit pound loses to filling the chambers of the locks that rise to it, which canal water managers estimate by replaying each lock's chamber through its boat movements (a boat going up always fills it, a boat going down fills it only when the boat before left it empty, boats that share a chamber fill it once); swapped into another field's nouns the task loses the chamber whose state makes one boat's water depend on the boat before it.",
+  "layer1": [
+    "two lock counter firmware versions across the season, the later writing UTC where the earlier wrote the counter's clock time, and naming direction by the camera's A-to-B axis where the earlier wrote UP and DOWN",
+    "a three-week camera outage at one summit lock covered only by the lock-keepers' daily log, a scanned PDF of hand-entered tables in local time, overlapping the counter on the days the camera failed and returned",
+    "duplicate detections when a boat holds under the camera, the same index number seconds apart",
+    "unpowered craft (canoes, paddleboards) logged by the camera though they portage round the lock",
+    "boat index plates the camera could not read, carried as blanks, and visiting boats under a visitor pass number rather than a licence index",
+    "chamber dimensions in feet and inches on the historic lock schedule and lockfuls in cubic metres on the 2025 asset survey, one lock re-measured between them"
+  ],
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:lock-chamber-state-replayed-through-chamber-cycles",
+  "stakeholder_role": "the trust's water resources planner, preparing the back-pumping siting paper for the trustees' December capital meeting",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "lock_counter_movements_2026.csv",
+    "rows": 66000,
+    "entity": "one boat movement recorded by a lock counter camera",
+    "grain": "boat movement x summit lock (counter clock)",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "England (an invented canal network in the West Midlands)",
+    "currency": "GBP",
+    "org_type": "waterways charity that owns and runs a regional canal network",
+    "invented_names": [
+      "Coldmere Canals Trust",
+      "Kelsby summit",
+      "Harnock summit",
+      "Tilsey summit",
+      "Kelsby Wharf"
+    ],
+    "people": [
+      "Elaine Freeman",
+      "Katy Wilkinson",
+      "Keith Rahman",
+      "Kim Hussain",
+      "Louis Carey",
+      "Gillian Walsh"
+    ]
+  },
+  "deliverables": [
+    "summit_lockage_2026.xlsx",
+    "backpumping_site_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "Each operation that consumes the shared resource serves one or two consecutive records, and whether a record needs one at all depends on the state the previous operation left, so consumption follows the order and grouping of the records rather than their number; only replaying the state through the records grouped into operations recovers it.",
+  "driver_concrete": "A summit lock draws a lockful from its summit pound only when its chamber is filled, which every cycle going up does and a cycle going down does only when the cycle before left the chamber empty, and two boats sharing a broad chamber make one cycle; so a summit's water follows the order and pairing of its boats, and only replaying each chamber through its cycles, not counting or replaying boats, ranks the summits.",
+  "stump": "A competent analyst charges each summit a lockful a boat, or replays each lock's chamber one boat at a time, and names Harnock, whose broad chambers hold the most water; the step that lands it there is treating two boats that share a broad chamber as two fillings, which hides that Kelsby, whose holiday ring sends most boats up one summit lock and down the other so that each chamber is left set against the next boat, draws the most.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task192": "192 groups a unit's repeated fault events by a shared measured signature to find one failing point; here no signature is shared, the grouping is physical (two boats inside one chamber cycle), and what decides is the chamber's state carried through the ordered cycles, which settles whether a cycle draws water at all.",
+    "task311": "311 projects a standard error from variance components when interviews are added inside fixed areas; here nothing is estimated, the quantity is a count of chamber fillings rebuilt exactly from the ordered boat movements, and the grain that decides is the chamber cycle and the state it leaves."
+  },
+  "lineage": [],
+  "notes": "Drawn after the seed's price-paid world and a bridge weigh-in-motion draw died (design note, Tried and rejected). G2 decisive: one unit of the decided thing is a chamber filling, the counter's unit is a boat movement, and no key bridges them; G1 carries rung 0 (a boat charged at a lockful). stump_strategy grain_or_unit: the decisive step finds the grain that draws water (the chamber cycle, one boat or two) and the state each cycle leaves, which no grouping of the movement file reproduces. Calibration none: the physics of a chamber closes the reconstruction without a sensor. Priced on a clean-truth prototype before registering (five seeds): a lockful a boat and the boat-by-boat replay file Harnock, cycles at a lockful each file Tilsey, the replay through cycles files Kelsby on every seed.",
+  "registered": "2026-11-07T19:45:07Z"
+}
