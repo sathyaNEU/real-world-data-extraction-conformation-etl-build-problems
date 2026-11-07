@@ -10,7 +10,9 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import Paragraph, Spacer, Table
+
+import officepdf as O
 
 INK = colors.HexColor("#1d2b36")
 RULE = colors.HexColor("#8a9aa6")
@@ -36,16 +38,6 @@ def _esc(x):
 def _pdf(path, title, author, subject, blocks, footer, created, modified):
     st = _styles()
 
-    def page(canvas, d):
-        canvas.saveState()
-        canvas.setFont("Helvetica", 7.4)
-        canvas.setFillColor(colors.HexColor("#5b6b77"))
-        canvas.drawString(20 * mm, 10 * mm, footer)
-        canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Page %d" % d.page)
-        canvas.restoreState()
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
-                            bottomMargin=18 * mm, title=title, author=author, subject=subject, creator=author, producer=author,
-                            invariant=1)
     story = []
     width = A4[0] - 40 * mm
     for kind, val in blocks:
@@ -53,20 +45,19 @@ def _pdf(path, title, author, subject, blocks, footer, created, modified):
             ncol = max(len(r) for r in val)
             widths = [44 * mm, width - 44 * mm] if ncol == 2 else [width / ncol] * ncol
             data = [[Paragraph(_esc(c), st["head"] if i == 0 else st["cell"]) for c in r] for i, r in enumerate(val)]
-            t = Table(data, colWidths=widths, hAlign="LEFT")
-            t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                                   ("BOTTOMPADDING", (0, 0), (-1, -1), 3), ("TOPPADDING", (0, 0), (-1, -1), 2)]))
-            story += [t, Spacer(1, 6)]
+            story += [Table(data, colWidths=widths, hAlign="LEFT"), Spacer(1, 6)]
         else:
             story.append(Paragraph(val, st[kind]))
-    doc.build(story, onFirstPage=page, onLaterPages=page)
-    data = open(path, "rb").read()
-    for sig in (b"ReportLab Generated PDF document (opensource)",
-                b"ReportLab generated PDF document -- digest (opensource)"):
-        data = data.replace(sig, b" " * len(sig))
-    data = re.sub(rb"/CreationDate \(D:[^)]*\)", b"/CreationDate (" + created.encode() + b")", data)
-    data = re.sub(rb"/ModDate \(D:[^)]*\)", b"/ModDate (" + modified.encode() + b")", data)
-    open(path, "wb").write(data)
+    O.build(path, story, title, author, subject, footer, _when(created), _when(modified),
+            margin_mm=20, top_mm=18, bottom_mm=18)
+
+
+def _when(stamp):
+    """A PDF date string, D:YYYYMMDDHHMMSS+HH'MM', as an aware datetime."""
+    m = re.fullmatch(r"D:(\d{14})([+-])(\d\d)'(\d\d)'", stamp)
+    off = dt.timedelta(hours=int(m.group(3)), minutes=int(m.group(4)))
+    return dt.datetime.strptime(m.group(1), "%Y%m%d%H%M%S").replace(
+        tzinfo=dt.timezone(off if m.group(2) == "+" else -off))
 
 
 def policy(path):

@@ -55,6 +55,14 @@
    "zip": "2ddb9a8d",
    "moves": "Subject set to 'Investment Committee policy IC-07, allocation of new capital' and 'Transaction cost analysis standard, revision 4'; only the two PDFs moved, no figure moved",
    "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)"
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "portal input check: the parquet footer's created_by named parquet-cpp-arrow 26.0.0; both PDFs named department names as Producer and Creator over a Python PDF library's structure",
+   "repair": "metadata",
+   "zip": "e379b86a",
+   "moves": "the market-data parquet written without the Arrow schema and with created_by left out of the footer (data unchanged); both PDFs written as Word documents and exported by LibreOffice Writer (task306/generator/officepdf.py), Producer LibreOffice 24.2, Creator Writer, the issuing body as Author, the real Subject kept; only those three files moved, no figure moved",
+   "checks": "generator checks (46, 0 failed), verify PASS, two byte-identical builds, leak.py REVIEW with no LEAK; no reader, judge or clone check (author's minor-fix rule)"
   }
  ],
  "resume": "Shipped 2026-10-31 on architecture 4 after the FIX_NOW repair: the re-judge DETERMINISTIC, APPROVE (decisive step analytical, the participation-dependent cost carried to GBP 400 million), leak read 2 clean with question 6 analytical, every free gate re-run on target.zip 7f2aba02 (two byte-identical builds, 46 checks, verify PASS, figures_check 51 of 51, precut 61 checks, voice-check PASS with the 'which' quota WARN). Waits on the portal.",
@@ -139,5 +147,5 @@
    "event": "SHIPPED: architecture 4, give the GBP 400 million to UK Mid Cap Value (8 against UK Large Cap Quality 6 and momentum 5); re-judge DETERMINISTIC, APPROVE; target.zip 7f2aba02"
   }
  ],
- "zip_sha256_16": "2ddb9a8dad23779d"
+ "zip_sha256_16": "e379b86a41a4f95c"
 }
