@@ -159,7 +159,7 @@ half of a reported figure; 7 a file the step alone reads.
 | SF21 | parcels in ask B | pieces | consignments | moves every contract depot | TDS-4 4.1 |
 | SF22 | never picked up | never collected from the shipper | no pickup scan | moves every depot | TDS-4 4.4; a parcel sorted, unloaded or delivered was collected |
 | SF23 | the courier events in the depot column | every record of the month's extract (events dated 30 September to 3 November) | the events dated in October only | moves six depots | the prompt (the extract's courier events) and TDS-4 3.1 |
-| SF24 | the 90 per cent interval | each parcel the hub handled an independent chance of a missed sort scan (Wilson score), read only as wholly above, across or wholly below the tolerance | a bootstrap over the month's mornings or unloadings | Pruszkow's lower bound 1.01 by mornings at 90 per cent, 0.97 at 95: its side moves | the prompt files the level and the model (each parcel an independent chance); Wald, Wilson, Clopper-Pearson, Jeffreys, Agresti-Coull and a parcel bootstrap put every hub on one side, at least 0.05 points clear (asserted); the bounds themselves are not graded |
+| SF24 | the 90 per cent interval | each parcel the hub handled an independent chance of a missed sort scan (Wilson score), read only as wholly above, across or wholly below the tolerance | a bootstrap over the month's mornings or unloadings | Pruszkow's lower bound 1.01 by mornings at 90 per cent, 0.97 at 95: its side moves | the request (october_scorecard_request.eml) files the level, the model (each parcel an independent chance) and the reading; Wald, Wilson, Clopper-Pearson, Jeffreys, Agresti-Coull and a parcel bootstrap put every hub on one side, at least 0.05 points clear (asserted); the bounds themselves are not graded |
 
 ## Ladder
 
@@ -200,7 +200,7 @@ fact (rates per cent of the hub's parcels; the line at 1.00; figures measured on
 | 8 Window length | one month | filed, TDS-4 2.1 |
 | 9 Boundary inclusivity | above 1.00, strict | C1, no hub within 0.2 points (SF5) |
 | 10 Rounding path | the verdict on the unrounded rate, rates shown to two decimals once | C1 (SF6) |
-| 10b Interval | 90 per cent, each parcel handled an independent chance of a miss; graded as its side of the tolerance | filed, the prompt; C1 across six methods (SF24) |
+| 10b Interval | 90 per cent, each parcel handled an independent chance of a miss; graded as its side of the tolerance | filed, the request email; C1 across six methods (SF24) |
 | 11 Tie-break | none | no two hubs or depots share a count (asserted) |
 | 12 Maturity and censoring | the month closed six days before the extract | C1, nothing received after the extract |
 | 13 Order of operations | the same rows collapsed, then grouped | C1, the re-sent rows are the same rows (SF7) |
@@ -220,7 +220,7 @@ Executed word for word, TDS-4 2.1 to 2.3 make each hub's parcels the month's par
 scans those with no sort event; the one step the text leaves open is which hub sorted a parcel the platform holds no
 sort event for, and every route that identifies the hub that sorted it gives the golden (the unloadings are pure and
 threshold-free, asserted) while the plan, the morning's split, the complete cases and the excess each name the hub
-planned or an estimate, not the hub that sorted it; SF1 to SF24 close every term and convention; the interval is filed by its level and its model, and only its side of the tolerance is graded (SF24).
+planned or an estimate, not the hub that sorted it; SF1 to SF24 close every term and convention; the interval is filed by its level and its model in the request email, and only its side of the tolerance is graded (SF24).
 
 ## Oracles
 
@@ -295,9 +295,12 @@ the pre-advices, the accounts, the claims, the sorters' availability and the req
   the month); it names no unloading, door, trailer, overflow or plan; harmless.
 - Dates after the setting: the sort plan's Q4 rows run to 31 December, the plan's validity; harmless.
 
-- Prompt (Domains Fit rework, 2026-11-07): the second sentence files the deciding figure as each hub's rate over the
-  parcels it handled with a 90 per cent interval, each parcel an independent chance of a missed sort scan; it names
-  no unloading, trailer, overflow or plan, and "the parcels it handled" is TDS-4 2.1's own phrase; harmless.
+- Prompt and request (Domains Fit rework, 2026-11-07): the prompt asks for each hub's rate with its 90 per cent
+  interval read against the tolerance; the requester's email files the board's convention (each parcel the hub handled
+  an independent chance of a missed sort scan, read wholly above, across or wholly below); neither names an unloading,
+  trailer, overflow or plan, and "the parcels the hub handled" is TDS-4 2.1's own phrase; harmless. The first reading of
+  the reworded prompt (leak reader, 2026-11-07) found the interval's basis read as a dictated method in the prompt and
+  the workbook sentence read as a field list; the basis moved to the email and the sentence was rewritten as a request.
 
 ## Tried and rejected
 
@@ -406,5 +409,5 @@ Architecture 2 and earlier, carried from the agro-climatic note:
   censoring remains the analyst's, and the cut-short drifts alone, without the network re-run, still file 3.5.
 - An open interval on the rate (2026-11-07, the portal's Domains Fit return): a bootstrap over the month's mornings or
   unloadings puts Pruszkow's lower bound at 1.01 (90 per cent) and 0.97 (95), so its side of the tolerance moves with
-  the method and the seed; the prompt files the interval's model (each parcel an independent chance of a miss), under
+  the method and the seed; the request files the interval's model (each parcel an independent chance of a miss), under
   which every standard binomial interval keeps each hub on one side, and grades only that side.

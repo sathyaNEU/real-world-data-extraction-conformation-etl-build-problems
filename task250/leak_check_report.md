@@ -4,13 +4,13 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: record, parcel, pruszkow, strykow, sorted, unscanned, decisive, network, trailer, nights, mornings, nothing, reader, drifts, overflow, stratum, station, unloading, stations, delivery, sorter, depots, missing, excess, setting
+Stump terms swept: record, parcel, pruszkow, strykow, sorted, unscanned, decisive, network, trailer, nights, mornings, nothing, reader, drifts, overflow, stratum, station, unloading, stations, delivery, sorter, missing, excess, setting, domain
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `TDS-4_tracking_data_standard.pdf`: golden figure 1.00 appears: ...when its missed-scan rate for the month is above 1.00 per cent. A fired alert sends the scan audit (se...
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `TDS-4_tracking_data_standard.pdf`: 9 of 25 stump-paragraph terms appear (record, parcel, sorted, network, nights, mornings); read whether the document names the move
+- **REVIEW** `TDS-4_tracking_data_standard.pdf`: 8 of 25 stump-paragraph terms appear (record, parcel, sorted, network, nights, mornings); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `sort_plan_2026Q4.xlsx`: 12 ISO dates after 2026-11-06, e.g. 2026-12-31

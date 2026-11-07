@@ -127,7 +127,11 @@ audit nights have to go into the hub rosters now.
 Aurelia takes the depot lines to her monthly call with the shippers'
 integration teams on Wednesday.
 
-The workbook and the slide go to the operations board as usual.
+The workbook and the slide go to the operations board as usual. From this
+month the board wants every hub's rate with its 90 per cent interval, so it
+can see which verdicts a month's chance could tip: take each parcel the hub
+handled as an independent chance of a missed sort scan, and say whether the
+interval lies wholly above the tolerance, across it or wholly below it.
 
 Pozdrawiam,
 Krzysztof

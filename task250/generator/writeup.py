@@ -103,7 +103,7 @@ def submission(fig, ex):
     w("4. Charged each parcel without a sort scan to its unloading's hub, then counted each hub's parcels, missed sort "
       "scans and rate, and fired the alert above 1.00 per cent (s.2.3).")
     w("5. Put a 90 per cent interval on each hub's rate, its parcels handled taken as independent chances of a missed "
-      "sort scan (the Wilson score interval; the normal, Clopper-Pearson, Jeffreys and Agresti-Coull intervals place "
+      "sort scan as october_scorecard_request.eml asks (the Wilson score interval; the normal, Clopper-Pearson, Jeffreys and Agresti-Coull intervals place "
       "every hub on the same side of the tolerance), and read whether it lies wholly above the tolerance, across it or "
       "wholly below it.")
     w("6. Courier events sent twice (TDS-4 s.3): a later-received record of the same parcel, event, courier and handheld "

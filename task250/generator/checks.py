@@ -196,7 +196,11 @@ def run(target, w, fig, golden):
         ok(gap >= 0.05, "SF24 %s interval within 0.05 of the line (%.3f)" % (x["hub_code"], gap))
         ok(x["band"] == ("above" if x["fires"] else "below"), "SF24 %s band against its alert" % x["hub_code"])
     ptxt = open(os.path.join(os.path.dirname(target), "prompt.txt")).read()
-    ok("90 per cent interval" in ptxt and "independent chance" in ptxt, "SF24 the prompt files the interval's level and model")
+    mail = " ".join(open(F["request"], encoding="utf-8").read().split())
+    ok("90 per cent interval" in ptxt, "SF24 the prompt asks for the 90 per cent interval")
+    ok("90 per cent interval" in mail and "independent chance of a missed sort scan" in mail
+       and "wholly above the tolerance, across it or wholly below it" in mail,
+       "SF24 the request files the interval's level, model and reading")
     ok(sorted(x["hub_code"] for x in fig["hubs"] if x["rate"] > GD.TOLERANCE) == gold_set, "SF6 rounded rates")
     raw = d["depot"][(d["depot"]["scanned_at"].str[:7] == "2026-10")]
     ok(len(raw) > len(arr), "the re-sent batch ships")

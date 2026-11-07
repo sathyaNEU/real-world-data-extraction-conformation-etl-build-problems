@@ -1,10 +1,10 @@
 {
  "task": "task250",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "supply-chain-logistics",
  "objective": "data-quality-monitoring",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-07",
  "stump": "A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night, and ends on alerts at Sosnowiec and Pruszkow with Strykow under the line; Strykow sorted Pruszkow's overflow by hand on the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route charges to Pruszkow came off Strykow's trailers, and only the unloading each unscanned parcel came off at its delivery depot fires Strykow as well.",
  "architecture": 3,
@@ -14,8 +14,8 @@
   "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "REVIEW on target.zip 1b8dcbc7, every line ruled",
-  "reader": "reads 1 and 2: no leak; question 6 ruled analytical"
+  "leak_py": "REVIEW, no LEAK (2026-11-07, bd959e1c): TDS-4's 1.00 tolerance and population words, the plan's Q4 dates, each ruled in the note",
+  "reader": "2026-11-07 Sonnet reader on d5630ad1: no leak; the prompt's interval basis read as a dictated method and the workbook sentence as a field list (templating), both fixed; one re-read of the final pack owed to the main thread"
  },
  "duplicate_check": {
   "heart": "WARN (2026-10-31): repeat.decision and repeat.question_form only, after the redraw of the decisive generator (G17) and the requester (operations_director)",
@@ -24,9 +24,12 @@
   "surface_2026-11-07": "exit 0"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md and determinism_check_report_pass2.md (the courier-event window pinned in the prompt)"
+  "verdict": "DETERMINISTIC (2026-11-07, Sonnet thread on target.zip d5630ad1): every rate, the 300 unloadings, the intervals' sides under five methods and every depot count reproduced",
+  "disposition": "APPROVE, no repair; the residual fork on the hub of an unsorted parcel ruled settled by the unloading structure (SF11)",
+  "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no (borderline)",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "report": "task250/determinism_check_report.md",
+  "after_judge": "the interval's basis moved from the prompt into october_scorecard_request.eml and the workbook sentence rewritten as a request; meaning unchanged, freeze.py PASS"
  },
  "returned": [
   {
@@ -36,10 +39,11 @@
    "zip": "7dd4b6b4",
    "moves": "both extracts written with no pandas or Arrow schema metadata and no created_by in the footer (generator/parquetio.py), every column a string so no value moved; only the two parquet files moved, no figure moved. Domains Fit left for the author's call",
    "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)",
-   "domains_fit": "prompt reworded: the deciding figure is each hub's rate over the parcels it handled with a 90 per cent interval, each parcel an independent chance of a missed sort scan, graded as lying wholly above, across or wholly below the tolerance (SF24: Wald, Wilson, Clopper-Pearson, Jeffreys, Agresti-Coull and a parcel bootstrap agree, every bound at least 0.05 points from the line; the bounds themselves are not graded); TDS-4 exported by LibreOffice Writer; the call, the stump, the ladder and every existing figure unchanged (freeze.py: only the interval sides and the level 90 added)"
+   "domains_fit": "prompt reworded: the deciding figure is each hub's rate over the parcels it handled with a 90 per cent interval, each parcel an independent chance of a missed sort scan, graded as lying wholly above, across or wholly below the tolerance (SF24: Wald, Wilson, Clopper-Pearson, Jeffreys, Agresti-Coull and a parcel bootstrap agree, every bound at least 0.05 points from the line; the bounds themselves are not graded); TDS-4 exported by LibreOffice Writer; the call, the stump, the ladder and every existing figure unchanged (freeze.py: only the interval sides and the level 90 added)",
+   "reshipped": "bd959e1c"
   }
  ],
- "resume": "stage 4 of the Domains Fit rework: spawn the leak reader (scratchpad task250_leak_brief.md, leak copy leak-task250/) and the determinism judge thread (/tmp/determinism-check-task250-dfit/judge_brief.md) on Sonnet at medium; on clean reads rebuild with python3 task250/generator/make.py (target.zip d5630ad1) and commit RESHIPPED with target.zip and golden/",
+ "resume": null,
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -80,5 +84,5 @@
    "event": "PAUSED at stage 4 for the main thread: the leak reader and the determinism judge cannot be spawned from a fork"
   }
  ],
- "zip_sha256_16": "7dd4b6b4dd80fe08"
+ "zip_sha256_16": "bd959e1ca7171cbd"
 }
