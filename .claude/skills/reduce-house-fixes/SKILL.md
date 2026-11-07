@@ -35,6 +35,9 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
   An xlsx input's docProps/app.xml reads as Excel saves it: AppVersion an Office release ("16.0300") and the
   sheet names in TitlesOfParts. The portal fails openpyxl's AppVersion 3.1 (task118); the scrub script
   rewrites app.xml and leak.py sweep 10 refuses it.
+  A parquet input carries no writer: write it with `store_schema=False` and leave `created_by` out of the
+  footer, which the format allows; the portal fails "parquet-cpp-arrow version ..." (task306,
+  task306/generator/pack.py `_drop_created_by`).
   Timestamps: scrub every shipped file whose body states a date, goldens included.
 - **Check.** Sweep the pack and the deliverables (two generators): no writer name, no stamp outside the
   band. Wire OOXML, PDF and image branches even before a file of that kind ships.

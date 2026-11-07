@@ -638,6 +638,20 @@ def sweep_metadata(target, rep):
     import zipfile as _zf
     for root, _, files in os.walk(target):
         for fn in sorted(files):
+            if fn.lower().endswith(".parquet"):
+                # the footer's created_by names the writing library ("parquet-cpp-arrow version ..."); the portal
+                # fails it, and ARROW:schema in the key-value metadata says the same
+                try:
+                    import pyarrow.parquet as _pq
+                    md = _pq.ParquetFile(os.path.join(root, fn)).metadata
+                except Exception:
+                    continue
+                if md.created_by:
+                    rep.add("10 container metadata", "LEAK", fn,
+                            "parquet created_by names %r; leave it out of the footer" % md.created_by[:60])
+                if md.metadata and any(k.startswith(b"ARROW:") or k == b"pandas" for k in md.metadata):
+                    rep.add("10 container metadata", "LEAK", fn, "parquet key-value metadata carries the Arrow or pandas schema")
+                continue
             if fn.lower().endswith((".xlsx", ".docx", ".pptx")):
                 # Office writes AppVersion as a two-part release ("16.0300"); openpyxl's "3.1" is a known tell,
                 # and so is its two-line app.xml with no TitlesOfParts
