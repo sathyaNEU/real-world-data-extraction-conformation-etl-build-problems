@@ -11,7 +11,7 @@
   "shape": "18",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
+  "answer": "boundary main WM55081 (Ferndale to Kowhai Hills), 189.5 per 100,000 resident-days on 61 cases, against Kowhai Hills Reservoir at 10.6 on 62",
   "answer_source": "generator/figures.json call",
   "gap": [
     "time",
@@ -37,20 +37,21 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:exposure-traced-through-network-operations",
   "layer1": [
-    "the valve operations log keys valves by SCADA tag while the network model keys them by GIS asset number, joined through the valve register",
-    "SCADA operations stamped in UTC against work orders and notifications in New Zealand local time across the 26 September 2027 daylight-saving change",
-    "duplicate notifications for one person from the laboratory and the clinician, under two name spellings",
-    "properties in the rating database against residents in the census meshblock estimates",
-    "a supply-zone register reissued in August after two zones were renumbered"
+    "the valve operations log keys valves by field tag while the network model keys mains by GIS asset number, joined through the model's valve sheet",
+    "valve operations stamped with their UTC offset across the 26 September 2027 daylight-saving change, work orders in day-first local time, crew job times in UTC",
+    "one person's specimens under a dormant and a live NHI at the community laboratory, and the reference laboratory's typings reaching their specimens only through a free-text referrer reference or name and birth date",
+    "properties in the rating database against residents in the census meshblock table, rural-scheme and private supplies among them",
+    "a supply-zone register reissued in August after two zones were renumbered",
+    "website water quality reports lost to two CRM integration outages, some keyed again by hand days later"
   ],
   "stakeholder_role": "medical officer of health",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "valve_operations.parquet",
-    "rows": 0,
-    "entity": "one valve operation",
-    "grain": "valve x operation",
+    "file": "council/rating_connections_2027-10-18.parquet",
+    "rows": 33218,
+    "entity": "one rated property connection",
+    "grain": "property",
     "source": "synthetic"
   },
   "forum": "regulator_or_inspector",
@@ -66,9 +67,12 @@
       "Rhys Cook"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "outbreak_source.xlsx",
+    "incident_brief.docx"
+  ],
   "opening_move": "question-first",
-  "question_form": "where",
+  "question_form": "what",
   "driver": "The unit an event belongs to is set by a configuration that changes through raw switch operations on a network, so the published register of which source serves which area misattributes the events; the true source is the one whose output reached each event's area during that event's own exposure window, rebuilt by tracing the network through the switch log day by day.",
   "driver_concrete": "Each case zone's water during the case's incubation window came from whichever source the valve operations connected it to, so the supply-zone register points the outbreak at reservoir R4, which normally feeds the two worst zones, while the water that made people ill came through boundary main BM3 from another reservoir's network on the three wet days the zones were back-fed during a feed-main repair.",
   "stump": "A competent solver computes attack rates by supply zone, maps them through the supply-zone register and names reservoir R4 as the asset to take out of service, never tracing the worst zones' supply through the valve operations over each case's incubation window, which puts their exposure on boundary main BM3.",
@@ -82,6 +86,6 @@
       "driver": "The decisive quantity is which units' failures a remedy that reruns a unit's work on fresh capacity would have prevented, and because a heavy unit slows everything sharing its resource while it runs, only the resource's state outside the unit's own run tells a resource fault from the unit's own load."
     }
   ],
-  "notes": "Five go/no-go screens measured on the clean truth over 40 redraws before registration (generator/screens.py, scratch t214/w3_20.json and w3_40.json): golden = truth 40/40, lead min 3.80; every golden variant 20/20; first look and every careful reader wrong 20/20.",
+  "notes": "Five go/no-go screens measured on the clean truth over 40 redraws before registration (generator/screens.py, scratch t214/w3_20.json and w3_40.json): golden = truth 40/40, lead min 3.80; every golden variant 20/20; first look and every careful reader wrong 20/20. Stage 3 (2026-11-07): target files sit in council/, laboratories/ and public_health/ folders as the three organisations supplied them; generator checks 72 of 72, two byte-identical builds, figures_check 54 of 54, precut 61/0/0, leak.py REVIEW with no LEAK, surface 0 promoted (nearest 0.040), heart WARN on the three overuse lines and repeat.deliverables (answered in the design note); ceiling: cracker and full includer keep 0 of 23, pair 28.5 with one response on the call and one off, 45.0 with both on.",
   "registered": "2026-11-07T21:42:13Z"
 }

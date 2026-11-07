@@ -1,10 +1,10 @@
 {
   "task": "task214",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (client domain itself); a fictional New Zealand district's council water supply and the regional public health service, spring 2027 cryptosporidiosis outbreak",
   "objective": "anomaly-detection",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-11-07",
   "seed": "none (seed AD37 and the Larix world set aside 2026-11-07, DESIGN_NOTE ## Tried and rejected)",
   "stump": "A competent solver computes attack rates by supply zone, maps them through the supply-zone register and names reservoir R4 as the asset to take out of service, never tracing the worst zones' supply through the valve operations over each case's incubation window, which puts their exposure on boundary main BM3.",
@@ -17,16 +17,16 @@
   },
   "screens": "new world, clean truth, seeds 1 to 40 (generator/screens.py): golden BM3 = truth 40/40, lead min 3.80 (median about 5.7); golden variants (incubation weights, window opening) 20/20 each; first look wrong 40/40; careful readers (register, onset-day path, report-day path, dated event, nearest reservoir, cluster nearest, per-record cells, literal replay) wrong 40/40 each; literal WHAT wrong 40/40",
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-07"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW, no LEAK (2026-11-07, asof 2027-10-19): answer-word lines on the terms of reference, register and renewal plan, design-vocabulary lines on the register and terms of reference",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN on overuse.org_family, overuse.objective, overuse.gate_g and repeat.deliverables, no BLOCK (2026-11-07, tree merged with claude/jolly-hypatia-06c61h at 26d4f91)",
+    "nearest": "surface 0 promoted, nearest task213 at 0.040 (pct 17); nearest driver 0.07 (task121)"
   },
   "judge": {
     "verdict": "",
@@ -34,11 +34,23 @@
     "report": ""
   },
   "returned": [],
-  "resume": "Stage 2, design: write the default path (zone attack rates through the supply-zone register, the field's routine), stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder with the pricing numbers, closure table, literal reader, oracles, the asks and their devices (supplemental-stumping) and prompt.txt; then generator/checks.py asserting every screen on the shipped seed and a ceiling.py sharing no code with the generator; leave stage 2 only on precut.py exit 0.",
+  "resume": "Stage 4: run the leak reader (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t214/stage4/reader/BRIEF.md) and the determinism judge (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t214/stage4/judge/BRIEF.md) together, each in its own copy folder holding target.zip at sha256 3d239aab76a9954a; fix every finding in the generator in one pass, re-run the stage-3 gates (generator checks, two byte-identical builds, figures_check, precut, voice-check, leak.py --asof 2027-10-19, guard surface and heart after the sibling sync), re-judge only on FIX_NOW and re-read only if a document or the prompt changed; then ship: card current, ledger row, SHIPPED commit with target.zip and golden/ force-added.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "call": "Take boundary main WM55081 (Ferndale to Kowhai Hills) out of service before the Kowhai Hills feed main renewal: 189.5 per 100,000 resident-days against Kowhai Hills Reservoir at 10.6",
+  "cut": {
+    "target_zip_sha256": "3d239aab76a9954a016a7947e85e31e9b6954c68af72576cc125b51255679841",
+    "checks": "72 of 72",
+    "figures_check": "54 of 54",
+    "byte_identical_builds": 2,
+    "ceiling": "cracker 0 of 23, full includer 0 of 23, pair 28.5 one on and one off, 45.0 both on"
+  },
+  "stage4_briefs": {
+    "reader": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t214/stage4/reader/BRIEF.md",
+    "judge": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t214/stage4/judge/BRIEF.md"
+  }
 }
