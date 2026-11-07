@@ -33,7 +33,7 @@ def _esc(x):
     return str(x).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def _pdf(path, title, author, blocks, footer, created, modified):
+def _pdf(path, title, author, subject, blocks, footer, created, modified):
     st = _styles()
 
     def page(canvas, d):
@@ -44,7 +44,7 @@ def _pdf(path, title, author, blocks, footer, created, modified):
         canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Page %d" % d.page)
         canvas.restoreState()
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
-                            bottomMargin=18 * mm, title=title, author=author, creator=author, producer=author,
+                            bottomMargin=18 * mm, title=title, author=author, subject=subject, creator=author, producer=author,
                             invariant=1)
     story = []
     width = A4[0] - 40 * mm
@@ -100,7 +100,8 @@ def policy(path):
                    ["Implementation shortfall and the desk's executions", "Dealing (Sarah Ford, Head of Trading)"],
                    ["The paper and the recommendation", "Carole Shaw, Head of Systematic Equities"]]),
     ]
-    _pdf(path, "IC-07 Allocation of new capital", "Wealdmoor Investment Committee", blocks,
+    _pdf(path, "IC-07 Allocation of new capital", "Wealdmoor Investment Committee",
+         "Investment Committee policy IC-07, allocation of new capital", blocks,
          "Wealdmoor Investment Management  |  IC-07  |  Investment Committee policy",
          "D:20260409113000+01'00'", "D:20260414162000+01'00'")
 
@@ -143,7 +144,8 @@ def tca(path):
                    ["Participation", "Order value over the 20-session average daily traded value"],
                    ["Trade date", "The London date the order reached the desk"]]),
     ]
-    _pdf(path, "TCA standard, revision 4", "Wealdmoor Dealing", blocks,
+    _pdf(path, "TCA standard, revision 4", "Wealdmoor Dealing",
+         "Transaction cost analysis standard, revision 4", blocks,
          "Wealdmoor Investment Management  |  Dealing  |  TCA standard rev. 4",
          "D:20251208094500+00'00'", "D:20251219151000+00'00'")
 

@@ -1,6 +1,6 @@
 # leak check, task306
 
-**Verdict: REVIEW.** 13 files read, 20 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 13 files read, 20 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
@@ -17,11 +17,20 @@ Stump terms swept: orders, momentum, participation, average, candidate, executio
 - **REVIEW** `research_backtests_2027_candidates.xlsx`: names 4 of 7 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `trading_account_register.csv`: names 3 of 7 answer-set candidates; confirm it does not rank them on the decision question
 
-## 10 container metadata (INFO 1)
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
+## 10 container metadata (LEAK 4, REVIEW 2, INFO 1)
+- **LEAK** `ic_capital_allocation_policy_2026.pdf`: Producer names 'Wealdmoor Investment Committee', not the application that wrote the PDF
+- **LEAK** `ic_capital_allocation_policy_2026.pdf`: Creator names 'Wealdmoor Investment Committee', not the application that wrote the PDF
+- **LEAK** `tca_standard_rev4.pdf`: Producer names 'Wealdmoor Dealing', not the application that wrote the PDF
+- **LEAK** `tca_standard_rev4.pdf`: Creator names 'Wealdmoor Dealing', not the application that wrote the PDF
+- **REVIEW** `broker_commission_schedule_2026.xlsx`: docProps/app.xml has no TitlesOfParts, which Excel always writes
+- **REVIEW** `research_backtests_2027_candidates.xlsx`: docProps/app.xml has no TitlesOfParts, which Excel always writes
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 11 prompt gate (REVIEW 1)
-- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 37% of 196 prompts (cap 30%); reword at the role level, not the verb
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 36% of 196 prompts (cap 30%); reword at the role level, not the verb
 
 ## 2 author vocabulary (clean)
 
@@ -32,8 +41,6 @@ Stump terms swept: orders, momentum, participation, average, candidate, executio
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
 
 
 ## Solver's-eye read
