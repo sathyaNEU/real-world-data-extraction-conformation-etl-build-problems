@@ -12,10 +12,8 @@ Stump terms swept: process, furnace, burned, section, driver, billet, asserted, 
 ## 4 design-note vocabulary (REVIEW 1)
 - **REVIEW** `velden_scr2_supplier_carbon_requirement.pdf`: 10 of 25 stump-paragraph terms appear (process, burned, shared, invoices, energy, record); read whether the document names the move
 
-## 10 container metadata (INFO 3)
-- **INFO** `-`: audit reported no writer signature (4 lines)
-- **INFO** `-`: PDF names the library that wrote it: brackwell_gas_invoices_2026.pdf                      ReportLab, reportlab
-- **INFO** `-`: PDF names the library that wrote it: velden_scr2_supplier_carbon_requirement.pdf          ReportLab, reportlab
+## 10 container metadata (INFO 1)
+- **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 2 author vocabulary (clean)
 

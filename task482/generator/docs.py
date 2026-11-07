@@ -15,9 +15,11 @@ from reportlab.lib.units import mm
 from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 import params as P
+import officepdf as O
 import postprocess as PP
 
 reportlab.rl_config.invariant = 1
+CET = dt.timezone(dt.timedelta(hours=1))
 SS = getSampleStyleSheet()
 BODY = ParagraphStyle("b", parent=SS["Normal"], fontName="Helvetica", fontSize=9.2, leading=12.4, spaceAfter=5)
 H1 = ParagraphStyle("h1", parent=SS["Heading1"], fontName="Helvetica-Bold", fontSize=13.5, leading=17, spaceAfter=6)
@@ -41,18 +43,9 @@ def _table(rows, widths, right=()):
     return t
 
 
-def _pdf(path, title, author, story, footer, subject=""):
-    def page(canvas, doc):
-        canvas.saveState()
-        canvas.setFont("Helvetica", 7)
-        canvas.setFillColor(colors.HexColor("#555555"))
-        canvas.drawString(18 * mm, 10 * mm, footer)
-        canvas.drawRightString(A4[0] - 18 * mm, 10 * mm, "Page %d" % doc.page)
-        canvas.restoreState()
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=17 * mm,
-                            bottomMargin=17 * mm, title=title, author=author, subject=subject,
-                            creator="ReportLab PDF Library - www.reportlab.com")
-    doc.build(story, onFirstPage=page, onLaterPages=page)
+def _pdf(path, title, author, story, footer, subject, created, modified):
+    """The issuing office writes the document in Writer and exports it to PDF (officepdf)."""
+    O.build(path, story, title, author, subject, footer, created, modified)
 
 
 def _pdfdate(d, tz="+00'00'"):
@@ -96,9 +89,8 @@ def scr2_pdf(path):
                                  SMALL)]
     _pdf(path, "SCR-2 Product carbon intensity", "Velden Automobil AG", s, "Velden SCR-2 Revision 2  |  public to "
          "suppliers",
-         subject="Supplier carbon requirement SCR-2, Revision 2")
-    PP.normalize_pdf(path, _pdfdate(dt.datetime(2025, 11, 20, 9, 12, 0), "+01'00'"),
-                     _pdfdate(dt.datetime(2025, 12, 8, 14, 3, 0), "+01'00'"))
+         "Supplier carbon requirement SCR-2, Revision 2",
+         dt.datetime(2025, 11, 20, 9, 12, tzinfo=CET), dt.datetime(2025, 12, 8, 14, 3, tzinfo=CET))
 
 
 def invoices_pdf(path, invoices):
@@ -130,8 +122,8 @@ def invoices_pdf(path, invoices):
         if inv.get("note"):
             s += [Spacer(1, 3), Paragraph(inv["note"], SMALL)]
     _pdf(path, "Gas invoices 2026", "Northgate Gas Supply Ltd", s, "Northgate Gas Supply Ltd  |  MPRN 8804419362",
-         subject="VAT invoices, Brackwell Alloys Ltd, MPRN 8804419362, 2026")
-    PP.normalize_pdf(path, _pdfdate(dt.datetime(2027, 1, 12, 10, 40, 0)), _pdfdate(dt.datetime(2027, 1, 12, 10, 40, 0)))
+         "VAT invoices, Brackwell Alloys Ltd, MPRN 8804419362, 2026",
+         dt.datetime(2027, 1, 12, 10, 40, tzinfo=dt.timezone.utc), dt.datetime(2027, 1, 12, 10, 40, tzinfo=dt.timezone.utc))
 
 
 def email(path, files):

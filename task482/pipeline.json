@@ -39,9 +39,15 @@
    "portal": "inputs: both PDFs' Subject the library placeholder (unspecified) and their Producer and Creator the issuing companies; domains fit: the task read as lookups, a threshold comparison and totals",
    "repair": "both PDFs keep ReportLab in Producer and Creator and its header comment, with a real Subject and the company as Author; no data file, golden or graded figure changed. The domains-fit finding is with the author",
    "commit": "RESHIPPED (task482), 2026-11-07"
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "inputs: both PDFs exposed ReportLab as their generator (Producer, Creator and the header comment); the reviewer asked for PDFs from a word processor",
+   "repair": "both PDFs are now written as Word documents and exported by LibreOffice Writer (Producer LibreOffice 24.2, Creator Writer, no library header), Subject real, Author the issuing company; officepdf.py fixes the creation date, checksum and file ID so builds stay byte-identical; no data file, golden or graded figure changed",
+   "commit": "RESHIPPED (task482), LibreOffice-exported PDFs, 2026-11-07"
   }
  ],
- "resume": "Reshipped 2026-11-07 with the PDF metadata made honest (target.zip 7612ed47, figures unchanged). The portal's domains-fit finding waits on the author's call.",
+ "resume": "Reshipped 2026-11-07 with both PDFs exported by LibreOffice Writer (target.zip b4b2c904, figures unchanged). The portal's domains-fit finding waits on the author's call.",
  "approved": null,
  "delivered": "2026-10-31",
  "portal": null,
@@ -150,6 +156,10 @@
   {
    "date": "2026-11-07",
    "event": "RESHIPPED: both PDFs' metadata made honest per the portal's input feedback"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "RESHIPPED: both PDFs exported by LibreOffice Writer instead of written by ReportLab, per the portal's provenance feedback"
   }
  ]
 }

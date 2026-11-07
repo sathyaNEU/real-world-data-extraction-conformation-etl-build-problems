@@ -289,7 +289,7 @@ def main():
     stamps = {}
     for n in names:
         if n.endswith(".pdf"):
-            m_ = re.findall(rb"/CreationDate \((D:[^)]*)\)", open(os.path.join(T, n), "rb").read())
+            m_ = re.findall(rb"/CreationDate\s*\((D:[^)]*)\)", open(os.path.join(T, n), "rb").read())
             stamps[n] = m_[0] if m_ else b""
         if n.endswith(".xlsx"):
             core = zipfile.ZipFile(os.path.join(T, n)).read("docProps/core.xml")
