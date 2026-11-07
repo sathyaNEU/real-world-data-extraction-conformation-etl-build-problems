@@ -229,6 +229,10 @@ def main():
         if fn.endswith(".xlsx"):
             app = zipfile.ZipFile(path).read("docProps/app.xml").decode()
             check("H %s app.xml as Excel saves it" % fn, "TitlesOfParts" in app and "<AppVersion>16.0300<" in app)
+            core = zipfile.ZipFile(path).read("docProps/core.xml").decode()
+            who = re.findall(r"<(?:dc:creator|cp:lastModifiedBy)\b[^>]*>([^<]*)<", core)
+            check("H %s names the issuing body, not a person, as creator and last saver" % fn,
+                  len(who) == 2 and all(P.ORG in w or P.HOSPITAL in w for w in who), "%s" % who)
         if fn.endswith(".xlsx"):
             z = zipfile.ZipFile(path)
             core = z.read("docProps/core.xml").decode()

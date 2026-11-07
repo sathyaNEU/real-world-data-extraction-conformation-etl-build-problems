@@ -149,11 +149,11 @@
       }
     }
   ],
-  "notes": "role_family operations_director: the Director of Pharmacy configures the IV workflow system's products for its April 2027 cutover; calibration none: the quarantine sorts and the one product already weighed dose by dose are records, not a calibration organ; context_artifact register: the unit's gravimetric check register is the file the pharmacy works from.",
+  "notes": "role_family operations_director: the Director of Pharmacy configures the IV workflow system's products for its April 2027 cutover; calibration none: the quarantine sorts and the one product already weighed dose by dose are records, not a calibration organ; context_artifact register: the unit's gravimetric check register is the file the pharmacy works from. Domains Fit repair 2026-11-07: the call sentence kept; the second sentence asks each product to be judged on its estimated 2026 rate with its 90 per cent interval, the limit's side graded; no axis field changed (the heart bans that fire on 2026-11-07, ban.artifact against task474 v7 and ban.org_family against task181 v6, come from the window moving as other builds were marked spent, and the card is not relabelled for them).",
   "architecture_spent": null,
   "shell": {
     "question form": "which",
-    "second-sentence opener": "make",
+    "second-sentence opener": "judge",
     "rounding opener": "doses",
     "deliverable set": "csv+pdf"
   },

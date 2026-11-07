@@ -224,7 +224,7 @@ def write_checks(path):
         body = [[x["local"].date().isoformat(), x["local"].strftime("%H:%M"), x["batch"], x["name"], x["dose"], x["wt"],
                  x["result"], x["by"]] for x in rows if lo <= x["local"].date() <= hi]
         sheets.append(("Q%d 2026" % (q + 1), [head] + body, [1]))
-    _xlsx(path, sheets, P.PEOPLE["quality"], dt.datetime(2025, 12, 19, 14, 2, 11),
+    _xlsx(path, sheets, "%s, %s" % (P.HOSPITAL, P.UNIT), dt.datetime(2025, 12, 19, 14, 2, 11),
           dt.datetime(2027, 1, 15, 16, 48, 37))
     return len(rows)
 
@@ -263,7 +263,7 @@ def write_quarantine(path):
             "Note"]
     body = [[x["no"], x["opened"].strftime("%Y-%m-%d %H:%M"), x["batch"], x["quar"], x["weighed"], x["rej"],
              "ES" if x["recount"] else "JB", x["note"]] for x in rows]
-    _xlsx(path, [("Sorts 2026", [head] + body, [1])], P.PEOPLE["quality"], dt.datetime(2024, 3, 4, 9, 15, 40),
+    _xlsx(path, [("Sorts 2026", [head] + body, [1])], "%s, %s" % (P.HOSPITAL, P.UNIT), dt.datetime(2024, 3, 4, 9, 15, 40),
           dt.datetime(2027, 1, 14, 11, 27, 5), widths=(15, 17, 12, 17, 14, 15, 10, 50))
     return len(body)
 
@@ -276,7 +276,7 @@ def write_master(path):
         cont = "bag" if "bag" in p["name"] else "syringe"
         body.append([p["code"], p["name"], cont, p["vol"], p["tol"], p["sg"], p["tare"], p["station"],
                      "yes" if p.get("verified") else "no"])
-    _xlsx(path, [("Products", [head] + body, [1])], P.PEOPLE["lead_tech"], dt.datetime(2023, 9, 11, 10, 4, 52),
+    _xlsx(path, [("Products", [head] + body, [1])], "%s Pharmacy Services" % P.ORG, dt.datetime(2023, 9, 11, 10, 4, 52),
           dt.datetime(2026, 11, 30, 15, 39, 18), widths=(11, 44, 10, 12, 12, 10, 10, 9, 12))
 
 

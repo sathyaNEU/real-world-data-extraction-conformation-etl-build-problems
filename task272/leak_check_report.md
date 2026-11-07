@@ -7,8 +7,8 @@ LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's sol
 Stump terms swept: weighed, register, tolerance, golden, family, weights, litres, reader, architecture, spread, hospital, calendar, pumped, capability, reflex, pooled, volume, percent, points, outside, checks, application, readers, determinations, distribution
 
 ## 3 answer figures in the pack (REVIEW 3)
-- **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: golden figure 3.1 appears: ...l time. 3. Gravimetric verification of every dose 3.1 At each configuration of the pharmacy's IV workfl...
 - **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: golden figure 100 appears: ...its out-of-tolerance doses made in that year per 100,000 of its doses made in that year. The year is...
+- **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: golden figure 3.1 appears: ...l time. 3. Gravimetric verification of every dose 3.1 At each configuration of the pharmacy's IV workfl...
 - **REVIEW** `SC-SOP-12_batch_compounding_procedure.pdf`: golden figure 3.1 appears: ...s are in the compounded product master. 3. Set-up 3.1 Install the set, prime it with the product's sour...
 
 ## 4 design-note vocabulary (REVIEW 2)
@@ -22,7 +22,7 @@ Stump terms swept: weighed, register, tolerance, golden, family, weights, litres
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 11 prompt gate (REVIEW 1)
-- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 36% of 196 prompts (cap 30%); reword at the role level, not the verb
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 37% of 196 prompts (cap 30%); reword at the role level, not the verb
 
 ## 1 file names (clean)
 
