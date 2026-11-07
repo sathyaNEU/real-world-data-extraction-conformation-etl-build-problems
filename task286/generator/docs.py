@@ -105,9 +105,16 @@ def _styles(font):
 
 
 def _table(data, widths, font, size=8.5, head=True, extra=()):
-    from reportlab.platypus import Table, TableStyle
+    """a ruled table whose every cell is a wrapped paragraph, so no text runs past its cell or the margin."""
+    from reportlab.platypus import Table, TableStyle, Paragraph
     from reportlab.lib import colors
-    t = Table(data, colWidths=widths, repeatRows=1 if head else 0)
+    from reportlab.lib.styles import ParagraphStyle
+    from xml.sax.saxutils import escape
+    cell = ParagraphStyle("cell", fontName=font, fontSize=size, leading=round(size * 1.22, 2))
+    cell_b = ParagraphStyle("cellb", parent=cell, fontName=font + "-Bold")
+    wrapped = [[Paragraph(escape(str(v)), cell_b if (head and i == 0) else cell) for v in row]
+               for i, row in enumerate(data)]
+    t = Table(wrapped, colWidths=widths, repeatRows=1 if head else 0)
     st = [("FONT", (0, 0), (-1, -1), font, size), ("VALIGN", (0, 0), (-1, -1), "TOP"),
           ("GRID", (0, 0), (-1, -1), 0.4, colors.Color(0.6, 0.6, 0.6)),
           ("LEFTPADDING", (0, 0), (-1, -1), 4), ("RIGHTPADDING", (0, 0), (-1, -1), 4)]
@@ -434,6 +441,34 @@ def write_hna(path, oas):
     _pdf(path, "Teversby and Swanholt Housing Needs Assessment 2024 summary", "Tidemark Planning", s,
          _stamp(date(2024, 11, 28), 16, 52, 8), "Tidemark Planning | Teversby and Swanholt HNA 2024 | Summary "
          "report", "TP-2391-HNA-SUM-F", f)
+
+
+def layout_faults(path, right_margin_pt=20 * 72 / 25.4, eps=0.6):
+    """characters that cross a vertical table rule or run past the right margin, page by page (pdfplumber reads
+    the drawn rules and each glyph's box)."""
+    import pdfplumber
+    faults = []
+    with pdfplumber.open(path) as pdf:
+        for pn, page in enumerate(pdf.pages, start=1):
+            right = float(page.width) - right_margin_pt + eps
+            rules = []
+            for ln in page.lines:
+                if abs(ln["x0"] - ln["x1"]) < 0.5:
+                    rules.append((ln["x0"], min(ln["top"], ln["bottom"]), max(ln["top"], ln["bottom"])))
+            for rc in page.rects:
+                for x in (rc["x0"], rc["x1"]):
+                    rules.append((x, rc["top"], rc["bottom"]))
+            for ch in page.chars:
+                if not ch["text"].strip():
+                    continue
+                if ch["x1"] > right:
+                    faults.append((pn, ch["text"], round(ch["x0"], 1), "past the right margin"))
+                    continue
+                for x, top, bottom in rules:
+                    if ch["x0"] < x - eps and ch["x1"] > x + eps and ch["bottom"] > top + eps and ch["top"] < bottom - eps:
+                        faults.append((pn, ch["text"], round(ch["x0"], 1), "across a table rule"))
+                        break
+    return faults
 
 
 def write_all(target, homes, oas, f_tor, f_dsa, f_ctb, f_hna):

@@ -316,6 +316,17 @@ check("RS4 the busiest week of any home is plausible (under 35,000 litres)", mx_
 check("RS5 steady flows are those of running cisterns and supply pipes (110 to 950 litres a day)",
       all(110 <= h.leak <= 950 for h in homes if h.leak > 0))
 
+import docs as D
+import pdfplumber
+for pdf_name in sorted(f for f in os.listdir(TARGET) if f.endswith(".pdf")):
+    path = os.path.join(TARGET, pdf_name)
+    with pdfplumber.open(path) as pdf:
+        n_chars = sum(len(pg.chars) for pg in pdf.pages)
+        n_rules = sum(len(pg.lines) + len(pg.rects) for pg in pdf.pages)
+    faults = D.layout_faults(path)
+    check("RS6 %s: no character crosses a table rule or the right margin (%d glyphs, %d rules read)" % (
+        pdf_name, n_chars, n_rules), n_chars > 500 and n_rules > 0 and not faults, str(faults[:4]))
+
 # --------------------------------------------------------------------------------------------- input gates
 files = sorted(os.listdir(TARGET))
 fmts = {os.path.splitext(f)[1] for f in files}

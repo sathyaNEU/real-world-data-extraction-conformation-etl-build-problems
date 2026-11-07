@@ -113,7 +113,7 @@ def write_workbook(path, figs):
         ws.cell(row=i, column=2, value=v)
     ws.column_dimensions["A"].width = 52
     ws.column_dimensions["B"].width = 54
-    ws["A11"] = ("Terms of reference 3.1 to 3.3: the pilot goes to the shortlisted area with the most homes nobody "
+    ws["A11"] = ("Terms of reference 4.1 to 4.3: the pilot goes to the shortlisted area with the most homes nobody "
                  "lived in, stayed at or used on any day of at least 26 of the 52 weeks.")
     ws["A11"].alignment = Alignment(wrap_text=True, vertical="top")
     ws.merge_cells("A11:B12")
@@ -166,10 +166,11 @@ def write_workbook(path, figs):
         "3. Area: by the water company's UPRN match to the gazetteer; properties the company left unmatched placed "
         "by postcode (every postcode in the extract sits in one community area).",
         "4. A week of use: a week in which the home's daily totals rise above that home's own steady level. Some "
-        "homes register the same litres every day whether or not anyone is there (a cistern or supply pipe running "
-        "on); that steady flow is not use. A day with anyone in the home draws at least %d litres more than its "
-        "quietest day in the same week; a week with nobody in varies by no more than a few litres. The count is "
-        "the same for any margin between about 20 and 70 litres." % figs["use_margin_l"],
+        "homes register near-identical litres every day while nobody is there (a cistern or supply pipe running "
+        "on); that steady flow is not use. Every week with anyone in the home varies by 80 litres or more between "
+        "its busiest and quietest day; a week with nobody in varies by 30 litres or less. A week is read as used "
+        "when its busiest day is more than %d litres above its quietest; the count is the same for any margin "
+        "between 30 and 75 litres." % figs["use_margin_l"],
         "5. Council tax column: dwellings unoccupied and substantially unfurnished for more than six months on "
         "27 September 2026 and not exempt, the Council Taxbase return's definition, each dwelling's empty period "
         "followed across changes of owner and, in Teversby, across the May 2026 move to the new revenues system.",

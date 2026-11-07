@@ -1,31 +1,45 @@
 {
  "task": "task286",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "general-statistics-data-science/missing-data-censoring-measurement-error",
  "objective": "descriptive-distribution",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-07",
  "seed": "DA36 (analytical_tasks/03_descriptive_distribution/DA36_moderator-slot-crosslist-routing-ledger.md): the objective kept, the world, decision and quantity moved (moderation load is a count of logged actions decided by a routing or credit rule or by category membership)",
  "call": "Run the 2027 Homes in Use pilot in Orrimouth: 203 homes nobody used for at least 26 of the 52 weeks from 29 September 2025 to 27 September 2026, 44 more than Ellingsea (159).",
  "stump": "A competent analyst counts each home's void weeks from the daily meter totals (no water, or under 300 litres in the week) and names Ellingsea with 161 homes, whose empty homes are mostly sound-plumbed flats; the step that lands it there is reading a leak's steady daily flow as use, which keeps 119 of Orrimouth's 203 unused homes out of its count and leaves Orrimouth fifth at 85.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "card": ".claude/skills/fingerprint/cards/task286.json",
- "precut": {"exit": 0, "date": "2026-11-07"},
- "leak": {"leak_py": "REVIEW (no LEAK) on the hand-off cut, --asof 2026-10-19; every REVIEW answered in the note's Gate answers", "reader": ""},
- "duplicate_check": {"heart": "WARN 2026-11-07 (people.first, overuse.org_family, repeat.gate_g; older same-puzzle and same-driver notes differentiated on the card)", "surface": "no pair promoted; personas in the pack all drawn", "nearest": "0.05 task476 v5, task310"},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-11-07"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK) on the ship cut, --asof 2026-10-19; every REVIEW answered in the note's Gate answers",
+  "reader": "one read on the hand-off cut 216a2882, no LEAK, question 6 an analytical choice; its realism tell (page 2 table cells of the terms of reference) fixed; no document's words changed apart from the clipped word now shown, so no second read"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-11-07 on the ship cut (people.first, overuse.org_family, repeat.gate_g; older same-puzzle and same-driver notes differentiated on the card)",
+  "surface": "two pairs promoted on card labels only (task236 same-driver, task260 same-puzzle; surface 0.084), both differentiated on the card; personas in the pack all drawn",
+  "nearest": "0.05 task476 v5, task310"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE on the hand-off cut 216a2882; the judge's two golden text corrections, a third in the same workbook note and the PDF cell wrapping done in the ship pass, no graded figure moved, so no re-judge",
+  "report": "determinism_check_report.md"
+ },
  "returned": [],
- "resume": "Stage 4: the orchestrator runs the leak reader and the determinism judge on target.zip sha256 216a2882290dc4781ae8fc2a88b7a6ea9ccfdfa52a53f9dea16eacbfafeb058e (13 files). Fix every finding in the generator in one pass, then rebuild and re-gate with: cd task286/generator && python3 build.py && python3 checks.py && python3 verify.py && python3 ceiling.py; then precut.py task286, figures_check.py task286, leak.py task286 --asof 2026-10-19, guard.py heart task286 and guard.py surface task286, and confirm a second build is byte-identical before shipping.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-07",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "gates": {
-  "checks": "64 assertions, 0 failed",
+  "checks": "68 assertions, 0 failed",
   "verify": "20 checks, 0 failed, from target.zip alone",
   "rebuilds": "two byte-identical (target.zip, goldens, figures.json, metadata.json)",
   "figures_check": "64 of 64",
@@ -33,9 +47,10 @@
   "voice_check": "PASS (WARN attributed opinion, WARN png+xlsx quota; answered)",
   "ceiling": "pair 42.2, mirror leakage 25.0 per cent",
   "producer_metadata": "clean on target/ and golden/",
+  "layout": "no glyph crosses a table rule or the right margin in any PDF (RS6)",
   "input_gates": "13 files, 4 formats, 2,286,365-row parquet, 3 distractors declared (one wrong-basis)",
   "heart": "WARN",
-  "surface": "no pair promoted"
+  "surface": "two pairs promoted on card labels (task236, task260), differentiated on the card"
  },
- "target_zip_sha256": "216a2882290dc4781ae8fc2a88b7a6ea9ccfdfa52a53f9dea16eacbfafeb058e"
+ "target_zip_sha256": "cc0d1498d2895a54c92702e87c57368e1e932437e9741a61d4a21acd33c5df25"
 }

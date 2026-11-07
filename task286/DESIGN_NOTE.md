@@ -322,13 +322,62 @@ shells, and deleting every council tax, rating list and census row leaves the ca
   running cistern; harmless. Sweep 11 repeats the prompt gate's two WARNs, answered under `## Draw`.
 - **`guard.py heart`: WARN** (people.first, overuse.org_family, repeat.gate_g, answered under `## Draw`; the older
   same-puzzle and same-driver notes differentiated on the card); nearest text 0.05 (task476 v5, task310).
-  **`guard.py surface`:** no pair promoted for task286; the personas found in the cut pack are Melissa Robson, Toby
-  Hunt and Tracy Hawkins, all drawn.
-- **Open for the reader and the judge.** Whether the pack makes the steady-flow reading the literal one for a
-  reader who has never seen it (the literal-reader paragraph argues it does: no household's use repeats to within
-  a few litres all year, and the margin corridor is 30 to 75 litres); whether ask 1's Teversby stitch (Legacy
-  Account, then the dwelling's earlier archive accounts by valuation list reference) is forced by the files as
-  shipped; whether the 2021 census table reads as a distractor rather than a rung the prompt invites.
+  **`guard.py surface`:** two pairs promoted for adjudication, both on the cards' structural labels with no text
+  overlap (surface 0.084, corpus percentiles 72 and 73): task236 on the same-driver signature (population, G16,
+  `decomposition_attribution`) and task260 on the same-puzzle signature (population, G16, `pick_one_of_n`). Both are
+  the older-build NOTE lines `guard.py check` already showed, and both are differentiated on the card: task236
+  reads a surveillance source's capture against an independent fixed-protocol sample, task260 widens an interval by
+  resampling raters and items, and here a meter's steady non-use flow is split from use inside each home's own
+  daily series. The hand-off record said no pair was promoted; that came from a truncated read of the screen's
+  output and is corrected here. The personas found in the cut pack are Melissa Robson, Toby Hunt and Tracy
+  Hawkins, all drawn.
+- **Open for the reader and the judge (hand-off).** Whether the pack makes the steady-flow reading the literal one
+  for a reader who has never seen it; whether ask 1's Teversby stitch is forced by the files as shipped; whether
+  the 2021 census table reads as a distractor rather than a rung the prompt invites.
+- **Stage 4, leak reader (hand-off cut 216a2882):** no LEAK. Question 1 found no decisive-step sentence (the closest
+  is ToR 4.3, which fixes the unit and not how use shows in the meter); question 2 no ranking file on the prompt's
+  question (the assessment ranks a different quantity); question 3 no helper file; question 5 quoted ToR 4.1 to 4.3,
+  whose literal result is the golden's population, window, unit and criterion; question 6 an analytical choice.
+  Its one realism tell, the terms of reference's page 2 table cells running past their rules and the margin, is
+  fixed (below).
+- **Stage 4, determinism judge (hand-off cut 216a2882):** DETERMINISTIC, APPROVE; it kept the order and its own
+  derivation matched every graded figure; Gate G reconciles with the card; Gate H passes on domain, layers and an
+  analytical decisive step; Gate F good. Its Gate B note on the week-of-use reading needs no closure and is carried
+  for the portal: any sentence naming a leak, a steady flow, a variation test or a margin would file what the
+  decisive step recognises (the fork-is-the-stump case), so none is added and ToR 4.3 stays as filed. If a portal
+  reader calls a volume reading defensible, the evidence is the ladder table, `checks.py` C1 to C7 and SF11 and the
+  judge's ledger (no weekly range between 30 and 60 litres; flat-flow detectors of run length 3 to 7 all name
+  Orrimouth).
+- **Ship pass (one generator pass, no graded figure moved, figures.json byte-identical):** every table cell in
+  every PDF is now a wrapped paragraph and `checks.py` RS6 asserts, per document and page, that no glyph crosses a
+  drawn table rule or the right margin (the check finds 28 faults on the hand-off terms of reference and 0 on every
+  shipped PDF); the golden workbook cites terms of reference 4.1 to 4.3 and states the asserted 30 to 75 litre
+  corridor. The documents' words were compared old against new with pdftotext, whitespace normalised: the only
+  difference is the risks table's clipped "review." now showing in full; the data sharing agreement, the Taxbase
+  returns and the assessment are word for word unchanged, so the leak reader does not read again and the APPROVE
+  stands.
+
+## Pre-ship check
+
+- **The 10/10 rules against the built pack.** Rule 1: the call turns on each home's weeks of use measured through
+  the meter, the task type's own object (Gate H domain pass). Rule 2: Layer 1 is the councils', the water
+  company's and the county's own mess, each item neutral and asserted (R2, SF7 to SF9); Layer 2 decides (R3a: every
+  easy route on the clean truth names another area; R3b: the decisive step alone names Orrimouth). Rule 3: the
+  decisive step is analytical (the reader's question 6 and the judge's Gate H agree), no plant (R3c), no semantic
+  or rule-application decider (`## Three rules`).
+- **Gates on the final cut (target.zip cc0d1498d2895a54c92702e87c57368e1e932437e9741a61d4a21acd33c5df25):**
+  `checks.py` 68 assertions, 0 failed (RS6 added); `verify.py` 20 checks, 0 failed from target.zip; two
+  consecutive builds byte-identical; `figures_check.py` 64 of 64; `precut.py` exit 0; `voice-check.py` PASS with
+  the two WARNs answered under `## Draw` (the ask's own standard read as an attributed opinion; png and xlsx at
+  22 per cent of the corpus against a 20 per cent quota, a workbook and one chart being what an evidence lead sends
+  a minister's office); `leak.py --asof 2026-10-19` REVIEW, no LEAK, the four sweep-4 lines and the two sweep-11
+  lines answered above; producer-metadata audit clean on target/ and golden/; `ceiling.py` pair 42.2, mirror 25.0
+  per cent; `guard.py heart` WARN (answered); `guard.py surface` two pairs promoted on card labels only (task236,
+  task260), both differentiated on the card. The golden workbook's week-of-use note now states the asserted bounds
+  (a week with anyone in varies by 80 litres or more, an empty week by 30 or less), replacing a looser sentence;
+  no figure moved.
+- **Card and ledger.** The card carries the answer, the spine's 2,286,365 rows, the deliverables and the current
+  stump; the ledger row is written at ship as delivered 11-07, pending review.
 
 ## Tried and rejected
 
