@@ -20,6 +20,46 @@ def _excel_app(sheets):
             b"<AppVersion>16.0300</AppVersion></Properties>")
 
 
+CELL = re.compile(rb'<c ([^>]*?)t="inlineStr"><is><t(?: [^>]*)?>(.*?)</t></is></c>', re.S)
+
+
+def _shared_strings(items):
+    """Excel keeps cell text in xl/sharedStrings.xml; move each inline string there, in order of first use."""
+    sst, index, total = [], {}, [0]
+
+    def sub(m):
+        txt = m.group(2)
+        if txt not in index:
+            index[txt] = len(sst)
+            sst.append(txt)
+        total[0] += 1
+        return b'<c ' + m.group(1) + b't="s"><v>' + str(index[txt]).encode() + b'</v></c>'
+    out = []
+    for n, d in items:
+        if n.startswith("xl/worksheets/") and n.endswith(".xml"):
+            d = CELL.sub(sub, d)
+        out.append((n, d))
+    body = b"".join(b'<si><t' + (b' xml:space="preserve"' if t[:1] == b" " or t[-1:] == b" " else b"") + b'>' + t +
+                    b'</t></si>' for t in sst)
+    xml = (b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<sst xmlns="http://schemas.openxmlformats.org/'
+           b'spreadsheetml/2006/main" count="' + str(total[0]).encode() + b'" uniqueCount="' + str(len(sst)).encode() +
+           b'">' + body + b'</sst>')
+    res = []
+    for n, d in out:
+        if n == "[Content_Types].xml":
+            d = d.replace(b"</Types>", b'<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.'
+                          b'openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/></Types>')
+        if n == "xl/_rels/workbook.xml.rels":
+            d = d.replace(b"</Relationships>", b'<Relationship Type="http://schemas.openxmlformats.org/officeDocument/'
+                          b'2006/relationships/sharedStrings" Target="sharedStrings.xml" Id="rId99"/></Relationships>')
+        res.append((n, d))
+        if n == "xl/styles.xml":
+            res.append(("xl/sharedStrings.xml", xml))
+    if not any(n == "xl/sharedStrings.xml" for n, _ in res):
+        res.append(("xl/sharedStrings.xml", xml))
+    return res
+
+
 def normalize(path, created, modified):
     """created, modified: naive datetimes for the core properties (written as UTC, as Office writes them)."""
     blob = normalize_bytes(open(path, "rb").read(), created, modified)
@@ -32,6 +72,10 @@ def normalize_bytes(blob, created, modified):
     src.close()
     items = [(n, normalize_bytes(d, created, modified) if n.endswith(".xlsx") else d) for n, d in items]
     names = dict(items)
+    if "xl/workbook.xml" in names and "xl/sharedStrings.xml" not in names and any(
+            b't="inlineStr"' in d for n, d in items if n.startswith("xl/worksheets/")):
+        items = _shared_strings(items)
+        names = dict(items)
     if "xl/workbook.xml" in names and "docProps/app.xml" in names:
         sheets = re.findall(rb'<sheet [^>]*name="([^"]+)"', names["xl/workbook.xml"])
         items = [(n, _excel_app(sheets) if n == "docProps/app.xml" else d) for n, d in items]

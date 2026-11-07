@@ -15,8 +15,8 @@
   "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK, on target.zip bc14740a (2026-11-07, --asof 2026-01-16): sweep 3 figures (a section number, the plant rating, stage-storage rows, TM-7 listing the alternatives), sweep 4 the documents' own nouns",
-  "reader": "round 1 (Sonnet, medium) on b8c8ebc1: no leak, Q6 analytical; realism notes on the notices, work orders and field log fixed in the generator; the prompt changed (months on local Eastern time), so one re-read on the final pack is due from the main thread"
+  "leak_py": "REVIEW, no LEAK, on target.zip 33564672 (2026-11-07, --asof 2026-01-16): sweep 3 figures (a section number, the plant rating, stage-storage rows, TM-7 listing the alternatives), sweep 4 the documents' own nouns",
+  "reader": "round 1 (Sonnet) on b8c8ebc1: no leak, Q6 analytical; final-pack re-read (Sonnet) on bc14740a: no leak, Q6 analytical, three realism notes fixed in the generator on 33564672 (no prompt or document text changed, so no further read owed)"
  },
  "duplicate_check": {
   "heart": "WARN 2026-11-07 (repeat.question_form what against task456; NOTEs differentiated)",
@@ -73,6 +73,14 @@
    "repair": "design",
    "disposition": "re-root: the decisive step (a carried gain conditioned on a covariate each unit's record prints) is the strong solver's reflex and the asks were executable, so the world is spent (one architecture per world); architecture 2 drawn in a new world, dataset and shell",
    "commit": ""
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "none: the final-pack leak re-read's realism notes",
+   "repair": "realism",
+   "moves": "Outfall 014's notices with the detector's own minutes and every outfall its own action wording; the FIT-600 leak-by reports in each operator's words; the CMMS with the authority's other pump stations, regulators, screens, generators and meters; the field log saved with shared strings and a wider pool of notes",
+   "freeze": "rubric PASS, no graded figure moved (figures.json and submission.md byte-identical)",
+   "commit": ""
   }
  ],
  "resume": "",
@@ -91,7 +99,7 @@
   "figures_check": "PASS (85)",
   "voice_check": "PASS",
   "ceiling": "pair 39.9, mirror leakage 20.8, worst single crack 46.1 (generator/ceiling.py)",
-  "zip": "bc14740addeeb2ad4a615e6883f3677afb9e6dcfa283f54c36850c1ab78e7991",
+  "zip": "335646722e258718311dfd1d0bb4607f01aa20295d74e27d8a25c4bee5552b9d",
   "freeze": "rubric PASS (main call, stump, every main-call figure unchanged)"
  },
  "history": [
@@ -114,6 +122,10 @@
   {
    "date": "2026-11-07",
    "event": "SHIPPED architecture 2: Alternative C, the 38 MG tank, 2.9 events a year"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "RESHIPPED: realism notes from the final-pack leak read fixed, no graded figure moved"
   }
  ]
 }

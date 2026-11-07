@@ -198,6 +198,33 @@ WO_ASSETS = [("NTPS-P1", "Northside tank pump station, pump P-1", "pump"),
              ("SSWRP-BS1", "Southside WRP bar screen 1", "screen"),
              ("NSWRP-INF", "Northside WRP influent pump station", "pump"),
              ("R-08", "Market Street regulator", "regulator"), ("R-13", "Wennick Avenue regulator", "regulator")]
+WO_ASSETS += [("CSPS-P1", "Clay Street pump station, pump 1", "pump"), ("CSPS-P2", "Clay Street pump station, pump 2", "pump"),
+              ("LAPS-P1", "Locust Avenue pump station, pump 1", "pump"), ("RVPS-P1", "Riverside pump station, pump 1", "pump"),
+              ("RVPS-P2", "Riverside pump station, pump 2", "pump"), ("CLPS-P1", "Cannery Lane pump station, pump 1", "pump"),
+              ("R-01", "Front Street regulator", "regulator"), ("R-03", "Bridge Street regulator", "regulator"),
+              ("R-05", "Locust Avenue regulator", "regulator"), ("R-07", "Tanner Street regulator", "regulator"),
+              ("R-09A", "Ferry Street north regulator", "regulator"), ("R-10", "Orchard Avenue regulator", "regulator"),
+              ("R-11", "Depot Street regulator", "regulator"), ("R-12", "Riverside Park regulator", "regulator"),
+              ("NSWRP-BS1", "Northside WRP bar screen 1", "screen"), ("NSWRP-BS2", "Northside WRP bar screen 2", "screen"),
+              ("SSWRP-BS2", "Southside WRP bar screen 2", "screen"), ("SSWRP-GEN", "Southside WRP standby generator", "generator"),
+              ("NSWRP-GEN", "Northside WRP standby generator", "generator"), ("RVPS-GEN", "Riverside PS standby generator", "generator"),
+              ("OF003-FM", "Outfall 003 flow meter", "meter"), ("OF010-FM", "Outfall 010 flow meter", "meter"),
+              ("NSWRP-EFM", "Northside WRP effluent flow meter", "meter"), ("SSWRP-EFM", "Southside WRP effluent flow meter", "meter"),
+              ("OF008-LSH", "Outfall 008 overflow detector", "instrument"), ("OF013-LSH", "Outfall 013 overflow detector", "instrument")]
+FIT_REPORTS = [
+    "FIT-600 showing about 0.3 MGD with no rain for days, lead pump short cycling. Checked meter zero, fine. "
+    "Suspect SG-600, passed to mechanical crew.",
+    "Op on rounds: inflow meter reading flow in dry weather and P-1 cycling every few hours. Meter verified against "
+    "portable, OK. Mechanical to look at the gate.",
+    "Dry weather flow showing at FIT-600 (~0.3 MGD) and lead pump starting several times a day. Instrument tech "
+    "checked meter, reads true. WO raised for SG-600.",
+    "Northside tank: FIT-600 not at zero after storm drained down, steady trickle all week, pumps cycling. Meter OK "
+    "per I&C. Refer gate to mech.",
+    "Trickle into tank in dry weather again (FIT-600 ~0.35 MGD), lead pump cycling. Meter checked good. Mech to "
+    "inspect SG-600 seals."]
+WO_TEXT_EXTRA = {
+    ("generator", "PM"): ["Monthly exercise under load 30 min, no alarms", "Annual PM: oil and filters, coolant tested, load bank 2 h"],
+    ("generator", "CM"): ["Failed to start on test, replaced battery, retested OK", "Block heater out, replaced element"]}
 # the maintenance planner's task texts, by asset class and order type
 WO_TEXT = {
     ("pump", "PM"): ["Quarterly PM: megger test motor, check seal chamber, vibration readings normal",
@@ -230,6 +257,9 @@ WO_TEXT = {
 }
 
 
+WO_TEXT.update(WO_TEXT_EXTRA)
+
+
 def write_wo(out):
     rng = rs(4)
     rows = []
@@ -241,7 +271,7 @@ def write_wo(out):
         typ = "PM" if rng.random() < 0.7 else "CM"
         texts = WO_TEXT[(a[2], typ)]
         rows.append((d, a[0], a[1], typ, texts[int(rng.integers(0, len(texts)))]))
-        d += dt.timedelta(days=int(rng.integers(3, 12)))
+        d += dt.timedelta(days=int(rng.integers(1, 5)))
     rows += [(dt.date(2023, 3, 6), "NTPS-P2", "Northside tank pump station, pump P-2", "CM",
               "P-2 high vibration and low amps on lead. Pulled P-2, sent to Keystone Pump Service for rebuild. Station "
               "on P-1 and P-3."),
@@ -266,8 +296,7 @@ def write_wo(out):
             rows.append((b.date(), "NT-SG600", "Northside tank diversion sluice gate", "CM", seal_texts[k]))
         rows.append(((a + dt.timedelta(days=int(rs(10 + k).integers(9, 30)))).date(), "NT-FIT600",
                      "Northside tank inflow meter", "CM",
-                     "Operators report FIT-600 reading a steady trickle in dry weather and the lead pump cycling. "
-                     "Meter checked, reads true. Referred to mechanical."))
+                     FIT_REPORTS[k]))
     rows.sort(key=lambda r: (r[0], r[1]))
     out_rows = []
     for k, (d, asset, desc, typ, text) in enumerate(rows):
@@ -367,9 +396,16 @@ def write_notifications(out):
     w = W.simulate()
     rng = rs(7)
     i25 = W.index_of_local(dt.datetime(2025, 1, 1))
-    actions = ["Posted to website and alert subscribers", "Website posting; text and email alert sent",
-               "Posted; county health department notified by email", "Alert sent to subscribers, sign posted at outfall",
-               "Posted to website", "Website and alert sent; downstream water intake notified"]
+    actions = {"014": ["Posted to website and Clay St alert list", "Website posting; Clay Street sign lit",
+                       "Posted; Orchard Hill neighborhood list emailed"],
+               "008": ["Website and alert sent; Market St sign lit", "Posted to website",
+                       "Posted; marina office called"],
+               "010": ["Posted to website and alert subscribers", "Website posting; text and email alert sent"],
+               "013": ["Website and alert sent; downstream water intake notified",
+                       "Posted; Wennick Ave boat launch sign lit", "Posted; intake operator notified by phone"],
+               "001": ["Posted; county health department notified by email", "Posted to website",
+                       "Alert sent to subscribers, Front St sign lit"],
+               "003": ["Alert sent to subscribers, sign posted at outfall", "Website posting; Bridge St sign lit"]}
     rows = []
     n = 0
     for of, factor, lag, tail in [("014", 1.0, 0, 0), ("008", 0.55, 2, 3), ("010", 0.7, -1, 5), ("013", 0.9, 1, -2),
@@ -387,13 +423,11 @@ def write_notifications(out):
             while e + 1 < len(series) and series[e + 1] > 0:
                 e += 1
             n += 1
-            st = W.local_of(i25 + s0)
-            en = W.local_of(i25 + e + 1)
-            if of != "014":
-                st += dt.timedelta(minutes=int(rng.integers(0, 15)))
-                en += dt.timedelta(minutes=int(rng.integers(0, 15)))
+            # the detector's own trip and reset minutes, inside the first and last overflowing quarter hours
+            st = W.local_of(i25 + s0) + dt.timedelta(minutes=int(rng.integers(0, 15)))
+            en = W.local_of(i25 + e) + dt.timedelta(minutes=int(rng.integers(1, 15)))
             rows.append(["", "Outfall %s" % of, st.strftime("%m/%d/%Y %I:%M %p"),
-                         en.strftime("%m/%d/%Y %I:%M %p"), actions[int(rng.integers(0, len(actions)))]])
+                         en.strftime("%m/%d/%Y %I:%M %p"), actions[of][int(rng.integers(0, len(actions[of])))]])
     rows.sort(key=lambda r: (dt.datetime.strptime(r[2], "%m/%d/%Y %I:%M %p"), r[1]))
     for k, r in enumerate(rows):
         r[0] = "N25-%04d" % (k + 1)

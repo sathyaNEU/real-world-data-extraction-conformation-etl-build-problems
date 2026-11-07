@@ -223,7 +223,7 @@ def ask1(target, handle_clock=True, dedupe=True, pours="steady", bucket=True, ea
         drop = set()
         if pours != "keep":
             for v in visits:
-                if v["gauge"] != g or "cal check" not in v["note"].lower() or "no cal check" in v["note"].lower():
+                if v["gauge"] != g or not re.search(r"\d+\s*mL", v["note"]):   # a poured volume is logged
                     continue
                 if pours == "steady":
                     lo = v["arrive"] - dt.timedelta(hours=6)

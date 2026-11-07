@@ -104,7 +104,7 @@ def main():
     swaps = {r.Gauge: pd.Timestamp(r.Date).normalize() + pd.Timedelta(hours=int(r.Arrived[:2]), minutes=int(r.Arrived[3:]))
              for r in mech.itertuples()}
     vis = allvis
-    vis = vis[vis.Notes.str.contains("Cal check", case=False) & ~vis.Notes.str.contains("No cal check", case=False)]
+    vis = vis[vis.Notes.str.contains(r"\d+\s*mL", regex=True)]
     for g in ["RG-1", "RG-2", "RG-3", "RG-4"]:
         x = tips[tips.gauge_id == g].copy()
         x["loc"] = to_local(g, x.t).to_numpy()

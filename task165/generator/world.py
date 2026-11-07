@@ -287,6 +287,26 @@ PLAIN_NOTES = ["Routine visit. Screen clear, no service needed.", "Site check on
                "Downloaded backup, battery {v} V. No cal check (time).", "Checked level and screen. No cal check."]
 
 
+POUR_NOTES_ALL = POUR_NOTES + [
+    "Cal check {ml} mL. Spider web in funnel cleared first.",
+    "Pulled leaves off screen, checked bubble level OK. Cal check {ml} mL",
+    "Cal check w/ {ml} mL bottle, steady tipping. Batt {v}V",
+    "Routine, grass cut by parks crew already. Cal chk {ml} mL.",
+    "Wasp nest under logger box removed. Cal check {ml} mL.",
+    "Funnel had bird droppings, rinsed. Cal check {ml} mL poured slow.",
+    "Checked mounting bolts, tight. Cal check {ml} mL. Battery {v} V.",
+    "Cal check {ml} mL; bucket pivots look clean, no wear.",
+    "Leveled (was slightly off after frost). Cal check {ml} mL.",
+    "Routine visit, gate code changed (new code in van binder). Cal check {ml} mL."]
+PLAIN_NOTES_ALL = [PLAIN_NOTES[0], PLAIN_NOTES[2], PLAIN_NOTES[3],
+                   "Quick look only, called back to Clay St PS. Screen clear.",
+                   "Downloaded logger, battery {v} V. Out of cal bottles, no cal check.",
+                   "Site locked, waited for parks staff. Screen and funnel OK, no cal check.",
+                   "Checked level, leaves on screen cleared. Ran out of time for cal check."]
+RAIN_NOTES = [PLAIN_NOTES[1], "Raining on arrival, visual check only.", "Light rain, no cal check. Screen clear.",
+              "Storm moving in, checked screen and left. No cal check."]
+
+
 def _visit_dates(rng, g):
     """Visits every five to eight weeks to May 2025; from June 2025 the maintenance contract's monthly visit."""
     d = dt.date(2014, 1, 6) + dt.timedelta(days=int(rng.integers(0, 30)))
@@ -315,6 +335,7 @@ def rain_gauges():
     each tip measured, and the field service visits."""
     w = simulate()
     rng = np.random.default_rng([P.SEED, 2])
+    note_rng = np.random.default_rng([P.SEED, 3])     # the wording only; the visits' own draws stay on rng
     tips = {}
     visits = []
     for gi, (g, site, logger_new) in enumerate(P.GAUGES):
@@ -370,11 +391,13 @@ def rain_gauges():
                         "return. Leveled. Cal check {ml} mL.").format(ml=ml) if pour else \
                     "Contract work: new TB mechanism installed (0.2mm unit, contract stock), old mech bagged for return."
             elif pour:
-                note = POUR_NOTES[int(rng.integers(0, len(POUR_NOTES)))].format(ml=ml, v=v)
+                rng.integers(0, len(POUR_NOTES))
+                note = POUR_NOTES_ALL[int(note_rng.integers(0, len(POUR_NOTES_ALL)))].format(ml=ml, v=v)
             else:
-                note = PLAIN_NOTES[int(rng.integers(1 if raining else 0, len(PLAIN_NOTES)))].format(v=v)
+                rng.integers(1 if raining else 0, len(PLAIN_NOTES))
+                note = PLAIN_NOTES_ALL[int(note_rng.integers(0, len(PLAIN_NOTES_ALL)))].format(v=v)
                 if raining:
-                    note = PLAIN_NOTES[1]
+                    note = RAIN_NOTES[int(note_rng.integers(0, len(RAIN_NOTES)))]
             # the technician logs arrival and departure to the five minutes, departure as the van leaves the gate
             arrive = arrive.replace(minute=arrive.minute - arrive.minute % 5)
             depart = arrive + dt.timedelta(minutes=dur - dur % 5)

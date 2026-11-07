@@ -584,3 +584,15 @@ Architecture 2 (the Clay Street tank):
   orders with stock texts on any asset, the field log authored by a technician from 2014 (the leak reader's realism
   read): each outfall's detector now lags and tails on its own, texts follow asset class and order type, and the
   contractor authored the log at its June 2025 mobilisation.
+- 2026-11-07, the final-pack leak read's realism notes:
+  - Outfall 014's notices started on the quarter hour, set apart from the others; every outfall now carries its
+    detector's own trip and reset minutes, inside its first and last overflowing quarter hours.
+  - The notices drew one shared pool of six actions; each outfall now has its own wording.
+  - The four FIT-600 leak-by reports were one verbatim text; each now reads as a different operator wrote it.
+  - The CMMS held only the assets the questions need; it now carries the authority's other pump stations,
+    regulators, screens, standby generators and meters.
+  - The field log was saved with inline strings and ten template notes; it now has shared strings and a wider pool of
+    notes, drawn from a stream of its own so that no visit moves.
+  - Pours are now found from the logged volume ("NNN mL"), because an abbreviated "Cal chk" note would otherwise pass
+    unseen.
+  - No graded figure moved.
