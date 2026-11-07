@@ -5,7 +5,7 @@
  "objective": "opportunity-sizing-decision",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-31",
+ "updated": "2026-11-07",
  "stump": "each programme's 18:00 reduction read on the record's fourth consecutive event days, the design peak hour being the fourth weekday OP-7 calls (default: Cool Credit about 11 MW on the average or weather-matched reduction; golden: Home Battery Network about 6 MW)",
  "architecture": 5,
  "loops": 0,
@@ -62,6 +62,14 @@
    "portal": "architecture 4 (the duty envelope): the call landed three times and the determinism block failed twice; the golden was the field's own welfare method, applied by reflex",
    "repair": "re-root",
    "commit": "DRAWN (task118) architecture 5"
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "portal input check: both xlsx carried openpyxl's AppVersion 3.1 in docProps/app.xml",
+   "repair": "metadata",
+   "zip": "64af0836",
+   "moves": "docProps/app.xml written as Excel saves it (AppVersion 16.0300, the sheet names in TitlesOfParts) by the house scrub; only the two xlsx moved, no figure moved",
+   "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)"
   }
  ],
  "resume": "",
@@ -71,5 +79,5 @@
  "portal_status": "",
  "portal_status_date": "",
  "source_note": "",
- "zip_sha256_16": "1b48e1a3deae2619"
+ "zip_sha256_16": "64af0836b0feec37"
 }
