@@ -1,338 +1,98 @@
-# task268 design note: Corcally's Roastery 2027 sampling, the rival brand whose buyer homes least often already buy the Roastery
+# task268 design note: Rotalinha's 2027 reliability programme, the internal services whose 2026 latency SLI breached its budget
 
-Architecture 5, a re-root drawn 2026-10-31 in Descriptive & Distribution Analysis (the number's objective), client domain
-Marketing & Consumer Research, task type segmentation-market-structure. Architectures 1 to 4 are in the card's lineage and in
-`## Leak check
-
-`leak.py --asof 2027-01-13` on the cut pack: REVIEW, no LEAK. Each REVIEW line, ruled in this thread:
-- The brief carries four words of the committed call ("2027 Roastery sampling ... homes"): it is the brief that sets the
-  decision and names no brand. Harmless.
-- The merchant agreement carries "online, settlement, terminal" and the Rewards terms "online, member, members": the
-  agreement's own schedule and settlement clauses and the scheme's own card clauses; neither names a home, a shared card
-  or a match. Harmless.
-- The deal log and the product master name the brands beside numbers (funding per multibuy, shelf prices): neither ranks
-  the rivals on overlap. Harmless.
-- The online export's `generated` stamp read as a generator's word: renamed `exported_at`.
-
-## Duplicate check
-
-`guard.py heart` on the cut pack: WARN (three_rules.strategy_risk, answered by `Analyst test:`; the older same-puzzle and
-same-driver notes against task131 v1 and task264 differentiated on the card). `guard.py surface` promoted two pairs for
-the author's adjudication: task267 (back to back: the gap label and a pick in common; its driver reweights a screened
-population's checked members by their checking rate, nothing here does) and task264 (the same-driver signature, already
-differentiated). Personas in the pack: Alix Fennell only, on the card.
-
-## Tried and rejected`.
+Architecture 6, a re-root begun 2026-11-07 in Descriptive & Distribution Analysis (the number's objective), after architecture
+5 (Corcally's Roastery 2027 sampling, marketing-consumer-research / segmentation-market-structure) landed on the portal with
+both responses on the golden (STATUS commit 134d71b8). Architectures 1 to 5 are in the card's lineage and in
+`## Tried and rejected`; architecture 5's design sections are in git history at 6e745ade.
 
 ## Draw
 
-- **Card.** `.claude/skills/fingerprint/cards/task268.json`, architecture v5, `guard.py check` WARN (three_rules.strategy_risk
-  on grain_or_unit, answered by `Analyst test:`), differentiation filed against task131 v1, task126, task114, task179 and
-  task264; nearest drivers 0.08 (task116) and under.
-- **Pairing.** marketing-consumer-research / segmentation-market-structure / descriptive-distribution; marketing has carried
-  no descriptive build. The market-structure measure is the duplication of purchase between brands' buyer bases: of the homes
-  that bought a rival brand in 2026, the share that also bought Corcally's Roastery, the chain's own-label coffee.
-- **Decision.** Corcally's (a family-owned grocery chain in a Midlands market town, Drumsallagh, and its hinterland) sends
-  its 2027 Roastery sampling to the homes of one rival coffee brand, the rival whose 2026 buying homes least often also
-  bought the Roastery. Retrospective by design: the brief reads the closed calendar year 2026, the last full year of
-  purchases, and the sampling runs in 2027.
-- **The quantity.** For each rival brand, the share of its 2026 buying homes that also bought the Roastery, a home counting as
-  a buyer when any of its members bought the brand at Corcally's in 2026, in a store or online.
-- **Data-native sentence.** Corcally's Rewards issues a card to each adult member and pools nothing, the online shop keeps its
-  own accounts, and the only record that two cards, or a card and an online account, belong to one home is that they pay with
-  the same bank card, which shows as a shared card token in the acquirer's settlement file; partners split the coffee
-  aisle (one buys capsules, the other the Roastery), so card by card the capsule brand's buyers look untouched by the
-  Roastery while home by home they mostly already buy it.
-- **Abstraction sentence (nearest approved builds).** task126 and task114 rebuild a counting unit from records a second system
-  groups (dockets into applications by a credit class; bookings into meetings by invitees and badges); this build rebuilds the
-  buying unit from member records that share nothing but a payment instrument in a third system, and the decided quantity is
-  a duplication of purchase between brands. A reviewer holding task131 v1 (card-randomised offers, household interference)
-  would say both turn on cards in one household: task131 v1 had the membership on file as a key and an experiment to read;
-  here there is no household key and no experiment.
-- **Shape.** 14, cuts of a distribution per segment: for each rival its buying homes, those also buying the Roastery and
-  the share (seven rivals, 21 figures), the call, its share, the runner-up and the gap (4), the deck's chart (5 named
-  parts), the two files (2), and two asks off the call's rows: the loose coffee the Drumsallagh counter sold of each guest
-  roaster by quarter (12) and the multibuy funding each supplier owes by quarter (24). 68 criteria before the rubric's
-  own instruction lines.
-- **Strategy.** grain_or_unit, gate method_or_model_selection, generators G10 (what is one real-world buying unit), G2, G6;
-  gap population; Layer 2 estimand_identification.
-- **Sources (one line each).** The client's segmentation-market-structure card 4 (switching judged against share-based
-  expectation) is the field's method this build keeps at rung 1 and reads at the card; task131 v1 (household interference,
-  landed on the portal because the membership key sat on file) is why this build ships no household key; task120 v1 (a
-  solver union-found households through a dependents schedule one join away) is why the link here is a shared payment card
-  in a file kept for card-acceptance reconciliation, never a household or member field.
+- **Card.** `.claude/skills/fingerprint/cards/task268.json`, architecture v6, registered 2026-11-07T21:54:53Z. `guard.py check`
+  on the filed card: WARN only, `repeat.decision` (designation_set against task156). Answer: the decision is a set of services
+  measured against their own budgets, which is the call's natural form; task156 (a union branch's ballot councils) shares no
+  world, driver or shell. The older same-puzzle and same-driver signatures (task245, task265, task139 v1, task182 v4, task270
+  v1 and v6, task452 v2) carry one differentiation line each on the card.
+- **Pairing.** general-statistics-data-science / missing-data-censoring-measurement-error / descriptive-distribution. The
+  setting is the platform reliability team of Rotalinha, a Lisbon marketplace selling intercity bus and ferry tickets in
+  Portugal and Spain; the statistics is the field: an estimate from a sample whose inclusion probability is set minute by
+  minute and recorded nowhere.
+- **Decision.** Which internal services ran over their 2026 latency error budget. Each one that did gets a reliability engineer
+  for the first half of 2027. Retrospective by design: the SLO year closed on 31 December 2026 and the programme starts in
+  January.
+- **The quantity.** Each service's 2026 latency SLI, the share of the requests it handled in 2026 whose server-side duration
+  exceeded its threshold, against its error budget (both in the SLO standard).
+- **Data-native sentence.** The trace store's adaptive sampler keeps about ten server spans a second per service, resetting its
+  probability each minute, so in the busy minutes, when queueing makes requests slow, it keeps the smallest share of them;
+  the load balancer counts every request per minute for billing, and no file records the keep fraction.
+- **Abstraction sentence (nearest builds).** The nearest approved builds are task275 (an invariant total raised to unobserved
+  trips) and task253 (a count past a line as the sum of probabilities), and neither shares the move. A reviewer holding
+  task452 v2 (delivered) would say both weight a sample by its inclusion probability: there the probability belongs to a
+  drawn stratum, recorded in the design, and the trap is a reclassification after the draw; here there is no stratum, the
+  probability is recorded nowhere and moves with the load that also makes requests slow, and it is recovered minute by minute
+  from a billing count. task258 (approved) is the nearest world (web performance) and shares no step.
+- **Shape.** 14, cuts of a distribution per segment: for each internal service its SLI and whether it breached, the call, the
+  chart, the files, and the asks (designed at stage 2).
+- **Strategy.** population_selection, gate method_or_model_selection, generators G9 (the measured outcome is the kept one),
+  G6, G13; gap population; Layer 2 estimation_fit.
+- **Prototype on the clean truth (scratch `p1.py`, 2026-11-07).** Twelve services, a year at minute grain, latency rising with
+  load, a cap of ten spans a second: the kept spans' own share and a day-by-day reweighting understate every high-volume
+  service (search 5.61 and 5.78 against 7.62 per cent; places 15.93 and 16.70 against 27.41); hourly and minute weighting agree
+  (7.57 and 7.62). Levels are untuned; stage 2 sets the budgets so the designated set moves between the routes.
+- **Sources.** The client's missing-data card (an estimate under data missing by design) is the family; adaptive and
+  rate-limiting trace samplers (keep a target number of traces per second, adjusting the probability every minute) are
+  real practice in the open-source tracing tools; no file in the pack names the sampler's behaviour.
 
-## Default path
+### Spent insights on this objective (`guard.py mechanisms --objective descriptive-distribution`, 2026-11-07)
 
-1. Read `coffee_till_lines_2026.csv`, map each PLU to its brand through `product_master_coffee.xlsx` (folding the three
-   spellings of a brand into one), keep the 2026 lines of the eight brands' packs presented on a Rewards card, and drop
-   the cards `rewards_cards_2026.csv` types as store cards.
-2. Fold each replaced card into its successor through the register's `replaced_by`, so a member is one buyer.
-3. Add the online shop's delivered orders from `online_orders_2026.json` (each order's final version, by delivery date)
-   as each account's purchases.
-4. Build the duplication of purchase table at the loyalty programme's customer unit, the field's method: for each rival,
-   the members and accounts that bought it, those that also bought the Roastery, and the share.
-5. Read the lowest share. Nordhavn's capsule buyers seldom buy the Roastery, which reads as the capsule format's
-   partition from ground coffee, and the analyst files it.
+One line per insight a live or lineage card has spent, so no candidate re-screens them.
 
-- **Ends on:** Nordhavn, the rival whose buying cards least often also bought the Roastery.
-- **Golden:** Oro Rosso, the rival whose buying homes least often also bought the Roastery.
-
-## Stump sentence
-
-A competent analyst builds the duplication of purchase table on the Rewards card, the chain's customer unit, and names
-Nordhavn, whose capsule buyers are mostly a home's second card while the home's other member buys the Roastery on their
-own; assembled from the Rewards cards and online accounts that pay with one bank card in Faircourt's settlement file, a
-match no key offers, homes put Oro Rosso lowest and Nordhavn mid-table.
-
-## Three rules
-
-- **Task type:** segmentation-market-structure (marketing-consumer-research), serving descriptive-distribution: the
-  duplication of purchase between the brands' buyer bases is the market-structure table a segmentation analyst reads.
-- **Domain test:** the deciding quantity is each rival's duplication with the Roastery at the household buying unit, the
-  share of the rival's buying homes that also bought the Roastery, read the way the duplication of purchase law reads
-  brand overlap in a household panel; the field's estimator is that table built on the unit that buys for one cupboard.
-- **Swap:** "whose 2026 patient households least often also used the hospital's own clinic": a patient's visits are
-  their own and nothing is split between members' cards, so the household unit changes nothing and the call no longer
-  turns on how the buying unit is assembled; the swap breaks the task.
-- **Layer 1:** four systems with four identifiers (the tills' Rewards card, the online shop's account, the register's
-  member, Faircourt's card reference); settlement in UTC against Irish till time and settled one or two banking days on;
-  a Lisgarvan terminal replaced in May; lost cards replaced under new numbers; store cards swiped for shoppers without
-  one; brand names spelt three ways; online orders amended before cut-off and some cancelled; refunds on later receipts.
-  None decides the call.
-- **Layer 2:** estimand identification, the population a duplication table must count: the buying unit is the home,
-  which the records hold only as Rewards cards and online accounts that settle on one bank card; the table on cards
-  files Nordhavn, on homes Oro Rosso.
-- **Decisive step:** recognising that the coffee repertoire belongs to the home and is split between its members'
-  personal cards, and rebuilding each home as the cards and online accounts that pay with one bank card, which needs
-  every till transaction matched to its settlement row on terminal, time and amount before the overlap is read.
-- **Not semantics:** every field can be read correctly (the register types each card as a member's or a store's, the
-  terms say a card is one member's, the card reference is a payment card) and the table built on members still files
-  Nordhavn; the homes are in no field and appear only when card references are compared across two systems' rows.
-- **Not rule application:** no filed rule assembles a home: the brief files the unit (a home, anyone in it) and the
-  terms that a card is a member's, and the construction is the analyst's. Enumerated family (card, member, member and
-  account, homes from store cards only, homes from cards and accounts; store cards kept or dropped; the settlement clock
-  converted or not; a link on one, two or three shared payments): Nordhavn at 14.6 to 16.5, Westquay at 25.6 and Oro
-  Rosso at 39.0 to 41.1 per cent on the cut pack, three calls. Standing family (every route that assembles homes from
-  cards and accounts, drops the store cards and converts the clock or matches on the day): one call and identical
-  figures, Oro Rosso 39.9, the thresholds converging (asserted).
-  The ruling-out is quiet: the terms' personal-card clause and the brief's "anyone in it", neither naming a payment.
-- **Analyst test:** with every file conformed and every rule read, the strong analyst builds the duplication of
-  purchase table on Rewards members and online accounts as the customer unit and files Nordhavn as the least
-  overlapped rival, when Nordhavn's capsule buyers are mostly the second card in a home whose other member buys the
-  Roastery on their own card.
-- **Estimand:** `roastery_sampling_brief_2027.docx`: for each rival, the share of the homes that bought it in 2026
-  (anyone in the home buying a pack on a Corcally's Rewards card in one of the three stores or through the home's online
-  shop account, an online order on its delivery date, 1 January to 31 December 2026) that also bought Corcally's
-  Roastery packs in 2026, compared across the rivals.
-- **No decoy:** nothing is planted to be caught: no memo, draft, briefing or stakeholder figure argues for Nordhavn or
-  any rival; the brand tracker (a distractor) reports claimed brand use, never an overlap; the store cards and the
-  replaced cards are the register's own records; no block is copied and no rule is hidden.
-- **No certified replay:** no certified or published figure is reproduced to recover the method; nothing in the pack
-  ties only under the golden.
-- **Lesson:** a duplication table is only as good as its buying unit: loyalty cards are people while the cupboard is
-  the home's, and where the scheme holds no household the home is rebuilt from evidence the business keeps for another
-  reason, the payments it settles, before brands are compared; no build on file rebuilds a buying unit from a shared
-  payment instrument through a settlement match.
-
-## Survivor anatomy
-
-- **Actor:** the deciding property is the home a card belongs to, and no file has a column for it: the register holds
-  cards and members (no household, address or account link), the online shop holds accounts, Faircourt holds card
-  references; the home is a relation between rows of three systems.
-- **Link:** read through a match no key offers: a till transaction carries no settlement reference, so each is matched
-  to its Faircourt row on terminal (through the merchant agreement's terminal schedule), time (UTC against Irish time)
-  and amount, and cards sharing a card reference are one home; online orders join on their order number. No sentence
-  invites it: the brief names homes, never payments.
-- **Reflex:** the field's method, the duplication of purchase table, built on the programme's customer (the member, or
-  member and account) files Nordhavn at rung 1, its low overlap reading as the capsule format's partition.
-- **Back-test:** the textbook route validates: on members the table shows the pattern a category analyst expects (the
-  rivals' overlaps with the Roastery close to one level, the capsule brand partitioned off), every member count ties
-  to the register, and nothing in the pack contradicts a member being a buyer.
-- **Second use:** every file the decisive step reads has its own reason: Faircourt's file carries the Drumsallagh
-  counter's card payments, without which the counter ask cannot tell a sold label from a re-weighed one; the merchant
-  agreement's terminal schedule places the counter's terminal; the till lines, online orders and register carry the
-  call's purchases and the store and replaced cards.
-- **Shock:** the movement reads as ordinary: on members Nordhavn's low overlap is the capsule partition and Oro Rosso
-  sits mid-table; Oro Rosso is not the extreme of any shipped column or simple statistic (buyers, price, pack size,
-  supplier funding, the tracker's claimed use), asserted.
-- **Pins:** the WHAT is filed once, in the brief, in the Roastery team's own genre (homes, anyone in them, the three
-  stores and the online shop, 2026 by delivery date); the terms file that a card is one member's; no filed sentence
-  names a payment card, the settlement file, a match or a threshold, and deleting any one filed sentence leaves the home
-  the unit (the terms alone make a card a person) without handing over how it is built.
-
-## Readability screen
-
-| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | 7 Organ | Verdict |
-|---|---|---|---|---|---|---|---|---|
-| R0 baskets: share of the rival's transactions that also carry the Roastery | no | no | fires (a basket view) | no | no | no | no | readable |
-| R1 members and accounts as buyers, the duplication table | no | fires (the card column) | fires (the field's method) | no | no | no | no | readable |
-| R2 homes from store cards through the settlement match, online orders left out or accounts kept apart | no | no | no | no | no | no | no | silent |
-| R3 (decisive) homes from cards and online accounts through the settlement match | no: the brief names homes, never payments | no: no key joins a till row to a settlement row | no: the field's table is built on its panel's or programme's unit | no: no control scores homes | no: no duplicate, clock or rescind repair builds a home | no | no: the settlement file carries the counter ask | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | home | the people living together, held as the cards and accounts that pay with one bank card | a Rewards card or member as the home | Nordhavn | the terms: "Each card is issued to one member"; the brief: a home buys when "anyone in it" bought |
-| SF2 | bought a brand | a pack on any of the home's Rewards cards in a store, or on its online account | store-card or anonymous lines put to a home through the match | same call (asserted) | the brief: "on a Corcally's Rewards card ... or through the home's online shop account" |
-| SF3 | the Roastery | Corcally's Roastery packs | the counter's loose coffee counted | same call | the counter sells guest roasters only (asserted) |
-| SF4 | rival | the seven other brands in the product master, spellings folded | each spelling a brand | same call (asserted) | the master: the spellings share a supplier and range |
-| SF5 | 2026 | Irish date on the tills; online orders by delivery date | UTC date; order date | same call and figures (asserted) | the brief's delivery-date clause |
-| SF6 | online order | the delivered final version | every version; cancelled orders counted | same call and figures (asserted) | the export's status field |
-| SF7 | store cards | dropped | kept as a member | same call, figures move (asserted) | the register's card type and the terms' member-prices clause |
-| SF8 | replaced cards | folded into the successor | kept apart | same call and figures at the home (asserted) | the register's replaced_by; one member pays with one bank card |
-| SF9 | a shared payment | one shared payment links | two or three needed | same call and identical figures (asserted) | convergence |
-| SF10 | the settlement clock | UTC converted to Irish time | read as Irish time | same call, figures move (asserted) | the column name and the agreement: times are UTC |
-| SF11 | terminal schedule | by its dates | the current terminal only | same call (asserted) | the schedule's installed and removed dates |
-| SF12 | an online account no card shares | a home of its own | dropped | same call (asserted) | the brief: a home buying online is a home |
-| SF13 | refunds | a refunded pack still bought | refunded packs removed | same call and figures (asserted) | convergence |
-| SF14 | the share | the rival's buying homes as denominator | the Roastery's homes as denominator | Westquay | the prompt: "whose 2026 buying homes least often also bought" |
-| SF15 | rounding | whole per cent from counts; gap from unrounded shares | rounding first | same figures (mid-bin asserted) | convergence |
-| SF16 | tie-break | none needed | none | same call | margins of 1.15 or more asserted |
-| SF17 | a label the counter sold (the deck's loose coffee) | a label paid for, by card at the counter or in cash at a checkout | every label printed, the voided re-weighs included | every cell moves | the board: labels not paid for by closing are void |
-| SF18 | the card match | the one set of labels printed in the 25 minutes before the payment whose prices, with any board accessories, make its amount | a wider or narrower window, a consumption order, an accessories-only reading | same figures (asserted unique from 20 to 35 minutes before and 3 to 10 after, whichever labels other payments took, and strictly up to the payment away from scale 2's block; no amount an accessory sum) | the board: within 25 minutes of weighing |
-| SF19 | the cash match | the one label printed earlier that day at the till line's price | the 150 minutes before | same figures (asserted unique over the day and the 150 minutes) | the board: pay there the same day |
-| SF20 | scale 2's re-dated block | shifted by the offset that lines its card-paid labels up with their payments | any offset within ten minutes | same quarters (asserted) | none needed |
-| SF21 | scale 2's weights | grams | kilograms as printed | scale 2's labels move a thousandfold | the log's own figures (hundreds against scale 1's fractions), asserted |
-| SF22 | the accessories in a counter sale | the fewest that close the amount (no sale took more than two) | any number up to four | same figures under the fewest-accessories reading (asserted unique in every payment); a free count of three or four reads some sales two ways | parsimony, the board's accessories at their prices |
-
-## Ladder
-
-| Rung | Construction | Winner | Its share, next and margin (the cut pack, seed 263) |
-|---|---|---|---|
-| R0 | baskets: the rival's transactions also carrying the Roastery | Nordhavn | 0.8 against Westquay 1.0 per cent, a basket view nobody files |
-| R1 | the duplication table on cards; on members | Nordhavn | 14.7 against Westquay 23.2, x1.57; 14.6 against 23.7, x1.62 |
-| R1 (default path) | the duplication table on members and online accounts (the field's method) | Nordhavn | 16.5 against Westquay 23.7, x1.43 |
-| R2 | homes from store cards through the match; online left out | Westquay | 25.6 against Oro Rosso 32.1, x1.25 |
-| R2 | the same with online accounts kept apart | Westquay | 25.6 against Oro Rosso 33.9, x1.32 |
-| R3 (decisive) | homes from cards and online accounts through the match | Oro Rosso | 39.9 against Nordhavn 48.7, x1.22; Halloran's third at 51.1 |
-| hazards | store cards kept; the clock read as Irish time; unlinked accounts dropped; store-card and anonymous lines put to homes | Oro Rosso in every one | 40.0, 39.0, 39.7, 41.1: the call holds, the figures move only where a shipped sentence rules the reading out |
-
-- **Position and dominance:** each rung names its own brand and dies to one shipped fact (R1 to the terms' personal
-  cards; R2 to the brief's online clause); every correction walks one way (towards homes) and only R3 reverses
-  Nordhavn; margins of 1.15 or more at every rung are asserted in `checks.py` on the cut pack, with Oro Rosso's share
-  0.15 or more from its rounding edge.
-- **Pricing sequence.** 1 Residue: how the buying unit is built from cards and accounts, a method, not a knob (the link
-  thresholds converge). 2 The move: from the default path to R3 Nordhavn rises 32.2 points (16.5 to 48.7) and Oro Rosso
-  10.4 (29.5 to 39.9), against a ceiling of every card in a home merging (the true homes, unseen by any file: Nordhavn 73.3, Oro Rosso 48.9, still the lowest). 3 The
-  one-group-by route is R1 (group the lines by card or member), Nordhavn; nothing affine in a shipped column reaches
-  Oro Rosso. 4 The standard error of Oro Rosso's share on 1,857 homes is 1.1 points; the gap of 8.8 points is eight of
-  them. 5 The lever is structural (the unit), not a variance. 7 Subsets: online accounts alone name Kinvara Hills, heavy
-  buyers' cards Nordhavn. 8 Reflex sweep as code: cards, members, members and accounts, heavy cards, online accounts
-  alone, the reverse duplication (Westquay) and baskets, none Oro Rosso (asserted in `checks.py`).
-
-## Closure table
-
-| Axis | Reading | Closure |
-|---|---|---|
-| 1 Population | homes with a 2026 pack of a rival on a Rewards card or online account | WHAT in the brief |
-| 2 Unit of account | the home (cards and accounts on one bank card) | WHAT in the brief; terms' personal cards |
-| 3 Attribution window | a purchase in 2026 by Irish date, online by delivery date | WHAT in the brief; C1 asserted |
-| 4 As-of dating | the register at the extract date, every 2026 card | C1: replacements fold either way |
-| 5 Version basis | online orders' final delivered version | C1 asserted |
-| 6 Denominator | the rival's buying homes | the prompt's wording |
-| 7 Weighting | none: each home counts once | WHAT in the brief |
-| 8 Window length | the calendar year | WHAT |
-| 9 Boundary inclusivity | 1 January to 31 December inclusive | WHAT |
-| 10 Rounding path | counts exact, share rounded once | C1 mid-bin asserted |
-| 11 Tie-break | none needed | margins asserted |
-| 12 Maturity and censoring | none: the year is closed | n/a, same call |
-| 13 Order of operations | assemble homes, then read brands | C1: the reverse order is not defined |
-| 14 Row order | none | same call |
-| 15 Duplicate resolution | a line once; versions once | C1 asserted |
-| 16 Identity normalisation | the three brand spellings folded | the master's supplier and range; asserted |
-| 17 Netting against gross | refunds do not remove a purchase | C1 asserted |
-| 18 Dimensional units | homes, a count; share in per cent | WHAT |
-| 19 Code and status semantics | store cards out, cancelled orders out | the register's type; the export's status; C1 |
-| 20 Integerisation | homes whole, shares whole per cent | the prompt |
-| 21 Clause scope | the counter outside the brief | the brief; C1 (guest roasters only) |
-| 22 Forward window contents | the 2027 sampling reads 2026 only | WHAT (retrospective by design) |
-
-## Literal reader
-
-Executed word for word (the brief's homes with anyone in them, on Rewards cards in the three stores and online
-accounts, the terms' one-member cards, packs of the eight brands, 2026 by Irish date and delivery date), the only
-executable home is the group of cards and accounts that settle on one bank card; a card as the home violates the
-terms, dropping an online-only home or adding store-card lines violates the brief, and thresholds, replacement folding,
-refunds, versions and cancellations converge (asserted in `checks.py`). Re-run on the cut pack (seed 263): every licensed
-reading prints Oro Rosso at 40 and Nordhavn at 49; the readings that move a figure (the clock read as Irish time,
-anonymous receipts put to homes) each violate a quoted sentence. Passes.
-
-## Oracles
-
-- The register's card counts tie to the member table on the wrong path and to the home table's cards on the right one:
-  no oracle.
-- The counter's card takings do not tie to the labels under any handling (accessories rung on the same terminal), and
-  the counter lines on the tills are one label each: no control total arbitrates ask A.
-- The deal log's funding per multibuy and the till's saving lines tie to nothing outside the pack: no supplier claim is
-  shipped, so ask B has no control.
-- The census households file and the brand tracker (distractors) confirm nothing on either path.
-
-## Ask sheet
-
-**Ask A.** The loose coffee the Drumsallagh counter sold of each guest roaster in each quarter of 2026, kilograms to one
-decimal (three roasters by four quarters, 12 figures).
-- H18 home: a qualifier on the call's reach: the counter runs outside Rewards, so the deck sizes, roaster by roaster,
-  the coffee the brief's homes cannot see.
-- Use: the Roastery team's view of the specialty coffee sold beside it.
-- Primary 1 (D4, absence across systems): a label printed and re-weighed is binned, and only the second label is paid;
-  a label is sold only if a counter card payment (Faircourt, the counter terminal, UTC) or a counter line on a till
-  (cash) pays it, and the card payment also carries accessories keyed on the terminal, so it is matched as labels plus
-  accessories from the counter's price board.
-- Primary 2 (D8, a clock): scale 2's clock reset to 1 January after a power cut in April and ran from there until a
-  service visit; its labels for those days carry January dates, out of step with their own label numbers, and only the
-  payments date them.
-- Hazards: scale 2 exports its weight in grams, scale 1 in kilograms; the settlement clock in UTC (shared with the call).
-- Files and columns: `counter_scale_labels_2026.csv` (label, scale, printed, roaster, coffee, weight, price per kg,
-  price), `faircourt_settlement_2026.parquet` (terminal, time, amount), `faircourt_merchant_agreement_2026.pdf` (the
-  counter's terminal), `coffee_till_lines_2026.csv` (the counter PLU lines), `coffee_counter_price_board_2026.pdf`
-  (accessory prices): five files, 14 columns.
-- Stops: every label (re-weighs counted, all figures high); labels matched but the reset left in January (Q1 high, Q2
-  low); the reset fixed but re-weighs kept; labels matched to card payments only, the cash half dropped (all low).
-- Pin test: the asking sentence pins sold coffee, the roaster, the quarter and kilograms; the devices sit in which rows
-  are sales and which date a sale carries, neither named.
-- Realism: a weighed-goods counter with two scales of different firmware, a standalone card terminal and cash paid at
-  the main tills is how a grocer's specialty counter runs.
-
-**Ask B.** The multibuy funding each supplier owes Corcally's for each quarter of 2026, counting every multibuy a
-customer got, by the quarter it was sold in, whole euros (six supplier accounts by four quarters, 24 figures).
-- H18 home: a second measure per candidate: what each rival's supplier put into its 2026 multibuys at Corcally's.
-- Use: the quarterly funding claims the buying team raises.
-- Primary 1 (D7, the key elsewhere): on a deal's first days at one store the tills missed the multibuy; the service desk
-  later refunded the saving as a multibuy adjustment line on another receipt whose note cites the original receipt, and
-  the funding belongs to the deal and the quarter of that original sale.
-- Primary 2 (D1, opposite meanings): a refund that breaks a multibuy rings a saving reversal with the same promotion
-  code and the opposite sign, so a count of saving lines adds a multibuy that was taken back.
-- Hazards: a deal revised mid-run with a new funding rate from its effective date (written in the deal log); the till
-  ran one deal three days past its end at one store (outside the deal's dates, unfunded); Bellvale's deals were agreed
-  with its distributor until 30 June and with Bellvale Foods from 1 July while the master names the current supplier.
-- Files and columns: `multibuy_deals_2026.xlsx` (deal, supplier, brand, PLUs, mechanic, start, end, funding, version,
-  effective from), `coffee_till_lines_2026.csv` (PLU, promotion code, value, note, date), `product_master_coffee.xlsx`
-  (brand, supplier): three files, 13 columns.
-- Stops: saving lines counted, adjustments ignored (all low where a miss happened); adjustments dated on their own
-  receipt (quarter shifted); reversals counted as savings (high); the current supplier for Bellvale's first half.
-- Pin test: the asking sentence pins every multibuy a customer got and the quarter it was sold in; the devices sit in
-  which records are one multibuy and which date it carries.
-
-**Separation.** Zero device or hazard rows in the call's row population (the eight brands' packs on Rewards cards and
-online accounts): the counter labels, counter lines, accessory payments, adjustment and reversal lines sit outside it,
-counted from the shipped rows in `checks.py`; the call is unchanged when every ask device is deleted.
-
-| Cracker (lands the call, runs the battery, executes every filed rule, reads every helper) | Ask A | Ask B |
-|---|---|---|
-| The cracker: labels deduplicated, grams fixed, deal revisions and windows applied, reversals netted | miss | miss |
-| The full includer: every device it can find handled, the silent one left | miss | miss |
-
-| Measured on the cut pack (seed 263) | Ask A kept | Ask B kept |
-|---|---|---|
-| the cracker | 0 of 12 | 0 of 20 |
-| the mirror (stops at R1; card payments matched, till lines left; adjustments on their own date) | 0 of 12 | 4 of 20 |
-| the full includer (scale 2's block left where its clock put it; one multibuy per adjustment line) | 3 of 12 | 4 of 20 |
-
-- **Mirror leakage:** 21.9 per cent of ask weight (the best response off the call keeps 7 of 32 ask figures).
-- **Pair ceiling:** 34.5 (the cracker keeps 0 of 32 ask figures, the best miss 7 of 32).
-- **Measured by:** `generator/ceiling.py` on the cut pack (seed 263), run by the build after every change.
+- task253: a count of units past a line is the sum of their probabilities, not the count of shrunken predictions.
+- task254: a path's passage time through stages whose delays build during the unit's own passage.
+- task255: the upper tail of a two-kind size distribution under per-item floors, a moving ceiling and open items.
+- task256: the share inside a multivariate box carried from a reference group by its conditional distribution.
+- task257: latent dimensions of categorical items where Pearson correlations on codes mislead.
+- task258: an intervention moves only the units whose served document carries the reference its step needs.
+- task259: a level at a reference date carried from earlier reports by the level's own movement in the same units.
+- task260: an interval for a shared-sample improvement must resample raters and items together.
+- task261: a subgroup difference's error from one clustered sample, the subgroups sharing clusters.
+- task262: a slope on a long-run average measured in full only for a subsample selected on its level.
+- task263: each source's level recovered from mixtures run in changing proportions.
+- task264: distinct members from events sampled in proportion to each member's events; v1 the price setter as the unit.
+- task265: survival from a record that began after many units started (delayed entry).
+- task266: cumulative incidence with competing ways a spell ends, many still open.
+- task267: a rule's capture rate when the check went to every flagged member and a random fifth of the rest.
+- task269: compliance read from staff observers who sample mostly well-covered periods.
+- task270: (v1 to v10) selection on a weighted sum; a reporting cost; practice effects; part against composite; correlated
+  errors of two changes; slot landings; losses recorded when made good; fixed-schedule suppliers; a variogram of moves;
+  free servers away from base; (now) remaining time from a group published only as one total.
+- task271: impact of events that stand alone, read from events mostly inside sequences; risk from earlier episodes;
+  members unreachable at the call hours; penetrance with testing selected on outcome; rates carried by supply-zone geometry.
+- task272: drift between resets under sparse checks; dependence on the previous decision within sessions; a seasonal
+  quarter scaled to the year.
+- task274: groups below a line with an instrument bias under one calibration and a remeasured subsample; age with missing
+  start dates.
+- task275: observed trips land undersized fish and avoid nursery grounds, so the unwanted catch per hour by ground is raised.
+- task279: substance lost from a compressible medium read off the surface lowering.
+- task280: probes silenced by members' own activity, the activity rising with load.
+- task281: wear-out before a fixed age with a part that never wears out; a year's need rebuilt with planned gaps.
+- task101: the decision's own earlier payments sit in the distribution it cuts from.
+- task114: demand that takes a room only when two parties share a site (co-presence under consolidation).
+- task126: a succession link that both continues a unit and opens a new one on a carried file.
+- task93: a floor's cost as a shortfall per person per pay period under flat all-in pay.
+- task73: a capped slate bound by a processing allocation with re-assigned review intervals.
+- task65: capped sums over entities constituted from child records by the child's own location.
+- task57: archives whose union nulls a third of records; filed place limits binding below the money.
+- task53: eligible volume pooled per account against a scale break.
+- task38, task34, task24, task19, task14, task10, task9, task8, task7, task5, task4, task3, task2, task1: the legacy
+  surface-read, identity and stated-rule forms (pre-10/10, not drawable now).
+- task182 v4 (another lane, same objective family): durations seen only in snapshots, length-biased.
+- task452 v2 (shipped): weight each reference observation by the stratum it was drawn in, not the revised one.
+- task127 v2 (landed on the portal): an intervention removes only the replaced step's excess over a concurrent step.
+- task472 v2 (shipped): saved work counts only where it brings a release into an earlier fixed window.
+- task181 (approved): an eventual count completed by each reporting route's own delay.
+- This slot: v1 daytime presence carried from commuting flows; v2 a stock's fall from preferential collectors against a
+  survey; v3 survival with censoring that follows worsening; v4 claims completed by notifying route; v5 duplication of
+  purchase at the home, homes linked by a shared payment card.
 
 ## Tried and rejected
 
@@ -392,3 +152,5 @@ counted from the shipped rows in `checks.py`; the call is unchanged when every a
   one total and 114 cash lines had two same-priced labels; the board now files the 25 minutes, the same day and the
   void at closing, and the generator re-weighs any label that allows a second reading under any window near them.
 - Architecture 5 (the rival whose buying homes least often also bought the Roastery, homes assembled from the Rewards cards and online accounts that share a bank-card token in Faircourt's settlement file), spent at its first portal round on 2026-11-07: both responses named Oro Rosso, each building homes through the settlement file's card reference (one response lists its "household-linkage" assumptions). The prompt and the brief file the unit as the home, which determinism requires, and once the home is filed the shared payment card is the only record that joins two cards, so the linkage ran as a work order: filing the estimand announced the rung, and the construction is the join that cleaning the data already asks for (Layer 1 carrying the stump). No closure keeps it, since leaving the unit unfiled forks the call between cards and homes. The slot re-roots to architecture 6 in another world, dataset, generator and prompt shell, with a decisive step that no filed unit or join announces.
+- Architecture 6's first candidate, set aside at the draw on 2026-11-07 before registration: a Lisbon ticketing marketplace's internal service latency SLIs read from a trace store kept under head-based sampling set per entry route, each downstream span inheriting its trace's entry rate (checkout in full, search at one per cent), so the services checkout calls look slow until each span is weighted by the inverse of its trace's entry rate. The setting and driver hit no slot note, but task452 v2 (shipped) already teaches the insight: weight each sampled record by the inclusion probability of the stratum it was drawn in, not the grouping it is analysed by. One sentence covers both, so the draw would read as a clone. The guard also showed the signature crowded: gap population with method_or_model_selection is spent on G14 (ten builds), G9 (five), G6 (nine) and E (the slot's own architecture 1), and G12 is banned against task190.
+- Architecture 6's second candidate, set aside at the draw on 2026-11-07: a ride-hailing platform's 2027 background-check vendor, which moves a driver sign-up inside the activation target only where the check cleared last, the other requirements (documents, vehicle inspection, training) running alongside it. The slot screen found it spent: task127 v2 (the portal landed it) credits an intervention only with the replaced step's excess over a concurrent step, and task472 v2 credits saved work only where it moves a release into an earlier window.

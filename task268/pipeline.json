@@ -1,30 +1,30 @@
 {
  "task": "task268",
- "status": "FAILED_TO_STUMP",
- "domain": "marketing-consumer-research",
+ "status": "DESIGN",
+ "domain": "general-statistics-data-science",
  "objective": "descriptive-distribution",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-07",
- "stump": "A competent analyst builds the duplication of purchase table on the Rewards card, the chain's customer unit, and names Nordhavn; homes assembled from the Rewards cards and online accounts that pay with one bank card in Faircourt's settlement file put Oro Rosso lowest.",
- "architecture": 5,
+ "stump": "A competent analyst takes each service's SLI over the spans the trace store kept, or reweights each day by its kept share, and passes the high-volume services, whose slow requests cluster in the busy minutes the sampler's per-second cap thins most; weighted minute by minute by the load balancer's counts, those services breach their budgets.",
+ "architecture": 6,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-31"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, every line ruled",
-  "reader": "architecture 5 read and two re-reads after the counter repair: no leak, question 6 analytical"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-31 (three_rules.strategy_risk; older same-puzzle and same-driver notes differentiated)",
-  "nearest": "surface 2026-10-31: task267 and task264 promoted for adjudication, both differentiated on the card"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md (pass 1, FIX_NOW on the counter ask) and determinism_check_report_pass2.md (APPROVE)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -40,7 +40,7 @@
    "commit": ""
   }
  ],
- "resume": "re-root at stage 1: architecture 6 in another world, dataset, generator and prompt shell (architecture 5 spent on its first portal round, see the note's Tried and rejected)",
+ "resume": "stage 2: default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder (tune the budgets on the prototype so the designated set moves), closure, asks; then precut.py",
  "approved": null,
  "delivered": null,
  "portal": null,
