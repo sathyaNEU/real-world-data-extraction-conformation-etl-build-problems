@@ -90,8 +90,8 @@ def guidance_pdf(path):
     buf = io.BytesIO()
     doc = SimpleDocTemplate(buf, pagesize=A4, leftMargin=2.0 * cm, rightMargin=2.0 * cm, topMargin=1.6 * cm,
                             bottomMargin=2.0 * cm, title="Winter Discharge Fund 2026/27: discharge-to-assess packages",
-                            author="System Flow, NHS Marchshire ICB", creator="System Flow, NHS Marchshire ICB",
-                            producer="System Flow, NHS Marchshire ICB")
+                            author="System Flow, NHS Marchshire ICB", subject="Allocation note SF-2026-14",
+                            creator="ReportLab PDF Library - www.reportlab.com")
     story = [Paragraph(core.ICB, st["lh"]), Paragraph("System Flow, Marchford House, 14 Castle Street, Marchford",
                                                       st["lh2"])]
     for kind, text in GUIDANCE:
@@ -100,7 +100,7 @@ def guidance_pdf(path):
     foot = _footer("Winter Discharge Fund 2026/27, allocation note SF-2026-14, 28 September 2026")
     doc.build(story, onFirstPage=foot, onLaterPages=foot)
     open(path, "wb").write(buf.getvalue())
-    PP.normalize_pdf(path, b"D:20260928101347+01'00'", "System Flow, NHS Marchshire ICB")
+    PP.normalize_pdf(path, b"D:20260928101347+01'00'")
 
 
 def guidance_text():

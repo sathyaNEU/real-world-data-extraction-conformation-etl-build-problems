@@ -22,11 +22,9 @@ Stump terms swept: equipment, patient, nights, covered, cleeve, wendlebury, marc
 - **INFO** `ward_reference.csv`: names 8 of 10 answer-set candidates; confirm it does not rank them on the decision question
 - **INFO** `winter_discharge_fund_2026-27.pdf`: names 7 of 10 answer-set candidates; confirm it does not rank them on the decision question
 
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
-
-## 10 container metadata (INFO 1)
-- **INFO** `-`: audit reported no writer signature (1 lines)
+## 10 container metadata (INFO 2)
+- **INFO** `-`: audit reported no writer signature (3 lines)
+- **INFO** `-`: PDF names the library that wrote it: winter_discharge_fund_2026-27.pdf                    ReportLab, reportlab
 
 ## 2 author vocabulary (clean)
 
@@ -35,6 +33,8 @@ Stump terms swept: equipment, patient, nights, covered, cleeve, wendlebury, marc
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
+
+## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
 

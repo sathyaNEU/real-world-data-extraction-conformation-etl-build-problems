@@ -461,7 +461,16 @@ def realism(target):
             ok("\u2014" not in s and "\u2013" not in s, "no em or en dash in %s" % f)
             txt += s if f.endswith(".txt") else ""
         b = open(p, "rb").read()
-        ok(b"openpyxl" not in b and b"ReportLab" not in b and b"python" not in b.lower()[:4000], "container scrubbed %s" % f)
+        if f.endswith(".pdf"):
+            from pypdf import PdfReader
+            m = PdfReader(p).metadata
+            ok(b"(unspecified)" not in b and m.get("/Subject") not in (None, "", "(unspecified)"),
+               "PDF %s carries a real Subject, no placeholder" % f)
+            ok("ReportLab" in (m.get("/Producer") or "") and "ReportLab" in (m.get("/Creator") or ""),
+               "PDF %s names the tool that wrote it in Producer and Creator" % f)
+        else:
+            ok(b"openpyxl" not in b and b"ReportLab" not in b and b"python" not in b.lower()[:4000],
+               "container scrubbed %s" % f)
     import docs as D
     g = D.guidance_text()
     ok("\u2014" not in g and "\u2013" not in g, "no dash in the guidance")

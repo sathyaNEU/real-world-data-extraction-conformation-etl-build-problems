@@ -95,15 +95,13 @@ def normalize_xlsx(path, creator, created, modified, company="NHS Marchshire Int
             z.writestr(zi, parts[name])
 
 
-def normalize_pdf(path, stamp, creator):
-    """Carry the issuing office's date on the PDF's info dates (equal length) and replace the library's
-    comment lines at equal length, so the cross-reference table stays valid."""
+def normalize_pdf(path, stamp):
+    """Carry the issuing office's date on the PDF's info dates (equal length, so the cross-reference table
+    stays valid). The library's own header comment and its Producer and Creator are left as written."""
     b = open(path, "rb").read()
     n0 = len(b)
     fixed = b"D:20000101000000+00'00'"
     assert len(stamp) == len(fixed), stamp
     b = b.replace(fixed, stamp)
-    for line in re.findall(rb"%[^\n]*ReportLab[^\n]*", b):
-        b = b.replace(line, (b"% " + creator.encode()).ljust(len(line))[:len(line)])
-    assert len(b) == n0 and b"ReportLab" not in b
+    assert len(b) == n0 and b"(unspecified)" not in b
     open(path, "wb").write(b)
