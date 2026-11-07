@@ -21,6 +21,7 @@ PROV = {
     D.F_PAB21: "Tallyhouse Ballot Services Pty Ltd, declarations of protected action ballot results, 2021 round",
     D.F_PAB24: "Tallyhouse Ballot Services Pty Ltd, declarations of protected action ballot results, 2023-24 round",
     D.F_GUIDE: "LSU Victoria Branch, Protected action ballots: a guide for branch officials, March 2025",
+    D.F_FINANCE: "LSU Victoria Branch, Dues and remittances: finance procedure FP-04, revised July 2025",
     D.F_BUREAU: "Western Shires Payroll Services, statements of union deductions by client council, 2025-26",
 }
 DISTRACTORS = [R.F_WORKFORCE, R.F_SURVEY]

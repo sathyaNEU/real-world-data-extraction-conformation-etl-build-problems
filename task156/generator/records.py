@@ -192,5 +192,8 @@ def write_round(path):
     ws2 = wb.create_sheet("Outside the round")
     rows2 = [[W.NAME[c], "Agreement runs to 2028 or later"] for c in W.CODES if c not in W.CANDIDATES]
     _sheet(ws2, ["Council", "Note"], rows2, [32, 40])
+    ws3 = wb.create_sheet("Notes")
+    ws3.append(["Applications for orders in this round to be lodged in February 2027; ballot period sought: "
+                "1 March to 15 March 2027."])
     wb.save(path)
     return len(rows)

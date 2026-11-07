@@ -124,9 +124,19 @@ def main():
     na = sum(A.rnd(A.ask_a(TARGET, payday=False)[k]) != A.rnd(ga[k]) for k in ga)
     nb = sum(A.rnd(A.ask_b(TARGET, key=("invitation_uid", "date"))[k]) != A.rnd(gb[k]) for k in gb)
     ok(na >= 10, "Ask A's platform dates move %d councils' dues" % na)
-    ok(nb >= 25, "Ask B's shared invitations move %d councils' hours" % nb)
+    ok(nb >= 20, "Ask B's shared invitations move %d councils' hours when one row per invitation and day is kept" % nb)
     nn = sum(A.rnd(A.ask_b(TARGET, key=None)[k]) != A.rnd(gb[k]) for k in gb)
-    ok(nn >= 25, "Ask B's superseded bookings move %d councils' hours when every row is kept" % nn)
+    ok(nn >= 20, "Ask B's superseded bookings move %d councils' hours when every row is kept" % nn)
+    ok(len(ga) == 24 and len(gb) == 24, "the asks cover the round's councils (%d, %d)" % (len(ga), len(gb)))
+    import subprocess
+    fp = subprocess.run(["pdftotext", os.path.join(TARGET, "lsu_dues_and_remittances_procedure_2025.pdf"), "-"],
+                        capture_output=True, text=True).stdout
+    ok("ends on a Sunday" in " ".join(fp.split()) and "financial year in which the pay period ends" in " ".join(fp.split()),
+       "Ask A's convention filed in FP-04: a pay period ends on a Sunday, credited to the year it ends in")
+    ok(not any(w in fp.lower() for w in ("thursday", "platform", "pay date", "pay day")),
+       "FP-04 names no weekday the advices carry and no platform (the device stays in the data)")
+    gd = A.ask_b(TARGET)
+    ok(all(abs((v % 1) - 0.5) > 0.03 for v in gd.values()), "Ask B round councils clear of half an hour")
     sp = sum(A.rnd(A.ask_a(TARGET, split=False)[k]) != A.rnd(ga[k]) for k in ga)
     ok(sp == len(W.BUREAU_CLIENTS), "Ask A's bureau split moves its %d client councils" % sp)
     cl = CE.main(TARGET)

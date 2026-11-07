@@ -132,7 +132,7 @@ GUIDE = [
           "officer forecasts each council's expected turnout for the round and the committee resolves the list."),
     ("p", "For the forecast, the roll is every member employed at the council on the membership register extract "
           "taken for the round, and expected turnout is the share of that roll forecast to return a ballot in the "
-          "round's ballot period. The forecast is the expected share, not a target; a council forecast at or above "
+          "round's ballot period, each member taken as they will stand when that period closes. The forecast is the expected share, not a target; a council forecast at or above "
           "50 per cent is put to the committee for an application."),
     ("h", "3. Timing for a round"),
     ("p", "Applications are lodged so that orders issue about a fortnight before the ballot opens. The committee "
@@ -161,6 +161,38 @@ def guide_pdf(out):
 
 def guide_text():
     return "\n".join(t for _, t in GUIDE)
+
+
+F_FINANCE = "lsu_dues_and_remittances_procedure_2025.pdf"
+FINANCE = [
+    ("t", "Dues and remittances: finance procedure FP-04"),
+    ("s", "Local Services Union, Victoria Branch. Finance and Administration. Revised July 2025."),
+    ("h", "1. Dues"),
+    ("p", "Dues are set by the Branch Council each year and are payable fortnightly. For 2025-26 they are $27.40 a "
+          "fortnight for full-time members, $20.60 for part-time members and $13.80 for casual members."),
+    ("h", "2. How members pay"),
+    ("p", "Members pay by deduction from their council pay or by direct debit from their bank account. Direct debits "
+          "are collected by the branch's bank and are not covered by this procedure."),
+    ("h", "3. Payroll deduction"),
+    ("p", "Each council deducts dues in every fortnightly pay. Every council pays fortnightly in arrears: a pay period "
+          "ends on a Sunday and is paid later that week. The council remits the deductions to the branch with a "
+          "remittance advice, or its payroll provider does so on its behalf."),
+    ("p", "Finance records each advice in the remittance register when it is received. Dues deducted are credited to "
+          "the financial year in which the pay period ends, whatever day the advice arrives."),
+    ("h", "4. Arrears"),
+    ("p", "A member whose dues are more than 13 weeks in arrears becomes unfinancial under rule 9. Finance sends the "
+          "organisers a monthly list of members who have fallen into arrears."),
+]
+
+
+def finance_pdf(out):
+    st = _st()
+    story = [Paragraph(text, {"t": st["title"], "s": st["small"], "h": st["head"]}.get(kind, st["body"]))
+             for kind, text in FINANCE]
+    when = dt.datetime(2025, 7, 9, 14, 21, 5, tzinfo=AEST)
+    O.build(os_join(out, F_FINANCE), story, "Dues and remittances: finance procedure FP-04", W.UNION,
+            "Finance procedure for union dues, payroll deductions and remittance advices",
+            "LSU Victoria Branch, finance procedure FP-04, July 2025", when, when, margin_mm=22)
 
 
 def bureau_pdf(out):
@@ -193,3 +225,4 @@ def write_all(out):
     pab_pdfs(out)
     guide_pdf(out)
     bureau_pdf(out)
+    finance_pdf(out)

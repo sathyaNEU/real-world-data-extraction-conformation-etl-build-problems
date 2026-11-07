@@ -41,7 +41,7 @@ delegate elections show; the history the forecast is carried on was all gathered
 Shape 10, a scorecard against one threshold: the 24 councils in `bargaining_round_2027.xlsx` each carry an expected
 turnout and a side of the 50 per cent line, and the call is the set on the right side. Criteria: the set (1), each
 council's side (24), the councils whose side the decisive step moves named in the memo (8), the delegate lift and the
-back-test as critical components (2); asks: each council's 2025-26 dues (30) and organiser hours (30); the two
+back-test as critical components (2); asks: each round council's 2025-26 dues (24) and organiser hours (24); the two
 deliverables present (2). Well over 25, supplied by the answer's structure. The prompt names no count.
 
 ## Default path
@@ -180,39 +180,44 @@ declarations and the round tracker. Every ask reads other rows: Ask A the counci
 the bureau's statements; Ask B the organisers' diary export and the forum sign-ins (placed through the register,
 which carries no device row). Zero device or hazard rows sit in the call's population.
 
-**Ask A, dues each council's payroll deducted for the branch for pay periods ending in 2025-26 (30 figures, whole
-dollars).** H18: the branch's income from each council, which industrial action puts at risk. Construction: pay
-periods ending 1 July 2025 to 30 June 2026. Primary: the twelve councils on the regional payroll platform from January
-2026 date each run by its pay day, four days after the Sunday period end, so the run ending 28 June 2026 appears as 2
-July and the date as carried drops it: twelve figures miss by one run each. Second: the bureau's three clients sit in
+**Ask A, dues each round council's payroll deducted for the branch for pay periods ending in 2025-26 (24 figures,
+whole dollars).** H18: the branch's income from each council, which industrial action puts at risk. Construction: pay
+periods ending 1 July 2025 to 30 June 2026; finance procedure FP-04 files the convention (every council pays
+fortnightly in arrears, a pay period ends on a Sunday, a deduction is credited to the year its period ends in).
+Primary: the twelve round councils on the regional payroll platform from January 2026 date each run by its pay day,
+four days after the Sunday period end, so the run ending 28 June 2026 appears as 2 July and the date as carried drops
+it: twelve figures miss by one run each. No sentence names the platform, a weekday or which advices are dated how;
+only the weekday pattern in the advices shows it. Second: the bureau's three clients sit in
 one payment per run, split only by its statements. Hazard: an advice re-sent with its own number. Pin test: the asking
 sentence files the window by pay period, not which column carries it.
 
-**Ask B, organiser hours at each council in 2025-26 (30 figures, whole hours).** H18: where organising time went in
-the year the delegates were re-elected. Construction: travel and administration out; a regional forum's hours shared
-by the sign-ins from each council. Primary: one diary event is one organiser on one invitation on one day; a
+**Ask B, organiser hours at each round council in 2025-26 (24 figures, whole hours).** H18: where organising time went in
+the year the delegates were re-elected. Construction: travel and administration out; the asking sentence files the unit
+(a visit two organisers made counts for both, a moved booking once as held) and a regional forum's hours shared by
+the sign-ins from each council. Primary: one diary event is one organiser on one invitation on one day; a
 rescheduled booking leaves its superseded row (same organiser, invitation and day, earlier update), and about one
 visit in nine is made by two organisers on one invitation, so keeping one row per invitation and day drops the
-second organiser and keeping every row counts the superseded bookings: all thirty figures move either way. Hazard:
+second organiser and keeping every row counts the superseded bookings: all 24 figures move either way. No field
+marks a moved booking; only the repeat of one organiser, invitation and day with an earlier update shows it. Hazard:
 weekly delegates' meetings share one invitation across weeks.
 
 | Ask | Figures | Cracker path (lands the call, runs the battery, executes every filed rule) | Cracker keeps | Verdict |
 |---|---|---|---|---|
-| A, dues 2025-26 | 30 | one copy of each advice, the bureau split by its statements, each run by the date the advice carries | 18 of 30 | miss |
-| B, organiser hours 2025-26 | 30 | travel and administration out, one row per invitation and day at its last update, forums by sign-ins | 0 of 30 | miss |
+| A, dues 2025-26 | 24 | one copy of each advice, the bureau split by its statements, each run by the date the advice carries | 12 of 24 | miss |
+| B, organiser hours 2025-26 | 24 | travel and administration out, every organiser's rows counted, forums by sign-ins, no moved booking found | 0 of 24 | miss |
 
 | Ask | Mirror (the vote-history set, same ask handling) | Mirror keeps |
 |---|---|---|
-| A | as the cracker | 18 of 30 |
-| B | as the cracker | 0 of 30 |
+| A | as the cracker | 12 of 24 |
+| B | as the cracker | 0 of 24 |
 
-Pair ceiling: 45.0 (one response on the call and one off it, both handling the asks the cracker's way).
-Mirror leakage: 30.0 per cent of the ask weight.
-Measured by: generator/ceiling.py (on the cut pack: the cracker keeps 18 of 60 ask figures; the full includer, a stress row, keeps all 60).
+Pair ceiling: 42.2 (one response on the call and one off it, both handling the asks the cracker's way).
+Mirror leakage: 25.0 per cent of the ask weight.
+Measured by: generator/ceiling.py (on the cut pack: the cracker keeps 12 of 48 ask figures; the full includer, a stress row, keeps all 48).
 
 ## Gates at stage 3
 
-- `checks.py`: 35 assertions, 0 failed; `verify.py`: 0 disagreements; two consecutive builds byte-identical (target,
+- `checks.py`: 39 assertions, 0 failed; `verify.py`: 0 disagreements; two consecutive builds byte-identical (target,
   golden, figures.json, submission.md); `figures_check.py` PASS (88 figures); `precut.py` 61 checks, 0 FAIL, 0 WARN;
   `voice-check.py` PASS (827 characters); `guard.py heart` PASS after a final fetch; `surface` promotes no pair.
 - `leak.py` REVIEW, no LEAK, each line ruled: the answer-figure lines are small counts that coincide (a yes count in a
@@ -221,7 +226,10 @@ Measured by: generator/ceiling.py (on the cut pack: the cracker keeps 18 of 60 a
   declarations are past realised turnouts, the easy route's own input and a past fact, never a forecast); the three
   stump-paragraph words in the 2023-24 declarations are "carried", "question" and "declarations", the agent's own
   ordinary wording; the dates after the setting are the agreements' nominal expiry dates in the round tracker and the
-  2026-28 term's end date in the delegate register, both future by nature.
+  2026-28 term's end date in the delegate register, both future by nature. After round 1: the tracker's and the
+  survey's 'Notes' sheets are the organisation's own notes (the round's lodgement and ballot period; the survey's
+  fieldwork dates), describing no column or file; FP-04's three stump-paragraph words are 'register', 'member' and
+  'record' in finance's ordinary sense (the remittance register), naming no move.
 - The PDFs are Writer exports (officepdf), Author the issuing organisation, a real Subject; the workbooks carry their
   owners' names and Excel's own dialect; no programming library appears in any container.
 
@@ -346,3 +354,21 @@ Measured by: generator/ceiling.py (on the cut pack: the cracker keeps 18 of 60 a
   already broke the consent, so the decisive step (each replay day's own water table) was never needed. Lesson: the easy
   route has to be the one strong solvers actually file, and it has to land on the wrong side; a count of rare
   exceedances spreads with every modelling choice, so the call now sits on a mean quantity whose naive family is tight.
+- Judge round 1 (2026-11-07, FIX_NOW on the asks; the call forced, Gate G analytical_non_defect, Gate H pass). Ask A's
+  window read literally dropped the platform councils' last run (a 2 July 2026 date in the period-end column): FP-04 now
+  files the record's own convention (a pay period ends on a Sunday and is paid later that week; credited to the year it
+  ends in), naming no platform and no weekday the advices carry. Ask B's unit was open (raw, per invitation and day, or
+  per organiser, invitation and day): the asking sentence now files it (a visit two organisers made counts for both, a
+  moved booking once as held). Both asks were scoped to the 30 councils the branch covers while the prompt read as the
+  round: cut to the round's 24, the regional platform's twelve councils re-sited inside the round on the same pay
+  cycles, so no in-round figure moved. Ask 1's turnout figures had no rounding and a refit evaluating members at the
+  extract sat about 0.7 points under: the guide now files each member as they will stand when the ballot period closes
+  and the tracker files that period (1 to 15 March 2027); whole-per-cent figures were not adopted because five councils
+  sit within 0.05 of a half point (Corrigan Valley 62.53, Halston 59.53, Pellham 58.49, Rosedene 45.51, Underhill 40.54),
+  so a worksite-effects refit (lift 1.027) can cross a rounding edge; the prompt asks only whether each council reaches
+  half, the side being determinate under every refit. freeze.py: the main side unmoved; the twelve out-of-round ask
+  figures and block 4's turnout percentages were dropped by the repair (allowed, this line).
+- Hardening noted, not applied (the judge rated stump power moderate to good: a model that fits the delegate term lands
+  the call): ship the 2026-28 term as the organising coordinator's separate July 2026 election return rather than a
+  sheet of the delegate register, so the register a solver opens holds the terms the online votes cover and the new
+  term sits in a file read for its own purpose; the call, the stump and every figure would stay frozen.

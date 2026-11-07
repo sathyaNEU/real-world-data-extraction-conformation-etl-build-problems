@@ -22,10 +22,14 @@ F_SIGNIN = "regional_forum_signin_2025-26.csv"
 F_REG = "membership_register_extract_2026-11-02.csv"
 F_SITES = "worksites_2026-11.csv"
 BUREAU = "Western Shires Payroll Services"
+F_ROUND = "bargaining_round_2027.xlsx"
 
 
 def councils(target):
-    return sorted({r["council"] for r in csv.DictReader(open(os.path.join(target, F_SITES), encoding="utf-8"))})
+    """The councils in the 2027 round (the tracker's '2027 round' sheet)."""
+    from openpyxl import load_workbook
+    ws = load_workbook(os.path.join(target, F_ROUND), read_only=True)["2027 round"]
+    return sorted(r[0] for i, r in enumerate(ws.iter_rows(values_only=True)) if i > 0 and r[0])
 
 
 def bureau_split(target):
@@ -55,11 +59,11 @@ def ask_a(target, dedup=True, split=True, payday=True):
             continue
         if payday and d.weekday() == 3:
             d = d - dt.timedelta(days=4)
-        if FY0 <= d <= FY1:
+        if FY0 <= d <= FY1 and r["employer"] in tot:
             tot[r["employer"]] += float(r["amount"])
     if split:
         for d, c, amt in bureau_split(target):
-            if FY0 <= d <= FY1:
+            if FY0 <= d <= FY1 and c in tot:
                 tot[c] += amt
     return {c: round(v, 2) for c, v in tot.items()}
 
@@ -87,7 +91,7 @@ def ask_b(target, key=("invitation_uid", "organiser", "date"), forums="signin"):
     for r in rows:
         if r["activity"] == "Regional delegates forum":
             forum_h[r["date"]] = forum_h.get(r["date"], 0.0) + _hours(r)
-        else:
+        elif r["council"] in tot:
             tot[r["council"]] += _hours(r)
     if forums == "signin":
         mem = {}
@@ -105,7 +109,8 @@ def ask_b(target, key=("invitation_uid", "organiser", "date"), forums="signin"):
         for d, h in forum_h.items():
             n = sum(by[d].values())
             for c, k in by[d].items():
-                tot[c] += h * k / n
+                if c in tot:
+                    tot[c] += h * k / n
     return {c: round(v, 4) for c, v in tot.items()}
 
 

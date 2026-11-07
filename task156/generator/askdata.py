@@ -12,7 +12,7 @@ import world as W
 FY0, FY1 = dt.date(2025, 7, 1), dt.date(2026, 6, 30)
 RATE = {"Full time": 27.40, "Part time": 20.60, "Casual": 13.80}     # per fortnight, 2025-26
 # councils on the regional payroll platform from January 2026: its advices date each run by the pay day
-PLATFORM = ["ARD", "DAR", "HAL", "OAK", "NOR", "VAL", "WES", "GLE", "BUR", "DEN", "ASH", "STA"]
+PLATFORM = ["ARD", "DAR", "HAL", "OAK", "NOR", "VAL", "WES", "GLE", "COR", "ELM", "PEL", "STA"]
 PLATFORM_FROM = dt.date(2026, 1, 1)
 RESENT = ("LIN", dt.date(2026, 3, 8))          # an advice the council's payroll sent twice
 ORGANISERS = ["ORG01", "ORG02", "ORG03", "ORG04", "ORG05", "ORG06", "ORG07"]

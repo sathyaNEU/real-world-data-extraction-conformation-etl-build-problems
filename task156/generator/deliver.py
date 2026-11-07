@@ -254,20 +254,21 @@ def submission(R, path):
     L.append("5. Ran each member of the 2 November 2026 roll at the councils in bargaining_round_2027.xlsx with the "
              "2026-28 delegates in post on the extract and averaged by council.")
     L.append("6. Applied the guide's rule: apply where expected turnout is at least 50 per cent.")
-    L.append("7. Dues: one copy of each advice, the bureau's runs split by its statements, Thursday-dated platform "
-             "runs moved back four days to their Sunday period end.")
+    L.append("7. Dues: one copy of each advice, the bureau's runs split by its statements, each run placed at the "
+             "Sunday its pay period ends (FP-04), a Thursday-dated platform advice moved back four days.")
     L.append("8. Organiser hours: travel and administration out, one row per organiser, invitation and day at its last "
-             "update, each forum's hours shared by the sign-ins placed through the register.")
+             "update (a moved booking keeps its earlier row), each forum's hours shared by all its sign-ins.")
     L.append("")
     L.append("## 4. Deliverable Answers\n")
     L.append("### %s\n" % XLSX)
-    L.append("1. Each council's expected turnout and whether it reaches half the roll:")
+    L.append("1. Whether each council's expected turnout reaches half the roll:")
     for c in sorted(K.candidates):
-        L.append("   - %s: about %s per cent, %s" % (c, pct(g[c]), "reaches half" if g[c] >= 0.5 else "below half"))
-    L.append("2. Dues each council's payroll deducted for the branch, pay periods ending in 2025-26, whole dollars:")
+        L.append("   - %s: %s" % (c, "reaches half" if g[c] >= 0.5 else "below half"))
+    L.append("2. Dues each council in the round's payroll deducted for the branch, pay periods ending in 2025-26, "
+             "whole dollars:")
     for c in sorted(R["dues"]):
         L.append("   - %s: %s" % (c, "{:,}".format(A.rnd(R["dues"][c]))))
-    L.append("3. Organiser hours at each council in 2025-26, whole hours:")
+    L.append("3. Organiser hours at each council in the round in 2025-26, whole hours:")
     for c in sorted(R["hours"]):
         L.append("   - %s: %d" % (c, A.rnd(R["hours"][c])))
     L.append("")

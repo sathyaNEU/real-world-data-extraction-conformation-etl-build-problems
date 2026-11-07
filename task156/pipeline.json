@@ -15,8 +15,8 @@
   "checks": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK, on e4be2d15: answer-figure coincidences (small counts in the declarations and the bureau statements), council names beside numbers in every file (no file ranks the councils on the 2027 question; the declarations are past realised turnouts the easy route reads too), three ordinary words of the stump paragraph in the 2023-24 declarations; each ruled in the design note",
-  "reader": "2026-11-07 isolated reader (Sonnet, medium) on e4be2d15: clean, no leak, Q6 analytical"
+  "leak_py": "REVIEW, no LEAK, on 952e2c71 after the round 1 repair (the new FP-04 and Notes sheets ruled in the design note)",
+  "reader": "round 1 (Sonnet, on e4be2d15): clean, no leak, Q6 analytical; FP-04 and the prompt changed since, copy refreshed at scratchpad/leak-task156/"
  },
  "duplicate_check": {
   "guard_check": "PASS 2026-11-07 on the registered card (gap population, pattern A)",
@@ -28,10 +28,13 @@
   "disposition": "FIX_NOW, ask layer: the dues Sunday period end, the diary's one entry per organiser, invitation and day at its last update, the 30 against 24 council scope, turnout rounding",
   "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
   "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "report": "task156/determinism_check_report.md"
+  "report": "task156/determinism_check_report.md",
+  "round1": "FIX_NOW on the asks (2026-11-07, /tmp/determinism-check-task156-r1/verdict.md): call forced and reproduced, Gate G analytical_non_defect, Gate H pass; asks open on the dues window, the diary unit, the asks scope and ask 1 rounding",
+  "repair": "FP-04 files the Sunday period-end convention; the prompt files the diary unit and scopes both asks to the round (24 each, platform councils re-sited inside the round, no in-round figure moved); the guide and tracker file the ballot period close for each member's state; ask 1 asks the side only (five councils within 0.05 of a half point); freeze.py: main side unmoved, 12 out-of-round ask figures and block 4 turnout percentages dropped (allowed)",
+  "round2": "pending: scratch /tmp/determinism-check-task156-r2/ (fresh target/, judge_brief.md); main thread spawns on Sonnet"
  },
  "returned": [],
- "resume": "stage 4: fix the four ask-layer FIX_NOW items in the generator (main call frozen, freeze.py), rerun the free gates, then the one re-judge on Sonnet",
+ "resume": "stage 4: the main thread spawns the one re-judge on Sonnet on /tmp/determinism-check-task156-r2/; on APPROVE, re-run the leak reader only if asked (FP-04 and the prompt changed), then every gate on the final cut and SHIPPED with target.zip and golden/ added with -f; rebuild with `python3 task156/generator/build.py`",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -128,17 +131,17 @@
   }
  ],
  "gates_stage3": {
-  "checks": "35 assertions, 0 failed (Gate F: 0 of 4 cheap routes land the call; 5 standing variants file the golden)",
-  "verify": "independent verifier (pandas, formula GLM, pdfplumber) reproduces the call, every council side and every ask figure, 0 disagreements",
-  "rebuild": "two consecutive builds byte-identical: target (15 files), 2 goldens, figures.json, submission.md",
-  "target_zip_sha256": "e4be2d15997c37df279b88661e5509b2e4c5e4f466a7b0f3cde2c4fde22c6c85",
-  "figures_check": "PASS, 88 figures in blocks 1 to 4, 0 absent",
-  "voice_check": "PASS (827 characters)",
+  "checks": "39 assertions, 0 failed (Gate F: 0 of 4 cheap routes land the call; 5 standing variants file the golden)",
+  "verify": "independent verifier reproduces the call, every council side and every ask figure, 0 disagreements",
+  "rebuild": "two consecutive builds byte-identical: target (16 files), 2 goldens, figures.json, submission.md",
+  "target_zip_sha256": "952e2c71b0d5239a897c6a97bb25db58f96bb057bf8b64b5d39fa95bfced993f",
+  "figures_check": "PASS, 52 figures in blocks 1 to 4, 0 absent",
+  "voice_check": "PASS (900 characters)",
   "ceiling": {
-   "pair": 45.0,
-   "cracker": 61.5,
-   "mirror": 28.5,
-   "mirror_leakage": 30.0,
+   "pair": 42.2,
+   "cracker": 58.8,
+   "mirror": 25.8,
+   "mirror_leakage": 25.0,
    "script": "generator/ceiling.py"
   },
   "figures": {
@@ -147,7 +150,9 @@
    "delegate_lift_logit": 1.054,
    "lift_points": 23.9,
    "backtest_mae_points": 0.68
-  }
+  },
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "heart": "PASS after round 1 repair"
  },
- "zip_sha256_16": "e4be2d15997c37df"
+ "zip_sha256_16": "952e2c71b0d5239a"
 }

@@ -32,6 +32,12 @@
    "rows": 1130
   },
   {
+   "file": "target/lsu_dues_and_remittances_procedure_2025.pdf",
+   "source": "LSU Victoria Branch, Dues and remittances: finance procedure FP-04, revised July 2025",
+   "licence": "Constructed for this task; no third-party data; free to use with the task.",
+   "rows": null
+  },
+  {
    "file": "target/lsu_pab_guide_for_officials_2025.pdf",
    "source": "LSU Victoria Branch, Protected action ballots: a guide for branch officials, March 2025",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
@@ -71,7 +77,7 @@
    "file": "target/payroll_remittance_advices_2025-26.csv",
    "source": "LSU Victoria Branch finance: council payroll remittance advices for union dues received July 2025 to July 2026",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 806
+   "rows": 804
   },
   {
    "file": "target/regional_forum_signin_2025-26.csv",
