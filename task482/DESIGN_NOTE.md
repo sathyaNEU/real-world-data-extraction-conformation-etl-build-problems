@@ -828,3 +828,7 @@ Architecture 11 (the contractor's plausible values drawn from a conditioning mod
 - Architecture 16 design (2026-10-31): the family intensities graded to two decimals, dropped on the measured spread:
   the defensible fits put 6082 billet between 0.260 and 0.268 and the castings between 0.45 and 0.52, so the call is
   graded on the premium and the families earning it, and the prompt pins no rounding on the intensities.
+- Architecture 16, the homogenizing furnace's gas allocated by its loads' firing hours (2026-11-07, spent on its first
+  portal round): both responses landed the golden premium of EUR 342,000 on the firing-hours allocation, the method a
+  careful analyst reaches for, which the hourly gas fitted at R-squared 0.9985, so the fit handed over the route; the
+  portal also flagged Domains Fit. The emissions-inventory world and the furnace-allocation driver are spent.

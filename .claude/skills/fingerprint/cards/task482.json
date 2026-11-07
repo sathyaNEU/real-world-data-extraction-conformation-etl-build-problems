@@ -472,5 +472,6 @@
     "second-sentence opener": "set",
     "rounding opener": "tonnes",
     "deliverable set": "csv+docx"
-  }
+  },
+  "architecture_spent": true
 }
