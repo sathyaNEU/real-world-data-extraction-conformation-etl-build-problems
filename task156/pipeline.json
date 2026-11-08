@@ -1,55 +1,40 @@
 {
  "task": "task156",
- "status": "FAILED_TO_STUMP",
- "domain": "political-science-public-policy/election-polling-forecasting (client domain political-science-public-policy; world: a Victorian local government union branch choosing the councils at which it applies for protected action ballot orders for ballots opening 1 March 2027)",
+ "status": "DRAWING",
+ "domain": "energy-systems-utilities/asset-condition-maintenance (client domain energy-systems-utilities; world: an Irish regional public rapid-charging operator naming, for its concession's 2027 review, the hubs whose high-power charge points will fall below 99 per cent availability once the partnership's programme removes the legacy 50 kW units at some hubs)",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-11-07",
- "stump": "Carrying each member's own voting history, calibrated to the 2021 and 2023-24 declared turnouts and checked on the 2023-24 round within a point, files 15 councils above half; the step that lands it there is reading each member's past votes as theirs alone when they rode the elected delegate in post at their worksite at the time, and the July 2026 delegate elections left worksites at six of those councils without one and filled worksites at two others, so with the 2026-28 delegates the set is 11.",
- "architecture": 3,
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-11-08",
+ "stump": "Carrying each high-power charge point's controller-hang rate from 2023 to 2026, validated leaving each unit out and on two back-tests, files 3 hubs below 99 per cent in 2027, the three coastal hubs on their ordinary faults; the step that lands it there is reading each unit's hang rate as its own, when a hang comes only after about 75 days without a restart and the legacy unit's cabinet repairs restarted every unit at its hub every few weeks, so at the seven programme hubs with neither two-monthly visits nor frequent supply interruptions the high-power units run months between restarts, hang three or four times a year, and the set is 10.",
+ "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-11-07",
-  "checks": "61 checks, 0 FAIL, 0 WARN"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK, on 4610bc97 (every line ruled in the design note)",
-  "reader": "round 1 (Sonnet, on e4be2d15): clean, no leak, Q6 analytical; FP-04 and the prompt changed since, copy refreshed at scratchpad/leak-task156/",
-  "reader_r2": "round 2 re-read clean (scratchpad leak-task156/reader_answers_r2.md)",
-  "pending": "the 2026-28 term moved into delegate_election_return_2026.xlsx after the round 2 re-read: one leak re-read owed before the ship counts (main thread)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "PASS 2026-11-07 on the registered card (gap population, pattern A)",
-  "heart": "PASS 2026-11-07 after a final fetch of main (nearest drivers 0.05, task179 v5 and task177 v4)",
-  "surface": "no pair promoted for task156; people: Samantha Taylor, and \"Branch Secretary\" as a title in the guide (no name)"
+  "guard_check": "WARN 2026-11-08T01:11Z on the registered card (repeat.decision against task268, repeat.question_form against task482, both answered in the design note); test.same_puzzle_older (task451) and test.same_driver_older (task105 v1, task162 v2, task170 v1, task229 v3) differentiated on the card",
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE after the step 8 rewording",
-  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "report": "task156/determinism_check_report.md",
-  "round1": "FIX_NOW on the asks (2026-11-07, /tmp/determinism-check-task156-r1/verdict.md): call forced and reproduced, Gate G analytical_non_defect, Gate H pass; asks open on the dues window, the diary unit, the asks scope and ask 1 rounding",
-  "repair": "FP-04 files the Sunday period-end convention; the prompt files the diary unit and scopes both asks to the round (24 each, platform councils re-sited inside the round, no in-round figure moved); the guide and tracker file the ballot period close for each member's state; ask 1 asks the side only (five councils within 0.05 of a half point); freeze.py: main side unmoved, 12 out-of-round ask figures and block 4 turnout percentages dropped (allowed)",
-  "round2": "DETERMINISTIC (2026-11-07, /tmp/determinism-check-task156-r2/verdict.md, report task156/determinism_check_report.md): the call reproduced, 6 points either side, no respecification flipping a council; stump power moderate to high; FIX_NOW on step 8 wording only, applied"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
- "returned": [
-  {
-   "date": "2026-11-07",
-   "portal": "FAILED_TO_STUMP: both responses landed the 11 councils. Each fitted a member-level turnout logit with worksite delegate coverage as a covariate from the start (the delegate register and the July 2026 election return joined to members on the worksite code), evaluated every covariate at the ballot close with the 2026-28 delegates in post, set one log-odds shift on the 32 declarations (0.8995 and 0.8985) and validated leaving each council out (0.70 points); both named the 2024-26 delegates carried forward as a rejected alternative that reverses eight councils. Asks: Response 2 matched all 48 dues and hours figures; Response 1 all 24 hours and 12 of 24 dues (it kept the Thursday-dated period ends as dated).",
-   "lesson": "A covariate the pack ships as its own register on a key the members already carry is in every strong solver's model, and a forecaster evaluates each covariate at the forecast date by reflex, so a recorded covariate that changes between the history and the window is rung 0, not a stump; the July 2026 election return had no use but the decisive step and its name dated the change. The designed default path (vote history without the covariate) was not the route either response ran. Ask devices the hygiene battery executes (the latest update per organiser, invitation and day; every organiser on a visit; one copy of a re-sent advice) held nothing; only the weekday pattern in the platform's advices held, on one response, and FP-04's Sunday sentence pointed at it.",
-   "repair": "re-root (architecture 4) in a new domain and world, 2026-11-07"
-  }
- ],
- "resume": "shipped; the main thread runs one leak re-read on the final cut (the 2026-28 term now ships as its own election return), then the author's portal list",
+ "returned": [],
+ "resume": "architecture 4 drawn 2026-11-08; next: stage 2 design to precut.py exit 0, then the generator",
  "approved": null,
- "delivered": "2026-11-07",
- "portal": "FAILED_TO_STUMP",
+ "delivered": null,
+ "portal": null,
  "portal_id": "",
- "portal_status": "FAILED_TO_STUMP",
- "portal_status_date": "2026-11-07",
+ "portal_status": "",
+ "portal_status_date": "",
  "history": [
   {
    "architecture": 1,
@@ -137,33 +122,76 @@
    "answer": "Hold the Ngaio Road connection until the PS03 storage upgrade is commissioned (3.20 overflows a year with the subdivision against the consent's 2)",
    "delivered": "2026-10-31",
    "fate": "FAILED_TO_STUMP on the portal (2026-11-07): both responses landed the hold call; re-rooted as architecture 3 in a new domain and world the same day"
+  },
+  {
+   "architecture": 3,
+   "domain": "political-science-public-policy/election-polling-forecasting (client domain political-science-public-policy; world: a Victorian local government union branch choosing the councils at which it applies for protected action ballot orders for ballots opening 1 March 2027)",
+   "objective": "forecasting",
+   "stump": "Carrying each member's own voting history, calibrated to the 2021 and 2023-24 declared turnouts and checked on the 2023-24 round within a point, files 15 councils above half; the step that lands it there is reading each member's past votes as theirs alone when they rode the elected delegate in post at their worksite at the time, and the July 2026 delegate elections left worksites at six of those councils without one and filled worksites at two others, so with the 2026-28 delegates the set is 11.",
+   "precut": {
+    "exit": 0,
+    "date": "2026-11-07",
+    "checks": "61 checks, 0 FAIL, 0 WARN"
+   },
+   "leak": {
+    "leak_py": "REVIEW, no LEAK, on 4610bc97 (every line ruled in the design note)",
+    "reader": "round 1 (Sonnet, on e4be2d15): clean, no leak, Q6 analytical; FP-04 and the prompt changed since, copy refreshed at scratchpad/leak-task156/",
+    "reader_r2": "round 2 re-read clean (scratchpad leak-task156/reader_answers_r2.md)",
+    "pending": "the 2026-28 term moved into delegate_election_return_2026.xlsx after the round 2 re-read: one leak re-read owed before the ship counts (main thread)"
+   },
+   "duplicate_check": {
+    "guard_check": "PASS 2026-11-07 on the registered card (gap population, pattern A)",
+    "heart": "PASS 2026-11-07 after a final fetch of main (nearest drivers 0.05, task179 v5 and task177 v4)",
+    "surface": "no pair promoted for task156; people: Samantha Taylor, and \"Branch Secretary\" as a title in the guide (no name)"
+   },
+   "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE after the step 8 rewording",
+    "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "report": "task156/determinism_check_report.md",
+    "round1": "FIX_NOW on the asks (2026-11-07, /tmp/determinism-check-task156-r1/verdict.md): call forced and reproduced, Gate G analytical_non_defect, Gate H pass; asks open on the dues window, the diary unit, the asks scope and ask 1 rounding",
+    "repair": "FP-04 files the Sunday period-end convention; the prompt files the diary unit and scopes both asks to the round (24 each, platform councils re-sited inside the round, no in-round figure moved); the guide and tracker file the ballot period close for each member's state; ask 1 asks the side only (five councils within 0.05 of a half point); freeze.py: main side unmoved, 12 out-of-round ask figures and block 4 turnout percentages dropped (allowed)",
+    "round2": "DETERMINISTIC (2026-11-07, /tmp/determinism-check-task156-r2/verdict.md, report task156/determinism_check_report.md): the call reproduced, 6 points either side, no respecification flipping a council; stump power moderate to high; FIX_NOW on step 8 wording only, applied"
+   },
+   "gates_stage3": {
+    "checks": "39 assertions, 0 failed",
+    "verify": "0 disagreements",
+    "rebuild": "two consecutive builds byte-identical: target (17 files), 2 goldens, figures.json, submission.md",
+    "target_zip_sha256": "4610bc9768a15a5be6815094628909eaa60860a47adf8b843af23037fa79bc0f",
+    "figures_check": "PASS, 52 figures",
+    "voice_check": "PASS (900 characters)",
+    "ceiling": {
+     "pair": 42.2,
+     "cracker": 58.8,
+     "mirror": 25.8,
+     "mirror_leakage": 25.0,
+     "script": "generator/ceiling.py"
+    },
+    "figures": {
+     "golden_set": 11,
+     "history_set": 15,
+     "delegate_lift_logit": 1.054,
+     "lift_points": 23.9,
+     "backtest_mae_points": 0.68
+    },
+    "precut": "61 checks, 0 FAIL, 0 WARN",
+    "heart": "PASS after round 1 repair",
+    "freeze": "PASS (determinism mode) on the round 2 pre-ship fixes",
+    "pdf_xref": "every PDF cross-reference offset verified; 2021 declarations Producer LibreOffice 7.1"
+   },
+   "returned": [
+    {
+     "date": "2026-11-07",
+     "portal": "FAILED_TO_STUMP: both responses landed the 11 councils. Each fitted a member-level turnout logit with worksite delegate coverage as a covariate from the start (the delegate register and the July 2026 election return joined to members on the worksite code), evaluated every covariate at the ballot close with the 2026-28 delegates in post, set one log-odds shift on the 32 declarations (0.8995 and 0.8985) and validated leaving each council out (0.70 points); both named the 2024-26 delegates carried forward as a rejected alternative that reverses eight councils. Asks: Response 2 matched all 48 dues and hours figures; Response 1 all 24 hours and 12 of 24 dues (it kept the Thursday-dated period ends as dated).",
+     "lesson": "A covariate the pack ships as its own register on a key the members already carry is in every strong solver's model, and a forecaster evaluates each covariate at the forecast date by reflex, so a recorded covariate that changes between the history and the window is rung 0, not a stump; the July 2026 election return had no use but the decisive step and its name dated the change. The designed default path (vote history without the covariate) was not the route either response ran. Ask devices the hygiene battery executes (the latest update per organiser, invitation and day; every organiser on a visit; one copy of a re-sent advice) held nothing; only the weekday pattern in the platform's advices held, on one response, and FP-04's Sunday sentence pointed at it.",
+     "repair": "re-root (architecture 4) in a new domain and world, 2026-11-07"
+    }
+   ],
+   "zip_sha256_16": "4610bc9768a15a5b",
+   "answer": "Apply for protected action ballot orders at 11 councils (Ardeen, Copeland Downs, Corrigan Valley, Fairholme, Halston, Lindale, Northvale, Pellham, Stanwick, Valmont, Westhaven)",
+   "delivered": "2026-11-07",
+   "fate": "FAILED_TO_STUMP on the portal (2026-11-07): both responses landed the 11 councils with the delegate coverage covariate evaluated at the ballot close; re-rooted as architecture 4 in a new domain and world on 2026-11-08, its build outputs removed from the folder at the draw (git history keeps them)"
   }
- ],
- "gates_stage3": {
-  "checks": "39 assertions, 0 failed",
-  "verify": "0 disagreements",
-  "rebuild": "two consecutive builds byte-identical: target (17 files), 2 goldens, figures.json, submission.md",
-  "target_zip_sha256": "4610bc9768a15a5be6815094628909eaa60860a47adf8b843af23037fa79bc0f",
-  "figures_check": "PASS, 52 figures",
-  "voice_check": "PASS (900 characters)",
-  "ceiling": {
-   "pair": 42.2,
-   "cracker": 58.8,
-   "mirror": 25.8,
-   "mirror_leakage": 25.0,
-   "script": "generator/ceiling.py"
-  },
-  "figures": {
-   "golden_set": 11,
-   "history_set": 15,
-   "delegate_lift_logit": 1.054,
-   "lift_points": 23.9,
-   "backtest_mae_points": 0.68
-  },
-  "precut": "61 checks, 0 FAIL, 0 WARN",
-  "heart": "PASS after round 1 repair",
-  "freeze": "PASS (determinism mode) on the round 2 pre-ship fixes",
-  "pdf_xref": "every PDF cross-reference offset verified; 2021 declarations Producer LibreOffice 7.1"
- },
- "zip_sha256_16": "4610bc9768a15a5b"
+ ]
 }

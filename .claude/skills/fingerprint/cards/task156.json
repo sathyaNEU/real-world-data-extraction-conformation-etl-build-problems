@@ -1,96 +1,129 @@
 {
   "task": "task156",
-  "architecture": "v3 (re-root in batch 1: a Victorian local government union branch choosing the councils at which it applies for protected action ballot orders for ballots opening 1 March 2027, a ballot counting only if half the roll votes, each member's vote carried from the branch's own online votes and lifted where an elected workplace delegate is active at the member's worksite)",
-  "drawn": "2026-11-07",
-  "slot_note": "re-root of task156 in the same objective (Forecasting), batch 1; architectures 1 and 2 in lineage",
-  "domain": "political-science-public-policy",
-  "subdomain": "election-polling-forecasting",
-  "client_domain": "political-science-public-policy",
-  "niche": "a union branch covering council workers in Victoria, Australia, choosing the councils whose enterprise agreements are being renegotiated in 2027 at which it applies to the Fair Work Commission for protected action ballot orders, a ballot being valid only if at least half the employees on the roll vote; turnout forecast member by member from the branch's own online votes and the ballot agent's declared results, with the mobilisation an elected worksite delegate brings",
+  "architecture": "v4 (re-root after architecture 3's portal FAILED_TO_STUMP: an Irish regional rapid-charging operator naming, for its concession's 2027 review, the hubs whose high-power charge points will fall below 99 per cent availability once the partnership's programme removes the legacy 50 kW units at some hubs; the high-power units' controller hangs run on the days since the hub was last powered down, which the legacy units' repairs at the isolator kept short)",
+  "drawn": "2026-11-08",
+  "slot_note": "re-root of task156 in the same objective (Forecasting); architectures 1, 2 and 3 in lineage, each spent on the portal",
+  "domain": "energy-systems-utilities",
+  "subdomain": "asset-condition-maintenance",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a regional public rapid-charging operator in Ireland preparing its concession's 2027 availability plan: which hubs will have a high-power charge point below the 99 per cent contract-year availability standard after the partnership's programme removes the end-of-life 50 kW units at some hubs, when the high-power units' controller hangs, which only an on-site power cycle clears, follow the days since the hub was last powered down",
   "objective": "forecasting",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Apply for protected action ballot orders at 11 councils (Ardeen, Copeland Downs, Corrigan Valley, Fairholme, Halston, Lindale, Northvale, Pellham, Stanwick, Valmont, Westhaven), each member's turnout read with the delegate in post at their worksite after the July 2026 delegate elections, against 15 on members' own voting history",
-  "answer_source": "submission.md block 1; generator/figures.json (call)",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population"
+    "time"
   ],
   "pattern": [
-    "A"
+    "none"
   ],
   "generators": [
+    "G7",
     "G14",
-    "G13",
-    "G4"
+    "G13"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "counterparty_acknowledgement",
+  "calibration_form": "none",
   "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and rule correctly builds each member's turnout from their participation in the branch's 2022, 2023 and 2025 online votes and their age, membership and employment, calibrates it to the ballot agent's declared 2021 and 2023-24 turnouts, confirms it reproduces the 2023-24 round council by council, applies it to the January 2027 roll and files 15 councils; members vote about 24 points more often where an elected delegate is active at their worksite, and the July 2026 delegate elections, after the last online vote, emptied worksites at some councils and filled others, so six of the 15 fall under half and two councils left out clear it.",
-  "domain_test": "The deciding quantity is each council's expected turnout in a ballot whose validity turns on half the roll voting, worked the way election forecasting works turnout: a vote-history model of each elector, calibrated on declared results, carrying the mobilisation effect of personal contact that turnout research estimates (the canvass or workplace contact lift), here the elected worksite delegate; with another field's nouns there is no roll, no turnout threshold and no mobilisation.",
-  "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "own:vote-history-turnout-carried-past-a-change-in-workplace-mobilisation",
+  "analyst_test": "A strong analyst who maps the re-keyed charge point IDs, converts the UTC status history and the local-time work orders, applies the concession's exclusions and reads the programme fits each high-power charge point's controller-hang rate with its model, age, usage and hub, validates it leaving each unit out and on 2025 and 2026 back-tests, carries it into 2027 with the legacy units removed and files only the hubs whose high-power units already ran below 99 per cent; the hangs follow the days since the hub was last powered down, which the legacy units' isolator repairs kept short, so at the hubs the programme strips the high-power units hang several times as often and most of those hubs fall below the standard.",
+  "domain_test": "The deciding quantity is each high-power charge point's 2027 availability, forecast the way asset condition and maintenance analysis forecasts it, from each failure mode's hazard on the clock that drives it and the maintenance and repair regime the year will run under; with another field's nouns there is no failure mode a power cycle clears and no repair that powers a whole hub down, so the forecast stops reading.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:hang-hazard-on-the-hub-power-down-clock-carried-through-a-changed-repair-regime",
   "layer1": [
     "utc-local",
+    "id-rekey-crosswalk",
+    "duplicate-notifications",
+    "heartbeat-lag-offline",
+    "code-list-change-between-contractors",
     "layout-change-across-years",
-    "code-migration",
-    "pdf-tables",
-    "stale-register-entries"
+    "pdf-tables"
   ],
-  "stakeholder_role": "the branch's research and bargaining officer, whose memo to the Branch Committee of Management recommends the councils at which the branch applies for protected action ballot orders",
-  "role_family": "research_desk",
-  "scoring_unit": "other",
+  "stakeholder_role": "the operator's network performance lead, who prepares the concession's 2027 availability plan for the partnership's annual review",
+  "role_family": "operations_director",
+  "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "online_vote_invitations_2022-2025.csv",
-    "rows": 54892,
-    "entity": "one row is one invitation the branch's online voting service sent one member for one online vote",
-    "grain": "member x online vote",
+    "file": "connector_status_history_2023-2026.csv",
+    "rows": 0,
+    "entity": "one row is one status change a charge point reported to the operator's back office, or that the back office wrote when the charge point's heartbeats stopped",
+    "grain": "charge point x status change",
     "source": "constructed for task156, no real dataset"
   },
-  "forum": "board_of_directors",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "cooperative_or_member_body",
+  "forum": "customer_or_counterparty",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "Victoria, Australia (fictional councils and a fictional union branch)",
-    "currency": "AUD",
-    "org_type": "trade union branch covering local government workers",
+    "geography": "Ireland (a fictional operator, partnership and hubs)",
+    "currency": "EUR",
+    "org_type": "regional public rapid-charging operator under a local authority concession",
     "invented_names": [
-      "Local Services Union, Victoria Branch",
-      "Tallyhouse Ballot Services",
-      "Bellcourt City Council",
-      "Marlow Coast Shire Council",
-      "Tallis Creek Shire Council"
+      "Ardvane Charge DAC",
+      "North Midlands Charging Partnership",
+      "Ardvane Rapid"
     ],
     "people": [
-      "Samantha Taylor",
-      "Dennis Kim",
-      "Eric Goodwin"
+      "Sorcha Jackman",
+      "Bronagh Allis",
+      "Ailis Fee"
     ]
   },
   "deliverables": [
-    "pab_2027_turnout_forecast.xlsx",
-    "pab_2027_recommendation_bcom.docx"
+    "hub_availability_2027.csv",
+    "availability_plan_2027.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "Each unit's chance of acting in a coming event is carried from its own record of past acts and lifted where a contact a separate dated register places at its site is in post, and the register's contacts changed after the last past act the record holds, so every route carried on the units' own record, each of which reproduces the last closed event, brings the old contacts into the coming event.",
-  "driver_concrete": "A member's chance of voting in a protected action ballot rises about 24 points where an elected delegate is active at their worksite, read from the branch's delegate register terms against each member's worksite on the roll; the July 2026 delegate elections, held after the last online vote in October 2025, left worksites at some councils with no delegate and filled others, so turnout carried from members' own votes over-forecasts the councils that lost delegates and under-forecasts those that gained them.",
-  "stump": "Carrying each member's own voting history, calibrated to the 2021 and 2023-24 declared turnouts and checked on the 2023-24 round within a point, files 15 councils above half; the step that lands it there is reading each member's past votes as theirs alone when they rode the elected delegate in post at their worksite at the time, and the July 2026 delegate elections left worksites at six of those councils without one and filled worksites at two others, so with the 2026-28 delegates the set is 11.",
+  "question_form": "which",
+  "driver": "Each unit's failures run on a clock that its site's other units' repairs reset, so its recorded failure rate is a property of how often those neighbours were repaired, and a forward plan that removes the failing neighbours stops the resets and multiplies the survivors' failures, which every route carried on each unit's own record misses while it validates on the years the resets ran.",
+  "driver_concrete": "A high-power charge point's controller hangs only after weeks without a power cycle, and the hub is powered down at the isolator whenever a legacy 50 kW unit beside it is repaired, so through 2023 to 2026 the high-power units hung about once a year; the partnership's programme removes the legacy units at some hubs in December 2026, after which those hubs are powered down only for planned maintenance and network faults and their high-power units hang several times a year.",
+  "stump": "Carrying each high-power charge point's controller-hang rate from 2023-26, validated leaving each unit out and on two back-tests, files only the hubs already running below 99 per cent in 2027; the step that lands it there is reading each unit's hang rate as its own, when the hangs follow the days since the hub was last powered down and the legacy units' isolator repairs powered those hubs down every few weeks, so at the hubs the programme strips the high-power units run months between power-downs and most of those hubs join the set.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task179": "task179 lifts each supervisee's booking chance by a status another agency records about the person, linked by name and birth date; here the lift is not a property of the person but of their worksite's elected delegate in post on the ballot date, a dated term in the union's own register, and the forecast turns on how those terms changed between the last observed vote and the ballot.",
-    "task157": "task157 expands a petition sample's validity rate with pair defects whose inclusion goes as the square of the sampling fraction; here no sample is expanded: every member's turnout is forecast and summed against a roll threshold. Both sit in election forecasting, but task157's population is a petition's signature lines and its estimate an expansion of a sample; here it is a ballot roll forecast member by member against a turnout threshold.",
-    "task107": "task107 moves a tight intake to the experienced rate at a service anniversary just before the window; here no anniversary or pay step exists: a worksite contact's elected term changes the propensity of every member at the site, in both directions.",
-    "task265": "task265 estimates an event-free share from a record that admits earlier starters only if still event-free (left truncation in a descriptive survival estimate); here nothing is truncated: every member's vote is recorded, and the forecast turns on a dated workplace contact that changed between the last observed vote and the ballot.",
-    "task154": "task154 deflates a stock reported at purchase prices across each holder's own holding period; here no price or valuation enters: turnout carried from members' votes is re-read through the delegate in post at each worksite."
+    "task451": "task451 completes each partner's unobserved cost from a payment-development pattern whose handler delay collapsed mid-period; here nothing is unobserved at the cut: each high-power unit's hang hazard runs on the days since its hub was last powered down, and what changes in the forward year is how often the hub is powered down, once the programme removes the legacy units whose repairs did it.",
+    "task162": "task162 replays a valve's action against recorded inlet pressure that a distant user's draw lowers; here no device acts on a recorded variable: a unit's failure clock is reset by the repairs made to other units at its hub, and the forward plan removes those units and so the resets.",
+    "task229": "task229 corrects a convex daily conversion for the intra-day swings an upstream controller imposes; here no conversion or measurement is biased: each unit's hang rate is a property of how often its hub was powered down for its neighbours' repairs, which the 2027 programme ends at some hubs.",
+    "task105": "task105's new outlet misses a class of commitment agreed a season ahead of its start; here no class or agreement timing enters: an existing unit fails more because the repairs to its neighbours that used to power it down stop.",
+    "task170": "task170 forecasts moves at the first scheduled measurement over a level from each unit's own path and the record's scatter; here no measurement or threshold on a unit's own path decides: the hang hazard runs on the time since the hub's last power-down, which other units' repairs set."
   },
   "lineage": [
+    {
+      "architecture": "v3 (re-root in batch 1: a Victorian local government union branch choosing the councils at which it applies for protected action ballot orders for ballots opening 1 March 2027, a ballot counting only if half the roll votes, each member's vote carried from the branch's own online votes and lifted where an elected workplace delegate is active at the member's worksite)",
+      "drawn": "2026-11-07",
+      "domain": "political-science-public-policy",
+      "subdomain": "election-polling-forecasting",
+      "objective": "forecasting",
+      "shape": "10",
+      "decision_type": "designation_set",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "generators": [
+        "G14",
+        "G13",
+        "G4"
+      ],
+      "gate_g": "forecasting",
+      "driver": "Each unit's chance of acting in a coming event is carried from its own record of past acts and lifted where a contact a separate dated register places at its site is in post, and the register's contacts changed after the last past act the record holds, so every route carried on the units' own record, each of which reproduces the last closed event, brings the old contacts into the coming event.",
+      "driver_concrete": "A member's chance of voting in a protected action ballot rises about 24 points where an elected delegate is active at their worksite, read from the branch's delegate register terms against each member's worksite on the roll; the July 2026 delegate elections, held after the last online vote in October 2025, left worksites at some councils with no delegate and filled others, so turnout carried from members' own votes over-forecasts the councils that lost delegates and under-forecasts those that gained them.",
+      "stump": "Carrying each member's own voting history, calibrated to the 2021 and 2023-24 declared turnouts and checked on the 2023-24 round within a point, files 15 councils above half; the step that lands it there is reading each member's past votes as theirs alone when they rode the elected delegate in post at their worksite at the time, and the July 2026 delegate elections left worksites at six of those councils without one and filled worksites at two others, so with the 2026-28 delegates the set is 11.",
+      "stump_strategy": "forecast_method_backtest",
+      "forum": "board_of_directors",
+      "forcing_event": "statutory_or_regulatory_filing",
+      "org_family": "cooperative_or_member_body",
+      "role_family": "research_desk",
+      "layer2_family": "forecast_uncertainty",
+      "layer2_pattern": "own:vote-history-turnout-carried-past-a-change-in-workplace-mobilisation",
+      "fate": "FAILED_TO_STUMP on the portal (2026-11-07): both responses landed the 11 councils; each put worksite delegate coverage in its member-level turnout logit from the start and evaluated it at the ballot close with the 2026-28 delegates, so the decisive step was a recorded covariate's forward value one join from the members' worksite code, and the July 2026 election return, read by nothing else, announced it; driver spent"
+    },
     {
       "domain": "physical-environmental-sciences",
       "subdomain": "hydrology-flood-frequency",
@@ -194,14 +227,14 @@
       "second-sentence opener": "the",
       "rounding opener": "overflows",
       "deliverable set": "docx+png+xlsx"
+    },
+    {
+      "question form": "where",
+      "second-sentence opener": "the",
+      "rounding opener": "the",
+      "deliverable set": "docx+xlsx"
     }
   ],
-  "notes": "forcing_event statutory_or_regulatory_filing: the branch's applications to the Fair Work Commission for protected action ballot orders, lodged in February 2027 for ballots opening 1 March 2027. The 2026-28 delegate term ships as the returning officer's July 2026 election return (delegate_election_return_2026.xlsx), the register holding the terms to 2024-26. Calibration redrawn to counterparty_acknowledgement at ship (the ballot agent's declared results), after surface promoted the realised_outcome_roster repeat against task154.",
-  "shell": {
-    "question form": "where",
-    "second-sentence opener": "the",
-    "rounding opener": "the",
-    "deliverable set": "docx+xlsx"
-  },
-  "registered": "2026-11-07T20:22:39Z"
+  "notes": "forcing_event audit_or_inspection: the partnership's annual concession review in December 2026, at which the operator names every hub it forecasts below the 99 per cent standard for 2027 with its remediation. Architecture 3's identity (a Victorian union branch's protected action ballots) moved into lineage with the portal's fate on 2026-11-08.",
+  "registered": "2026-11-08T01:11:52Z"
 }
