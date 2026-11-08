@@ -11,7 +11,7 @@ import numpy as np
 import openpyxl
 from openpyxl.styles import Alignment, Font, PatternFill
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.platypus import Paragraph, Spacer, Table
+from reportlab.platypus import KeepTogether, Paragraph, Spacer, Table
 
 import estim as ES
 import officepdf
@@ -33,6 +33,8 @@ F_TARIFF = "tariff_schedule_2026.pdf"
 FILES = [F_STATUS, F_SESS, F_DSO, F_REG, F_WO, F_PPM, F_SURVEY, F_SCHED, F_PROG, F_TARIFF]
 DISTRACTORS = [F_SURVEY, F_TARIFF]
 EXPORT = dt.datetime(2026, 11, 2, 7, 40, tzinfo=dt.timezone.utc)
+WO_SAVED = "2026-11-02T08:11:37Z"      # the maintenance coordinator's last save of the work order workbook
+PPM_SAVED = "2026-10-29T16:48:20Z"     # the contractor's last save of the planned maintenance schedule
 
 ERRORS = [("GroundFailure", "KX-3107", "Insulation fault on CCS cable %d, cable assembly replaced, insulation test passed."),
           ("HighTemperature", "KX-2210", "Repeated over-temperature trips, cooling fan replaced and filters cleaned."),
@@ -62,9 +64,22 @@ def status_rows(H):
     rng = np.random.default_rng([W.SEED, 501])
     out = []
     umap = {u["uid"]: u for u in H["units"]}
+    hubi = {h["code"]: h for h in H["hubs"]}
     for uid in sorted(H["runs"]):
         u = umap[uid]
-        run = H["runs"][uid]
+        if uid in H.get("shadow_runs", {}):
+            unit_status(u, H["shadow_runs"][uid], rng)
+            out += unit_status(u, H["runs"][uid], np.random.default_rng([W.SEED, 502, hubi[u["hub"]]["i"], u["bay"]]))
+        else:
+            out += unit_status(u, H["runs"][uid], rng)
+    out = [r for r in out if r[0] < W.HIST_END]       # the export covers 1 January 2023 to 31 October 2026
+    out.sort(key=lambda r: (r[0], r[1]))
+    return out
+
+
+def unit_status(u, run, rng):
+    out = []
+    if True:
         rows = ES.rows_from_intervals(run["iv"], run["start"])
         faults = [x for x in run["iv"] if x[2] == "Faulted"]
         mig_done = False
@@ -90,7 +105,6 @@ def status_rows(H):
         del faults
         if not mig_done and run["start"] < W.MIGRATION:
             out.append((W.MIGRATION + int(rng.integers(120, 2400)), u["new_id"], "Available", "NoError", "", "StatusNotification"))
-    out.sort(key=lambda r: (r[0], r[1]))
     return out
 
 
@@ -143,21 +157,24 @@ CAUSES = ["Fault on MV overhead line", "LV underground cable fault", "Storm dama
 
 def write_dso(H, target, mprn):
     rng = np.random.default_rng([W.SEED, 701])
+    rx = np.random.default_rng([W.SEED, 702])
     rows = []
     ref = 18000 + int(rng.integers(0, 900))
     for h in H["hubs"]:
         for e in H["plans"][h["code"]]:
             if e["kind"] != "dso":
                 continue
-            s = e["s"] + int(rng.integers(-150, 151))
-            t = e["e"] + int(rng.integers(-150, 151))
-            rows.append((s, t, h["code"], e["planned"]))
+            r = rx if e.get("extra") else rng
+            s = e["s"] + int(r.integers(-150, 151))
+            t = e["e"] + int(r.integers(-150, 151))
+            rows.append((s, t, h["code"], e["planned"], bool(e.get("extra"))))
     rows.sort()
     out = []
-    for s, t, code, planned in rows:
-        ref += int(rng.integers(3, 60))
+    for s, t, code, planned, extra in rows:
+        r = rx if extra else rng
+        ref += int(r.integers(3, 60))
         y = W.local(s).year % 100
-        cause = "Planned works (notified)" if planned else CAUSES[int(rng.integers(0, len(CAUSES)))]
+        cause = "Planned works (notified)" if planned else CAUSES[int(r.integers(0, len(CAUSES)))]
         out.append(["INC-%02d-%06d" % (y, ref), code, mprn[code], loc(s, "%Y-%m-%d %H:%M"), loc(t, "%Y-%m-%d %H:%M"),
                     "Y" if planned else "N", cause])
     write_csv(os.path.join(target, F_DSO), ["dso_reference", "hub_code", "mprn", "interruption_start_irish_time",
@@ -390,36 +407,66 @@ REPORTED = {"rc_repair": "RC50 fault alarm", "rc_other": "RC50 fault alarm", "ha
 
 
 def write_work_orders(H, target):
+    """The two contractors' work orders as the maintenance coordinator compiled them at the workbook's last save: a
+    job raised before then and not yet attended or closed stands open. Every write-up and job number is drawn in the
+    order the jobs always were (a spur unit's jobs on a stream of their own), then listed in the order logged."""
     rng = np.random.default_rng([W.SEED, 901])
+    rs = np.random.default_rng([W.SEED, 902])
+    saved = W.ts(aware(WO_SAVED))
     umap = {u["uid"]: u for u in H["units"]}
     hub = {h["code"]: h for h in H["hubs"]}
-    A, B = [], []
-    na, nb = {}, 104000 + int(rng.integers(100, 800))
-    for j in H["jobs"]:
+    nb0 = 104000 + int(rng.integers(100, 800))
+
+    def draw(j, r):
         kind = j["kind"]
         if kind == "hang" and j["arrive"] is None:
-            txt = TEXT["hang_none"][int(rng.integers(0, len(TEXT["hang_none"])))]
+            txt = TEXT["hang_none"][int(r.integers(0, len(TEXT["hang_none"])))]
         else:
-            txt = job_text("rc_inspect" if (kind == "rc_service" and not j.get("full", True)) else kind, rng, j["tech"])
+            txt = job_text("rc_inspect" if (kind == "rc_service" and not j.get("full", True)) else kind, r, j["tech"])
         if j.get("outage"):
             txt = ["RC50 PM%d failed. Replacement module on order from Tavrin, unit out of service. Module fitted on arrival, unit tested OK.",
                    "RC50 power module fault, no spare in stock, Tavrin lead time 8-10 weeks. Unit left out of service. Module received and fitted, tested.",
-                   "RC50 out of service awaiting PM%d from Tavrin. Part fitted, cabinet tested, returned to service."][int(rng.integers(0, 3))]
+                   "RC50 out of service awaiting PM%d from Tavrin. Part fitted, cabinet tested, returned to service."][int(r.integers(0, 3))]
         if "%d" in txt:
-            txt = txt % int(rng.integers(1, 5))
+            txt = txt % int(r.integers(1, 5))
+        step = int(r.integers(1, 4)) if j["logged_was"] < W.CONTRACT_B else int(r.integers(1, 6))
+        return txt, step
+
+    drawn = {}
+    for j in H["job_draw_order"]:
+        res = draw(j, rng)
+        if not j.get("spur"):
+            drawn[id(j)] = res
+    for j in H["spur_jobs"]:
+        drawn[id(j)] = draw(j, rs)
+    A, B = [], []
+    na, nb = {}, nb0
+    for j in sorted(H["jobs"], key=lambda j: (j["logged"], j["hub"], j["uid"] or "")):
+        if j["logged"] >= saved:
+            continue
+        txt, step = drawn[id(j)]
+        kind = j["kind"]
+        attended = j["arrive"] is not None and j["arrive"] < saved
+        closed = j["done"] < saved and (attended or j["arrive"] is None)
+        if not closed:
+            txt = ""                      # the write-up is the technician's on completion
         serial = umap[j["uid"]]["serial"] if j["uid"] else ""
         site = hub[j["hub"]]["name"]
         if j["logged"] < W.CONTRACT_B:
             y = W.local(j["logged"]).year % 100
-            na[y] = na.get(y, 0) + int(rng.integers(1, 4))
+            na[y] = na.get(y, 0) + step
             A.append(["LES-%02d-%04d" % (y, na[y]), loc(j["logged"], "%d/%m/%Y"), loc(j["logged"], "%H:%M"), site, serial,
-                      CODES_A[kind], REPORTED[kind], txt, loc(j["arrive"]) if j["arrive"] else "", loc(j["done"]), j["tech"]])
+                      CODES_A[kind], REPORTED[kind], txt, loc(j["arrive"]) if attended else "", loc(j["done"]) if closed else "", j["tech"]])
         else:
-            nb += int(rng.integers(1, 6))
+            nb += step
             cat, code = CODES_B[kind]
-            outcome = "Closed, no visit" if (kind == "hang" and not j["arrive"]) else "Completed"
-            B.append(["WO-%06d" % nb, loc(j["logged"]), serial, j["hub"], cat, code, txt,
-                      loc(j["arrive"]) if j["arrive"] else "", loc(j["done"]), j["tech"], outcome])
+            if not closed:
+                outcome = "Open" if not attended else "In progress"
+            else:
+                outcome = "Closed, no visit" if (kind == "hang" and not j["arrive"]) else "Completed"
+            B.append(["WO-%06d" % nb, loc(j["logged"]), serial, j["hub"], cat, code, txt or REPORTED.get(kind, ""),
+                      loc(j["arrive"]) if attended else "", loc(j["done"]) if closed else "", j["tech"] if attended or closed else "",
+                      outcome])
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Lissane to Mar 2024"
@@ -428,7 +475,7 @@ def write_work_orders(H, target):
     ws2 = wb.create_sheet("Corran from Apr 2024")
     sheet(ws2, ["Work order", "Logged", "Asset", "Site code", "Category", "Code", "Description", "Attended", "Closed",
                 "Technician", "Outcome"], B, [11, 17, 17, 10, 11, 9, 70, 17, 17, 11, 16])
-    save_book(wb, os.path.join(target, F_WO), ORG, "Maintenance Coordinator", "2023-01-09T10:02:44Z", "2026-11-02T08:11:37Z")
+    save_book(wb, os.path.join(target, F_WO), ORG, "Maintenance Coordinator", "2023-01-09T10:02:44Z", WO_SAVED)
     return len(A), len(B)
 
 
@@ -462,7 +509,7 @@ def write_ppm(H, target):
             if year == 2026:
                 ev = [e for e in H["plans"][h["code"]] if e["kind"] == "visit" and e["date"].year == 2026]
                 for e in ev:
-                    status = "Completed" if e["ws"] < W.HIST_END else "Planned"
+                    status = "Completed" if e["we"] < W.ts(aware(PPM_SAVED)) else "Planned"
                     w = W.visit_window(h, e["date"])
                     rows.append([h["code"], h["name"], e["date"], "%02d:%02d" % w[:2], "%02d:%02d" % w[2:], e["notified"], status])
             else:
@@ -478,7 +525,7 @@ def write_ppm(H, target):
         for r in ws.iter_rows(min_row=2, min_col=6, max_col=6):
             for c in r:
                 c.number_format = "dd/mm/yyyy"
-    save_book(wb, os.path.join(target, F_PPM), "Corran EV Services", ORG, "2022-11-21T14:26:03Z", "2026-10-29T16:48:20Z")
+    save_book(wb, os.path.join(target, F_PPM), "Corran EV Services", ORG, "2022-11-21T14:26:03Z", PPM_SAVED)
 
 
 SURVEY_COMMENTS = ["Quick charge, no problems.", "Had to try the second charger, first one would not start.", "Card reader slow.",
@@ -645,10 +692,10 @@ def write_programme(H, target):
            ["Customer disruption on works days", "Operator", "Works dates published in the app seven days ahead"]], [55, 25, 90]),
         P("6. Funding and contacts", H2),
         P("The works are funded under the Partnership's capital allocation for 2026. Queries to the concession office.", BODY),
-        P("Document control", H2),
-        T([["Version", "Date", "Status", "By"], ["0.3", "07/10/2026", "Draft for the Board", "Concession office"],
-           ["1.0", "21/10/2026", "Approved", "Partnership Board"], ["1.1", "22/10/2026", "Issued to the Operator", "Concession office"]],
-          [20, 28, 60, 50])]
+        KeepTogether([P("Document control", H2),
+                      T([["Version", "Date", "Status", "By"], ["0.3", "07/10/2026", "Draft for the Board", "Concession office"],
+                         ["1.0", "21/10/2026", "Approved", "Partnership Board"],
+                         ["1.1", "22/10/2026", "Issued to the Operator", "Concession office"]], [20, 28, 60, 50])])]
     officepdf.build(os.path.join(target, F_PROG), story, "Asset Renewal Programme 2027", NMCP, "RC50 removal and HX150 installation",
                     "North Midlands Charging Partnership, Asset Renewal Programme 2027, v1.1", aware("2026-10-22T08:05:49Z"),
                     aware("2026-10-22T08:31:10Z"), producer="LibreOffice 24.8", page_of=True)

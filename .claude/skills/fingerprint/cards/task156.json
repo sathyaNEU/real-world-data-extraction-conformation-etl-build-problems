@@ -50,7 +50,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "connector_status_history_2023-2026.csv",
-    "rows": 26067,
+    "rows": 26382,
     "entity": "one row is one status change a charge point reported to the operator's back office, or that the back office wrote when the charge point's heartbeats stopped",
     "grain": "charge point x status change",
     "source": "constructed for task156, no real dataset"

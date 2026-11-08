@@ -96,12 +96,20 @@ WORKS = {  # the programme's works at each hub (Irish dates): RC50 out, new unit
     "NM125": "2026-12-16", "NM162": "2026-12-17"}
 
 
+# the long rural overhead spurs: the faults on their lines beyond the base rate (lightning, trees, the line's age),
+# as many on the 2023 to 2026 record as stated here and at that rate after it, drawn on a stream of their own
+DSO_EXTRA = {"NM125": (14, 5), "NM162": (18, 3)}
+SPUR = tuple(sorted(DSO_EXTRA))
+RECORD_YEARS = 1400 / 365.0       # 1 January 2023 to 31 October 2026
+
+
 def hub_table():
     out = []
     for i, h in enumerate(HUBS):
         code, name, county, site, kind, prog, own, comm, dso, att, frate, hxc, rcc, months = h
         out.append(dict(i=i, code=code, name=name, county=county, site=site, kind=kind, prog=prog, own=own,
-                        comm=comm, dso=dso, att=att, frate=frate, hx_charges=hxc, rc_charges=rcc, months=months))
+                        comm=comm, dso=dso, att=att, frate=frate, hx_charges=hxc, rc_charges=rcc, months=months,
+                        dso_x=DSO_EXTRA.get(code, (0, 0))[0], dso_stream=DSO_EXTRA.get(code, (0, 0))[1]))
     return out
 
 
@@ -183,7 +191,38 @@ def visit_event(d, rng, notified=None, h=None):
 OUTAGES = {}
 
 
-def plan_hub(h, rng, start, end, years=(2023, 2024, 2025, 2026)):
+def dso_events(h, rng, start, end, rate_yr, extra=False, count=None):
+    out = []
+    t = start
+    times = sorted(int(x) for x in rng.uniform(start, end, count)) if count is not None else None
+    rate = (rate_yr or 1.0) / 365.0 / DAY
+    while True:
+        if times is not None:
+            if not times:
+                break
+            t = times.pop(0)
+        else:
+            t += int(rng.exponential(1.0 / rate))
+        if t >= end:
+            break
+        med = 130 if h["kind"] == "R" else 80
+        dur = int(min(9 * 3600, max(22 * 60, rng.lognormal(math.log(med * 60), 0.6))))
+        planned = rng.random() < 0.12
+        s = t
+        if planned:
+            lt = local(t)
+            s = from_local(lt.year, lt.month, lt.day, 9, 0) + int(rng.integers(0, 60)) * 60
+            dur = int(rng.integers(180, 330)) * 60
+            if s < start or s >= end:
+                continue
+        e = dict(kind="dso", s=s, e=s + dur, planned=planned)
+        if extra:
+            e["extra"] = True
+        out.append(e)
+    return out
+
+
+def plan_hub(h, rng, start, end, years=(2023, 2024, 2025, 2026), rx=None):
     """Every pillar power-down and job at a hub between start and end (seconds): visits (both pillars), supply
     interruptions (both pillars), the RC50's monthly cabinet service and its cabinet repairs (its own pillar), and
     the RC50's other jobs (no isolation)."""
@@ -191,6 +230,10 @@ def plan_hub(h, rng, start, end, years=(2023, 2024, 2025, 2026)):
     for y in years:
         for d in visit_dates(h, y, rng):
             e = visit_event(d, rng, notified=d - dt.timedelta(days=int(rng.integers(14, 40))), h=h)
+            # the operator gives the partnership at least a fortnight's notice, more as the visit plan allows
+            rn = np.random.default_rng([SEED, h["i"], 63, d.toordinal()])
+            k = (d - e["notified"]).days
+            e["notified"] = d - dt.timedelta(days=14 + int(round((k - 14) * rn.uniform(0.4, 1.2))))
             if start <= e["ws"] < end:
                 ev.append(e)
     t = start
@@ -249,6 +292,11 @@ def plan_hub(h, rng, start, end, years=(2023, 2024, 2025, 2026)):
             s1 = from_local(*W_date(t1), 10, 0) + int(rng.integers(0, 240)) * 60
             ev.append(dict(kind="repair", fault=t0, arrive=t0 + int(rng.integers(5, 30)) * 3600, s=s1,
                            e=s1 + int(rng.integers(45, 80)) * 60, outage=True))
+    if h.get("dso_x"):
+        if rx is not None:      # the record: its stated count of the spur's extra faults
+            ev += dso_events(h, rx, start, end, None, extra=True, count=h["dso_x"])
+        else:                   # after it: at the record's rate
+            ev += dso_events(h, rng, start, end, h["dso_x"] / RECORD_YEARS, extra=True)
     ev.sort(key=lambda e: (e["s"], e["kind"]))
     return ev
 
@@ -272,7 +320,8 @@ def powerdowns_for(h, ev, model):
 
 
 # ------------------------------------------------------------------------------------------------ the HX150 engine
-def run_hx(rng, start, end, pds, t_up, att_days, frate_yr, tau_fn=hang_tau, comms_rate=0.04, comms_min=(16, 61), cfrate_yr=0.10):
+def run_hx(rng, start, end, pds, t_up, att_days, frate_yr, tau_fn=hang_tau, comms_rate=0.04, comms_min=(16, 61), cfrate_yr=0.10,
+           hang_dt=None):
     """One HX150 from start to end under the pillar power-downs pds [(s, e, kind)]. Returns its non-Available
     intervals [(a, b, status, cause)] with the back office's lag applied, its power-ups, its hangs
     [(t, restart, by, arrive)] and its faults [(t, arrive, done)]."""
@@ -301,7 +350,10 @@ def run_hx(rng, start, end, pds, t_up, att_days, frate_yr, tau_fn=hang_tau, comm
             t_up = pd[1]
             k += 1
         elif nxt == t_hang:
-            arrive = t_hang + max(3 * 3600, int(rng.gamma(3.0, att_days * DAY / 3.0)))
+            if hang_dt is not None:
+                arrive = t_hang + int(hang_dt[int(rng.integers(0, len(hang_dt)))])
+            else:
+                arrive = t_hang + max(3 * 3600, int(rng.gamma(3.0, att_days * DAY / 3.0)))
             restart, by = arrive + int(rng.integers(6, 25)) * 60, "technician"
             while k < len(pds) and pds[k][1] <= t_hang:
                 k += 1
@@ -384,25 +436,32 @@ def history(seed=SEED):
     """The clean truth from 1 January 2023 to 31 October 2026."""
     hubs = hub_table()
     units = unit_table(hubs, np.random.default_rng(seed + 7))
-    plans, runs = {}, {}
+    plans, runs, shadow = {}, {}, {}
+
+    def run_unit(h, u, ev):
+        ur = np.random.default_rng([seed, h["i"], 2, u["bay"]])
+        start = commissioned_t(u)
+        if u["model"] == "HX150":
+            pds = [p for p in powerdowns_for(h, ev, "HX150") if p[1] > start]
+            if start == 0:
+                t_up = -int(ur.integers(0, 70 if h["own"] else 28)) * DAY - int(ur.integers(0, DAY))
+            else:
+                t_up = start
+            iv, ups, hangs, faults = run_hx(ur, start, HIST_END, pds, t_up, h["att"], h["frate"])
+            return dict(start=start, t_up0=t_up, iv=iv, ups=ups, hangs=hangs, faults=faults)
+        iv = run_rc(ur, start, HIST_END, [e for e in ev if e["s"] >= start])
+        return dict(start=start, iv=iv, ups=[], hangs=[], faults=[])
+
     for h in hubs:
-        ev = plan_hub(h, np.random.default_rng([seed, h["i"], 1]), 0, HIST_END)
+        ev = plan_hub(h, np.random.default_rng([seed, h["i"], 1]), 0, HIST_END,
+                      rx=np.random.default_rng([seed, h["i"], 11, h["dso_stream"]]))
         plans[h["code"]] = ev
         for u in [u for u in units if u["hub"] == h["code"]]:
-            ur = np.random.default_rng([seed, h["i"], 2, u["bay"]])
-            start = commissioned_t(u)
-            if u["model"] == "HX150":
-                pds = [p for p in powerdowns_for(h, ev, "HX150") if p[1] > start]
-                if start == 0:
-                    t_up = -int(ur.integers(0, 70 if h["own"] else 28)) * DAY - int(ur.integers(0, DAY))
-                else:
-                    t_up = start
-                iv, ups, hangs, faults = run_hx(ur, start, HIST_END, pds, t_up, h["att"], h["frate"])
-                runs[u["uid"]] = dict(start=start, t_up0=t_up, iv=iv, ups=ups, hangs=hangs, faults=faults)
-            else:
-                iv = run_rc(ur, start, HIST_END, [e for e in ev if e["s"] >= start])
-                runs[u["uid"]] = dict(start=start, iv=iv, ups=[], hangs=[], faults=[])
-    H = dict(hubs=hubs, units=units, plans=plans, runs=runs, seed=seed)
+            runs[u["uid"]] = run_unit(h, u, ev)
+            if h["dso_x"]:
+                # the run as it stood before the spur's extra interruptions: the other hubs' draws replay it
+                shadow[u["uid"]] = run_unit(h, u, [e for e in ev if not e.get("extra")])
+    H = dict(hubs=hubs, units=units, plans=plans, runs=runs, shadow_runs=shadow, seed=seed)
     H["jobs"], H["cards"] = jobs(H, seed)
     return H
 
@@ -508,61 +567,131 @@ def jobs(H, seed=SEED):
     cards = {t: "%08X" % int(x) for t, x in zip(TECH_A + TECH_B, rng.integers(0x10000000, 0xFFFFFFFF, len(TECH_A + TECH_B)))}
     out = []
     umap = {u["uid"]: u for u in H["units"]}
+    hubi = {h["code"]: h for h in H["hubs"]}
 
-    def tech(t):
+    def tech(t, r=None):
+        r = rng if r is None else r
         pool = TECH_A if t < CONTRACT_B else TECH_B
-        return pool[int(rng.integers(0, len(pool)))]
+        return pool[int(r.integers(0, len(pool)))]
 
-    def tests(uids, t0, tk):
+    def tests(uids, t0, tk, r=None):
+        r = rng if r is None else r
         lst, cur = [], t0
         for uid in uids:
             for con in (1, 2):
-                cur += int(rng.integers(60, 181))
-                wh = int(rng.uniform(*TEST_WH))
-                dur = int(wh / rng.uniform(138000, 148000) * 3600)
+                cur += int(r.integers(60, 181))
+                wh = int(r.uniform(*TEST_WH))
+                dur = int(wh / r.uniform(138000, 148000) * 3600)
                 lst.append(dict(uid=uid, connector=con, start=cur, stop=cur + dur, wh=wh, token=cards[tk]))
                 cur += dur
         return lst, cur
 
+    def unit_jobs(uid, run, r):
+        u = umap[uid]
+        lst_out = []
+        for t, restart, by, arrive in run["hangs"]:
+            if by == "technician":
+                lst_out.append(dict(kind="hang", hub=u["hub"], uid=uid, logged=t + 600 + int(r.integers(8, 41)) * 60, arrive=arrive,
+                                    done=restart + int(r.integers(2, 9)) * 60, tech=tech(arrive, r), tests=[]))
+            else:
+                lst_out.append(dict(kind="hang", hub=u["hub"], uid=uid, logged=t + 600 + int(r.integers(8, 41)) * 60, arrive=None,
+                                    done=restart + int(r.integers(10, 90)) * 60, tech=tech(t, r), tests=[]))
+        for t, arrive, done, kind in run["faults"]:
+            tk = tech(arrive, r)
+            lst, cur = tests([uid], done + int(r.integers(360, 540)), tk, r)
+            lst_out.append(dict(kind=kind, hub=u["hub"], uid=uid, logged=t + (600 if kind == "comms" else 0) + int(r.integers(8, 41)) * 60,
+                                arrive=arrive, done=cur + int(r.integers(4, 13)) * 60, tech=tk, tests=lst))
+        return lst_out
+
     for h in H["hubs"]:
         hx = [u["uid"] for u in H["units"] if u["hub"] == h["code"] and u["model"] == "HX150"]
         rc = [u for u in H["units"] if u["hub"] == h["code"] and u["model"] == "RC50"][0]
+        prev_service = None
         for e in H["plans"][h["code"]]:
             if e["kind"] == "visit":
                 tk = tech(e["arrive"])
                 live = [x for x in hx if commissioned_t(umap[x]) < e["s"]]
                 lst, cur = tests(live, e["e"] + int(rng.integers(360, 600)), tk)
-                out.append(dict(kind="visit", hub=h["code"], uid=None, logged=e["logged"], arrive=e["arrive"],
-                                done=cur + int(rng.integers(8, 26)) * 60, tech=tk, tests=lst))
+                out.append(dict(kind="visit", hub=h["code"], uid=None, logged=planned_logged(h, e, seed), logged_was=e["logged"],
+                                arrive=e["arrive"], done=cur + int(rng.integers(8, 26)) * 60, tech=tk, tests=lst))
             elif e["kind"] == "service":
-                out.append(dict(kind="rc_service", hub=h["code"], uid=rc["uid"], logged=e["logged"], arrive=e["arrive"],
-                                done=e["e"] + int(rng.integers(5, 16)) * 60, tech=tech(e["arrive"]), tests=[], full=e.get("full", True)))
+                out.append(dict(kind="rc_service", hub=h["code"], uid=rc["uid"], logged=planned_logged(h, e, seed, prev_service),
+                                logged_was=e["logged"], arrive=e["arrive"], done=e["e"] + int(rng.integers(5, 16)) * 60,
+                                tech=tech(e["arrive"]), tests=[], full=e.get("full", True)))
+                prev_service = e
             elif e["kind"] in ("repair", "other"):
                 out.append(dict(kind="rc_" + e["kind"], hub=h["code"], uid=rc["uid"], logged=e["fault"] + int(rng.integers(8, 41)) * 60,
                                 arrive=e["arrive"], done=e["e"] + int(rng.integers(3, 12)) * 60, tech=tech(e["arrive"]), tests=[],
                                 outage=bool(e.get("outage"))))
+    shadow_jobs = []
     for uid, run in sorted(H["runs"].items()):
         u = umap[uid]
         if u["model"] != "HX150":
             continue
-        for t, restart, by, arrive in run["hangs"]:
-            if by == "technician":
-                out.append(dict(kind="hang", hub=u["hub"], uid=uid, logged=t + 600 + int(rng.integers(8, 41)) * 60, arrive=arrive,
-                                done=restart + int(rng.integers(2, 9)) * 60, tech=tech(arrive), tests=[]))
-            else:
-                out.append(dict(kind="hang", hub=u["hub"], uid=uid, logged=t + 600 + int(rng.integers(8, 41)) * 60, arrive=None,
-                                done=restart + int(rng.integers(10, 90)) * 60, tech=tech(t), tests=[]))
-        for t, arrive, done, kind in run["faults"]:
-            tk = tech(arrive)
-            lst, cur = tests([uid], done + int(rng.integers(360, 540)), tk)
-            out.append(dict(kind=kind, hub=u["hub"], uid=uid, logged=t + (600 if kind == "comms" else 0) + int(rng.integers(8, 41)) * 60,
-                            arrive=arrive, done=cur + int(rng.integers(4, 13)) * 60, tech=tk, tests=lst))
-    for j in out:
+        if uid in H.get("shadow_runs", {}):
+            # the spur unit's old draws replayed on the shared stream, so every other unit keeps its jobs; its own
+            # jobs come from a stream of its own
+            shadow_jobs += unit_jobs(uid, H["shadow_runs"][uid], rng)
+            out += unit_jobs(uid, run, np.random.default_rng([seed, 4243, hubi[u["hub"]]["i"], u["bay"]]))
+        else:
+            out += unit_jobs(uid, run, rng)
+    for j in out + shadow_jobs:
         j["arrive"] = j["arrive"] - j["arrive"] % 60 if j["arrive"] is not None else None
         j["done"] = j["done"] - j["done"] % 60 + 60
         j["logged"] = j["logged"] - j["logged"] % 60
+        j.setdefault("logged_was", j["logged"])
+        j["logged_was"] = j["logged_was"] - j["logged_was"] % 60
+    spur_units = set(H.get("shadow_runs", {}))
+    for j in out:
+        j["spur"] = j["uid"] in spur_units and j["kind"] in ("hang", "comms", "fault")
+    for j in shadow_jobs:
+        j["spur"] = True
+    # the order the write-ups were drawn in (the jobs as they stood, by their old logged minute), and the jobs in
+    # the order they were logged
+    key_was = lambda j: (j["logged_was"], j["hub"], j["uid"] or "")
+    H["job_draw_order"] = sorted([j for j in out if not j["spur"]] + shadow_jobs, key=key_was)
+    H["spur_jobs"] = sorted([j for j in out if j["spur"]], key=key_was)
     out.sort(key=lambda j: (j["logged"], j["hub"], j["uid"] or ""))
     return out, cards
+
+
+def first_working_day(y, m):
+    d = dt.date(y, m, 1)
+    while d.weekday() >= 5:
+        d += dt.timedelta(days=1)
+    return d
+
+
+def planned_logged(h, e, seed=SEED, prev_service=None):
+    """When a planned job was raised, by the contractor that did it. Lissane raised the year's site visits in a batch
+    on the first working day of the month before each visit, and the technician who finished an RC50 monthly job
+    booked the next one before leaving site; Corran raises a site visit on the day the operator notifies the
+    partnership of it, and an RC50 monthly job a fortnight ahead of its planned date, which about one job in six then
+    moved, most by a few days and now and then by weeks."""
+    r = np.random.default_rng([seed, h["i"], 62, int(e["s"])])
+    d = local(e["arrive"]).date()
+    if e["arrive"] < CONTRACT_B:
+        if e["kind"] == "visit":
+            m = d.month - 1 or 12
+            b = first_working_day(d.year - (d.month == 1), m)
+            t = from_local(b.year, b.month, b.day, 7, 0) + int(r.integers(0, 150)) * 60
+        elif prev_service is not None:
+            t = prev_service["e"] + int(r.integers(10, 75)) * 60
+        else:
+            t = e["arrive"] - int(r.integers(27, 35)) * DAY + int(r.integers(-240, 240)) * 60
+    else:
+        if e["kind"] == "visit":
+            b = e["notified"]
+        else:
+            moved = 0
+            if r.random() < 0.17:
+                moved = (1 + int(r.exponential(3.0))) * (1 if r.random() < 0.5 else -1)
+            b = d - dt.timedelta(days=max(3, 14 + moved))
+            while b.weekday() >= 5:
+                b -= dt.timedelta(days=1)
+        t = from_local(b.year, b.month, b.day, 8, 30) + int(r.integers(0, 480)) * 60
+        t = max(t, CONTRACT_B + 8 * 3600 + int(r.integers(0, 480)) * 60) if t < CONTRACT_B else t
+    return min(t, e["arrive"] - 3600 - int(r.integers(0, 3600)))
 
 
 def blocks(J):

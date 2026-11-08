@@ -96,7 +96,7 @@ def windows(target):
     units, alias, serial, hubs = PA.read_register(target)
     out = {}
     for w in PA.read_jobs(target):
-        if w["arrive"] is None or w["kind"] not in ("visit", "hang", "comms", "fault"):
+        if w["arrive"] is None or w["done"] is None or w["kind"] not in ("visit", "hang", "comms", "fault"):
             continue
         out.setdefault((w["hub"], w["key"]), []).append((w["arrive"], w["done"]))
     return out, units

@@ -40,6 +40,62 @@ def names(H, s):
     return sorted(hub[c] for c in s)
 
 
+def stale_dates(target, setting="2026-11-06T23:59:59"):
+    """Every date in the pack after the setting, or after its own file's save where the file carries one, the forward
+    plan entries aside (the schedule's 2027 plan sheet and its 2026 visits still Planned, the programme's works dates).
+    Reads ISO stamps with or without a T, day-first dates and the documents' written dates."""
+    import openpyxl
+    lim = dt.datetime.fromisoformat(setting)
+    bad = []
+    pat_iso = re.compile(r"(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})")
+    pat_dmy = re.compile(r"\b(\d{2})/(\d{2})/(\d{4})(?: (\d{2}):(\d{2}))?")
+    months = "January February March April May June July August September October November December".split()
+    pat_txt = re.compile(r"\b(\d{1,2}) (%s) (\d{4})" % "|".join(months))
+    for f in sorted(os.listdir(target)):
+        p = os.path.join(target, f)
+        found = []
+        if f.endswith(".csv"):
+            for line in open(p, encoding="utf-8"):
+                for m in pat_iso.finditer(line):
+                    found.append(dt.datetime.fromisoformat(m.group(1) + " " + m.group(2)))
+            saved = None
+        elif f.endswith(".xlsx"):
+            core = zipfile.ZipFile(p).read("docProps/core.xml").decode()
+            saved = dt.datetime.fromisoformat(re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1).replace("Z", ""))
+            wb = openpyxl.load_workbook(p, read_only=True)
+            for ws in wb.worksheets:
+                rows = list(ws.iter_rows(values_only=True))
+                hd = [str(x) for x in rows[0]]
+                for r in rows[1:]:
+                    forward = ws.title.startswith("2027") or ("Status" in hd and r[hd.index("Status")] == "Planned")
+                    for j, x in enumerate(r):
+                        if forward and hd[j] != "Notified to partnership":
+                            continue
+                        if isinstance(x, dt.datetime):
+                            found.append(x)
+                        elif isinstance(x, dt.date):
+                            found.append(dt.datetime(x.year, x.month, x.day))
+                        elif isinstance(x, str):
+                            for m in pat_dmy.finditer(x):
+                                found.append(dt.datetime(int(m.group(3)), int(m.group(2)), int(m.group(1)),
+                                                         int(m.group(4) or 0), int(m.group(5) or 0)))
+        elif f.endswith(".pdf"):
+            txt = subprocess.run(["pdftotext", "-layout", p, "-"], capture_output=True, text=True).stdout
+            saved = None
+            for line in txt.splitlines():
+                works = re.search(r"\bNM\d{3}\b", line) and "TRC50" in line
+                for m in pat_dmy.finditer(line):
+                    if not works:
+                        found.append(dt.datetime(int(m.group(3)), int(m.group(2)), int(m.group(1))))
+                for m in pat_txt.finditer(line):
+                    found.append(dt.datetime(int(m.group(3)), months.index(m.group(2)) + 1, int(m.group(1))))
+        for x in found:
+            if x > lim or (saved is not None and x > saved):
+                bad.append("%s %s" % (f, x.isoformat()))
+                break
+    return bad
+
+
 def margin(av):
     return min(abs(min(v) - 0.99) for v in av.values()) * 100
 
@@ -235,6 +291,63 @@ def main(fast=False):
     E16 = ES.estimates(R, C16)
     ok(ES.side_set(ES.sim27(R, C16, E16, ES.hazard_binned(*ES.life_table(R, C16)), reps=120)) == golden,
        "SF15: the comms repairs (a router, SIM or antenna replaced) read as hangs too give the same set")
+    rp = ES.sim27(R, C, E, G["h"], reps=200, stat="reps")
+    rd = ES.hub_readings(rp)
+    low = sorted(c for c, v in rd.items() if v["lowest"] < 0.99)
+    near = min(rd, key=lambda c: abs(rd[c]["lowest"] - 0.99))
+    ok(low == golden, "SF17: the hub's expected lowest unit (the mean over simulated years of its worst unit) lists the same "
+       "set; closed by Schedule 4.4 and 4.6 (each charge point's Availability is forecast, and an expectation of a minimum is "
+       "no charge point's); closest %s at %.2f" % (near, 100 * rd[near]["lowest"]))
+    out_max = max((c for c in rd if c not in golden), key=lambda c: rd[c]["event"])
+    in_min = min((c for c in rd if c in golden), key=lambda c: rd[c]["event"])
+    ev_set = sorted(c for c, v in rd.items() if v["event"] > 0.5)
+    ok(ev_set == golden, "SF18: clause 4.6 read as an event (some high-power charge point below 99 in more than half the "
+       "simulated years) lists the same set: the largest probability outside it %.2f (%s), the smallest inside %.2f (%s)"
+       % (rd[out_max]["event"], out_max, rd[in_min]["event"], in_min))
+    ok(ES.side_set(ES.sim27(R, C, E, G["h"], reps=150, unit_fault=True)) == golden,
+       "SF19: each unit's own fault rate in place of its hub's gives the same set")
+    wf = ES.weibull_fit(R, C)
+    wb = ES.sim27(R, C, E, wf["h"], reps=150)
+    wset = ES.side_set(wb)
+    ok(wf["aic_weibull"] - wf["aic_onset"] >= 10 and wset == golden,
+       "SF20: a two-parameter Weibull on the days-since-power-up clock (shape %.1f, scale %.1f days; %d spells, each censored "
+       "at its next power-up, %d hangs) lists %s by its point forecasts (the motorway hubs at %.2f to %.2f, the spurs at "
+       "%.2f and %.2f); its fit is worse than the fitted onset's (log-likelihood %.1f against %.1f, AIC %.1f against %.1f)"
+       % (wf["k"], wf["lam"], wf["n_spells"], wf["n_hangs"], "the same set" if wset == golden else "%d hubs" % len(wset),
+          100 * min(min(wb[c]) for c in ("NM104", "NM112", "NM127")), 100 * max(min(wb[c]) for c in ("NM104", "NM112", "NM127")),
+          100 * min(wb["NM125"]), 100 * min(wb["NM162"]), wf["ll_weibull"], wf["ll_onset"], wf["aic_weibull"], wf["aic_onset"]))
+
+    print("== the spur hubs (the programme's negative controls)")
+    for c in W.SPUR:
+        ok(rd[c]["unit"] >= 0.995 and rd[c]["lowest"] >= 0.9925 and rd[c]["event"] <= 0.3,
+           "Spurs: %s on %.2f interruptions a year: its lowest unit %.2f, its expected lowest unit %.2f, its event "
+           "probability %.2f" % (c, E["dso_rate"][c], 100 * rd[c]["unit"], 100 * rd[c]["lowest"], rd[c]["event"]))
+    pool = ES.hang_spells(R, C)
+    jl = ES.sim27(R, C, E, G["h"], reps=200, hang_pool=pool)
+    ok(ES.side_set(jl) == golden and all(min(jl[c]) >= 0.993 for c in W.SPUR),
+       "Spurs: each hang's downtime drawn from the fleet's %d recorded hang spells (mean %.2f days) in place of the hub's "
+       "attendance: the same set, %s" % (len(pool), np.mean(pool) / 86400.0,
+                                         ", ".join("%s %.2f" % (c, 100 * min(jl[c])) for c in W.SPUR)))
+
+    print("== the RC50's 2027 isolations from the record's own calendar (a standing member, measured)")
+    cal = ES.sim27(R, C, E, G["h"], reps=200, calendar=True, stat="reps")
+    cr = ES.hub_readings(cal)
+    cal_set = sorted(c for c, v in cr.items() if v["unit"] < 0.99)
+    ordinary = sorted(c for c in cr if c not in golden and not R["programme"].get(c))
+    hz_cal = ES.sim27(R, C, E, G["h"], reps=200, calendar=True, stat="hangs")
+    hz_poi = ES.sim27(R, C, E, G["h"], reps=200, stat="hangs")
+    yrs = {k: (R["end"] - R["units"][k]["start"]) / ES.YEAR_S for k in ES.hx_keys(R)}
+    rec = {c: sum(len(C["units"][k]["hangs"]) for k in ES.hx_keys(R, c)) / sum(yrs[k] for k in ES.hx_keys(R, c)) for c in ordinary}
+    f_cal = {c: float(np.mean(hz_cal[c])) for c in ordinary}
+    f_poi = {c: float(np.mean(hz_poi[c])) for c in ordinary}
+    ok(cal_set == golden, "Calendar member: the monthly service at its record's share of cabinet-opened months, days and "
+       "times, and the record's other isolations, list the same set; at the ten ordinary hubs the expected lowest unit at "
+       "least %.2f (%s) and the event at most %.2f (%s), against %.2f and %.2f on the Poisson draw; hangs a unit-year "
+       "forecast %.2f to %.2f (Poisson %.2f to %.2f) against %.2f to %.2f on the record"
+       % (100 * min(cr[c]["lowest"] for c in ordinary), min(ordinary, key=lambda c: cr[c]["lowest"]),
+          max(cr[c]["event"] for c in ordinary), max(ordinary, key=lambda c: cr[c]["event"]),
+          100 * min(rd[c]["lowest"] for c in ordinary), max(rd[c]["event"] for c in ordinary),
+          min(f_cal.values()), max(f_cal.values()), min(f_poi.values()), max(f_poi.values()), min(rec.values()), max(rec.values())))
 
     print("== the asks")
     gn, ge, gwh = A.golden(TARGET)
@@ -339,14 +452,20 @@ def main(fast=False):
     ok(all(v % 100 != 0 for v in gn.values()), "Realism: no round charges total")
     ok(len(set(u["serial"] for u in H["units"])) == len(H["units"]) and len(set(u["new_id"] for u in H["units"])) == len(H["units"]),
        "Realism: serials and IDs unique")
+    saved = W.ts(PK.aware(PK.WO_SAVED))
+    closed = [j for j in H["jobs"] if j["logged"] < saved and j["done"] < saved and (j["arrive"] is None or j["arrive"] < saved)]
+    n_open = sum(1 for j in H["jobs"] if j["logged"] < saved) - len(closed)
     truth_jobs = sorted((j["hub"], j["logged"], {"rc_other": "rc_repair"}.get(j["kind"], j["kind"]),
-                         bool(j.get("full", True)) or j["kind"] != "rc_service") for j in H["jobs"])
-    read_jobs = sorted((w["hub"], w["logged"], w["kind"], bool(w["full"])) for w in PA.read_jobs(TARGET))
-    ok(truth_jobs == read_jobs, "Realism: the work orders' own words read back every job's kind as the truth has it (%d jobs: every "
-       "no-response job a power cycle or a comms part replaced, every inspection-only month)" % len(read_jobs))
+                         bool(j.get("full", True)) or j["kind"] != "rc_service") for j in closed)
+    read_all = PA.read_jobs(TARGET)
+    read_jobs = sorted((w["hub"], w["logged"], w["kind"], bool(w["full"])) for w in read_all if w["done"] is not None)
+    ok(truth_jobs == read_jobs and len(read_all) - len(read_jobs) == n_open,
+       "Realism: the work orders' own words read back every closed job's kind as the truth has it (%d jobs: every no-response "
+       "job a power cycle or a comms part replaced, every inspection-only month); %d jobs raised before the workbook's save "
+       "stand open, none after it" % (len(read_jobs), n_open))
     import openpyxl
     wbw = openpyxl.load_workbook(os.path.join(TARGET, PK.F_WO), read_only=True)
-    texts, whole, planned = [], 0, 0
+    texts, whole, planned, leads = [], 0, 0, {}
     for ws in wbw.worksheets:
         rows = list(ws.iter_rows(values_only=True))
         hd = rows[0]
@@ -357,14 +476,25 @@ def main(fast=False):
             if code in ("PM1", "PM2", "PM-RC50", "PM-SITE"):
                 lg = d["Logged"] if "Logged" in d else "%s %s" % (d["Date logged"], d["Time logged"])
                 at = d.get("Arrived") or d.get("Attended")
+                if not at:
+                    continue
                 gap = (dt.datetime.strptime(at, "%d/%m/%Y %H:%M") - dt.datetime.strptime(lg, "%d/%m/%Y %H:%M")).total_seconds()
                 planned += 1
                 whole += gap % 86400 == 0
+                leads.setdefault((ws.title[:7], code), []).append(gap / 86400.0)
     from collections import Counter
     top = Counter(texts).most_common(1)[0][1]
     ok(len(set(texts)) >= 0.5 * len(texts) and top <= 25 and whole <= 0.01 * planned,
        "Realism: the work orders carry %d distinct write-ups over %d jobs (none more than %d times), and %d of %d planned jobs "
        "attended a whole number of days after logging" % (len(set(texts)), len(texts), top, whole, planned))
+    walls = {k: sum(1 for x in v if x > max(v) - 0.5) for k, v in leads.items()}
+    tops = {k: max(v) for k, v in leads.items()}
+    ok(all(n <= 3 for n in walls.values()) and abs(tops[("Lissane", "PM2")] - tops[("Corran ", "PM-SITE")]) >= 3
+       and abs(tops[("Lissane", "PM1")] - tops[("Corran ", "PM-RC50")]) >= 3,
+       "Realism: each contractor plans its own way, no lead from logged to attended stacked at a ceiling (%s)"
+       % "; ".join("%s %s up to %.1f days" % (k[0].strip(), k[1], tops[k]) for k in sorted(tops)))
+    ok(not stale_dates(TARGET), "Dates: no record in any file dated after 2026-11-06 or after its own file's save (the "
+       "planned maintenance schedule's forward visits and the programme's works dates excepted): %s" % (stale_dates(TARGET) or "none"))
     pd_off = [x for c in C["clusters"] for x in [cc[1] - cc[0] for cc in C["clusters"][c]]]
     ok(len(set(pd_off)) > 50, "Realism: pillar power-downs reach the back office over a spread of minutes (%d distinct spreads)" % len(set(pd_off)))
     print("\n%d assertions, %d failed" % (N[0], len(FAILS)))

@@ -104,7 +104,7 @@ def main():
     ser2cp = dict(zip(cp["Asset serial"], cp["Charge point ID"]))
     jobs["cp"] = jobs["asset"].map(ser2cp)
     comms_re = r"router|\bSIM\b|antenna|modem|comms board|\b4G\b|no signal"
-    cjobs = jobs[jobs["code"].isin(["R2", "CM-NR"]) & jobs["text"].str.contains(comms_re, case=False, regex=True)]
+    cjobs = jobs[jobs["code"].isin(["R2", "CM-NR"]) & jobs["text"].str.contains(comms_re, case=False, regex=True, na=False)]
     comms_at = {k: list(g["logged"]) for k, g in cjobs.groupby("cp")}
 
     # pillar power-downs: every unit at a hub that was up going Offline within six minutes of the first
@@ -134,7 +134,9 @@ def main():
                 if s == "Faulted":
                     f.append((a, b))
                 elif s == "Offline":
-                    if prev is not None and prev[2] == "Faulted" and abs((prev[1] - a).total_seconds()) <= 1:
+                    if b >= end and not any(c0 - pd.Timedelta(seconds=5) <= a <= c1 + pd.Timedelta(seconds=5) for c0, c1 in out):
+                        pass                      # still Offline when the export ends: censored
+                    elif prev is not None and prev[2] == "Faulted" and abs((prev[1] - a).total_seconds()) <= 1:
                         u.append(b)
                     elif any(c0 - pd.Timedelta(seconds=5) <= a <= c1 + pd.Timedelta(seconds=5) for c0, c1 in out):
                         u.append(b)

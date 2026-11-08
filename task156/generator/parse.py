@@ -68,14 +68,14 @@ def read_jobs(target, units=None, serial=None, names=None):
                 ser, hub, code, text = d["Charger serial"], names[d["Site"]], d["Job type"], d["Work done"]
                 logged = from_irish("%s %s" % (d["Date logged"], d["Time logged"]), "%d/%m/%Y %H:%M")
                 arrive = from_irish(d["Arrived"], "%d/%m/%Y %H:%M") if d["Arrived"] else None
-                done = from_irish(d["Completed"], "%d/%m/%Y %H:%M")
+                done = from_irish(d["Completed"], "%d/%m/%Y %H:%M") if d["Completed"] else None
                 model = units[serial[ser]]["model"] if ser else None
                 kind = {"PM1": "rc_service", "PM2": "visit", "R2": "no_response"}.get(code) or ("rc_repair" if model == "RC50" else "fault")
             else:
                 ser, hub, text = d["Asset"], d["Site code"], d["Description"]
                 logged = from_irish(d["Logged"], "%d/%m/%Y %H:%M")
                 arrive = from_irish(d["Attended"], "%d/%m/%Y %H:%M") if d["Attended"] else None
-                done = from_irish(d["Closed"], "%d/%m/%Y %H:%M")
+                done = from_irish(d["Closed"], "%d/%m/%Y %H:%M") if d["Closed"] else None
                 kind = {"PM-SITE": "visit", "PM-RC50": "rc_service", "CM-RC50": "rc_repair", "CM-NR": "no_response", "CM-HW": "fault"}[d["Code"]]
             if kind == "no_response":
                 kind = "comms" if COMMS.search(text or "") else "hang"

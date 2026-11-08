@@ -16,7 +16,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Mm, Pt, RGBColor
-from reportlab.platypus import PageBreak, Paragraph, Spacer, Table
+from reportlab.platypus import KeepTogether, PageBreak, Paragraph, Spacer, Table
 
 FONT = "Liberation Sans"
 
@@ -85,6 +85,26 @@ def _border_below(cell):
     tcpr.append(b)
 
 
+def _keep(doc, flowables):
+    """A block kept on one page: every paragraph in it held to the next, the table's rows unsplit and each row held
+    to the one after it, so the heading and the table move together."""
+    for fl in flowables:
+        if isinstance(fl, Paragraph):
+            _paragraph(doc, fl)
+            doc.paragraphs[-1].paragraph_format.keep_with_next = True
+        elif isinstance(fl, Table):
+            tab = _table(doc, fl)
+            rows = tab.rows
+            for i, row in enumerate(rows):
+                trpr = row._tr.get_or_add_trPr()
+                cs = OxmlElement("w:cantSplit")
+                trpr.append(cs)
+                if i < len(rows) - 1:
+                    for cell in row.cells:
+                        for par in cell.paragraphs:
+                            par.paragraph_format.keep_with_next = True
+
+
 def _table(doc, t):
     rows = t._cellvalues
     widths = list(getattr(t, "_colWidths", []) or [])
@@ -116,6 +136,7 @@ def _table(doc, t):
             if i == 0:
                 _border_below(cell)
     doc.add_paragraph().paragraph_format.space_after = Pt(0)
+    return tab
 
 
 def _page_field(par, field="PAGE"):
@@ -154,6 +175,8 @@ def build(path, story, title, author, subject, footer, created, modified, margin
             _paragraph(doc, fl)
         elif isinstance(fl, Table):
             _table(doc, fl)
+        elif isinstance(fl, KeepTogether):
+            _keep(doc, fl._content)
         elif isinstance(fl, Spacer):
             sp = doc.add_paragraph()
             sp.paragraph_format.space_after = Pt(0)

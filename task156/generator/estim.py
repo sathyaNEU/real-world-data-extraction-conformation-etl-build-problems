@@ -180,6 +180,8 @@ def classify(R, window=360, comms_as_hangs=False):
                         kind = "repair"
                     elif pillar:
                         kind = "pillar"
+                    elif b >= R["end"]:
+                        kind = "open"           # still Offline when the record ends: its outcome is not on record
                     elif not comms_as_hangs and b - a >= 3 * 3600 and any(a - 900 <= x <= b for x in cj.get(k, [])):
                         kind = "comms_repair"
                     elif b - a >= 3 * 3600 or (bisect.bisect_left(cl0, b) > bisect.bisect_right(cl0, a + 1800)):
@@ -681,7 +683,36 @@ def route_smooth(R, C, E, alpha=0.3):
 
 
 # ------------------------------------------------------------------------------------------ the restart clock
-def regime27(R, E, code, rng, no_resets=False):
+def rc_calendar(R, C, E, code):
+    """The RC50's own calendar on the record at a hub where it shares the HX150s' pillar: the share of months whose
+    monthly job opened the cabinet (not an external inspection, not skipped), the days of the month and the minutes
+    of the day it did, and the rate of the other isolations (cabinet repairs) the status history shows beside them."""
+    cache = E.setdefault("rc_cal", {})
+    if code in cache:
+        return cache[code]
+    months = {}
+    for w in R["wo"]:
+        if w["hub"] == code and w["kind"] == "rc_service" and w["arrive"] is not None:
+            lt = W.local(w["arrive"])
+            months.setdefault((lt.year, lt.month), []).append((w.get("full", True), lt.day, lt.hour * 60 + lt.minute))
+    first, last = W.local(0), W.local(R["end"] - 1)
+    n_months = (last.year - first.year) * 12 + last.month - first.month + 1
+    full = [(d, m) for v in months.values() for f, d, m in v if f]
+    p_full = len(set(k for k, v in months.items() if any(f for f, _, _ in v))) / float(n_months)
+    serv = [w["arrive"] for w in R["wo"] if w["hub"] == code and w["kind"] == "rc_service" and w.get("full", True) and w["arrive"]]
+    other = 0
+    for c0, c1, m in C["clusters"][code]:
+        if any(a <= c0 <= b + 3600 for a, b in R["visits"][code]) or any(a - 600 <= c0 <= b + 1800 for a, b in R["dso"][code]):
+            continue
+        if any(abs(c0 - t) <= 6 * 3600 for t in serv):
+            continue
+        other += 1
+    cache[code] = dict(p_full=p_full, days=[d for d, _ in full] or [10], mins=[m for _, m in full] or [600],
+                       other_rate=other / ((R["end"] - 0) / YEAR_S))
+    return cache[code]
+
+
+def regime27(R, E, code, rng, no_resets=False, calendar=None):
     """2027 power-downs a hub's record supports: the plan's visits at the record's isolation timing, supply
     interruptions at the hub's rate, the other pillar power-downs where the RC50 stays, the programme works."""
     pds = []
@@ -699,7 +730,27 @@ def regime27(R, E, code, rng, no_resets=False):
             pds.append((t, t + int(d), "dso"))
     p = R["programme"].get(code)
     orate, odur = E["other_pd"][code]
-    if orate > 0 and odur > 0:
+    if orate > 0 and odur > 0 and calendar is not None:
+        stop = p["works"] if p else W.Y27_END
+        y, m = 2026, 11
+        while (y, m) <= (2027, 12):
+            if rng.random() < calendar["p_full"]:
+                d = int(calendar["days"][int(rng.integers(0, len(calendar["days"])))])
+                mins = int(calendar["mins"][int(rng.integers(0, len(calendar["mins"])))])
+                last_day = (W.dt.date(y + (m == 12), m % 12 + 1, 1) - W.dt.timedelta(days=1)).day
+                t = W.from_local(y, m, min(d, last_day), 0, 0) + mins * 60 + 15 * 60
+                if W.HIST_END <= t < stop:
+                    pds.append((t, t + int(odur), "service"))
+            m += 1
+            if m == 13:
+                y, m = y + 1, 1
+        t = W.HIST_END
+        while calendar["other_rate"] > 0:
+            t += int(rng.exponential(YEAR_S / calendar["other_rate"]))
+            if t >= stop:
+                break
+            pds.append((t, t + int(odur), "service"))
+    elif orate > 0 and odur > 0:
         t = W.HIST_END
         stop = p["works"] if p else W.Y27_END
         while True:
@@ -721,31 +772,116 @@ def last_up(R, C, k):
     return ups[-1] if ups else R["units"][k]["start"]
 
 
-def sim27(R, C, E, h, reps=200, seed=W.SEED, no_resets=False, unit_fault=False, stat="mean", new_start=None, exclude=True):
+def sim27(R, C, E, h, reps=200, seed=W.SEED, no_resets=False, unit_fault=False, stat="mean", new_start=None, exclude=True,
+          hang_pool=None, calendar=False, hubs=None):
     """Each 2027 unit's expected availability: the record's hang rate by day since power-up run through the hub's
-    2027 power-downs, its attendance, fault rate, repair time and comms, averaged over simulated years."""
+    2027 power-downs, its attendance, fault rate, repair time and comms, averaged over simulated years. stat "reps"
+    returns every simulated year (years by units); hang_pool draws each hang's downtime from recorded hang spells in
+    place of the hub's attendance; calendar draws the RC50's isolations from the record's own calendar."""
     tau_fn = tau_from_hazard(h)
     out = {}
     by_hub = {}
     for code, k, new in units27(R):
         by_hub.setdefault(code, []).append((k, new))
     for i, (code, lst) in enumerate(sorted(by_hub.items())):
+        if hubs is not None and code not in hubs:
+            continue
         acc = np.zeros((reps, len(lst)))
+        hacc = np.zeros((reps, len(lst)))
         for r in range(reps):
             rng = np.random.default_rng([seed, 777, i, r])
-            pds = regime27(R, E, code, rng, no_resets=no_resets)
+            cal = rc_calendar(R, C, E, code) if (calendar and not R["programme"].get(code)) else None
+            pds = regime27(R, E, code, rng, no_resets=no_resets, calendar=cal)
             dso_ex = [(s, e + W.EXCL_TAIL) for s, e, kd in pds if kd == "dso"]
             ex = (excl27(R, E, code) + dso_ex) if exclude else []
             for j, (k, new) in enumerate(lst):
                 t_up = ((R["programme"][code]["works"] + 5 * 3600) if new_start is None else new_start) if new else last_up(R, C, k)
                 cm = E["fleet_comms"] if new else E["comms"][k]
                 fr = (E["frate"][code] or E["fleet_frate"]) if (new or not unit_fault) else E["unit_frate"][k]
-                iv, _, _, _ = W.run_hx(rng, W.HIST_END, W.Y27_END, pds, t_up, E["att"][code], fr, tau_fn=tau_fn,
+                iv, _, hg, _ = W.run_hx(rng, W.HIST_END, W.Y27_END, pds, t_up, E["att"][code], fr, tau_fn=tau_fn,
                                       comms_rate=cm[0] / 365.0, comms_min=(max(16, int(cm[1] / 60 * 0.5)), max(17, int(cm[1] / 60 * 1.5))),
-                                      cfrate_yr=E["fleet_cf"])
+                                      cfrate_yr=E["fleet_cf"], hang_dt=hang_pool)
                 acc[r, j] = W.schedule4(iv, ex, W.Y27_START, W.Y27_END)
-        out[code] = list(np.median(acc, axis=0) if stat == "median" else acc.mean(axis=0))
+                hacc[r, j] = sum(1 for x in hg if W.Y27_START <= x[0] < W.Y27_END)
+        if stat == "hangs":
+            out[code] = list(hacc.mean(axis=0))
+        elif stat == "reps":
+            out[code] = acc
+        else:
+            out[code] = list(np.median(acc, axis=0) if stat == "median" else acc.mean(axis=0))
     return out
+
+
+def hub_readings(reps_out, line=0.99):
+    """From every simulated year: each unit's expected availability (the golden's reading, the lowest of them), the
+    hub's expected lowest unit (the mean over years of its worst unit) and the event (the share of years in which
+    some unit falls below the line)."""
+    out = {}
+    for code, acc in reps_out.items():
+        worst = acc.min(axis=1)
+        out[code] = dict(unit=float(acc.mean(axis=0).min()), lowest=float(worst.mean()), event=float((worst < line).mean()))
+    return out
+
+
+def hang_spells(R, C):
+    """Every recorded hang's downtime (seconds), pooled over the fleet."""
+    return [b - a for k in hx_keys(R) for a, b in C["units"][k]["hangs"] if b < R["end"]]
+
+
+def clock_spells(R, C):
+    """Every HX150 spell on the days-since-power-up clock: (days, hang) from a power-up to the next hang, power-up,
+    fault or the end of the record, as the life table reads them."""
+    out = []
+    for k in hx_keys(R):
+        u = C["units"][k]
+        marks = sorted([(t, "up") for t in u["ups"]] + [(t, "hang") for t, _ in u["hangs"]] + [(a, "fault") for a, _ in u["faults"]])
+        last = None
+        for t, kind in marks:
+            if last is not None:
+                out.append(((t - last) / float(DAY), kind == "hang"))
+                last = None
+            if kind == "up":
+                last = t
+        if last is not None:
+            out.append(((R["end"] - last) / float(DAY), False))
+    return out
+
+
+def weibull_fit(R, C):
+    """A two-parameter Weibull on the days-since-power-up clock, each spell censored at its next power-up, fault or
+    the record's end; its log-likelihood beside the fitted onset's on the same spells, and its daily hazard."""
+    from scipy.optimize import minimize
+    sp = clock_spells(R, C)
+    t = np.array([x for x, _ in sp]) + 1e-6
+    d = np.array([e for _, e in sp], float)
+
+    def nll(th):
+        k, lam = np.exp(th)
+        z = t / lam
+        return -((d * (np.log(k) - np.log(lam) + (k - 1) * np.log(z))).sum() - (z ** k).sum())
+    best = min((minimize(nll, x0, method="Nelder-Mead", options=dict(maxiter=4000, xatol=1e-8, fatol=1e-8))
+                for x0 in ([np.log(2.0), np.log(150.0)], [np.log(5.0), np.log(100.0)], [np.log(10.0), np.log(90.0)])),
+               key=lambda m: m.fun)
+    k, lam = np.exp(best.x)
+    ll_w = -best.fun
+    expo, ev = life_table(R, C)
+    _, (a, b, c) = hazard_onset(expo, ev)
+
+    def onset_cum(x):
+        x = np.asarray(x, float)
+        ramp = np.clip(x - a, 0, b - a)
+        return c * (ramp ** 2 / (2.0 * (b - a)) + np.clip(x - b, 0, None))
+
+    def onset_h(x):
+        return c * np.clip((np.asarray(x, float) - a) / float(b - a), 0.0, 1.0)
+    he = onset_h(t[d > 0])
+    ll_o = float(np.log(np.maximum(he, 1e-300)).sum() - onset_cum(t).sum()) if (he > 0).all() else -np.inf
+    days = np.arange(len(expo))
+    S = np.exp(-(days / lam) ** k)
+    S1 = np.exp(-((days + 1) / lam) ** k)
+    hw = 1.0 - S1 / np.maximum(S, 1e-300)
+    return dict(k=float(k), lam=float(lam), ll_weibull=float(ll_w), ll_onset=ll_o, aic_weibull=4 - 2 * float(ll_w),
+                aic_onset=6 - 2 * ll_o, onset=(a, b, c), h=hw, n_spells=len(sp), n_hangs=int(d.sum()))
 
 
 def dp27(R, C, E, h, unit_fault=False):
@@ -844,7 +980,8 @@ def rung_workorder_clock(R, C, E, reps=150):
     jobs = {}
     for w in R["wo"]:
         if w["kind"].startswith("rc_"):
-            jobs.setdefault(w["hub"], []).append(w["done"])
+            if w["done"] is not None:
+                jobs.setdefault(w["hub"], []).append(w["done"])
 
     def ups_fn(k):
         code = R["units"][k]["hub"]

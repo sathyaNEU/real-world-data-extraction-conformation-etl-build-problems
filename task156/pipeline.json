@@ -1,10 +1,10 @@
 {
  "task": "task156",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities/asset-condition-maintenance (client domain energy-systems-utilities; world: an Irish regional public rapid-charging operator naming, for its concession's 2027 review, the hubs whose high-power charge points will fall below 99 per cent availability once the partnership's programme removes the legacy 50 kW units at some hubs)",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-08",
  "stump": "Carrying each high-power charge point's controller-hang and fault rates from 2023 to 2026, validated leaving each unit out and on two back-tests, files 5 hubs below 99 per cent in 2027, the five whose HX150 units already hang two or three times a year; the step that lands it there is reading each unit's hang rate as its own, when a hang comes only after about 75 days without a power-up and the RC50's monthly cabinet service powers down every unit on its pillar, so only the units at those five hubs (on a pillar of their own) routinely ran that long, and at the seven standard programme hubs, which keep neither two-monthly visits nor frequent supply interruptions once the RC50 goes, the HX150 units will hang two or three times a year, as often as the five hubs' units already do, and the set is 12.",
  "architecture": 4,
@@ -12,11 +12,12 @@
  "precut": {
   "exit": 0,
   "date": "2026-11-08",
-  "detail": "61 checks, 0 FAIL, 0 WARN (second stage-4 pass)"
+  "detail": "61 checks, 0 FAIL, 0 WARN (ship cut)"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-08 (--asof 2026-11-06) on 3a6e329b: sweeps 4, 6, 9 and 12, each ruled in the design note; sweep 11 (the prompt gate) clean; no LEAK",
-  "reader": "round 1 on 4bf9959c: questions 1 to 6 clean, item i mild (every HX150 freeze call-out at the five own-pillar hubs), answered in the second pass (105 hang call-outs at 12 hubs, 10 of them at seven shared-pillar hubs, and 19 comms repairs at 13 hubs); a re-read is owed on 3a6e329b (documents, wording and the prompt changed)"
+  "leak_py": "REVIEW 2026-11-08 (--asof 2026-11-06) on 5356713d: sweeps 4, 6 and 9, each ruled in the design note; sweep 11 (the prompt gate) clean; no LEAK; sweep 9 reads no dated stamp with a T or day-first date, so checks.py's dates sweep covers the records",
+  "reader": "round 2 (isolated, on 3a6e329b): questions 1 to 6 clean (no decisive-step sentence, no ranking, no helper file, no figure reading as the answer; Q5 Schedule 4.1, 4.3, 4.4, 4.6 and 6.2, 6.4 fix the WHAT; Q6 analytical); items a to d, f, g, h and j harmless, e harmless for the asks, i mild (about 90 per cent of the hang call-outs at the five own-pillar hubs) ruled the mechanism's own footprint; the ship pass changed no document's words and no prompt",
+  "reader_r1": "round 1 on 4bf9959c: questions 1 to 6 clean, item i mild, answered in the second stage-4 pass"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-11-08 on the updated card (repeat.decision against task268, answered in the design note; the question form now where, its repeat.question_form WARN gone); test.same_puzzle_older (task451) and test.same_driver_older (task105 v1, task162 v2, task170 v1, task229 v3) differentiated on the card",
@@ -24,14 +25,16 @@
   "surface": "2026-11-08, guard.py surface on the full re-extract: 314 builds screened, 9 pairs promoted for adjudication on card axes or surface percentile (task157 back to back by number, task465, task488, task265, task136, task483, task229, task162, task451), each differentiated on the card in one line, left for the author's adjudicated clone check; people: Ailis Fee found in the pack, on the card, no BLOCK"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (round 1, on 4bf9959c)",
-  "disposition": "APPROVE (no FIX_NOW); its optional touches and the coordinator's fix list worked in one generator pass; a re-judge is owed on 3a6e329b",
-  "report": "task156/determinism_check_report.md (round 1)"
+  "verdict": "DETERMINISTIC (pass 2, r2, on 3a6e329b)",
+  "disposition": "APPROVE, no FIX_NOW; its optional items taken in the ship pass (the spurs' margin widened, SF17 to SF20 asserted)",
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "report": "task156/determinism_check_report_pass2.md (round 1: task156/determinism_check_report.md)"
  },
  "returned": [],
- "resume": "second stage-4 hand-off 2026-11-08: target.zip sha256 3a6e329bfd5ddc00525353d69521854a356165e4fd26b08b2af66c1a1fccae96; rebuild with python3 task156/generator/build.py then python3 task156/generator/zip_target.py (byte-identical), gates python3 task156/generator/checks.py, verify.py and ceiling.py; next: the leak reader and the determinism judge re-run on this cut, every finding fixed in the generator in one pass, then ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-08",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -195,7 +198,8 @@
    "fate": "FAILED_TO_STUMP on the portal (2026-11-07): both responses landed the 11 councils with the delegate coverage covariate evaluated at the ballot close; re-rooted as architecture 4 in a new domain and world on 2026-11-08, its build outputs removed from the folder at the draw (git history keeps them)"
   }
  ],
- "gates_stage3": "second stage-4 pass, on 3a6e329b: checks.py 73 assertions 0 failed (Gate F 0 of 8 cheap routes on the golden, none holding more than one standard programme hub, standing family 6 of 6, margins 20 of 20 over redraws, closest 0.10, median 0.30; truth's closest 0.48, golden's 0.34; SF13 under hub, by-group and fleet attendance with the seven standard programme hubs at most 98.47, 98.62 and 98.61); verify.py 0 disagreements (closest 0.34); two builds byte-identical (15 files); figures_check.py PASS (67); precut.py exit 0; voice-check.py PASS, no WARN; ceiling.py pair 28.5, mirror leakage 0.0, cracker, full includer, register advance and careful register-joined analyst each 0 of 60",
- "zip_sha256": "3a6e329bfd5ddc00525353d69521854a356165e4fd26b08b2af66c1a1fccae96",
- "answer": "List 12 hubs in the 2027 Availability Plan: Ballinkeel Main Street, Bunacurry Pier, Carrowkeel Business Park, Clonlea Leisure Centre, Derrylane Park and Ride, Glenfad Shopping Centre, Kilbeg Retail Park, Portavaddy Seafront, Rathmoy Station Road, Rossnabeg Harbour, Tobernalt Road and Tullymore Market Square."
+ "gates_stage3": "ship cut 5356713d: checks.py 83 assertions 0 failed (Gate F 0 of 8 cheap routes on the golden, none holding more than one standard programme hub; standing family 6 of 6; margins 20 of 20 over redraws, closest 0.10, median 0.30; truth's closest 0.48, golden's 0.35; SF1 to SF20; the spurs at 99.56 and 99.76 per unit, 99.36 and 99.58 on the expected lowest unit, events 0.21 and 0.10, 99.53 and 99.75 on the fleet's hang spells; the calendar member on the same 12; the dates sweep clean); verify.py 0 disagreements (closest 0.34); two builds byte-identical (15 files) and the zip cut twice to one sha256; figures_check.py PASS (67); precut.py exit 0; voice-check.py PASS, no WARN; ceiling.py pair 28.5, mirror leakage 0.0, every route 0 of 60; heart WARN (repeat.decision); surface 314 screened, 9 promoted and differentiated on the card; people no BLOCK; leak.py REVIEW, no LEAK",
+ "zip_sha256": "5356713da0281cc4dadd2b716e216fcc3470335ee9c09f6436a6342c6b6f915d",
+ "answer": "List 12 hubs in the 2027 Availability Plan: Ballinkeel Main Street, Bunacurry Pier, Carrowkeel Business Park, Clonlea Leisure Centre, Derrylane Park and Ride, Glenfad Shopping Centre, Kilbeg Retail Park, Portavaddy Seafront, Rathmoy Station Road, Rossnabeg Harbour, Tobernalt Road and Tullymore Market Square.",
+ "freeze": "freeze.py check task156 --mode determinism against the snapshot taken before the ship pass's first edit, --allow charges and energy_mwh of Annagh Cross and Cloonfin Crossroads (fix 5) and the ungraded pack.* record counts and salt.NM125: the call, the stump, the ladder, the default path, blocks 1 and 2 and every other figures.json value unmoved; one item printed, block 4's hub_availability_2027.csv, whose numbers differ from the snapshot's by exactly the four allowed figures (1738, 57.3, 2545, 81.9 out; 1786, 57.5, 2507, 81.0 in), the determinism mode comparing a block 4 file whole"
 }

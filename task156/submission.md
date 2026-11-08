@@ -63,7 +63,7 @@ hubs or its two rural spur hubs, whose visits every two months and frequent supp
    - NM119 Bunacurry Pier: Yes; 2,901 charges; 94.3 MWh
    - NM121 Tullymore Market Square: Yes; 2,997 charges; 95.3 MWh
    - NM122 Kilmeedy Church Street: No; 2,249 charges; 72.4 MWh
-   - NM125 Annagh Cross: No; 1,738 charges; 57.3 MWh
+   - NM125 Annagh Cross: No; 1,786 charges; 57.5 MWh
    - NM127 Lismoy Services: No; 4,354 charges; 141.8 MWh
    - NM129 Corrabeg Business Park: No; 1,169 charges; 38.0 MWh
    - NM131 Portavaddy Seafront: Yes; 4,706 charges; 150.1 MWh
@@ -80,7 +80,7 @@ hubs or its two rural spur hubs, whose visits every two months and frequent supp
    - NM155 Carrowkeel Business Park: Yes; 2,756 charges; 88.7 MWh
    - NM158 Monaleen Services: No; 4,047 charges; 132.5 MWh
    - NM160 Templederry Green: No; 948 charges; 30.8 MWh
-   - NM162 Cloonfin Crossroads: No; 2,545 charges; 81.9 MWh
+   - NM162 Cloonfin Crossroads: No; 2,507 charges; 81.0 MWh
    - NM166 Tobernalt Road: Yes; 2,846 charges; 92.6 MWh
 
 ### availability_plan_2027.pdf
