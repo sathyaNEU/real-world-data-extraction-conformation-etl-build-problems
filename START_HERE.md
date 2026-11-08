@@ -4,7 +4,7 @@ Every unbuilt seed in `analytical_tasks/` has a fixed task number, numbered obje
 
 A seed is an idea, not a design: keep its world, decision and quantity, and re-find the pitfall from the data (`stumping`). Read only the seed's header table and its Situation section. If the guard blocks a seed's driver, redraw inside the same objective and keep the number.
 
-Seeds already built (not renumbered): AD01 as task119, AD02 as task125, DA01 as task120, DA02 as task126, DS01 as task122, DS02 as task128, ET01 as task123, FC01 as task117, FC02 as task124, OS01 as task118, OS02 as task127, RC01 as task121, RC02 as task129. Experiment & Causal Analysis has no seed block yet.
+Seeds already built (not renumbered): AD01 as task119, AD02 as task125, DA01 as task120, DA02 as task126, DS01 as task122, DS02 as task128, ET01 as task123, FC01 as task117, FC02 as task124, OS01 as task118, RC01 as task121, RC02 as task129. Experiment & Causal Analysis has no seed block yet.
 
 Regenerate with `python3 analytical_tasks/make_index.py`; numbers never move.
 
