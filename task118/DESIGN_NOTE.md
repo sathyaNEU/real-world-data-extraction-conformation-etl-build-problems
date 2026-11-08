@@ -5,48 +5,50 @@ funds, in a new client domain, world, dataset, generator and prompt shell. Archi
 response, read on consecutive event days) is spent on its first portal round; its card entry moves to the lineage.
 Earlier architectures' notes live in git history and in `## Tried and rejected` below. The author's five conditions of
 2026-11-07 (task127 and task306) are met here: the field's method done carefully files the wrong call; no fit,
-back-test or reconciliation picks the golden route (the one validation on file confirms the easy route); the asks ride
-reconstructions across two systems no sentence states; the ladder keeps every cheap route off the call; the three rules
-are written below.
+back-test or reconciliation picks the golden route (the one validation on file, the operator's performance summary,
+ties to the record every route reads); the asks ride reconstructions across two systems no sentence states; the ladder keeps
+every cheap route off the call; the three rules are written below.
 
 ## Draw
 
 - **Card:** `.claude/skills/fingerprint/cards/task118.json`, architecture v6. **Pairing:** client domain
   urban-regional-science, task type `optimization` (serves OS: siting under a stated objective), objective
   opportunity-sizing-decision. The headline is a sized opportunity: from the dwell minutes each shortlisted station's
-  trains run over their timetabled dwell (the pool) to the passenger lateness one dispatch team, removing three fifths
-  of those minutes in its hours, would take off the network's weekday trains (the realisable), and the sized figures
+  trains run over their booked dwell (the pool) to the passenger lateness one dispatch team, removing three fifths of
+  those minutes in its hours, would take off the network's weekday trains (the realisable), and the sized figures
   drive the pick.
 - **Shape:** 01, a ranked list under a cap of one: each shortlisted station's weekday saving (6), the pick, the
-  runner-up and the gap (3), and the asks (designed at stage 2: each station's overrun minutes by period, each line's
-  passenger lateness at the city terminus by period, the units in passenger service by line at two clock times).
+  runner-up and the gap (3); the asks are the census day's gate flows at the four gated shortlisted stations (8) and
+  the Delay Repay compensation for journeys to or from Ravelstoke Central by line and lateness band (9), with a ranked
+  chart of the savings.
 - **Strategy and labels:** `decomposition_attribution` (the network's passenger lateness is attributed to the dwell
   overruns that start it, through every train and unit it reaches), Gate G `decomposition_attribution`, gap objective
   then time (the local overrun minutes are right and are not what the plan prices; the lateness travels on in time),
   pattern none, generators G1 (the unit of value is network passenger lateness, not the station's train-minutes), G7
   (the turnround slack is the operating window that decides whether lateness passes on), G3 (the unit that actually
-  worked each train, from the running record, not the planned diagram). Layer 2 `estimand_identification` (the right
-  counterfactual), pattern `own:network-lateness-through-unit-turnrounds` (the urban optimization cards site on a
-  stated objective; none carries delay through vehicles).
+  worked each train, from the running record). Layer 2 `estimand_identification` (the right counterfactual), pattern
+  `own:network-lateness-through-unit-turnrounds` (the urban optimization cards site on a stated objective; none
+  carries delay through vehicles).
 - **World:** Ravelstoke Rail, the rail executive of the Ravelstoke City Region Combined Authority (an invented city
   region in the north of England, GBP), which specifies and funds the suburban network that Cardale Railways Ltd runs
   under a concession. Three lines run into Ravelstoke Central: the Crossmoor line, the Ambrey line (to Ravelstoke
-  Airport, with the morning park-and-ride extras from Ambrey Parkway) and the Holm Ferry line. The 2027 rail plan funds
-  one platform dispatch team; the shortlist is Ostley Lane and Brathwick Road (Crossmoor line), Ambrey Parkway and
-  Pellingham (Ambrey line), Holcroft Green and Saltgate (Holm Ferry line). A 2025 trial team ran at Quayside (Holm
-  Ferry line) and Cardale closed it out.
+  Airport, with the morning and evening park-and-ride extras between Hartlow and Ravelstoke Central) and the Holm
+  Ferry line. The 2027 rail plan funds one platform dispatch team; the shortlist is Ostley Lane and Brathwick Road
+  (Crossmoor line), Ambrey Parkway and Pellingham (Ambrey line), Holcroft Green and Saltgate (Holm Ferry line). The
+  brief takes the team's three fifths from Cardale's 2025 dispatch trial at Quayside; no trial file ships.
 - **Furniture, drawn and checked:** forum `minister_or_cabinet` (the Mayor adopts the 2027 Rail Plan), forcing
   `cutover_or_migration` (the team starts with the May 2027 timetable change), org `local_government`, role
-  `capacity_planner`, artifact `filed_standard` (the rail executive's dispatch team brief files the WHAT), calibration
-  `prior_period_close_out` (Cardale's close-out of the 2025 Quayside trial). Personas from
-  `guard.py names --geo "United Kingdom" --seed 118`: Julia Clayton (head of rail performance, Ravelstoke Rail, signs
-  the brief), Leon Ross (performance manager, Cardale Railways, signs the close-out).
+  `capacity_planner`, artifact `filed_standard` (the rail executive's siting brief files the WHAT), calibration `none`
+  (no calibration organ ships). Personas from `guard.py names --geo "United Kingdom" --seed 118`: Julia Clayton (head
+  of rail performance, Ravelstoke Rail, issues the brief), Leon Ross (Cardale's performance manager, saves the working
+  timetable and the performance summary).
 - **Data-native sentence:** the Ambrey line keeps its morning frequency with ten units by turning each all-stations
-  unit at Ravelstoke Central five minutes after it arrives, a minute more than the four-minute minimum turnround, into
-  the outbound airport workings that carry the airport's early shifts, while the morning park-and-ride extras from
-  Ambrey Parkway run into the sidings once their passengers are off; the running record carries each train's unit, so
-  the lateness Pellingham's long dwells put on an inbound train reappears on a full outbound train that never calls
-  there, and Ambrey Parkway's longer dwells mostly end in the sidings, but no field, code or sentence says either.
+  unit at Ravelstoke Central four and a half minutes after it arrives, half a minute more than the four minutes no late start in the
+  record ever beats, into the outbound airport workings that carry the airport's early shifts, while the park-and-ride
+  extras from Hartlow sit at the terminus until the evening once their passengers are off; the running record carries
+  each train's unit, so the lateness Pellingham's long dwells put on an inbound train reappears on a full outbound
+  train that never calls there, and Ambrey Parkway's longer dwells mostly end on a unit that waits all day, but no
+  field, code or sentence says either.
 - **Abstraction sentence (stumping Part 6), against the nearest builds on file:** written for this build, "a delay
   removed at one point is worth what it removes from every later assignment of the vehicle that carried it, which only
   the vehicles' own sequences show". Against 303 (a unit's record carries a shared upstream loss found by same-minute
@@ -57,82 +59,307 @@ are written below.
   lateness into later work. Against task472 (a job's completion released only inside a schedule's windows): there the
   job's own finish is quantised by windows outside it; here the saving lands on other trains, the unit's next workings,
   weighted by their passengers. Not approved, so the heart rule is about drivers, not shells.
-- **Shell (redrawn with the world):** question form `which`, the second sentence opening on the workbook ("In ..."),
+- **Shell (redrawn with the world):** question form `where` (a siting; `which` repeated task482, the last prompt
+  shipped, and `guard.py heart` warned), the second sentence opening on the workbook ("In ..."),
   the rounding sentence opening on "Passenger-minutes", deliverables `png+xlsx`; the dead shells (how-much, put, give,
   docx+xlsx; what, the note, megawatts, docx+csv) are in `lineage_shells`.
 - **Sources, one line each.** The client's two-layer standard (the field's own analysis decides: a siting valued on
   the passenger lateness it removes). Rail performance practice in Great Britain: train running records against the
-  working timetable, sectional running times and allowances, minimum turnround times in the timetable planning rules,
-  primary and reactionary delay (public domain knowledge; no text copied). The world, every figure and every file are
-  synthetic, generated by `generator/build.py` under seed 118.
+  working timetable, sectional running times and allowances, turnrounds at termini, primary and reactionary delay,
+  Delay Repay bands, ticket gatelines with tidal arrays (public domain knowledge; no text copied). The world, every
+  figure and every file are synthetic, generated by `generator/make.py` under seed 118 and draw 3.
 - **Re-root:** architecture 5's call landed on its first portal round (a run-position covariate, a contract-regime
   split and season-out validation, each a named reflex). This session's screen of the untried ground and the harness
   iterations that shaped this draw are lines in `## Tried and rejected`.
 
 ## Survivor anatomy
 
-Actor: the property that decides is where each delayed train's unit goes next and how much of its lateness the turnround leaves, and no file stores it; the running record lists each train's calls and its unit, the timetable lists each working's times, and the next working a train's lateness reaches is a relation between rows (the same unit's next train that day, in time order).
-Link: the knock-on is read through the unit number shared by an inbound train's terminus arrival and the same unit's next departure, with the turnround slack (layover less the four-minute minimum) deciding what passes; the key is the unit and the day, and the deciding relation is the slack arithmetic across the turnround and the passengers on the next working, which no column, field or sentence invites.
-Reflex: the field's methods for the deciding quantity sit at rungs 0 and 1 and file the wrong station: the dwell minutes a team removes at its station (the operator's delay minutes), the passenger minutes on board, the same-train passenger lateness net of allowances, and that figure scaled by a network, line or line-by-period reactionary ratio.
-Back-test: the textbook route validates: Cardale's close-out of the 2025 Quayside trial measured the passenger lateness the team took off the trains calling there, and the same-train route reproduces it, because Quayside's units turn round with slack on the Holm Ferry line and pass on nothing.
-Second use: every file the decisive step reads is in the pack for its own reason: the running record is every rung's data and carries the units for the fleet ask, the working timetable and its planning rules give every rung its scheduled times, allowances and dwells, the passenger census weights every rung, and the diagrams serve the fleet ask; deleting the decisive step drops no file.
-Shock: the knock-on reads as ordinary lateness: outbound Ambrey line trains leaving Ravelstoke Central a minute or two late in the morning look like any other start-of-journey lateness, the line's averages sit inside the other lines' range, and no candidate stands out on any shipped statistic.
-Pins: the dispatch team brief files the WHAT in the rail executive's own genre (the passenger lateness taken off the network's weekday trains, each passenger's minutes after the timetable at the station where they leave the train, valued on the autumn 2026 weekdays as they ran, the team removing three fifths of the time each train's dwell runs over its timetabled dwell at its station in its hours), and no filed sentence names turnrounds, knock-on, reactionary delay, the next working or a unit.
+Actor: the property that decides is where each delayed train's unit goes next and how much of its lateness the turnround leaves, and no file stores it; the running record lists each train's calls and its unit, the working timetable lists each working's booked times, and the next working a train's lateness reaches is a relation between rows (the same unit's next train that day, in time order).
+Link: the knock-on is read through the unit number shared by an inbound train's terminus arrival and the same unit's next departure, with the four-minute floor that every one of the record's 483 late starts of a unit's later working sits on exactly (the only other late starts are units' first workings, late off the depot) deciding what passes; the key is the unit and the day, and the deciding relation is the slack arithmetic across the turnround and the passengers on the next working, which no column, field or sentence invites.
+Reflex: the field's methods for the deciding quantity sit at rungs 0 and 1 and file Saltgate: the dwell minutes a team removes at its station (train-minutes, the operator's delay minutes), the passenger minutes on board, the same-train passenger lateness net of allowances, and that figure scaled by the network's, the line's or the line-in-period reactionary ratio taken from the record.
+Back-test: the textbook route validates: the operator's performance summary gives each line's punctuality by month (station stops on time, trains at destination within five minutes), the analyst's reading of the running record against the timetable ties to it on all nine line-months under every route, and no shipped figure gives passenger lateness by station or line, so the one check on file confirms the joins the same-train replay stands on and refutes nothing.
+Second use: every file the decisive step reads is in the pack for its own reason: the running record is every rung's data and the Delay Repay ask's lateness source, the working timetable gives every rung its booked times and allowances and the Delay Repay ask its trains, the passenger census weights every rung, and the station register joins them all; deleting the decisive step drops no file and no column.
+Shock: the knock-on reads as ordinary lateness: outbound Ambrey line trains leaving Ravelstoke Central a minute or two late in the morning look like any other start-of-journey lateness, the Ambrey line's punctuality sits inside the other lines' range in the performance summary (station stops on time 90.0 to 91.0 per cent against 89.2 to 91.6), and Pellingham is third on train-minutes and passengers on board and second on same-train lateness, a third behind Saltgate.
+Pins: the siting brief files the WHAT in the rail executive's own genre (the passenger lateness taken off the network's weekday trains, each passenger's minutes after the booked arrival at the station where they leave the train, valued on the autumn 2026 weekdays as they ran, the team removing three fifths of the time each train's dwell runs over its booked dwell at its station in its hours), and no filed sentence names turnrounds, knock-on, reactionary delay, the next working or a unit; the planning rules file running times, dwell, the departure rule and headway, and no turnround.
 
 ## Default path
 
-1. Read the dispatch team brief: the team goes to one shortlisted station; it is worth the passenger lateness it takes
-   off the network's weekday trains, valued on the autumn 2026 weekdays as they ran, the team removing three fifths of
-   the time each train's dwell runs over its timetabled dwell at its station between 06:30 and 19:30.
+1. Read the siting brief: the team goes to one shortlisted station; it is worth the passenger lateness it takes off
+   the network's weekday trains, valued on the autumn 2026 weekdays as they ran, the team removing three fifths of the
+   time each train's dwell runs over its booked dwell at its station for trains booked to depart from 06:30 up to
+   19:30.
 2. From the running record, take each weekday train's arrival and departure at each shortlisted station against the
-   working timetable, and the time its dwell ran over the timetabled dwell (net of time waiting for a timetabled
-   departure).
-3. Replay each train with three fifths of that overrun removed at the candidate station: the train runs each later
-   section in its sectional running time and never leaves early, so the timetable's allowances recover part of its
-   lateness; take each later station's arrival lateness times the census passengers alighting there.
-4. Sum over the record's weekdays and divide by their number; rank the shortlist. A careful version scales each
-   station's figure by a reactionary ratio (the network's, its line's, or its line's in that period) taken from the
-   record's late starts.
+   working timetable, and the time its dwell ran over the booked minute (on the trains that left late).
+3. Replay each train with three fifths of that overrun removed at the candidate station: the train keeps each later
+   section's recorded running time and never leaves a station before its booked time, so the timetable's allowances
+   recover part of its lateness; take each later station's arrival lateness times the census passengers alighting
+   there.
+4. Sum over the record's 60 weekdays and divide by their number; rank the shortlist. A careful version scales each
+   station's figure by a reactionary ratio (the network's 0.0995, its line's, or its line's in that period) taken from
+   the record's late starts against its primary delay.
 
-Ends on: Saltgate, about 7,000 passenger-minutes a weekday (Ambrey Parkway next on the line-by-period scaling)
-Golden: Pellingham, about 9,000 passenger-minutes a weekday (Saltgate runner-up at about 7,000)
+Ends on: Saltgate, about 2,900 passenger-minutes a weekday (2,884 on the same-train replay; Saltgate on every scaling)
+Golden: Pellingham, 4,100 passenger-minutes a weekday (4,106.7), Saltgate runner-up at 2,900
 
 ## Stump sentence
 
 The default path prices each shortlisted station's team at the overrun it removes there, carried down the same train
-to each passenger's alighting station net of the timetable's allowances, and files Saltgate at about 7,000
+to each passenger's alighting station net of the timetable's allowances, and files Saltgate at about 2,900
 passenger-minutes a weekday; the step that lands it there is stopping each train's lateness at Ravelstoke Central,
-when the Ambrey line's all-stations units turn round there with a minute of slack and take their lateness straight
-into the full outbound airport workings while the Ambrey Parkway extras go to the sidings, so Pellingham's team takes
-the most lateness off the network, about 9,000.
+when the Ambrey line's all-stations units turn round there with half a minute of slack and take their lateness straight
+into the full outbound airport workings while the park-and-ride extras wait for the evening, so Pellingham's team takes
+the most lateness off the network, 4,100.
 
 ## Three rules
 
 Task type: optimization in urban-regional-science, which serves opportunity sizing: siting one team among shortlisted stations under a stated objective, sized from the overrun minutes each station's trains run (the pool) to the passenger lateness the team takes off the network (the realisable).
 
-Domain test: the deciding quantity is each siting's passenger lateness avoided across the network's weekday trains, which rail performance analysis builds from train running records against the working timetable, the timetable's sectional running times and allowances, the minimum turnround in the planning rules, the units each working used and the passengers each train carries between stations.
+Domain test: the deciding quantity is each siting's passenger lateness avoided across the network's weekday trains, which rail performance analysis builds from train running records against the working timetable, the timetable's sectional running times and allowances, the units each working used and the passengers each train carries between stations.
 
 Swap: "which ward should get the discharge team, valued at the patient waiting it takes off the hospital" keeps the sentence's shape and loses its substance: a ward has no timetable whose allowances absorb lateness, no passenger loading between stations and no vehicle whose late arrival starts a fixed-time, full working late, so the quantity and its construction stop making sense.
 
-Layer 1: Cardale's running feed stamps calls at half-minute resolution against timing-point codes from the station register; the working timetable marks allowances in brackets and dwell as the gap between arrival and departure; the feed and the timetable switch from BST to GMT on Sunday 25 October 2026 with the rest of the country; a failed unit's diagram is worked by a spare on the day, so the record's unit can differ from the plan; the census counts each service's boarders and alighters on one autumn weekday. Nothing is placed to be caught, and none of it moves the call.
+Layer 1: Cardale's running feed stamps calls at half-minute resolution against timing-point codes (TIPLOCs) while the census, the claims and the gates key stations by CRS code and name, joined through the station register; the working timetable exports booked times to the second with bracketed allowances; a failed unit's workings pass to a spare on the day, so the record's unit changes mid-day; the census counts each train's boarders and alighters on one autumn weekday; the gateline controllers log cumulative 16-bit counters in UTC; the claims extract carries appeals and app-entered dates as the claims system stores them. Nothing is placed to be caught, and none of it moves the call.
 
 Layer 2: estimand identification: the counterfactual of a team at a station is the network as it would have run, so the methodological choice that flips the call is to replay each weekday through each unit's actual next workings, letting lateness beyond the turnround slack start the next working late, rather than pricing the overrun on the train that incurred it or scaling that figure by an average reactionary ratio.
 
-Decisive step: follow each delayed train's unit at Ravelstoke Central into its next working, passing on the lateness beyond the layover less the four-minute minimum turnround, and weigh it by that working's passengers; on the Ambrey line's morning all-stations units this carries Pellingham's overruns onto the full outbound airport trains, while Ambrey Parkway's extras end in the sidings.
+Decisive step: follow each delayed train's unit at Ravelstoke Central into its next working, passing on the lateness beyond the layover less the four-minute floor the record's late starts sit on, and weigh it by that working's passengers; on the Ambrey line's morning all-stations units this carries Pellingham's overruns onto the full outbound airport trains, while the park-and-ride extras' units wait at the terminus.
 
-Not semantics: every field, code, unit and definition read correctly (the half-minute stamps, the bracketed allowances, the clock change, the unit swaps, waiting for a timetabled departure kept out of the overrun) still leaves the same-train route on Saltgate, because where a unit goes next and how much lateness its turnround passes on is not a reading of any field: it is a construction across rows of the running record that the analyst has to recognise the network figure needs.
+Not semantics: every field, code, unit and definition read correctly (the half-minute stamps, TIPLOC against CRS, the bracketed allowances, the unit swaps, waiting for a booked departure kept out of the overrun) still leaves the same-train route on Saltgate, because where a unit goes next and how much lateness its turnround passes on is not a reading of any field: it is a construction across rows of the running record that the analyst has to recognise the network figure needs.
 
-Not rule application: no filed rule or procedure tells the analyst to carry lateness into a unit's next working, so executing the brief, the timetable and the planning rules correctly still files Saltgate when the saving is priced on the trains that call at the station. The enumerated family (train-minutes removed, passenger-minutes on board, the same-train replay with or without allowances, that replay scaled by the network's, the line's or the line-in-period reactionary ratio, the full replay through each unit's day, a one-hop replay) names Saltgate four times, Ambrey Parkway twice and Pellingham twice; the standing family once the replay follows the units (one hop, every hop, the planned or the actual unit, the minimum turnround as filed) is unanimous on Pellingham, with the figure inside one bin; what rules out the rest is loud on the running record's own late starts from Ravelstoke Central (each sits exactly four minutes after its unit's arrival) and silent on every station-level cut.
+Not rule application: no filed rule or procedure tells the analyst to carry lateness into a unit's next working, so executing the brief, the timetable and its planning rules correctly still files Saltgate when the saving is priced on the trains that call at the station. The enumerated family (train-minutes removed, passenger-minutes on board, the same-train replay, that replay scaled by the network's, the line's or the line-in-period reactionary ratio, a one-hop replay, the full replay through each unit's day, the full replay on the planned units) names Saltgate six times and Pellingham three times, and spans 1,900 to 4,107 passenger-minutes on Pellingham's figure; with only the filed rules read all nine stand, two calls apart; once the record's late starts are read as turnround-bound the standing family is the unit-following members (one hop, every hop, the planned units, and a late working pulled forward by its own recorded gap), unanimous on Pellingham with a spread of 27 passenger-minutes inside one bin, and what rules the rest out is the record's own 483 late starts of units' later workings, every one exactly four minutes after the unit's arrival, loud on that relation and silent on every station-level cut.
 
-Analyst test: a strong analyst who reads every field and rule correctly replays each train with the team's three fifths of the overrun removed, carries the lateness to each passenger's alighting station net of the allowances, perhaps scales it by a reactionary ratio, and files Saltgate at about 7,000 passenger-minutes a weekday; the Ambrey line's all-stations units carry Pellingham's lateness into their full outbound workings, so Pellingham's about 9,000 is the call.
+Analyst test: a strong analyst who reads every field and rule correctly replays each train with the team's three fifths of the overrun removed, carries the lateness to each passenger's alighting station net of the allowances, perhaps scales it by a reactionary ratio, and files Saltgate at about 2,900 passenger-minutes a weekday; the Ambrey line's all-stations units carry Pellingham's lateness into their full outbound workings, so Pellingham's 4,100 is the call.
 
-Estimand: the rail executive's dispatch team brief (`dispatch_team_brief_2027.docx`, section 3) files it: the team is worth the passenger lateness it takes off the network's weekday trains, each passenger's minutes after the timetabled arrival at the station where they leave the train (none for an early or on-time arrival), summed over every weekday train and averaged over the autumn 2026 weekdays as they ran, the team removing three fifths of the time each train's dwell runs over its timetabled dwell at its station between 06:30 and 19:30.
+Estimand: the rail executive's siting brief (`dispatch_team_brief_2027.docx`, section 3) files it: the team is worth the passenger lateness it takes off the network's weekday trains, each passenger's minutes after the booked arrival at the station where they leave the train (none for an early or on-time arrival), summed over every weekday passenger train and averaged per weekday over the autumn 2026 weekdays as they ran, with the census's passengers, the team removing three fifths of the time each train's dwell runs over its booked dwell for every train booked to depart its station from 06:30 up to 19:30; section 4 files that the 2027 timetable keeps the autumn 2026 train plan.
 
-No decoy: nothing is planted to be caught: no memo, briefing, draft or stakeholder figure states a saving, a ranking or a preferred station; the close-out reports Quayside's own trial and is true of Quayside, and the operator's performance summary reports what it measures.
+No decoy: nothing is planted to be caught: no memo, briefing, draft or stakeholder figure states a saving, a ranking or a preferred station; the brief names the trial only as the source of the three fifths, and the operator's performance summary reports what it measures, each line's passenger lateness by month.
 
-No certified replay: the method is not recovered by reproducing certified or published figures: the close-out's one measured saving is reproduced by every rung at Quayside and selects nothing among the shortlisted stations, and every golden figure is built from raw running rows.
+No certified replay: the method is not recovered by reproducing certified or published figures: the performance summary's line-month punctuality is read off the record every route shares and ties under all of them, it selects nothing among the shortlisted stations, and every golden figure is built from raw running rows.
 
 Lesson: a delay removed at one point is worth what it removes from everything the vehicle carrying it does next, so a station's saving is read by following its trains' units through their turnrounds, not by pricing the minutes where they arise or scaling them by an average knock-on; no build on file carries a local saving through the vehicles' own sequences of work.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0b, train-minutes removed at the station | the brief's three fifths of the overrun | dep, arr against the booked dwell | fires: the operator's delay minutes | none | no | fires: three fifths of a sum | no | readable |
+| R0, passenger-minutes on board leaving the station | the brief's passengers | census boarders less alighters | fires: delay minutes times load | none | no | fires: a product | no | readable |
+| R1, same-train replay to each alighting station | fires: the brief's definition executed train by train | the record's calls | fires: the textbook counterfactual | the performance summary ties its baseline | no | no | no | readable |
+| R1 scaled, network, line or line-in-period reactionary ratio | no | late starts against primary delay | fires: the industry's reactionary multiplier | none | no | fires: one ratio | no | readable |
+| R2, every unit followed into its next workings (decisive) | no clause names turnrounds, the next working, a unit or knock-on; the planning rules file no turnround | the unit column is the record's fleet bookkeeping, and the turnround relation is a self-ordered sequence with a floor read off the record, not a header join | the field's reflexes are the delay-minute and multiplier routes above, which file Saltgate | the performance summary ties every route's baseline and refutes none | no battery item follows a unit | a day-by-day replay with a floor and a maximum at every call, not one subtraction or ratio | deleting the step drops no file or column: the record, its units, the timetable and the census serve every rung and the Delay Repay ask | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | passenger lateness | each passenger's minutes after the booked arrival at the station where they leave the train | train-minutes late; lateness at the terminus times the load | train-minutes file Saltgate | brief section 3, "each passenger's minutes after the booked arrival at the station where they leave the train" |
+| SF2 | early arrivals | count none | netted against late running | the netted reading files Saltgate | brief section 3, "with none for an early or on-time arrival" |
+| SF3 | weekdays | the record's 60, Monday 7 September to Friday 27 November 2026 | the census day alone; calendar days | one weekday's figure, not the filed average | brief section 3, "Monday 7 September to Friday 27 November 2026", and the record holds exactly those 60 dates |
+| SF4 | the team's hours | trains booked to depart from 06:30 up to 19:30 | actual departure in the hours; 19:30 included | the same call and the same bin at every station under both (one shortlisted call, 2D77 at Ambrey Parkway, is booked at 19:30) | brief section 3, "booked to depart the station from 06:30 up to 19:30"; `same call` |
+| SF5 | the overrun | the recorded dwell less the booked dwell on a train that left late | the same on every call, an early arrival's wait included | the identical replay (the departure rule makes them one) | planning rules, "No train leaves a timing point before its booked departure time"; `same call` |
+| SF6 | the unit | the record's unit on the day | the planned diagram (a spare's day read as the failed unit's) | the identical figure at every station | `same call` |
+| SF7 | how far a saving travels | every later working of the unit | the next working only | the same bin at every station (Pellingham 4,079.4 against 4,106.7) | `same call` |
+| SF8 | passengers | the census day's counts for every weekday | the annual usage estimates scaled per weekday | not computable per train | brief section 3, "with passengers as counted in the autumn 2026 passenger census on Tuesday 13 October 2026" |
+| SF9 | the gap | from the unrounded savings (1,196.4) | from the rounded savings (4,100 less 2,900) | 1,200 both ways | `same call` |
+| SF10 | the turnround a unit needs | the record's floor: every one of 483 late starts of a unit's later working sits exactly four minutes after the unit's arrival | a booked layover; three or five minutes | a booked layover never binds a late start; any other floor misses every turnround-bound start | the running record's own late starts (no filed rule states a turnround) |
+| SF11 | every weekday passenger train | the extras included | all-stations trains only | same call (Pellingham over Saltgate 1.344) | brief section 3, "every weekday passenger train"; `same call` |
+| SF12 | 2027 | the autumn 2026 weekdays stand for 2027 | a grown or re-timetabled 2027 | not computable | brief section 4, "The 2027 timetable keeps the autumn 2026 train plan on all three lines" |
+| SF13 | a weekday | the mean over the 60 weekdays | the median weekday | same call (Pellingham over Saltgate 1.377) | brief section 3, "averaged per weekday"; `same call` |
+| SF14 | the shortlist | the six stations of brief section 2 | any gated or busiest station | not in the question | brief section 2 and the prompt's "on the 2027 shortlist" |
+| SF15 | SF4, SF5, SF7 and SF11 together, with four ways to pick out a turnround-bound start (exactly at the floor, within half a minute of it, the unit arriving too late to leave on time, any late later working held to its recorded gap) | the golden cell | the other 63 cells | every cell files Pellingham over Saltgate, and the pick's bin wherever the extras are in | `same call`, asserted as a product |
+| SF16 | compensation paid (Delay Repay ask) | every payment row, an appeal's top-up under the same claim included | the latest row per claim read as a re-assessment | all 9 cells move | the asking sentence's "compensation Cardale paid", each row carrying its own paid_on date and amount |
+| SF17 | how a unit passes its lateness on | a late later working leaves four minutes after its unit's replayed arrival, not before its booked time | pulled forward by its own recorded gap after the unit's arrival | the identical replay at every station, since every late later working's recorded gap is the four minutes | `same call`, asserted |
+
+## Ladder
+
+Rungs on the clean truth, passenger-minutes a weekday unless stated, from `generator/figures.json` (`rungs`):
+
+- R0b, train-minutes removed at the station: Saltgate 53.2, Brathwick Road 41.1, Pellingham 16.5 (third), Ambrey
+  Parkway 12.3, Holcroft Green 11.8, Ostley Lane 9.5; margin 1.294; the winner clears Pellingham 3.22 times.
+- R0, passenger-minutes on board leaving the station: Saltgate 6,524, Brathwick Road 4,747, Pellingham 2,148 (third);
+  margin 1.374; 3.04 times Pellingham.
+- R1, the same-train replay (the default path): Saltgate 2,884, Pellingham 1,900 (second), Brathwick Road 1,659,
+  Ambrey Parkway 1,594, Holcroft Green 407, Ostley Lane 404; margin 1.518.
+- RNF, R1 times the network's reactionary ratio 0.106: Saltgate 3,190, Pellingham 2,102 (second); margin 1.518.
+- RLF, R1 times the line's ratio (Crossmoor 0.1285, Ambrey 0.1711, Holm Ferry 0.0456): Saltgate 3,016, Pellingham
+  2,225 (second); margin 1.355.
+- RPF, R1 split by the period of its trains and scaled by the line-in-period ratio: Saltgate 2,927, Pellingham 2,248
+  (second), Ambrey Parkway 1,885; margin 1.302.
+- R2a, one hop into the next working: Pellingham 4,079, Saltgate 2,907; margin 1.403.
+- R2, every hop (golden): Pellingham 4,106.7, Saltgate 2,910.3, Brathwick Road 1,669.3, Ambrey Parkway 1,627.3,
+  Holcroft Green 415.5, Ostley Lane 406.8; margin 1.411. R2 on the planned units, and R2 with every late later
+  working pulled forward by its own recorded gap, give the same figures.
+
+**Position.** Pellingham is third on R0b and R0 and second on R1 and its three reactionary scalings, never first below
+the decisive rung. The deviation from `dataset-generation` 6.2 (second on at most one rung) is stated, not hidden: the
+four are one route and its scalings, each leaving Saltgate 1.30 times or more ahead of Pellingham. **Dominance:**
+Pellingham's knock-on (R2 less R1, 2,206) is 2.24 times Saltgate's same-train lead over it (984), against the 1.2
+floor. **Grid:** every saving sits at least 19 from a rounding line (Brathwick Road 19.3, Ambrey Parkway 22.7,
+Holcroft Green 34.5, Saltgate 39.7, Ostley Lane 43.2, Pellingham 43.3; the gap 46.4). **Worth:** the network's weekday
+passenger lateness is 30,560 passenger-minutes; the pick takes about 13 per cent of it. **Pricing sequence:** after the
+stage 4 repairs (per-station dwells, origin delays on first workings only) draws 0 to 59 were scanned with Saltgate's
+overruns raised a tenth and the Ambrey line's morning turnround at four and a half minutes (scratch scan5.py); draw 3
+is the first with every edge over 19, the gap edge over 15, one-hop and full replays in one bin, every cheap margin at
+1.29 or more and the golden at 1.41.
+
+## Closure table
+
+| Axis | Reading in this build | Closure |
+|---|---|---|
+| 1 Population | every weekday passenger train in the record, the park-and-ride extras included | brief section 3; C1 (the extras out gives the same call, SF11) |
+| 2 Unit of account | passenger-minutes per weekday, each passenger at the station where they leave the train | brief section 3 (SF1) |
+| 3 Attribution window | the record's 60 weekdays | brief section 3 (SF3); C1 (the disrupted and unit-failure days dropped keep the call) |
+| 4 As-of dating | the autumn weekdays as they ran stand for 2027 | brief section 4 (SF12) |
+| 5 Version basis | one working timetable and one running record, nothing revised | C1, a single version ships |
+| 6 Denominator | the 60 weekdays | brief section 3, "averaged per weekday" (SF13) |
+| 7 Weighting | the census day's passengers on every weekday | brief section 3 (SF8) |
+| 8 Window length | the whole record | brief section 3 |
+| 9 Boundary inclusivity | team hours by booked departure from 06:30 up to 19:30; Delay Repay bands at 15, 30 and 60 minutes | C1: no shortlisted call booked at either end (SF4); no in-scope claim on a train 29.5 or 59.5 minutes late |
+| 10 Rounding path | each station's weekday average rounded once to the nearest 100; Delay Repay cells summed, then rounded to the pound | the prompt's rounding sentence; the gap is one bin both ways (SF9) |
+| 11 Tie-break | Holcroft Green and Ostley Lane share the 400 bin | ranked by the unrounded figures (415.5, 406.8); neither is the pick or the runner-up |
+| 12 Maturity and censoring | every weekday complete; the last working of each unit's day has no next working | C1, nothing censored |
+| 13 Order of operations | the team's cut, then the departure rule, then the recorded running times, call by call | one order the departure rule allows; the cross product holds (SF15) |
+| 14 Row order | each unit's workings ordered by recorded departure | C1, file order never enters |
+| 15 Duplicate resolution | none on the call; Delay Repay rows per claim summed | the asking sentence's "paid" (SF16) |
+| 16 Identity normalisation | TIPLOC in the record and timetable, CRS and names in the census, claims, gates and register; headcodes unique within a weekday | joined through `station_register.csv`; asserted unique |
+| 17 Netting against gross | early arrivals count none | brief section 3 (SF2) |
+| 18 Dimensional units | minutes on the record's half-minute grid, booked times to the second, whole passengers, pounds | units in the data and the prompt |
+| 19 Code and status semantics | unit numbers (spares on failure days), claim decisions, the band a claim was paid at | the record's own codes; never the stump (SF6) |
+| 20 Integerisation | whole passengers in the census and at the gates, pounds per cell | C1 by construction |
+| 21 Clause scope | the three fifths at the team's station only, on trains booked to depart there in its hours | brief section 3 |
+| 22 Forward window contents | 2027 runs the autumn 2026 train plan | brief section 4 (SF12) |
+
+## Literal reader
+
+Executed word for word, the prompt and brief section 3 ask for the network's weekday passenger lateness as it ran
+against the same weekdays with the team at each shortlisted station: every reading in the fork table lands on
+Pellingham at 4,100 with Saltgate at 2,900, or is ruled out by a quoted shipped sentence (SF1, SF2, SF8, SF12, SF14);
+the counterfactual's construction (a working that left late exactly four minutes after its unit's arrival leaves four
+minutes after the unit's replayed arrival) is the record's own identity on all 483 late starts of units' later
+workings, and the same-train route
+is the easy method on the same literal estimand, not another reading of it. The asks pass the same test: the gate ask
+names the day, the stations, the directions and the unit, and the Delay Repay ask names the population, the window, the
+line grouping, the band basis and the pound; each device is found by an inconsistency in the records and its handling
+is the block 3 step the grader reads.
+
+## Oracles
+
+- `performance_summary_autumn_2026.xlsx`: each line's punctuality by month (station stops on time, trains at
+  destination within five minutes) ties to the running record under every route (nine of nine line-months), so it
+  refutes neither the same-train replay nor the golden; its wrong-path reading is none.
+- `station_usage_estimates_2025-26.csv` (distractor): annual entries and exits; no gate figure reconciles to it.
+- `incident_log_autumn_2026.csv` (distractor): incidents by line and location; it carries no unit and no turnround.
+- Delay Repay and the gates: no control total ships for either; none.
+
+## Ask sheet
+
+**Ask A, gate flows on the census day (8 figures).** Figures: passengers who entered and who left at Brathwick Road,
+Ambrey Parkway, Pellingham and Saltgate on Tuesday 13 October 2026, whole passengers. H18 home: the census day's
+station flows at the gated candidates, the station-level picture behind the census the call consumes, reconciled from
+another system's counters. Use: the rail executive's siting pack sets the gates beside the census for each candidate.
+Primary device: tidal arrays switched to exit-only in their station's peak keep counting in the entries counter
+(BWR-B 16:30 to 19:00, PLG-S 07:30 to 09:30, SLG-MKT 07:15 to 09:30), found only where one array's exits sit flat
+through a peak while its entries surge and the census shows that peak as alighters; it moves Brathwick Road, Pellingham
+and Saltgate. Second primary, another family and a disjoint block: AMP-1's controller restarted at 07:31:07 BST and
+resumed from the counters it saved at 02:00, so the battery's dropped jump loses most of a morning-peak quarter; it
+moves Ambrey Parkway's two figures by 134 and 64. Hazards: readings in UTC on a BST day, the SLG-MAIN exits counter
+wrapping at 65,536 at 18:15, a BWR-A restart on 15 October. File: `gateline_readings_2026-10-12_to_16.csv`, five
+columns, with the station register and the census. Stops: the battery route (UTC to BST, wraps, the restart's jump
+dropped, each counter as named) gives 2,349 and 1,678, 1,844 and 2,262, 2,634 and 3,137, 2,730 and 2,384 against the
+golden 1,996 and 2,031, 1,978 and 2,326, 2,039 and 3,732, 2,501 and 2,613; census alighters read as exits miss every
+station. The gatelines are closed from midnight to 05:00, so a UTC-date reading of the day counts the same passages. Pin test: the sentence pins the day, the stations, the two directions and whole passengers; the devices sit
+in which counter carried a passage and which values a restarted counter continues from, which the pins leave open.
+
+**Ask B, Delay Repay by line and band (9 figures).** Figures: the compensation Cardale paid for weekday journeys to or
+from Ravelstoke Central, 7 September to 27 November 2026, by line and by the train's lateness at the passenger's
+destination (15 to 29, 30 to 59, 60 or more minutes), to the pound. H18 home: an audit trail from the lateness the
+call values, at the destinations, through claims rows the call never reads. Use: the concession's performance regime
+reports compensation by line and band. Primary devices: the band from the record (the claims' own claimed and paid
+bands differ from the train's lateness through under- and over-claims); app claims whose journey date was left at the
+day of submission (49 in scope; their train was not 15 minutes late that day, and 20 fall after the window or on a
+weekend); return-leg claims naming the ticket's stations, matched only the other way round; appeal top-ups under the
+same claim reference (under-claims topped up to the train's band, off-peak assessments topped up to the anytime fare).
+Hazards: claims rejected on trains 8 to 14 minutes late, journeys outside the window (1 to 3 September, weekends,
+30 November), journeys within a line. Files: `delay_repay_claims_extract_2027-01-15.csv` (15 columns), the running
+record and the working timetable. Stops: the band the claims file paid gives 126, 210, 610; 138, 241, 258; 217, 217,
+111 (Crossmoor, Ambrey, Holm Ferry); the cracker (every paid row, the record's band on the stated date, direct matches
+only) 94, 134, 570; 107, 185, 202; 150, 185, 108; the careful route (the cracker with the return legs reversed) 108,
+149, 661; 119, 230, 271; 191, 222, 123; the latest row per claim 107, 148, 635; 118, 221, 256; 188, 220, 122; the
+golden 114, 161, 698; 123, 237, 280; 202, 229, 131. Pin test: the sentence pins the population (weekday journeys to or from
+Ravelstoke Central), the window, the line grouping, the band basis and the pound; the devices sit in which train and
+which day a claim belongs to and which rows are payments, which the pins leave open.
+
+**Separation.** No ask device or hazard row sits in the call's population: no rung reads the gate readings or the
+claims extract, and the documents the call reads carry no ask organ. With the ask-only files deleted the main files
+yield no ask figure (the census alighters miss every gate figure).
+
+| Ask figure (cracker sheet) | Golden | Cracker | Careful | Mirror | Cracker |
+|---|---|---|---|---|---|
+| Brathwick Road entered | 1,996 | 2,349 | 2,349 | 2,349 | miss |
+| Brathwick Road left | 2,031 | 1,678 | 1,678 | 1,678 | miss |
+| Ambrey Parkway entered | 1,978 | 1,844 | 1,844 | 1,844 | miss |
+| Ambrey Parkway left | 2,326 | 2,262 | 2,262 | 2,262 | miss |
+| Pellingham entered | 2,039 | 2,634 | 2,634 | 2,634 | miss |
+| Pellingham left | 3,732 | 3,137 | 3,137 | 3,137 | miss |
+| Saltgate entered | 2,501 | 2,730 | 2,730 | 2,730 | miss |
+| Saltgate left | 2,613 | 2,384 | 2,384 | 2,384 | miss |
+| Crossmoor line 15 to 29 | 114 | 94 | 108 | 126 | miss |
+| Crossmoor line 30 to 59 | 161 | 134 | 149 | 210 | miss |
+| Crossmoor line 60 or more | 698 | 570 | 661 | 610 | miss |
+| Ambrey line 15 to 29 | 123 | 107 | 119 | 138 | miss |
+| Ambrey line 30 to 59 | 237 | 185 | 230 | 241 | miss |
+| Ambrey line 60 or more | 280 | 202 | 271 | 258 | miss |
+| Holm Ferry line 15 to 29 | 202 | 150 | 191 | 217 | miss |
+| Holm Ferry line 30 to 59 | 229 | 185 | 222 | 217 | miss |
+| Holm Ferry line 60 or more | 131 | 108 | 123 | 111 | miss |
+
+Pair ceiling: 31.0 (the cracker on the call 45.0, the mirror on Saltgate 17.0, scored on 38, 7 and 55; with each of the pair keeping two fifths of the ask weight the pair is 53.0, and a full includer that handles every device beside the mirror is 58.5)
+Mirror leakage: 0.0 per cent of the ask weight (the mirror keeps 10 of the call side's 38, from the five stations whose same-train figure shares the golden's bin)
+Measured by: generator/ceiling.py, run on target.zip by generator/make.py on every cut
+
+## Leak sweep and pre-ship check
+
+- `leak.py --asof 2027-01-18`: REVIEW, no LEAK. Sweep 3 (the brief carries 11 of the call's 13 distinctive words):
+  harmless, they are the question's own nouns (the 2027 platform dispatch team, passenger lateness, weekday trains,
+  the network, the shortlist naming Pellingham among six) and the brief states no figure and no ranking. Sweep 6 (the
+  census names six candidates beside numbers): harmless, boarders and alighters per train and station at the census's
+  own grain, ranking nothing on the question. Sweep 4 drew its 25 terms from the `## Tried and rejected` block
+  (architecture 1's clicks, culture, headline), so it was re-run by hand on this note's stump sentence, default path,
+  decisive step, Actor and Link lines: no document and no prompt sentence carries any of the stump's own terms
+  (turnround, workings, replay, scaling, outbound, park-and-ride, extras); the brief and the working timetable carry
+  only the world's nouns (booked, timetable, network, station names).
+- The stage 4 leak reader (first read, on the pack before the repairs): question 1 none; question 2 none (it named
+  the usage estimates' footfall order and the incident log's counts as shortcuts that measure something else); question
+  3 none; question 4 none; question 5 the brief's section 3 sentences, each executing to the estimand; question 6 an
+  analytical choice, how far a recovered minute is carried, within its own train or onto the unit's next working. Its
+  findings, each fixed in the generator: every booked dwell exactly a minute (now half a minute to a minute and a half
+  by station); the bracketed half-minute allowances shown at Ambrey Parkway and Holcroft Green (moved to sections that
+  end at no shortlisted station, and the planning rules say where a bracketed allowance applies); the census day read
+  as a UTC date against the BST day (the gatelines now close from midnight to 05:00, so both count the same passages);
+  the incident log's counts at Ambrey Parkway and Pellingham (reseeded). Its other ask readings are not forks: only the
+  four stations the register marks gated have gatelines, a claim's line is the other end's line, the window is the
+  journey's date, and the prompt's three bands name the merge of the file's two upper ones.
+- The determinism judge (first pass): NOT_DETERMINISTIC, SEND_BACK on Gate C alone (G PASS analytical_non_defect, H
+  PASS, the call and the gap forced): mid-day origin delays let a second construction, a late working pulled forward
+  by its own recorded gap after its unit's arrival, remove delays the team never touched and move three stations a
+  bin. Read against the gate table (`determinism-check`, a Gate C failure with G and H passing spends no
+  architecture), it was repaired in the record: origin delays fall only on a unit's first working of the day, every
+  late later working is turnround-bound, and the two constructions give one replay (SF17, asserted).
+- Single-use test: every file has a use beyond the decisive step (the record and the timetable serve every rung and
+  the Delay Repay ask, the census every rung, the register every join, the brief the WHAT, the performance summary the
+  operator's punctuality, the gate readings and the claims their asks); the planning rules' running times, dwell,
+  allowance, departure and headway lines serve every rung and file no turnround.
+- `guard.py heart`: PASS (nearest 0.07, task467's stump and task307's driver), after the question form moved from
+  `which` (a WARN against task482, the last prompt shipped) to `where`. `guard.py surface`: one pair promoted for
+  adjudication, task119 by number (the same decisive gap and decision type on the cards, back to back), answered by
+  a differentiation line on the card; the pair's surface similarity sits at the corpus's 29th percentile, and the
+  adjudicated read is the author's call.
+- House fixes: containers clean (scrub audit, both folders); appeal top-ups now paid after they are submitted (five
+  were paid before); the summary's refresh line matches its saved date; the brief, the workbooks and the golden open in
+  python-docx, openpyxl and pandas; the write-up's reason for Ambrey Parkway names only what the record shows.
+- guard.py surface (2026-11-07, foreground): exit 0, one pair promoted, task118 against task119 for adjacent numbers sharing the gap (objective) and the decision type (pick one of N). task119 is an approved 10-30 anomaly-detection build in policy and education (a unit's failed waits it could have shortened); the card carries the differentiation line, and heart, which applies the draw-order bans, passes (nearest driver task307 at 0.07). Harmless.
+- Re-judge (2026-11-07, `determinism_check_report_pass11.md`): DETERMINISTIC, APPROVE; SF17 closed (276 of 276 late later workings leave 240 seconds after their unit's arrival); Gate G analytical_non_defect, Gate H analytical. Its three notes, ruled: the judge read the mechanism as binding_constraint where the card files decomposition_attribution, one analytical family either way, and the card keeps its label (the decisive step decomposes each station's removed overrun into the lateness its units carry on); `performance_summary_autumn_2026.xlsx` is the operator's own punctuality record, a context file the call does not read; the record asks' final figures were checked by the first pass and `verify.py`.
+- Leak read on the repaired pack (2026-11-07): no decisive-step sentence, no ranking or helper file, Q6 analytical; its one realism tell (every census train balancing exactly) fixed in `world.py` (`_as_counted`, the census as counted on its own stream): 214 of 559 trains balance, the largest gap 7; the call and critical components unchanged at their rounding (Pellingham 4,100, Saltgate 2,900), every gate re-run on the final cut (checks 95, verify, byte-identical a3174418, figures 62, precut, voice, leak.py REVIEW, heart PASS, surface exit 0).
 
 ## Tried and rejected
 
@@ -387,3 +614,58 @@ Lesson: a delay removed at one point is worth what it removes from everything th
   every late start in the running record sits exactly four minutes after its unit's arrival.
 - The name "Airport line" for the line to Ravelstoke Airport: `guard.py check` BLOCKed tell.names against task467;
   the lines are named for their outer ends (Crossmoor, Ambrey, Holm Ferry).
+- The Quayside trial close-out as the back-test file, with a fleet ask on the planned diagrams (the first stage-2
+  draft): the close-out answered its own question once read and the fleet ask needed a diagrams file whose only other
+  reader was the decisive step; both cut, and the brief names the trial only as the source of the three fifths.
+- Gate counts by part of the day: the battery's UTC conversion handled every cell; replaced by the census day's
+  entered and left at each gated candidate.
+- Delay Repay copies across the app and web channels: paid twice is still paid, so either a fork or a column marking
+  the copy; replaced by appeal top-ups, app-default journey dates and return legs.
+- The first census, constant boardings by station attraction in both directions: entries ran far above exits at
+  every station; rebuilt as an origin-destination census (inbound riders to Ravelstoke Central, outbound alighting by
+  attraction) at a load scale of 3.2.
+- Same-direction departures on one minute and extras catching up the stopping trains: Delay Repay claims matched two
+  trains; the timetable now holds three minutes between departures from a terminus and paths the extras at stopping
+  speed, and a reversed return leg is written only where no direct train fits.
+- The extras booked with pathing time but simulated at sectional running time (draw 8): they reached Ambrey Parkway
+  early and absorbed its overruns while waiting for time, so its saving fell to about 270; the extras now run their
+  pathing.
+- Draw 8 after the pathing fix: the line-in-period scaling stood 1.12 over Pellingham; redrawn to 39, the first draw
+  with every cheap margin at 1.18 or more, the golden at 1.26 and every edge over 15.
+- The working timetable's half-minute "H" notation: read as the whole minute it moved Pellingham to 3,372 and Saltgate
+  to 2,825, a field reading moving graded bins; booked times now ship as Excel times to the second.
+- The four-minute minimum turnround filed in the planning rules (adopted in the line above on stab5): removed, because
+  a filed turnround names the constraint the decisive step turns on for a reader who reads every clause; the record
+  carries it as an identity (318 late starts exactly four minutes after their unit's arrival, none sooner, the next at
+  four and a half), and all three ways to pick out a turnround-bound start keep the pick, the runner-up and the bin
+  (SF15).
+- The performance summary's passenger lateness by line and month: the Ambrey line ran about twice the others
+  (14,551 against 6,403 and 6,276 in September), a line-level search signal toward the turnround knock-on; the summary
+  now reports punctuality, where the lines sit together.
+- The siting brief's section 5 listing the four files the call reads: a role statement a leak reader flags; cut.
+- The AMP-1 restart in the mid-afternoon (14:03 UTC): the battery lost 6 entries and 13 exits, a thin device on one
+  figure pair; moved into the morning peak (07:31 BST), where the dropped jump moves Ambrey Parkway by 158 and 59.
+- Delay Repay with under-claim top-ups alone: the 15 to 29 cells had none, so collapsing a claim's rows left three
+  cells standing; off-peak assessments topped up to the anytime fare reach every band.
+- Delay Repay held by the return legs alone: a careful route that sums every paid row and reverses an unmatched claim
+  kept all nine cells; app claims whose journey date stayed at the day of submission (D8) now need the record to date
+  them, and the careful route misses all nine.
+- Claims on trains 29.5 or 59.5 minutes late: on the record's half-minute grid the band edge reads two ways; no claim
+  is written for a train-stop at an edge.
+- Mid-day origin delays on workings whose unit had turnround slack (the determinism judge's fork, stage 4): a second
+  construction, every late working pulled forward by its own recorded gap after its unit's arrival, removed delays the
+  team never touched and moved Brathwick Road, Pellingham and Saltgate a bin each (1,906, 3,126 and 2,531 against
+  1,804, 3,033 and 2,407); origin delays now fall only on a unit's first working of the day, so every late later
+  working sits exactly four minutes after its unit's arrival and both constructions give one replay (SF17).
+- Every booked dwell exactly a minute at all 4,704 calls (the leak reader's realism finding): dwells now run from half
+  a minute at the quiet stations to a minute and a half at Brathwick Road and Saltgate.
+- Bracketed half-minute allowances printed at Ambrey Parkway and Holcroft Green (the leak reader's fork: a reader could
+  take them as dwell): the mid-line allowances moved to sections that end at no shortlisted station, and the planning
+  rules say a bracketed allowance is added to the running time of the section ending at that timing point.
+- The census day read as a UTC date against the BST day (the leak reader's ask fork): the gatelines now close from
+  midnight to 05:00, so both readings count the same passages.
+- The incident log's random rows put 8 and 7 incidents at Ambrey Parkway and Pellingham against 3 or fewer elsewhere on
+  the shortlist (the leak reader's shortcut): reseeded so no shortlisted station stands out.
+- Draw 39 after those repairs: every rung moved and no draw in 0 to 59 cleared the ladder; Saltgate's overruns were
+  raised a tenth and the Ambrey line's morning turnround cut from five to four and a half minutes, and draw 3 is the
+  first with every edge over 19, every cheap margin at 1.29 or more and the golden at 1.41.

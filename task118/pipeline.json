@@ -1,90 +1,91 @@
 {
- "task": "task118",
- "status": "DESIGN",
- "domain": "urban-regional-science / optimization (client urban-regional-science)",
- "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-07",
- "stump": "each shortlisted station's dispatch team valued at the passenger lateness it takes off the network's weekday trains, the late inbound Ambrey line units carrying Pellingham's overruns into their full outbound airport workings across a minute of turnround slack (default: Saltgate about 7,000 passenger-minutes a weekday on the same-train replay; golden: Pellingham about 9,000)",
- "architecture": 6,
- "loops": 0,
- "precut": {
-  "exit": null,
-  "date": ""
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "surface": "",
-  "nearest": "task307 at 0.07 (guard.py check on the registered card, 2026-11-08T01:45Z)"
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [
-  {
-   "date": "2026-10-27",
-   "portal": "both determinism judges competing_defensible_answer, Gates C and D fail (judge 1 also E), G pass, F plausible and strong. Fork 1, the rate credited during the hours a headline is under test: the brief puts those hours in scope but names no rate, so the mixture reading gives 750,000 to 800,000 against the committed 1,250,000 and a gap of 150,000 against 450,000. Fork 2, the correction clock: going live is undefined (publish_at against the first live save) and publish_at carries no timezone, moving all six median asks 20 to 40 minutes a desk.",
-   "repair": "determinism",
-   "commit": "RESHIPPED (task118), determinism, 2026-10-27"
+  "task": "task118",
+  "status": "SHIPPED",
+  "domain": "urban-regional-science / optimization (client urban-regional-science)",
+  "objective": "opportunity-sizing-decision",
+  "stage": 5,
+  "stage_name": "check",
+  "updated": "2026-11-07",
+  "stump": "each shortlisted station's dispatch team valued at the passenger lateness it takes off the network's weekday trains, the late inbound Ambrey line units carrying Pellingham's overruns into their full outbound airport workings across half a minute of turnround slack (default: Saltgate about 2,900 passenger-minutes a weekday on the same-train replay and every reactionary scaling; golden: Pellingham 4,100, Saltgate 2,900, gap 1,200)",
+  "architecture": 6,
+  "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-11-07"
   },
-  {
-   "date": "2026-10-27",
-   "portal": "FAILED_TO_STUMP: both responses filed Culture·national at 1,250,000 (the golden), runner-up named Sport·national (850,000, gap 350,000; and 200,000 behind)",
-   "repair": "re-root",
-   "commit": "DRAWN (task118) architecture 2"
+  "leak": {
+    "leak_py": "REVIEW (every line ruled harmless in the note)",
+    "reader": "read on the repaired pack: Q1 to Q4 none, Q6 analytical; one realism tell fixed"
   },
-  {
-   "date": "2026-10-27",
-   "portal": "determinism block: judge 1 APPROVE; judge 2 competing_defensible_answer (Gates C, D, E, G fail): the lift estimator and the share of a won click new to Bightline stated in no file, recoverable only from the change log (REPLAY), and the model response's raw lift with one fitted factor, Sport·metro at 900,000, filed as a competing answer. Rubric 87 and 44, average 65.5.",
-   "repair": "determinism",
-   "commit": ""
+  "duplicate_check": {
+    "heart": "PASS",
+    "nearest": "task307 at 0.07; surface exit 0, task119 ruled harmless"
   },
-  {
-   "date": "2026-10-27",
-   "portal": "FAILED_TO_STUMP: both responses filed the golden call cell for cell (Business·national, 500,000 extra article clicks in 2027, runner-up Local·metro, 100,000 behind) after the determinism reship that filed Experimentation's sign-off",
-   "repair": "re-root",
-   "commit": "DRAWN (task118) architecture 3, baee0a47"
+  "judge": {
+    "verdict": "pass 1 NOT_DETERMINISTIC (Gate C, the SF17 fork); re-judge DETERMINISTIC",
+    "disposition": "re-judge APPROVE (SF17 closed: 276 of 276 late later workings leave 240 seconds after their unit's arrival)",
+    "report": "determinism_check_report_pass11.md"
   },
-  {
-   "date": "2026-10-27",
-   "portal": "FAILED_TO_STUMP: both responses filed the golden call (Saltreach Coast, 19 emergency fall admissions avoided, 19.2 in one; runner-up Hethermoss 15, 4 fewer), the start dating through the repeat-template chains landed",
-   "repair": "re-root",
-   "commit": "DRAWN (task118) architecture 4, 583c1bf4"
-  },
-  {
-   "date": "2026-10-31",
-   "portal": "architecture 4 (the duty envelope): the call landed three times and the determinism block failed twice; the golden was the field's own welfare method, applied by reflex",
-   "repair": "re-root",
-   "commit": "DRAWN (task118) architecture 5"
-  },
-  {
-   "date": "2026-11-07",
-   "portal": "portal input check: both xlsx carried openpyxl's AppVersion 3.1 in docProps/app.xml",
-   "repair": "metadata",
-   "zip": "64af0836",
-   "moves": "docProps/app.xml written as Excel saves it (AppVersion 16.0300, the sheet names in TitlesOfParts) by the house scrub; only the two xlsx moved, no figure moved",
-   "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)"
-  },
-  {
-   "date": "2026-11-07",
-   "portal": "FAILED_TO_STUMP (architecture 5): both responses filed Home Battery Network 6 MW with runner-up Peak Time Rewards 4 MW and every programme's MW (Cool Credit 3, Business Demand Partners 2), most ask figures identical. Both placed the 23 July 2027 18:00 peak as the fourth consecutive OP-7 call day by applying the weekday, 110F, holiday and window rules to the design year, fitted each programme's 18:00 reduction on the day's high plus a consecutive-call streak (indicators or a count) and read it at day four, validated leave-one-season-out against a constant mean, and fitted the batteries on the 38 events under the 3.0 kW contract only; both named the historical average (Cool Credit about 11 MW) and the temperature-only fit as the rejected routes.",
-   "repair": "re-root (the run-position covariate, the contract-regime split and the season-out validation are reflexes; architecture 5 spent on its first portal round)",
-   "commit": ""
-  }
- ],
- "resume": "stage 2 (architecture 6, drawn 2026-11-07): readability screen, semantic fork table, ladder with the clean-truth numbers, closure table, literal reader, oracles and ask sheet; then the generator (world, running replay, pack, goldens, checks.py with every fork asserted, verify, ceiling) to precut.py exit 0",
- "approved": null,
- "delivered": null,
- "portal": "FAILED_TO_STUMP 2026-11-07 (architecture 5): both responses filed the golden, Home Battery Network 6 MW, runner-up Peak Time Rewards 4 MW",
- "portal_status": "FAILED_TO_STUMP",
- "portal_status_date": "2026-11-07",
- "source_note": "",
- "zip_sha256_16": ""
+  "returned": [
+    {
+      "date": "2026-10-27",
+      "portal": "both determinism judges competing_defensible_answer, Gates C and D fail (judge 1 also E), G pass, F plausible and strong. Fork 1, the rate credited during the hours a headline is under test: the brief puts those hours in scope but names no rate, so the mixture reading gives 750,000 to 800,000 against the committed 1,250,000 and a gap of 150,000 against 450,000. Fork 2, the correction clock: going live is undefined (publish_at against the first live save) and publish_at carries no timezone, moving all six median asks 20 to 40 minutes a desk.",
+      "repair": "determinism",
+      "commit": "RESHIPPED (task118), determinism, 2026-10-27"
+    },
+    {
+      "date": "2026-10-27",
+      "portal": "FAILED_TO_STUMP: both responses filed Culture·national at 1,250,000 (the golden), runner-up named Sport·national (850,000, gap 350,000; and 200,000 behind)",
+      "repair": "re-root",
+      "commit": "DRAWN (task118) architecture 2"
+    },
+    {
+      "date": "2026-10-27",
+      "portal": "determinism block: judge 1 APPROVE; judge 2 competing_defensible_answer (Gates C, D, E, G fail): the lift estimator and the share of a won click new to Bightline stated in no file, recoverable only from the change log (REPLAY), and the model response's raw lift with one fitted factor, Sport·metro at 900,000, filed as a competing answer. Rubric 87 and 44, average 65.5.",
+      "repair": "determinism",
+      "commit": ""
+    },
+    {
+      "date": "2026-10-27",
+      "portal": "FAILED_TO_STUMP: both responses filed the golden call cell for cell (Business·national, 500,000 extra article clicks in 2027, runner-up Local·metro, 100,000 behind) after the determinism reship that filed Experimentation's sign-off",
+      "repair": "re-root",
+      "commit": "DRAWN (task118) architecture 3, baee0a47"
+    },
+    {
+      "date": "2026-10-27",
+      "portal": "FAILED_TO_STUMP: both responses filed the golden call (Saltreach Coast, 19 emergency fall admissions avoided, 19.2 in one; runner-up Hethermoss 15, 4 fewer), the start dating through the repeat-template chains landed",
+      "repair": "re-root",
+      "commit": "DRAWN (task118) architecture 4, 583c1bf4"
+    },
+    {
+      "date": "2026-10-31",
+      "portal": "architecture 4 (the duty envelope): the call landed three times and the determinism block failed twice; the golden was the field's own welfare method, applied by reflex",
+      "repair": "re-root",
+      "commit": "DRAWN (task118) architecture 5"
+    },
+    {
+      "date": "2026-11-07",
+      "portal": "portal input check: both xlsx carried openpyxl's AppVersion 3.1 in docProps/app.xml",
+      "repair": "metadata",
+      "zip": "64af0836",
+      "moves": "docProps/app.xml written as Excel saves it (AppVersion 16.0300, the sheet names in TitlesOfParts) by the house scrub; only the two xlsx moved, no figure moved",
+      "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)"
+    },
+    {
+      "date": "2026-11-07",
+      "portal": "FAILED_TO_STUMP (architecture 5): both responses filed Home Battery Network 6 MW with runner-up Peak Time Rewards 4 MW and every programme's MW (Cool Credit 3, Business Demand Partners 2), most ask figures identical. Both placed the 23 July 2027 18:00 peak as the fourth consecutive OP-7 call day by applying the weekday, 110F, holiday and window rules to the design year, fitted each programme's 18:00 reduction on the day's high plus a consecutive-call streak (indicators or a count) and read it at day four, validated leave-one-season-out against a constant mean, and fitted the batteries on the 38 events under the 3.0 kW contract only; both named the historical average (Cool Credit about 11 MW) and the temperature-only fit as the rejected routes.",
+      "repair": "re-root (the run-position covariate, the contract-regime split and the season-out validation are reflexes; architecture 5 spent on its first portal round)",
+      "commit": ""
+    }
+  ],
+  "resume": "",
+  "approved": null,
+  "delivered": null,
+  "portal": "FAILED_TO_STUMP 2026-11-07 (architecture 5): both responses filed the golden, Home Battery Network 6 MW, runner-up Peak Time Rewards 4 MW",
+  "portal_status": "FAILED_TO_STUMP",
+  "portal_status_date": "2026-11-07",
+  "source_note": "",
+  "zip_sha256_16": "",
+  "shipped": "2026-11-07",
+  "call": "Site the 2027 platform dispatch team at Pellingham: it takes 4,100 passenger-minutes of lateness a weekday off the network's trains, 1,200 more than Saltgate's 2,900."
 }
