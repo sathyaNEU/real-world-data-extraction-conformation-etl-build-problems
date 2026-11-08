@@ -6,13 +6,13 @@
   "domain": "accounting-audit-forensic",
   "subdomain": "general-ledger-close-consolidation",
   "client_domain": "general-statistics-data-science",
-  "niche": "a UK homewares and hardware importer-distributor group's FY2026 consolidated stock provision under IAS 2, conformed from three trading subsidiaries' stock registers and order books (UK, Ireland, Netherlands; three ERPs, sterling and euro, eaches and cases) and the records of the group's own clearance outlet chain and its jobbers, in the year a lost DIY customer and a failed lighting range left far more excess stock than the outlet's five stores can clear in 2027; the provision decides whether the accounts breach the bank's minimum net worth covenant",
+  "niche": "a UK homewares and hardware importer-distributor group's FY2026 consolidated stock provision under IAS 2, conformed from three trading subsidiaries' stock registers and order books (UK, Ireland, Netherlands; three ERPs, sterling and euro, eaches and cases) and the records of the group's own clearance chain and its trade buyers, in the year a lost DIY customer and a failed lighting range left far more excess stock than the chain's five stores can clear in 2027; the provision decides whether the accounts breach the revolving facility's borrowing base covenant",
   "objective": "etl",
   "shape": "03",
   "decision_type": "go_hold_or_stop",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Seek Northgate's written waiver of the borrowing base covenant before the FY2026 accounts are delivered: after a GBP 5.2 million stock provision the borrowing base is GBP 24.6 million against GBP 25.12 million drawn at 31 December 2026, a GBP 0.5 million shortfall.",
+  "answer_source": "task458/submission.md, block 1 (generator/figures.json)",
   "gap": [
     "time",
     "objective"
@@ -33,23 +33,24 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the three subsidiaries' stock registers (the item crosswalk, cases to eaches, euro to sterling at the year-end rate), measures each line's excess over its 2027 demand from the order history and values the excess at the recovery the outlet has achieved on everything transferred to it books about 4.3 million pounds and finds net worth above the bank's floor; the outlet's five stores clear a fixed value a store-week, so only about a third of the excess can go through them in 2027, the rest is jobbed at about a tenth of cost, the provision is about 5.9 million pounds and the floor is breached (figures fixed at build).",
+  "analyst_test": "A strong analyst who conforms the three registers and order books (cases to eaches, AHB's articles, euro at the year-end rate, returns, cancellations and transfers to Valuehall) and reads FIN-07 and the facility correctly values the GBP 7.2 million surplus at Valuehall's 0.617 recovery on what it sells, books a GBP 2.8 million provision and finds GBP 1.0 million of headroom, no waiver needed; the golden caps Valuehall's 2027 sales at its stocked trading-day rate, books GBP 5.2 million and finds a GBP 0.5 million shortfall.",
   "domain_test": "Inventory at the lower of cost and net realisable value (IAS 2): the deciding quantity is what the year-end stock will realise, which the field estimates as an excess-and-obsolescence reserve at a recovery rate; here the recovery is set by what the group's own clearance channel can physically sell in the realisation year, so the same words about a hospital's surplus equipment or a utility's spares lose the store-week throughput and the jobber floor that fix the realisable value.",
   "layer2_family": "allocation_constraints",
   "layer2_pattern": "own:excess-stock-realised-through-a-shared-clearance-outlet-at-its-store-week-throughput",
   "layer1": [
-    "several sources for one picture: three subsidiaries' stock registers and order books from three ERPs, the outlet's till and goods-in records, the jobbers' lot contracts and collection notes, the bank facility letter",
-    "imperfect keys: the Netherlands subsidiary's own item codes reached through a crosswalk with superseded group codes",
-    "units and currency: the Netherlands and Ireland registers hold some lines in cases, euro values at historical cost, the year-end rate filed once",
-    "real coverage: weeks a store was shut or under-stocked, the outlet's first stores opening part-way through 2022 and 2023, order books with cancellations and credit notes"
+    "several sources for one picture: three subsidiaries' stock registers and order books from three ERPs (one with its old system's 2025 archive), Valuehall's weekly store trading summary, the trade lot register, the group rate table, the facility's daily utilisation",
+    "imperfect keys: the Netherlands subsidiary's own article numbers reached through its table, some to superseded group codes",
+    "units and currency: Irish case lines with their pack quantity, euro at the year-end and the average rate, Dutch decimal commas",
+    "real coverage: a week cut at the year end in the outlet's stock system, stores shut for a refit and a flood, thinly stocked weeks, stores opening part-way through 2021 to 2025",
+    "process records: transfers to Valuehall inside the order books, cancelled lines, customer returns under each system's own convention"
   ],
   "stakeholder_role": "the group's financial controller",
   "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "group order lines 2024-2026 (three subsidiaries)",
-    "rows": 0,
-    "entity": "one sales order line (a line, a quantity, a date, a customer)",
+    "file": "AHL_sales_order_lines_2025-2026.csv (with the AHI and AHB order books)",
+    "rows": 49816,
+    "entity": "one sales order line (company, date, customer, item, signed quantity, value, status)",
     "grain": "order line",
     "source": "synthetic (constructed for this task)"
   },
@@ -69,12 +70,15 @@
       "Liam Elliott"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "Ashlund_FY2026_stock_provision.xlsx",
+    "FY2026_stock_provision_note.pdf"
+  ],
   "opening_move": "question-first",
   "question_form": "whether",
   "driver": "A channel's recovery on what it is sent looks proportional in every year on record because its capacity grew in step with what it was sent; its throughput a site-week levels off whenever a site is well stocked, so the forward year, which sends it several times what its fixed sites can move, realises only that throughput at the channel's rate and the rest through a channel that recovers far less, while the proportional rate carried forward values the whole surplus as if the channel took it all.",
-  "driver_concrete": "Valuehall's clearance recovery on the stock the subsidiaries transferred to it has held near 42 per cent of cost every year because the group opened a store as each year's excess grew; each store's weekly clearance sales level off near a fixed value at cost whenever its clearance stock is deep, so with five stores and no sixth planned, 2027 can take only about a third of the excess the lost DIY programme and the failed lighting range left at the 2026 year-end, and the rest is jobbed at about a tenth of cost.",
-  "stump": "The default path values each line's excess over its 2027 demand at the recovery the outlet has achieved on everything sent to it and books about 4.3 million pounds, leaving net worth above the bank's floor; the outlet's five stores clear a fixed value a store-week when stocked, so only about a third of the excess can go through them in 2027 and the rest is jobbed at about a tenth of cost, which puts the provision at about 5.9 million pounds and net worth below the floor (figures fixed at build).",
+  "driver_concrete": "Valuehall's recovery on what it sells has held near 62 per cent of cost every year, and its yearly sales grew as the group opened a store each year; each store's sales level off near a fixed value at cost a trading day whenever it is stocked, so with five stores and no sixth in 2027 the chain can take about a third of the surplus the lost DIY programme and the failed Lumio range left at the 2026 year-end, and the rest goes to trade buyers at about a tenth of cost, which breaks the borrowing base.",
+  "stump": "The default path books a GBP 2.8 million provision and finds GBP 1.0 million of headroom (no waiver) because it values the whole GBP 7.2 million surplus at the 0.617 Valuehall recovers on what it sells, a rate steady every year only because a store opened each year as the surplus grew; a stocked Valuehall store sells about GBP 1,377 at cost a trading day whatever it holds, so its 1,801 trading days in 2027 take GBP 2.48 million, the other GBP 4.72 million goes to trade buyers at 0.102, and the provision is GBP 5.2 million with a GBP 0.5 million shortfall.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task456": "task456 sends a combined physical load above a control device's air capacity untreated, interval by interval, with the capacity filed in the device's own unit; task458 v3 has no interval load and no filed capacity: a year's surplus stock competes for a clearance channel whose throughput is read from its own stocked store-weeks, and the overflow is realised through a second, cheaper channel.",
@@ -220,7 +224,7 @@
       }
     }
   ],
-  "notes": "Re-root of task458 on 2026-11-02 (architecture 2 spent at the judge, see lineage). Personas drawn with guard.py names --geo 'United Kingdom' --seed 458. House domain accounting-audit-forensic naming client domain general-statistics-data-science; the analysis works the data-integration task type (three subsidiaries' registers, the outlet's tills and goods-in records and the jobbers' contracts conformed into one group stock valuation), the house domain being the honest label for a year-end consolidated stock provision. Ask records at the draw (screened as code at stage 2): the subsidiaries' purchase receipts against the group transfer-price list (the consolidated stock at group cost, the intercompany margin removed from the Irish and Dutch stock) and the jobbers' lot contracts with their collection notes (2026 jobber recovery by division, lots sold as mixed pallets at one price and collected over several loads). Axes redrawn at the draw: gap objective first BLOCKed test.same_puzzle_older and test.same_driver_older (the objective-C signature is spent in six and ten older builds); gap time is the honester first gap (the outlet's recovery was measured at volumes its stores could absorb, and the 2027 window holds a volume the history never had), objective kept second. The decision is whether the provision takes net worth below the bank's covenant floor (seek a waiver before the accounts are signed), go_hold_or_stop, with the provision itself as the call's critical component; question form whether.",
+  "notes": "Re-root of task458 on 2026-11-02 (architecture 2 spent at the judge, see lineage). Personas drawn with guard.py names --geo 'United Kingdom' --seed 458. House domain accounting-audit-forensic naming client domain general-statistics-data-science; the analysis works the data-integration task type (three subsidiaries' registers, the outlet's tills and goods-in records and the jobbers' contracts conformed into one group stock valuation), the house domain being the honest label for a year-end consolidated stock provision. Ask records (stage 2; the draw's purchase-receipt and lot-contract records and a first value device were replaced, see the design note): the 2025 order books by division, units (D2: the Irish old system's archive prints case quantities before its July 2025 unit change under the each label) and net invoiced pounds (D6: the UK company's July 2025 price credits, booked on its non-stock code under their original orders, each equal to the overcharge on one line of its order against the customer's pre-April price, placed by that amount). Axes redrawn at the draw: gap objective first BLOCKed test.same_puzzle_older and test.same_driver_older (the objective-C signature is spent in six and ten older builds); gap time is the honester first gap (the outlet's recovery was measured at volumes its stores could absorb, and the 2027 window holds a volume the history never had), objective kept second. The decision is whether the provision takes net worth below the bank's covenant floor (seek a waiver before the accounts are signed), go_hold_or_stop, with the provision itself as the call's critical component; question form whether.",
   "registered": "2026-11-02T20:38:25Z",
   "lineage_shells": [
     {
@@ -235,5 +239,11 @@
       "rounding opener": "occupancy",
       "deliverable set": "csv+docx"
     }
-  ]
+  ],
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "build",
+    "rounding opener": "sterling",
+    "deliverable set": "pdf+xlsx"
+  }
 }

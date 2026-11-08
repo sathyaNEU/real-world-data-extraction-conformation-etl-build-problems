@@ -1,614 +1,412 @@
-"""Writers for the bundle's data files, each in the layout and idiom of the system that exports it."""
+"""Write the pack's data files, each in the layout of the system that produces it.
+
+AHL runs a UK ERP (comma CSV, sterling, eaches); AHI moved to a new ERP on 1 January 2026 (its 2026 files are Excel
+exports in euro with a unit of measure on every line) and its 2025 sales come from the old system's archive; AHB runs
+a Dutch ERP (semicolon CSV, decimal comma, its own article numbers, mapped to group codes by its own table). Valuehall's
+store weeks come from its stock system, the trade lots and the rate table from group finance, the utilisation from
+treasury.
+"""
 import csv
 import datetime as dt
+import math
 
 import numpy as np
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font
 
-import claims as CL
-import providers as PV
-import world as W
+from world import *
 
-D = dt.date
 FILES = {
-    "claims": "bh_claims_encounters_dos_2025-07-01_2026-06-30.csv",
-    "spans": "enrollment_spans_2025-07-01_2026-06-30.csv",
-    "nppes": "npidata_pfile_wa_20050523-20261011.csv",
-    "week1": "npidata_pfile_wa_20261012-20261018.csv",
-    "week2": "npidata_pfile_wa_20261019-20261025.csv",
-    "week3": "npidata_pfile_wa_20261026-20261101.csv",
-    "week4": "npidata_pfile_wa_20261102-20261108.csv",
-    "deact": "NPPES_Deactivated_NPI_Report_20261110.xlsx",
-    "zipcty": "ZIP_COUNTY_062026.xlsx",
-    "nucc": "nucc_taxonomy_261.csv",
-    "fees": "bh_professional_fee_schedule_fy2026.csv",
-    "policy": "np31_prescriber_service_area_designation.pdf",
-    "adequacy": "network_adequacy_time_distance_2026q2.xlsx",
-    "ofm": "ofm_april1_population_2026.csv",
+    "ahl_stock": "AHL_stock_valuation_2026-12-31.csv",
+    "ahi_stock": "AHI_Inventory_Valuation_31-12-2026.xlsx",
+    "ahb_stock": "AHB_voorraadwaardering_31122026.csv",
+    "ahb_xref": "AHB_artikel_groepscode.csv",
+    "master": "group_item_master_2027-01-11.csv",
+    "ahl_orders": "AHL_sales_order_lines_2025-2026.csv",
+    "ahi_ship26": "AHI_Sales_Shipment_Lines_2026.xlsx",
+    "ahi_arch25": "AHI_legacy_sales_archive_2025.csv",
+    "ahb_orders": "AHB_verkooporderregels_2025-2026.csv",
+    "vh_weeks": "valuehall_store_weeks_2021-2026.csv",
+    "lots": "trade_lot_register_2021-2026.xlsx",
+    "fx": "group_fx_rates_EURGBP_2025-2026.xlsx",
+    "rcf": "rcf_daily_utilisation_2026.csv",
+    "policy": "FIN-07_Stock_Provisioning_Policy.pdf",
+    "facility": "RCF_Facility_Agreement_extract.pdf",
+    "vhplan": "Valuehall_2027_Store_Plan.pdf",
+    "open_po": "AHL_open_purchase_orders_2027.csv",
+    "pallets": "dc_pallet_occupancy_2026.csv",
 }
-WEEK_KEYS = ["week1", "week2", "week3", "week4"]
-
-NPPES_COLUMNS = [
-    "NPI", "Entity Type Code", "Replacement NPI", "Employer Identification Number (EIN)",
-    "Provider Organization Name (Legal Business Name)", "Provider Last Name (Legal Name)", "Provider First Name",
-    "Provider Middle Name", "Provider Name Prefix Text", "Provider Name Suffix Text", "Provider Credential Text",
-    "Provider Other Organization Name", "Provider Other Organization Name Type Code", "Provider Other Last Name",
-    "Provider Other First Name", "Provider Other Middle Name", "Provider Other Name Prefix Text",
-    "Provider Other Name Suffix Text", "Provider Other Credential Text", "Provider Other Last Name Type Code",
-    "Provider First Line Business Mailing Address", "Provider Second Line Business Mailing Address",
-    "Provider Business Mailing Address City Name", "Provider Business Mailing Address State Name",
-    "Provider Business Mailing Address Postal Code", "Provider Business Mailing Address Country Code (If outside U.S.)",
-    "Provider Business Mailing Address Telephone Number", "Provider Business Mailing Address Fax Number",
-    "Provider First Line Business Practice Location Address", "Provider Second Line Business Practice Location Address",
-    "Provider Business Practice Location Address City Name", "Provider Business Practice Location Address State Name",
-    "Provider Business Practice Location Address Postal Code",
-    "Provider Business Practice Location Address Country Code (If outside U.S.)",
-    "Provider Business Practice Location Address Telephone Number", "Provider Business Practice Location Address Fax Number",
-    "Provider Enumeration Date", "Last Update Date", "NPI Deactivation Reason Code", "NPI Deactivation Date",
-    "NPI Reactivation Date", "Provider Sex Code", "Authorized Official Last Name", "Authorized Official First Name",
-    "Authorized Official Middle Name", "Authorized Official Title or Position", "Authorized Official Telephone Number",
-]
-for _k in range(1, 5):
-    NPPES_COLUMNS += ["Healthcare Provider Taxonomy Code_%d" % _k, "Provider License Number_%d" % _k,
-                      "Provider License Number State Code_%d" % _k, "Healthcare Provider Primary Taxonomy Switch_%d" % _k]
-NPPES_COLUMNS += ["Is Sole Proprietor", "Is Organization Subpart", "Parent Organization LBN", "Parent Organization TIN",
-                  "Certification Date"]
-
-CLAIM_COLUMNS = ["clm_icn", "clm_line_num", "clm_freq_cd", "orig_icn", "mbr_id", "fin_arrangement_cd", "billing_npi",
-                 "rendering_npi", "pos_cd", "proc_cd", "proc_mod1", "svc_units", "svc_from_dt", "svc_thru_dt", "dx_cd_1",
-                 "dx_cd_2", "dx_cd_3", "dx_cd_4", "billed_amt", "paid_amt", "clm_rcvd_dt", "clm_paid_dt"]
-SPAN_COLUMNS = ["span_id", "mbr_id", "client_id", "birth_dt", "sex_cd", "elig_group_cd", "span_start_dt", "span_end_dt",
-                "res_county_fips", "res_zip", "span_reason_cd"]
-GROUP_CODE = {"DSB": "SSI-DIS", "EXP": "ADULT-EXP", "PCR": "PARENT-CR", "AGD": "AGED-65"}
+DISTRACTORS = ("open_po", "pallets")
 
 
-def _w(path, header, rows, crlf=False):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\r\n" if crlf else "\n")
+def write_csv(path, header, rows, delim=","):
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f, delimiter=delim, lineterminator="\r\n")
         w.writerow(header)
-        for row in rows:
-            w.writerow(row)
+        for r in rows:
+            w.writerow(r)
     return len(rows)
 
 
-def _mdy(d):
-    return d.strftime("%m/%d/%Y") if d else ""
+def nl(v, dp=2):
+    s = ("%." + str(dp) + "f") % v
+    ip, fp = s.split(".") if "." in s else (s, "")
+    neg = ip.startswith("-")
+    ip = ip.lstrip("-")
+    return ("-" if neg else "") + ip + ("," + fp if fp else "")
 
 
-def _phone(r):
-    return "509%07d" % int(r.integers(2000000, 9999999))
+def ukd(d):
+    return d.strftime("%d/%m/%Y")
 
 
-# ------------------------------------------------------------------ NPPES
-
-def _license(r, tax):
-    pre = {"2084P0800X": "MD", "2084P0804X": "MD", "2084P0802X": "MD", "2084P0805X": "MD", "2084A0401X": "OP",
-           "207QA0401X": "MD", "207RA0401X": "MD", "363LP0808X": "AP", "364SP0808X": "AP", "363LF0000X": "AP",
-           "363LA2200X": "AP", "207Q00000X": "MD", "207R00000X": "MD", "363A00000X": "PA", "103T00000X": "PY",
-           "101YM0800X": "LH", "1041C0700X": "LW", "101YA0400X": "CO", "207P00000X": "MD", "208D00000X": "OP"}.get(tax, "")
-    return (pre + "%08d" % int(r.integers(60000000, 61400000))) if pre else ""
+def nld(d):
+    return d.strftime("%d-%m-%Y")
 
 
-def _zip9(r, z):
-    return z + ("%04d" % int(r.integers(1000, 9999)) if r.random() < 0.7 else "")
+# ---------------------------------------------------------------- keys the systems assign
+
+def ahb_numbers(x):
+    """AHB's own article numbers for the group lines it stocks or sells, and the superseded group codes some still map to."""
+    rng = np.random.default_rng(SEED + 101)
+    codes = sorted({r["code"] for r in x["rows"] if r["sub"] == "AHB"} |
+                   {s["code"] for s in x["ship"] if s["sub"] == "AHB"} |
+                   {t["code"] for t in x["transfers"] if t["sub"] == "AHB"})
+    num, out = 310000, {}
+    for c in codes:
+        num += int(rng.integers(1, 9))
+        out[c] = "%06d" % num
+    return out
 
 
-def nppes_row(r, rec, state):
-    """One NPPES record as a file shows it. state: 'active' or 'blank' (a deactivated NPI: only the NPI and the
-    deactivation date)."""
-    row = {k: "" for k in NPPES_COLUMNS}
-    row["NPI"] = rec["npi"]
-    if state == "blank":
-        row["NPI Deactivation Date"] = _mdy(rec["deactivated"])
-        return [row[k] for k in NPPES_COLUMNS]
-    org = rec.get("entity") == 2
-    row["Entity Type Code"] = "2" if org else "1"
-    if org:
-        row["Provider Organization Name (Legal Business Name)"] = rec["name"]
-        row["Employer Identification Number (EIN)"] = "<UNAVAIL>"
-        row["Authorized Official Last Name"] = rec.get("ao_last", "")
-        row["Authorized Official First Name"] = rec.get("ao_first", "")
-        row["Authorized Official Title or Position"] = rec.get("ao_title", "")
-        row["Authorized Official Telephone Number"] = rec.get("phone", "")
-        row["Is Organization Subpart"] = rec.get("subpart", "N")
-        row["Parent Organization LBN"] = rec.get("parent", "")
-    else:
-        row["Provider Last Name (Legal Name)"] = rec["last"].upper()
-        row["Provider First Name"] = rec["first"].upper()
-        row["Provider Middle Name"] = rec.get("middle", "")
-        row["Provider Credential Text"] = rec.get("cred", "")
-        row["Provider Sex Code"] = rec.get("sex", "")
-        row["Is Sole Proprietor"] = rec.get("sole", "N")
-    mail, prac = rec["mailing"], rec["practice"]
-    row["Provider First Line Business Mailing Address"] = mail["line1"].upper()
-    row["Provider Second Line Business Mailing Address"] = mail.get("line2", "").upper()
-    row["Provider Business Mailing Address City Name"] = mail["city"].upper()
-    row["Provider Business Mailing Address State Name"] = mail["state"]
-    row["Provider Business Mailing Address Postal Code"] = mail.get("zip9") or mail["zip"]
-    row["Provider Business Mailing Address Country Code (If outside U.S.)"] = "US"
-    row["Provider Business Mailing Address Telephone Number"] = rec.get("phone", "")
-    row["Provider First Line Business Practice Location Address"] = prac["line1"].upper()
-    row["Provider Second Line Business Practice Location Address"] = prac.get("line2", "").upper()
-    row["Provider Business Practice Location Address City Name"] = prac["city"].upper()
-    row["Provider Business Practice Location Address State Name"] = prac["state"]
-    row["Provider Business Practice Location Address Postal Code"] = prac.get("zip9") or prac["zip"]
-    row["Provider Business Practice Location Address Country Code (If outside U.S.)"] = "US"
-    row["Provider Business Practice Location Address Telephone Number"] = rec.get("phone", "")
-    row["Provider Enumeration Date"] = _mdy(rec["enumerated"])
-    row["Last Update Date"] = _mdy(rec["last_update"])
-    row["NPI Reactivation Date"] = _mdy(rec.get("reactivated_shown"))
-    row["Certification Date"] = _mdy(rec.get("certified"))
-    for k, (tax, lic, prim) in enumerate(rec["taxonomies"][:4], start=1):
-        row["Healthcare Provider Taxonomy Code_%d" % k] = tax
-        row["Provider License Number_%d" % k] = lic
-        row["Provider License Number State Code_%d" % k] = "WA" if lic else ""
-        row["Healthcare Provider Primary Taxonomy Switch_%d" % k] = prim
-    return [row[k] for k in NPPES_COLUMNS]
+def superseded(x):
+    """Group codes retired when a line was re-sourced: old code -> current code (the master lists both)."""
+    rng = np.random.default_rng(SEED + 103)
+    cand = [it for it in x["items"] if not it["lumio"]]
+    pick = sorted(rng.choice(len(cand), 26, replace=False))
+    out = {}
+    for k in pick:
+        it = cand[int(k)]
+        old = "AH0%04d" % int(rng.integers(2000, 9999))
+        while old in out:
+            old = "AH0%04d" % int(rng.integers(2000, 9999))
+        out[old] = it["code"]
+    return out
 
 
-BACKGROUND_TAX = [("1223G0001X", 9, "DDS"), ("183500000X", 8, "PHARMD"), ("163W00000X", 10, "RN"),
-                  ("225100000X", 6, "DPT"), ("111N00000X", 3, "DC"), ("152W00000X", 3, "OD"), ("207Q00000X", 6, "MD"),
-                  ("207R00000X", 5, "MD"), ("208600000X", 2, "MD"), ("207V00000X", 2, "MD"), ("208000000X", 3, "MD"),
-                  ("363LF0000X", 4, "ARNP"), ("363A00000X", 3, "PA-C"), ("235Z00000X", 2, "CCC-SLP"),
-                  ("1041C0700X", 4, "LICSW"), ("101YM0800X", 5, "LMHC"), ("103T00000X", 2, "PHD"),
-                  ("2084P0800X", 2, "MD"), ("363LP0808X", 2, "ARNP")]
-BACKGROUND_ORG = [("333600000X", "PHARMACY"), ("251E00000X", "HOME HEALTH"), ("261QR1300X", "RURAL HEALTH CLINIC"),
-                  ("311500000X", "ALZHEIMER CENTER"), ("332B00000X", "MEDICAL SUPPLY")]
+# ---------------------------------------------------------------- stock registers
 
-
-def nppes_records(clins, orgs):
-    """Every NPPES record the files carry: the world's clinicians and organisations, and the other Washington providers
-    around them (dentists, pharmacists, nurses, therapists, other physicians, pharmacies), including behavioral-health
-    prescribers practising in Spokane, Seattle and elsewhere outside the plan's counties. Returns {npi: record}."""
-    r = np.random.default_rng([W.SEED, 30])
-    recs = {}
-    ff, fm, ll = W.first_last_pools()
-    used = {(c["first"], c["last"]) for c in clins}
-    for c in clins:
-        rec = dict(c)
-        rec["entity"] = 1
-        rec["phone"] = _phone(r)
-        rec["sole"] = "Y" if r.random() < 0.18 else "N"
-        rec["middle"] = (ll[int(r.integers(len(ll)))][0] if r.random() < 0.4 else "")
-        if rec["practice"] is not None:
-            rec["practice"] = dict(rec["practice"], zip9=_zip9(r, rec["practice"]["zip"]))
-        rec["mailing"] = dict(rec["mailing"] or rec["practice"])
-        if "zip9" not in rec["mailing"]:
-            rec["mailing"]["zip9"] = _zip9(r, rec["mailing"]["zip"])
-        taxes = [(c["tax"], _license(r, c["tax"]), "Y")]
-        if c.get("secondary"):
-            taxes.append((c["secondary"], _license(r, c["secondary"]), "N"))
-        if c["kind"] in ("prescriber", "dark", "mover", "react", "tele") and c["tax"] == "2084P0800X" and r.random() < 0.15:
-            taxes.append(("2084P0804X", taxes[0][1], "N"))
-        rec["taxonomies"] = taxes
-        recs[c["npi"]] = rec
-    for o in orgs:
-        rec = dict(o)
-        rec["entity"] = 2
-        rec["phone"] = _phone(r) if o["kind"] != "tele" else "206%07d" % int(r.integers(2000000, 9999999))
-        first, last = ff[int(r.integers(len(ff)))], ll[int(r.integers(len(ll)))]
-        rec.update(ao_first=first.upper(), ao_last=last.upper(),
-                   ao_title=["CHIEF EXECUTIVE OFFICER", "EXECUTIVE DIRECTOR", "CLINICAL DIRECTOR", "PRACTICE MANAGER",
-                             "CHIEF FINANCIAL OFFICER"][int(r.integers(5))])
-        rec["practice"] = dict(rec["practice"], zip9=_zip9(r, rec["practice"]["zip"]))
-        rec["mailing"] = dict(rec["practice"])
-        rec["taxonomies"] = [(o["tax"], "", "Y")]
-        recs[o["npi"]] = rec
-    # the other Washington providers
-    places = [(c, z) for c, zs in sorted(W.ZIPS.items()) for z in zs if W.county_of_zip(z) == c]
-    elsewhere = [("Spokane", "99201"), ("Spokane", "99204"), ("Spokane", "99208"), ("Spokane Valley", "99216"),
-                 ("Seattle", "98104"), ("Seattle", "98122"), ("Tacoma", "98405"), ("Everett", "98201"),
-                 ("Olympia", "98501"), ("Vancouver", "98664"), ("Bellevue", "98004"), ("Pullman", "99163"),
-                 ("Clarkston", "99403"), ("Moscow", "83843")]
-    taken = set(recs)
-    for k in range(2400):
-        while True:
-            npi = W.npi(r)
-            if npi not in taken:
-                taken.add(npi)
-                break
-        if k < 2000:
-            c, z = places[int(r.integers(len(places)))] if r.random() < 0.72 else (None, None)
-            if c is None:
-                city, z = elsewhere[int(r.integers(len(elsewhere)))]
-                state = "ID" if z.startswith("83") else "WA"
-            else:
-                city, state = W.CITY[z], "WA"
-            tax, _, cred = BACKGROUND_TAX[int(r.choice(len(BACKGROUND_TAX), p=np.array([w for _, w, _ in BACKGROUND_TAX]) / sum(w for _, w, _ in BACKGROUND_TAX)))]
-            if tax in W.BH_TAXONOMY and c is not None:
-                c, city, z, state = None, "Spokane", "99204", "WA"
-            while True:
-                fem = r.random() < 0.55
-                first = (ff if fem else fm)[int(r.integers(len(ff if fem else fm)))]
-                last = ll[int(r.integers(len(ll)))]
-                if (first, last) not in used:
-                    used.add((first, last))
-                    break
-            addr = {"line1": "%d %s" % (int(r.integers(100, 9800)), W.STREETS[int(r.integers(len(W.STREETS)))]),
-                    "line2": W.SUITES[int(r.integers(len(W.SUITES)))], "city": city, "state": state, "zip": z}
-            addr["zip9"] = _zip9(r, z)
-            en = D(int(r.integers(2005, 2026)), int(r.integers(1, 13)), int(r.integers(1, 29)))
-            recs[npi] = {"npi": npi, "entity": 1, "first": first, "last": last, "sex": "F" if fem else "M",
-                         "cred": cred, "practice": addr, "mailing": dict(addr), "phone": _phone(r),
-                         "enumerated": en, "last_update": max(en, D(int(r.integers(2012, 2027)), int(r.integers(1, 10)), int(r.integers(1, 29)))),
-                         "taxonomies": [(tax, _license(r, tax), "Y")], "kind": "background",
-                         "sole": "Y" if r.random() < 0.2 else "N", "middle": ""}
+def write_ahl_stock(x, path):
+    rng = np.random.default_rng(SEED + 111)
+    rows = []
+    for r in [r for r in x["rows"] if r["sub"] == "AHL"]:
+        q = r["stock"]
+        aisle = "%s-%02d-%02d" % ("ABCDEFGH"[int(rng.integers(8))], int(rng.integers(1, 41)), int(rng.integers(1, 7)))
+        if q > 0 and rng.random() < 0.3:
+            q1 = int(q * rng.uniform(0.15, 0.4))
+            res = "R%s-%02d" % ("JKLM"[int(rng.integers(4))], int(rng.integers(1, 60)))
+            parts = [(aisle, q1), (res, q - q1)]
         else:
-            c, z = places[int(r.integers(len(places)))]
-            tax, word = BACKGROUND_ORG[int(r.integers(len(BACKGROUND_ORG)))]
-            nm = "%s %s" % (W.CITY[z].upper(), word) if r.random() < 0.6 else "%s %s %s" % (
-                ll[int(r.integers(len(ll)))].upper(), ["FAMILY", "VALLEY", "COMMUNITY", "NORTHWEST"][int(r.integers(4))], word)
-            addr = {"line1": "%d %s" % (int(r.integers(100, 9800)), W.STREETS[int(r.integers(len(W.STREETS)))]),
-                    "line2": "", "city": W.CITY[z], "state": "WA", "zip": z}
-            addr["zip9"] = _zip9(r, z)
-            en = D(int(r.integers(2005, 2026)), int(r.integers(1, 13)), int(r.integers(1, 29)))
-            recs[npi] = {"npi": npi, "entity": 2, "name": nm, "practice": addr, "mailing": dict(addr), "phone": _phone(r),
-                         "enumerated": en, "last_update": max(en, D(int(r.integers(2014, 2027)), int(r.integers(1, 10)), int(r.integers(1, 29)))),
-                         "taxonomies": [(tax, "", "Y")], "kind": "background_org",
-                         "ao_first": ff[int(r.integers(len(ff)))].upper(), "ao_last": ll[int(r.integers(len(ll)))].upper(),
-                         "ao_title": "ADMINISTRATOR"}
-    return recs
+            parts = [(aisle, q)]
+        for b, qq in parts:
+            rows.append([r["code"], r["desc"], b, qq, "%.2f" % r["cost"], "%.2f" % (qq * r["cost"])])
+    rows.sort(key=lambda a: (a[0], a[2]))
+    return write_csv(path, ["Item Code", "Description", "Bin", "Qty On Hand", "Unit Cost", "Stock Value"], rows)
 
 
-def monthly_and_weeks(recs):
-    """The October monthly file (through 11 October) and the four weekly incremental files: the rows each carries."""
-    r = np.random.default_rng([W.SEED, 31])
-    monthly = []
-    weeks = [[] for _ in W.WEEKS]
-
-    def week_of(day):
-        for k, (a, b) in enumerate(W.WEEKS):
-            if a <= day <= b:
-                return k
-        return None
-
-    for npi in sorted(recs):
-        rec = recs[npi]
-        kind = rec.get("kind")
-        if kind == "new":
-            weeks[week_of(rec["enumerated"])].append(nppes_row(r, rec, "active"))
-            continue
-        if kind == "deact":
-            monthly.append(nppes_row(r, rec, "blank"))
-            continue
-        if kind == "react":
-            monthly.append(nppes_row(r, rec, "blank"))
-            back = dict(rec, last_update=rec["reactivated"], reactivated_shown=rec["reactivated"])
-            weeks[week_of(rec["reactivated"])].append(nppes_row(r, back, "active"))
-            continue
-        if kind == "mover":
-            monthly.append(nppes_row(r, rec, "active"))
-            to = rec["moved_to"]
-            if to in W.COUNTIES:
-                z = [z for z in W.ZIPS[to] if W.county_of_zip(z) == to][int(r.integers(3))]
-                city, state = W.CITY[z], "WA"
-            else:
-                city, z, state = {"Spokane": ("SPOKANE", "99204", "WA"), "Seattle": ("SEATTLE", "98122", "WA")}[to]
-            addr = {"line1": "%d %s" % (int(r.integers(100, 4800)), W.STREETS[int(r.integers(len(W.STREETS)))]),
-                    "line2": "Suite %d" % int(r.integers(100, 400)), "city": city, "state": state, "zip": z}
-            addr["zip9"] = _zip9(r, z)
-            moved = dict(rec, practice=addr, mailing=dict(addr), last_update=rec["moved_on"])
-            weeks[week_of(rec["moved_on"])].append(nppes_row(r, moved, "active"))
-            continue
-        if kind == "switch":
-            monthly.append(nppes_row(r, rec, "active"))
-            t0 = rec["taxonomies"][0]
-            sw = dict(rec, taxonomies=[(t0[0], t0[1], "N"), (rec["switched_to"], _license(r, rec["switched_to"]), "Y")],
-                      cred="ARNP, PMHNP-BC", last_update=rec["switched_on"])
-            weeks[week_of(rec["switched_on"])].append(nppes_row(r, sw, "active"))
-            continue
-        if kind in ("deact_late_before", "deact_late_after"):
-            monthly.append(nppes_row(r, rec, "active"))
-            weeks[week_of(rec["deactivated"])].append(nppes_row(r, rec, "blank"))
-            continue
-        monthly.append(nppes_row(r, rec, "active"))
-    # NPIs of other Washington providers deactivated in each week (deaths, retirements, closed practices, duplicate
-    # enumerations), the record reduced to its NPI and deactivation date
-    bg = [n for n in sorted(recs) if recs[n].get("kind") in ("background", "background_org")]
-    gone = set()
-    for k, (a, b) in enumerate(W.WEEKS):
-        for npi in r.choice(bg, size=int(r.integers(2, 6)), replace=False):
-            npi = str(npi)
-            if npi in gone:
-                continue
-            gone.add(npi)
-            day = a + dt.timedelta(days=int(r.integers(0, 5)))
-            recs[npi]["deactivated"] = day
-            recs[npi]["bg_deact"] = True
-            weeks[k].append(nppes_row(r, recs[npi], "blank"))
-    # the routine updates each week carries: phone numbers, suites, a renewed license, a corrected name
-    pool = [n for n in sorted(recs) if recs[n].get("kind") in ("background", "background_org", "prescriber", "therapist",
-                                                                  "pcp", "dark", "tele", "ed") and n not in gone]
-    for k, (a, b) in enumerate(W.WEEKS):
-        for npi in r.choice(pool, size=int(r.integers(55, 80)), replace=False):
-            rec = dict(recs[str(npi)])
-            rec["phone"] = _phone(r) if r.random() < 0.5 else rec.get("phone", "")
-            rec["last_update"] = a + dt.timedelta(days=int(r.integers(0, 7)))
-            if r.random() < 0.3 and rec["practice"]:
-                rec["practice"] = dict(rec["practice"], line2=W.SUITES[int(r.integers(len(W.SUITES)))])
-                rec["mailing"] = dict(rec["mailing"], line2=rec["practice"]["line2"])
-            weeks[k].append(nppes_row(r, rec, "active"))
-    for w in weeks:
-        w.sort(key=lambda x: x[0])
-    monthly.sort(key=lambda x: x[0])
-    return monthly, weeks
+def ahi_cs_rows(x):
+    rng = np.random.default_rng(SEED + 113)
+    return {r["code"] for r in x["rows"] if r["sub"] == "AHI" and r["case"] > 1 and rng.random() < 0.22}
 
 
-def write_nppes(rows, path):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, quoting=csv.QUOTE_ALL, lineterminator="\r\n")
-        w.writerow(NPPES_COLUMNS)
-        for row in rows:
-            w.writerow(row)
-    return len(rows)
-
-
-def write_deactivations(recs, path):
-    """CMS's deactivated NPI report: every NPI deactivated, with the date (the plan's copy of the 10 November file)."""
-    from openpyxl import Workbook
-    from openpyxl.styles import Font
-    r = np.random.default_rng([W.SEED, 32])
-    rows = [(rec["npi"], rec["deactivated"]) for rec in recs.values() if rec.get("deactivated") and
-            (rec.get("kind") in ("deact", "deact_late_before", "deact_late_after") or rec.get("bg_deact"))]
-    taken = set(recs)
-    start, end = D(2019, 1, 2), D(2026, 11, 6)
-    span = (end - start).days
-    for _ in range(2600):
-        npi = W.npi(r)
-        if npi in taken:
-            continue
-        taken.add(npi)
-        # deactivations run every business day, more of them in recent years
-        while True:
-            d = start + dt.timedelta(days=int(span * (1 - r.random() ** 1.6)))
-            if d.weekday() < 5:
-                break
-        rows.append((npi, d))
-    rows.sort(key=lambda x: (x[1], x[0]))
+def write_ahi_stock(x, path):
+    cs = ahi_cs_rows(x)
     wb = Workbook()
     ws = wb.active
-    ws.title = "Deactivated NPIs"
-    ws.append(["NPPES Deactivated NPI Report"])
-    ws.append(["Run date: 11/10/2026"])
+    ws.title = "Inventory Valuation"
+    ws.append(["Ashlund Home Ireland Ltd"])
+    ws.append(["Inventory Valuation - Cost Specification"])
+    ws.append(["As of 31/12/2026", None, None, None, None, None, None, "Currency: EUR"])
     ws.append([])
-    ws.append(["NPI", "NPPES Deactivation Date"])
-    for npi, d in rows:
-        ws.append([npi, _mdy(d)])
-    ws["A1"].font = Font(bold=True, size=12)
-    for c in ws[4]:
+    hdr = ["Item No.", "Description", "Location Code", "Unit of Measure Code", "Qty. per Unit of Measure", "Quantity",
+           "Unit Cost", "Cost Amount"]
+    ws.append(hdr)
+    for c in ws[5]:
         c.font = Font(bold=True)
-    ws.column_dimensions["A"].width = 14
-    ws.column_dimensions["B"].width = 26
+    n = 0
+    for r in sorted([r for r in x["rows"] if r["sub"] == "AHI"], key=lambda a: a["code"]):
+        if r["code"] in cs and r["stock"] >= r["case"]:
+            q = r["stock"] // r["case"]
+            loose = r["stock"] - q * r["case"]
+            ws.append([r["code"], r["desc"], "DUB-MAIN", "CS", r["case"], q, round(r["ucost"] * r["case"], 4),
+                       round(q * r["case"] * r["ucost"], 2)])
+            n += 1
+            if loose:
+                ws.append([r["code"], r["desc"], "DUB-PICK", "EA", 1, loose, round(r["ucost"], 4), round(loose * r["ucost"], 2)])
+                n += 1
+        else:
+            ws.append([r["code"], r["desc"], "DUB-MAIN", "EA", 1, r["stock"], round(r["ucost"], 4),
+                       round(r["stock"] * r["ucost"], 2)])
+            n += 1
+    for col, wd in zip("ABCDEFGH", (11, 34, 13, 12, 12, 10, 11, 13)):
+        ws.column_dimensions[col].width = wd
     wb.save(path)
-    return len(rows)
+    return n
 
 
-# ------------------------------------------------------------------ enrollment and claims
-
-def span_rows(persons):
-    """The enrollment system's spans for every member number with coverage on a day of the contract year."""
-    r = np.random.default_rng([W.SEED, 40])
+def write_ahb_stock(x, path, nums):
+    rng = np.random.default_rng(SEED + 117)
     rows = []
-    sid = 7_300_000
-    for p in persons:
-        client = "%09dWA" % (100_000_000 + int(p.pid[1:]) * 3 % 899_999_999)
-        for s in sorted(p.spells, key=lambda s: (s["start"], s["source"] != "RETRO")):
-            sid += int(r.integers(1, 9))
-            county = s["county"]
-            zs = [z for z in W.ZIPS[county] if W.county_of_zip(z, basis="residential") == county]
-            if county in ("Grant", "Franklin") and r.random() < 0.03:
-                z = "99344"
-            elif county == "Okanogan" and r.random() < 0.04:
-                z = "98813"
-            else:
-                z = zs[int(r.integers(len(zs)))]
-            rows.append(["S%08d" % sid, s["member_id"], client, p.dob.isoformat(), p.sex, GROUP_CODE[p.group],
-                         s["start"].isoformat(), s["end"].isoformat() if s["end"] and s["end"] <= W.EXTRACT else "",
-                         W.COUNTIES[county]["fips"], z,
-                         {"NEW": "NEW", "RENEWAL": "RENEW", "RETRO": "RETRO", "TRANSFER": "MOVE"}[s["source"]]])
-    rows.sort(key=lambda x: (x[1], x[6]))
-    return rows
+    for r in sorted([r for r in x["rows"] if r["sub"] == "AHB"], key=lambda a: nums[a["code"]]):
+        mag = "TLB" if rng.random() < 0.86 else "TLB-BUFFER"
+        rows.append([nums[r["code"]], r["desc"].upper()[:30], mag, r["stock"], "ST", nl(r["ucost"], 4),
+                     nl(r["stock"] * r["ucost"], 2)])
+    return write_csv(path, ["Artikelnr", "Omschrijving", "Magazijn", "Voorraad", "Eenheid", "Kostprijs", "Waarde"], rows,
+                     delim=";")
 
 
-def write_spans(rows, path):
-    return _w(path, SPAN_COLUMNS, rows)
+def write_ahb_xref(x, path, nums, sup):
+    back = {}
+    for old, new in sup.items():
+        back.setdefault(new, old)
+    rng = np.random.default_rng(SEED + 119)
+    by_code = {it["code"]: it for it in x["items"]}
+    rows = []
+    for code, n in sorted(nums.items(), key=lambda a: a[1]):
+        g = code
+        if code in back and rng.random() < 0.6:
+            g = back[code]
+        rows.append([n, g, by_code[code]["desc"].upper()[:30]])
+    return write_csv(path, ["Artikelnr", "Groepscode", "Omschrijving"], rows, delim=";")
 
 
-def _money(x):
-    return "%.2f" % x
+def write_master(x, path, sup):
+    rows = []
+    for it in x["items"]:
+        rows.append([it["code"], it["desc"], it["div"], it["case"], "Active", "", it["launch"].strftime("%Y-%m-%d")])
+    by_code = {it["code"]: it for it in x["items"]}
+    for old, new in sup.items():
+        it = by_code[new]
+        rows.append([old, it["desc"], it["div"], it["case"], "Superseded", new, it["launch"].strftime("%Y-%m-%d")])
+    rows.sort(key=lambda a: a[0])
+    return write_csv(path, ["Item Code", "Description", "Division", "Case Qty", "Status", "Superseded By", "First Received"],
+                     rows)
 
 
-def claim_rows(lines):
+# ---------------------------------------------------------------- order books
+
+def lines_for(x, sub, years):
+    out = [s for s in x["ship"] if s["sub"] == sub and s["date"].year in years]
+    out += [t for t in x["transfers"] if t["sub"] == sub and t["date"].year in years]
+    out.sort(key=lambda a: (a["date"], a["acct"], a["kind"] == "return", a["code"], a["qty"]))
+    return out
+
+
+def number_orders(lines, prefix, start):
+    """Group a day's lines for one customer and kind into one document; number documents and lines."""
+    docs, k = {}, start
     out = []
     for ln in lines:
-        out.append([ln["icn"], ln["line"], ln["freq"], ln["orig"], ln["member_id"], ln["arr"], ln["bill"], ln["render"],
-                    ln["pos"], ln["proc"], ln["mod"], ln["units"], ln["from"].isoformat(), ln["thru"].isoformat()] +
-                   list(ln["dx"]) + [_money(ln["billed"]), _money(ln["paid"]), ln["received"].isoformat(),
-                                     ln["paid_date"].isoformat()])
+        key = (ln["date"], ln["acct"], ln["kind"])
+        if key not in docs:
+            k += 1
+            docs[key] = [prefix % k, 0]
+        docs[key][1] += 1
+        out.append((docs[key][0], docs[key][1], ln))
     return out
 
 
-def write_claims(rows, path):
-    return _w(path, CLAIM_COLUMNS, rows)
-
-
-# ------------------------------------------------------------------ reference files
-
-OTHER_COUNTIES = {"Spokane": "53063", "King": "53033", "Pierce": "53053", "Snohomish": "53061", "Thurston": "53067",
-                  "Clark": "53011", "Whitman": "53075", "Asotin": "53003", "Columbia": "53013"}
-OTHER_ZIPS = [("99201", "Spokane", "SPOKANE"), ("99204", "Spokane", "SPOKANE"), ("99208", "Spokane", "SPOKANE"),
-              ("99216", "Spokane", "SPOKANE VALLEY"), ("98101", "King", "SEATTLE"), ("98104", "King", "SEATTLE"),
-              ("98122", "King", "SEATTLE"), ("98004", "King", "BELLEVUE"), ("98405", "Pierce", "TACOMA"),
-              ("98201", "Snohomish", "EVERETT"), ("98501", "Thurston", "OLYMPIA"), ("98664", "Clark", "VANCOUVER"),
-              ("99163", "Whitman", "PULLMAN"), ("99403", "Asotin", "CLARKSTON")]
-
-
-def write_zip_county(path):
-    """The HUD-USPS ZIP-county crosswalk, second quarter 2026, for the ZIP codes of the plan's providers and members."""
-    from openpyxl import Workbook
-    from openpyxl.styles import Font
+def write_ahl_orders(x, path):
+    """AHL's order line report. A price-only credit is raised from the original order's credit screen on the non-stock
+    code; the report prints it under that order, with the credit's own date and a line number from 990."""
+    by_code = {it["code"]: it for it in x["items"]}
+    lines = [ln for ln in lines_for(x, "AHL", (2025, 2026)) if ln["kind"] != "price"]
+    numbered = number_orders(lines, "SO%07d", 2510400)
+    doc_of = {}
+    for doc, ln_no, ln in numbered:
+        if ln["kind"] == "ship":
+            doc_of.setdefault((ln["date"], ln["acct"]), doc)
     rows = []
-    seen = set()
-    for c, zs in sorted(W.ZIPS.items()):
-        for z in zs:
-            if z in seen:
-                continue
-            seen.add(z)
-            if z in W.SPLIT:
-                for cc, res, bus in W.SPLIT[z]:
-                    oth = round((res + bus) / 2, 6)
-                    rows.append([z, W.COUNTIES[cc]["fips"], W.CITY[z].upper(), "WA", res, bus, oth, round((3 * res + bus) / 4, 6)])
-            elif z in W.SLIVER:
-                oc, res, bus = W.SLIVER[z]
-                oth = round((res + bus) / 2, 6)
-                tot = round((3 * res + bus) / 4, 6)
-                ofips = W.COUNTIES[oc]["fips"] if oc in W.COUNTIES else OTHER_COUNTIES[oc]
-                rows.append([z, W.COUNTIES[c]["fips"], W.CITY[z].upper(), "WA", round(1 - res, 6), round(1 - bus, 6),
-                             round(1 - oth, 6), round(1 - tot, 6)])
-                rows.append([z, ofips, W.CITY[z].upper(), "WA", res, bus, oth, tot])
-            else:
-                rows.append([z, W.COUNTIES[c]["fips"], W.CITY[z].upper(), "WA", 1, 1, 1, 1])
-    for z, cname, city in OTHER_ZIPS:
-        rows.append([z, OTHER_COUNTIES[cname], city, "WA", 1, 1, 1, 1])
-    rows.sort(key=lambda x: (x[0], -x[7]))
+    for doc, ln_no, ln in numbered:
+        kind = ln["kind"]
+        dtype = "RTN" if kind == "return" else "DESP"
+        status = "Cancelled" if kind == "cancelled" else "Invoiced"
+        rows.append([doc, ln_no * 10, dtype, ukd(ln["date"]), ln["acct"], ln["cust"], ln["code"], by_code[ln["code"]]["desc"],
+                     ln["qty"], "%.2f" % ln["value"], status])
+    nxt = {}
+    for ln in [c for c in x["ship"] if c["sub"] == "AHL" and c["kind"] == "price"]:
+        doc = doc_of[ln["orig"]]
+        nxt[doc] = nxt.get(doc, 980) + 10
+        rows.append([doc, nxt[doc], "PRICE", ukd(ln["date"]), ln["acct"], ln["cust"], ln["code"], "PRICE ADJUSTMENT", 0,
+                     "%.2f" % ln["value"], "Invoiced"])
+    rows.sort(key=lambda r: (r[3][6:] + r[3][3:5] + r[3][:2], r[0], r[1]))
+    return write_csv(path, ["Order No", "Line", "Doc Type", "Despatch Date", "Account", "Customer", "Item Code",
+                            "Description", "Qty", "Line Value", "Status"], rows)
+
+
+def write_ahi_ship26(x, path):
+    by_code = {it["code"]: it for it in x["items"]}
+    cs = ahi_cs_rows(x)
     wb = Workbook()
     ws = wb.active
-    ws.title = "ZIP_COUNTY_062026"
-    ws.append(["ZIP", "COUNTY", "USPS_ZIP_PREF_CITY", "USPS_ZIP_PREF_STATE", "RES_RATIO", "BUS_RATIO", "OTH_RATIO", "TOT_RATIO"])
-    for row in rows:
-        ws.append(row)
+    ws.title = "Sales Shipment Lines"
+    hdr = ["Posting Date", "Document Type", "Document No.", "Sell-to Customer No.", "Customer Name", "No.", "Description",
+           "Unit of Measure Code", "Qty. per Unit of Measure", "Quantity", "Line Amount"]
+    ws.append(hdr)
     for c in ws[1]:
         c.font = Font(bold=True)
-    for k, wdt in enumerate([8, 9, 22, 22, 11, 11, 11, 11]):
-        ws.column_dimensions[chr(65 + k)].width = wdt
+    n, k_s, k_r = 0, 260000, 260000
+    seen = {}
+    for ln in lines_for(x, "AHI", (2026,)):
+        if ln["kind"] == "cancelled":
+            continue
+        key = (ln["date"], ln["acct"], ln["kind"])
+        if key not in seen:
+            if ln["kind"] == "return":
+                k_r += 1
+                seen[key] = "RRCPT-%06d" % k_r
+            else:
+                k_s += 1
+                seen[key] = "SSHPT-%06d" % k_s
+        case = by_code[ln["code"]]["case"]
+        q = abs(ln["qty"])
+        if ln["code"] in cs and q % case == 0 and ln["kind"] != "transfer":
+            uom, per, qq = "CS", case, q // case
+        else:
+            uom, per, qq = "EA", 1, q
+        dtype = "Return Receipt" if ln["kind"] == "return" else "Shipment"
+        ws.append([ln["date"], dtype, seen[key], ln["acct"], ln["cust"], ln["code"], by_code[ln["code"]]["desc"], uom, per, qq,
+                   round(abs(ln["value"]), 2)])
+        ws.cell(row=ws.max_row, column=1).number_format = "dd/mm/yyyy"
+        n += 1
+    for col, wd in zip("ABCDEFGHIJK", (12, 15, 14, 12, 26, 10, 34, 10, 10, 10, 12)):
+        ws.column_dimensions[col].width = wd
     wb.save(path)
-    return len(rows)
+    return n
 
 
-NUCC_ROWS = [
-    ("101YA0400X", "Behavioral Health & Social Service Providers", "Counselor", "Addiction (Substance Use Disorder)", "Addiction (Substance Use Disorder) Counselor"),
-    ("101YM0800X", "Behavioral Health & Social Service Providers", "Counselor", "Mental Health", "Mental Health Counselor"),
-    ("103T00000X", "Behavioral Health & Social Service Providers", "Psychologist", "", "Psychologist"),
-    ("1041C0700X", "Behavioral Health & Social Service Providers", "Social Worker", "Clinical", "Clinical Social Worker"),
-    ("111N00000X", "Chiropractic Providers", "Chiropractor", "", "Chiropractor"),
-    ("1223G0001X", "Dental Providers", "Dentist", "General Practice", "General Practice Dentistry"),
-    ("193200000X", "Group", "Multi-Specialty", "", "Multi-Specialty Group"),
-    ("193400000X", "Group", "Single Specialty", "", "Single Specialty Group"),
-    ("152W00000X", "Eye and Vision Services Providers", "Optometrist", "", "Optometrist"),
-    ("163W00000X", "Nursing Service Providers", "Registered Nurse", "", "Registered Nurse"),
-    ("183500000X", "Pharmacy Service Providers", "Pharmacist", "", "Pharmacist"),
-    ("207P00000X", "Allopathic & Osteopathic Physicians", "Emergency Medicine", "", "Emergency Medicine Physician"),
-    ("207Q00000X", "Allopathic & Osteopathic Physicians", "Family Medicine", "", "Family Medicine Physician"),
-    ("207QA0401X", "Allopathic & Osteopathic Physicians", "Family Medicine", "Addiction Medicine", "Addiction Medicine (Family Medicine) Physician"),
-    ("207R00000X", "Allopathic & Osteopathic Physicians", "Internal Medicine", "", "Internal Medicine Physician"),
-    ("207RA0401X", "Allopathic & Osteopathic Physicians", "Internal Medicine", "Addiction Medicine", "Addiction Medicine (Internal Medicine) Physician"),
-    ("207V00000X", "Allopathic & Osteopathic Physicians", "Obstetrics & Gynecology", "", "Obstetrics & Gynecology Physician"),
-    ("208000000X", "Allopathic & Osteopathic Physicians", "Pediatrics", "", "Pediatrics Physician"),
-    ("2084A0401X", "Allopathic & Osteopathic Physicians", "Psychiatry & Neurology", "Addiction Medicine", "Addiction Medicine (Psychiatry & Neurology) Physician"),
-    ("2084P0800X", "Allopathic & Osteopathic Physicians", "Psychiatry & Neurology", "Psychiatry", "Psychiatry Physician"),
-    ("2084P0802X", "Allopathic & Osteopathic Physicians", "Psychiatry & Neurology", "Addiction Psychiatry", "Addiction Psychiatry Physician"),
-    ("2084P0804X", "Allopathic & Osteopathic Physicians", "Psychiatry & Neurology", "Child & Adolescent Psychiatry", "Child & Adolescent Psychiatry Physician"),
-    ("2084P0805X", "Allopathic & Osteopathic Physicians", "Psychiatry & Neurology", "Geriatric Psychiatry", "Geriatric Psychiatry Physician"),
-    ("208600000X", "Allopathic & Osteopathic Physicians", "Surgery", "", "Surgery Physician"),
-    ("208D00000X", "Allopathic & Osteopathic Physicians", "General Practice", "", "General Practice Physician"),
-    ("225100000X", "Respiratory, Developmental, Rehabilitative and Restorative Service Providers", "Physical Therapist", "", "Physical Therapist"),
-    ("235Z00000X", "Speech, Language and Hearing Service Providers", "Speech-Language Pathologist", "", "Speech-Language Pathologist"),
-    ("251E00000X", "Agencies", "Home Health", "", "Home Health Agency"),
-    ("261QF0400X", "Ambulatory Health Care Facilities", "Clinic/Center", "Federally Qualified Health Center (FQHC)", "Federally Qualified Health Center (FQHC)"),
-    ("261QM0801X", "Ambulatory Health Care Facilities", "Clinic/Center", "Mental Health (Including Community Mental Health Center)", "Mental Health Clinic/Center (Including Community Mental Health Center)"),
-    ("261QM2800X", "Ambulatory Health Care Facilities", "Clinic/Center", "Methadone", "Methadone Clinic"),
-    ("261QR1300X", "Ambulatory Health Care Facilities", "Clinic/Center", "Rural Health", "Rural Health Clinic/Center"),
-    ("311500000X", "Nursing & Custodial Care Facilities", "Alzheimer Center (Dementia Center)", "", "Alzheimer Center (Dementia Center)"),
-    ("332B00000X", "Suppliers", "Durable Medical Equipment & Medical Supplies", "", "Durable Medical Equipment & Medical Supplies Supplier"),
-    ("333600000X", "Suppliers", "Pharmacy", "", "Pharmacy"),
-    ("363A00000X", "Physician Assistants & Advanced Practice Nursing Providers", "Physician Assistant", "", "Physician Assistant"),
-    ("363LA2200X", "Physician Assistants & Advanced Practice Nursing Providers", "Nurse Practitioner", "Adult Health", "Adult Health Nurse Practitioner"),
-    ("363LF0000X", "Physician Assistants & Advanced Practice Nursing Providers", "Nurse Practitioner", "Family", "Family Nurse Practitioner"),
-    ("363LP0808X", "Physician Assistants & Advanced Practice Nursing Providers", "Nurse Practitioner", "Psych/Mental Health", "Psychiatric/Mental Health Nurse Practitioner"),
-    ("364SP0808X", "Physician Assistants & Advanced Practice Nursing Providers", "Clinical Nurse Specialist", "Psych/Mental Health", "Psychiatric/Mental Health Clinical Nurse Specialist"),
-]
-
-
-def write_nucc(path):
-    rows = [list(x[:4]) + [x[4], "Individual" if not x[0].startswith(("19", "25", "26", "28", "31", "33")) else "Non-Individual"]
-            for x in NUCC_ROWS]
-    return _w(path, ["Code", "Grouping", "Classification", "Specialization", "Display Name", "Section"], rows, crlf=True)
-
-
-FEE_DESC = {"99213": "Office/outpatient visit, established patient, low MDM", "99214": "Office/outpatient visit, established patient, moderate MDM",
-            "99215": "Office/outpatient visit, established patient, high MDM", "90792": "Psychiatric diagnostic evaluation with medical services",
-            "90833": "Psychotherapy, 30 minutes, with E/M (add-on)", "90834": "Psychotherapy, 45 minutes",
-            "90837": "Psychotherapy, 60 minutes", "90832": "Psychotherapy, 30 minutes", "90847": "Family psychotherapy with patient",
-            "99283": "Emergency department visit, moderate MDM", "99284": "Emergency department visit, moderate-high MDM",
-            "99285": "Emergency department visit, high MDM", "90791": "Psychiatric diagnostic evaluation",
-            "H0036": "Community psychiatric supportive treatment, per 15 minutes", "H0039": "Assertive community treatment, per 15 minutes",
-            "H2015": "Comprehensive community support services, per 15 minutes", "T1017": "Targeted case management, per 15 minutes",
-            "H0004": "Behavioral health counseling and therapy, per 15 minutes", "H0005": "Alcohol and/or drug services, group counseling",
-            "H0020": "Alcohol and/or drug services, methadone administration and/or service", "H0001": "Alcohol and/or drug assessment",
-            "H0031": "Mental health assessment, by non-physician"}
-
-
-def write_fees(path):
+def write_ahi_arch25(x, path):
+    """The old system's archive of 2025 invoices and credit notes; its report prints each item's current stock unit."""
+    by_code = {it["code"]: it for it in x["items"]}
     rows = []
-    for code in sorted(FEE_DESC):
-        rows.append([code, FEE_DESC[code], "2025-07-01", "2025-12-31", "%.2f" % W.FEE[code]])
-        rows.append([code, FEE_DESC[code], "2026-01-01", "2026-06-30", "%.2f" % CL.fee(code, D(2026, 1, 1))])
-    return _w(path, ["proc_cd", "description", "effective_from", "effective_thru", "max_allowable_per_unit_usd"], rows)
+    k_i, k_c = 70400, 9100
+    seen = {}
+    for ln in lines_for(x, "AHI", (2025,)):
+        if ln["kind"] == "cancelled":
+            continue
+        key = (ln["date"], ln["acct"], ln["kind"])
+        if key not in seen:
+            if ln["kind"] == "return":
+                k_c += 1
+                seen[key] = "CRN%06d" % k_c
+            else:
+                k_i += 1
+                seen[key] = "INV%06d" % k_i
+        case = by_code[ln["code"]]["case"]
+        q = abs(ln["qty"])
+        if ln["date"] < AHI_UOM_SWITCH:
+            q = q // case
+        rows.append(["CRN" if ln["kind"] == "return" else "INV", seen[key], ukd(ln["date"]), ln["acct"], ln["cust"],
+                     ln["code"], by_code[ln["code"]]["desc"], q, "EA", "%.2f" % abs(ln["value"])])
+    return write_csv(path, ["Doc Type", "Doc No", "Doc Date", "Cust Code", "Cust Name", "Stock Code", "Description", "Qty",
+                            "UOM", "Line Value"], rows)
 
 
-# ------------------------------------------------------------------ distractors
-
-P60 = {"Adams": 0.931, "Benton": 0.996, "Chelan": 0.984, "Douglas": 0.957, "Franklin": 0.989, "Grant": 0.948,
-       "Kittitas": 0.972, "Okanogan": 0.923, "Walla Walla": 0.991, "Yakima": 0.979}
-
-
-def june_members(persons):
-    """Members enrolled on 30 June 2026, by the county of the span covering that day."""
-    out = {c: 0 for c in W.COUNTIES}
-    day = W.WINDOW_END
-    for p in persons:
-        for s in p.spells:
-            if s["start"] <= day and (s["end"] is None or s["end"] >= day):
-                out[s["county"]] += 1
-                break
-    return out
+def write_ahb_orders(x, path, nums):
+    by_code = {it["code"]: it for it in x["items"]}
+    rows = []
+    for doc, ln_no, ln in number_orders(lines_for(x, "AHB", (2025, 2026)), "%07d", 4100500):
+        kind = ln["kind"]
+        soort = "Retour" if kind == "return" else "Levering"
+        status = "Geannuleerd" if kind == "cancelled" else "Gefactureerd"
+        rows.append([doc, ln_no, ln["acct"], ln["cust"], nums[ln["code"]], by_code[ln["code"]]["desc"].upper()[:30],
+                     ln["qty"], "ST", nl(ln["value"], 2), nld(ln["date"]), soort, status])
+    return write_csv(path, ["Ordernr", "Regel", "Klantnr", "Klantnaam", "Artikelnr", "Omschrijving", "Aantal", "Eenheid",
+                            "Bedrag", "Leverdatum", "Soort", "Status"], rows, delim=";")
 
 
-def write_adequacy(path, persons):
-    """The plan's time and distance report to the state for the second quarter of 2026 (behavioral health prescribers):
-    the share of each county's members living within 30 and 60 minutes' drive of a contracted prescriber."""
-    from openpyxl import Workbook
-    from openpyxl.styles import Font
-    r = np.random.default_rng([W.SEED, 50])
-    june = june_members(persons)
+# ---------------------------------------------------------------- outlet, lots, rates, facility
+
+def write_vh_weeks(x, path):
+    name = {s[0]: s[1] for s in STORES}
+    rows = []
+    for w in sorted(x["weeks"], key=lambda a: (a["week"], a["store"])):
+        rows.append([w["store"], name[w["store"]], w["week"].strftime("%Y-%m-%d"), w["days"], "%.2f" % w["goods_in"],
+                     "%.2f" % w["sales_cost"], "%.2f" % w["sales_exvat"], "%.2f" % w["jobbed"], "%.2f" % w["close"],
+                     w["band"]])
+    return write_csv(path, ["store", "store_name", "week_commencing", "trading_days", "goods_in_at_cost", "sales_at_cost",
+                            "sales_ex_vat", "to_trade_buyers_at_cost", "closing_stock_at_cost", "promotion"], rows)
+
+
+def write_lots(x, path):
     wb = Workbook()
     ws = wb.active
-    ws.title = "BH Prescriber T&D Q2 2026"
-    ws.append(["%s - Network Adequacy Time and Distance, Behavioral Health Prescribers, Q2 2026" % W.ORG])
-    ws.append(["Standard: 90% of members within 60 minutes (rural) of a contracted behavioral health prescriber"])
-    ws.append([])
-    ws.append(["County", "Members (June 2026)", "Within 30 min", "Within 60 min", "Pct within 60 min", "Meets standard"])
-    for c in sorted(W.COUNTIES):
-        n = june[c]
-        n60 = int(round(n * min(0.999, P60[c] + 0.004 * (r.random() - 0.5))))
-        n30 = int(round(n60 * (0.64 + 0.3 * r.random())))
-        ws.append([c, n, n30, n60, round(n60 / n, 3), "Y" if n60 / n >= 0.90 else "N"])
-    ws["A1"].font = Font(bold=True)
-    for cell in ws[4]:
-        cell.font = Font(bold=True)
-    for k, wdt in enumerate([14, 20, 15, 15, 18, 15]):
-        ws.column_dimensions[chr(65 + k)].width = wdt
-    for row in ws.iter_rows(min_row=5, min_col=5, max_col=5):
-        for c in row:
-            c.number_format = "0.0%"
+    ws.title = "Lots"
+    ws.append(["Lot", "Contract date", "Seller", "Buyer", "Pallets", "Stock at cost (GBP)", "Price ex VAT (GBP)", "Collected"])
+    for c in ws[1]:
+        c.font = Font(bold=True)
+    for o in x["lots"]:
+        ws.append([o["lot"], o["date"], o["seller"], o["buyer"], o["pallets"], round(o["cost"], 2), o["price"], o["collected"]])
+        ws.cell(row=ws.max_row, column=2).number_format = "dd/mm/yyyy"
+        ws.cell(row=ws.max_row, column=8).number_format = "dd/mm/yyyy"
+    for col, wd in zip("ABCDEFGH", (8, 13, 26, 24, 8, 18, 18, 12)):
+        ws.column_dimensions[col].width = wd
     wb.save(path)
-    return len(W.COUNTIES)
+    return len(x["lots"])
 
 
-OFM_POP = {"Adams": (21330, 14420), "Benton": (215700, 160300), "Chelan": (80500, 63600), "Douglas": (45230, 34700),
-           "Franklin": (101300, 68900), "Grant": (104100, 75400), "Kittitas": (46300, 38500), "Okanogan": (43750, 35100),
-           "Walla Walla": (63400, 50300), "Yakima": (259800, 186600)}
+def write_fx(x, path):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "EURGBP"
+    ws.append(["Group rate table: pounds sterling per euro"])
+    ws.append(["Income statement items are translated at the year's average rate and balance sheet items at the "
+               "year-end rate."])
+    ws.append([])
+    ws.append(["Month", "Average rate", "Month-end rate"])
+    for c in ws[4]:
+        c.font = Font(bold=True)
+    for o in x["fx"]:
+        ws.append([dt.date(o["year"], o["month"], 1).strftime("%b %Y"), o["avg"], o["close"]])
+    ws.append([])
+    ws.append(["Year 2025 average", FX_AVG_2025, None])
+    ws.append(["Year 2026 average", FX_AVG_2026, None])
+    ws.append(["Year-end rate 31 December 2026", None, FX_CLOSE])
+    ws.column_dimensions["A"].width = 30
+    ws.column_dimensions["B"].width = 14
+    ws.column_dimensions["C"].width = 15
+    wb.save(path)
+    return len(x["fx"])
 
 
-def write_ofm(path):
-    rows = [[W.COUNTIES[c]["fips"], c, tot, adult, "2026-04-01"] for c, (tot, adult) in sorted(OFM_POP.items())]
-    return _w(path, ["county_fips", "county", "total_population", "population_18_and_over", "estimate_date"], rows)
+def write_rcf(x, path):
+    rows = [[u["date"].strftime("%Y-%m-%d"), "%d" % u["drawn"]] for u in x["util"]]
+    return write_csv(path, ["value_date", "drawn_balance_gbp"], rows)
+
+
+def write_open_po(x, path):
+    rng = np.random.default_rng(SEED + 131)
+    sup = ["Ningbo Everbright Housewares Co", "Foshan Meiling Ceramics", "Xiamen Brightway Lighting",
+           "Yongkang Toolmaster Industrial", "Binh Duong Rattan Export JSC", "Moradabad Metal Crafts Pvt"]
+    rows = []
+    norm = [r for r in x["rows"] if r["sub"] == "AHL" and r["kind"] == "normal"]
+    k = 88200
+    for i in range(240):
+        r = norm[int(rng.integers(len(norm)))]
+        k += int(rng.integers(1, 4))
+        due = dt.date(2027, int(rng.integers(1, 7)), int(rng.integers(1, 28)))
+        q = int(r["case"] * max(1, round(r["wk"] * rng.uniform(4, 12) / r["case"])))
+        rows.append(["PO%06d" % k, sup[int(rng.integers(len(sup)))], r["code"], q, "%.2f" % (r["cost"] * 0.82),
+                     "USD" if rng.random() < 0.85 else "GBP", due.strftime("%d/%m/%Y")])
+    return write_csv(path, ["PO No", "Supplier", "Item Code", "Qty Outstanding", "Unit Price", "Currency", "Due Date"], rows)
+
+
+def write_pallets(x, path):
+    rng = np.random.default_rng(SEED + 137)
+    rows = []
+    cap = {"Leicester DC": 14200, "Dublin DC": 2600, "Tilburg DC": 4100}
+    for m in [d for d in [dt.date(2026, 1, 5) + dt.timedelta(days=7 * k) for k in range(52)]]:
+        for dc, c in cap.items():
+            occ = int(c * min(0.99, 0.78 + 0.12 * (m.month >= 9) + rng.normal(0, 0.025)))
+            rows.append([m.strftime("%Y-%m-%d"), dc, c, occ])
+    return write_csv(path, ["week_commencing", "site", "pallet_positions", "positions_occupied"], rows)

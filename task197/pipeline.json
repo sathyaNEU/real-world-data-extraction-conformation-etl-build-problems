@@ -1,144 +1,145 @@
 {
- "task": "task197",
- "status": "DRAWING",
- "stage": 1,
- "stage_name": "draw",
- "architecture": "v2",
- "loops": 0,
- "objective": "anomaly-detection",
- "domain": "pharmacology-pharmacoepidemiology-safety",
- "subdomain": "safety-signal-detection",
- "drawn": "2026-11-02",
- "card": ".claude/skills/fingerprint/cards/task197.json",
- "updated": "2026-11-02",
- "stump": "The default path divides each watched product's accidental under-six exposures by its packs sold, compares the twelve months after its packaging change with the twelve before and refers the product whose sales fell after its change, while the product whose new cap made each pack in a home riskier shows a flat rate because the same cap also lifted its sales.",
- "precut": {
-  "exit": null,
-  "date": ""
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": ""
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [],
- "resume": "Stage 1 (draw) of architecture 2: card registered; design note ## Draw written; next the design (default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet screened as code), precut.py, then the generator.",
- "approved": null,
- "delivered": null,
- "portal": null,
- "earlier_architectures": [
-  {
-   "status": "PAUSED",
-   "stage": 5,
-   "architecture": "v1",
-   "objective": "anomaly-detection",
-   "domain": "energy-systems-utilities",
-   "subdomain": "grid-reliability-outage-analysis",
-   "drawn": "2026-10-17",
-   "card": ".claude/skills/fingerprint/cards/task197.json",
-   "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 50 of 50 against the recorded 9 of 50, SPENT on Asks A, B and C, so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
-   "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
-   "gates": {
-    "checks.py": "107 checks, 0 failed",
-    "verify.py": "145 checks, 0 failed",
-    "figures_check.py": "91 figures in blocks 1 to 4, 0 absent, exit 0",
-    "precut.py": "61 checks, 0 FAIL, 8 WARN, exit 0",
-    "voice-check.py": "PASS",
-    "ceiling.py": "pair ceiling 35.1, mirror leakage 6.0 per cent (unchanged)",
-    "leak.py": "REVIEW, no LEAK",
-    "guard surface": "clean, no personas in the pack",
-    "guard heart": "WARN (gate_g repeat and overuse, question form), answered in the draw table",
-    "rebuilds": "two byte-identical, 18 files; goldens byte-identical; target.zip cut from the final bytes, 18 members, content equal to the tree",
-    "input gates": "18 files, 4 formats, a 111,454-row csv and a 1,194,352-row sqlite, 2 distractors",
-    "md5": "target tree 7df50bb24a0535ecdbbff6f4b69dd317, golden tree 8249fd0fcac403ea786bb9ea8a53c0e7, target.zip 90cfc57e0096c24532325439066403d2",
-    "rebuild": "byte-identical, target.zip aa74426a897dc2ec22ea9c3eb0fab3a3 twice",
-    "freeze": "determinism PASS with --allow counts.dictionary (the dropped file's own row count, ungraded)",
-    "guard": "surface exit 0, heart WARN (no BLOCK)"
-   },
-   "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
-   "stage_name": "ship",
-   "updated": "2026-11-01",
-   "target_zip_md5": "aa74426a897dc2ec22ea9c3eb0fab3a3",
-   "ask_layer": {
-    "figures": 50,
-    "primaries": "A D9 the minute summary against its own seconds; B D8 the logged clock against start_local; C D6 the meter interval index",
-    "pair_ceiling": 35.1,
-    "mirror_leakage": 6.0,
-    "measured_by": "generator/ceiling.py"
-   },
-   "leak": {
-    "leak_py": "REVIEW, 0 LEAK (--asof 2026-10-13, the reshipped cut aa74426a, 2026-11-01)",
-    "reader": "wave 8 audit re-scored 2026-10-21 with provenance keys excluded: call 0 of 4 and wrong on every figure, ask layer 4 of 29 (13.8 per cent), PASS. The earlier 24 of 49 counted 20 pack row counts, stated constants and window dates as graded figures.",
-    "reship_reader": "2026-11-01, fresh copy, no dictionary or notes sheet: no decisive-step sentence, nothing ranks the sites, Q6 an analytical choice (the counterfactual baseline at the extreme second); the ask readings it named (the meter stamps' convention, the out-of-service meter's new EAN through the event log) are the asks' own steps, closed by the data per judge pass 2"
-   },
-   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "taxonomy": "none; three advisories, none needing a rerun",
-    "report": "task197/determinism_check_report.md",
-    "gates": "A PASS every graded figure recomputes, B PASS, C PASS with advisories, D PASS, E PASS, F PASS strong, G PASS, H PASS",
-    "pass": "5; derive-before-read order kept and confirmed",
-    "scope": "the approve covers the pack at target.zip 90cfc57e0096c24532325439066403d2. The only change since is the September availability statement capacity column, which moves no graded figure (figures.json and submission.md byte-identical) and alters no clause a gate turned on, so under the filed rule the approve stands. Current zip fa5f18fd82ec50801231f4d763352d55.",
-    "key_closures": "two the judge established independently and that the design rests on. First, the traverse span criterion recovers each span uniquely to about a second, and every competing reading of it gives identical spans for all nine sites; the one reading that differs, committed boundaries, collapses for DLK, KPV and ZWT because the archive has no samples in the first two minutes there, so the uncommitted criterion is the only reading that identifies the call site. Second, only the ramp baseline reproduces quiet-minute power to the noise floor at a residual sd of 0.013 MW, while the rivals leave several MW after every boundary, so exactly one baseline is defensible once the power is compared against it. Rejected bases: period setpoint RDL 57.4, last pre-deviation power ZWT 71.7, common 120 s span RDL 72.1, common 300 s span ZWT 79.3.",
-    "advisories": "1, the energy-against-programme ask: the standard says programme energy is the setpoint the platform held for the period, so the step is the literal reading and the committed 114.4 and 242.6 reproduce, but a solver who has just found the traverse could carry it in and file 80.5 and 216.4. Closing it needs a pin that changes what solvers see, so it stays open and the judge did not treat it as blocking. 2, the nine events carrying start_local in UTC under a +02:00 label: the UTC reading is forced because an event cannot be logged before it starts, and the main call and the under-frequency table are unaffected. 3, the settled statements, availability statement, auction results and price file are fair distractors.",
-    "disclosure": "the thread disclosed an isolation near-miss honestly: it listed a shared scratch folder once by accident and overwrote two scratch files of its own naming, opening none of them and reading nothing from an earlier pass. That is my tooling fault rather than its breach, and later briefs now name a per-thread scratch directory.",
-    "pass2": "2026-11-01 on the reshipped cut aa74426a897dc2ec22ea9c3eb0fab3a3: DETERMINISTIC (the thread's FIX_NOW optional); the call (Kampvliet 72 per cent over 134 episodes, Reiderland 83, gap 11) and ask 1 reproduce exactly; the event log's nine withdrawal rows on the clock read in UTC (Ask B's logged-clock device) and the meter file's interval-ending stamps (Ask C's device) each closed by convergence in the data, not filed (the reship brief bars filing an ask's device); the technical conditions' 'every unit below 90 per cent' reading not a fork (the standard's single withdrawal, the same site under both); Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical; report task197/determinism_check_report_pass2.md"
-   },
-   "archive_spread": {
-    "recordings": 4617,
-    "rows": 1194352,
-    "kinds": "FREQ-DEV 3699, DPDT 878, MANUAL 17, ALARM 16, MODE 7",
-    "lengths": "371 distinct, 67 to 1,164 s",
-    "offsets": "268 distinct quarter-hour offsets",
-    "decisive_rows_share": "19.0 per cent (the rate-of-change captures the traverse is fitted over)",
-    "bounds_from_the_publication": "0 of 3,699 starts and 2 of 3,699 ends coincide with a published extract bound",
-    "site_independence": "0 of 36 site pairs share a bound set, highest start-set overlap 1.3 per cent",
-    "duration_spread": "per site sd 30 to 73 s, shortest 0.32 to 0.47 of the median, 99th centile 1.2 to 2.3 times it, 103 to 187 distinct lengths; longest in the archive 1,164 s against a median of 253",
-    "length_vs_span": "ring buffer 0.000, threshold 0.133, hold-off -0.167, flush ceiling -0.183, settle window 0.183 rank correlation against the traverse span",
-    "organ_exactness": "16 to 33 fitting boundaries per site at which it held no reserve commitment; all nine spans recover exactly, runner-up one second away",
-    "queue": "24 of 935 obliged under-frequency pairs and 12 of 443 over-frequency pairs have no recording, 2.6 per cent"
-   },
-   "frequency_spread": {
-    "published_windows": "666",
-    "qualifying_episodes": "515, unchanged by the added excursions on all 21 dates",
-    "minute_summary": "30,240 rows, every one carrying a mean; 32 carry the mean alone with the minimum and maximum columns empty, 0 read minimum, mean and maximum alike, 0 of 2,301 published minutes the extract overlaps are contradicted",
-    "why_nothing_graded_moves": "a site outside its committed blocks has its response gated to zero so its power does not depend on the frequency, and ask C scores only the periods a site holds no commitment for; all 20 exposure figures are unchanged and the tightest bin clearance is still 0.0303 MWh"
-   },
-   "approved": null,
-   "reader_findings": {
-    "gate_f": "STRONG, and this is the headline. The reader filed Reiderland at 57 per cent with about 85 per cent confidence, which is the golden ladder rung 1 exactly, the period-setpoint basis whose recorded figure is RDL 58. It saw the ramp, noted that the pre-event level is the previous period programme and the post-event level the current one, and concluded the counterfactual was the destination setpoint, missing that at about 80 seconds in the unit is still mid-traverse. Its whole scorecard is the rung 1 scorecard, five sites below tolerance rather than three. The stump worked on it.",
-    "must_fix": "the September group availability statement. Its \"Contracted capacity (MW, mean)\" column is the shipped 21 September to 11 October commitments summed per block and divided by 30, verified exactly on all six blocks: 140/30 is 4.67, 292/30 is 9.73, 357/30 is 11.90, 90/30 is 3.00, 410.5/30 is 13.68, 63/30 is 2.10. A document headed delivery month 2026-09 therefore carries figures that include eleven October dates and omit 1 to 20 September, and the derivation is reverse-engineerable from the shipped commitments file. Same family as the original defect: a document derived from the wrong source with the derivation visible. The fix is to give the September statement a capacity profile that is not a function of the review window, which is realistic because the pack only ships the window.",
-    "measured_and_dismissed": "its withdrawal-placement claim is wrong and the error is instructive. It reported that the 27 live reserve_unavailable windows never overlap a qualifying episode and inferred they were placed to avoid them. Measured: 7 of the 27 do overlap. Its stated expectation, that with roughly a quarter of periods carrying an episode many overlaps would be expected, was wrong by a factor near 20, because qualifying episodes cover 1.22 per cent of the extract span by duration, not a quarter. 7 of 27 against 1.22 per cent coverage is high, which is consistent with the generator deliberately placing some windows to cover an over-frequency extreme second for the ask device. Third reader structural claim tonight to fail on an implicit model inside it.",
-    "open": "the extreme-second concentration, now flagged by a second independent reader as the most generated-looking feature of the pack: 511 of 515 deepest seconds fall 60 to 90 seconds into the period, median 80, interquartile range 6 seconds. Its sharpest point is new and is the one that matters: no shipped document gives a cause that would pin the deviation to one 30-second window. The design note argues real physics, deterministic frequency deviation as schedules step at period boundaries, but the pack never says so, so a solver sees an unexplained concentration. Neither reader used it to find the answer and both fell short of the call, so it is not a leak. The candidate fix is a sentence in the technical conditions describing the recurring post-boundary deviation, which explains the Layer 1 timing without naming the baseline; the risk is that it points attention at the boundary where the traverse lives. Judge first, then decide.",
-    "also_reported": "the asset register ships no old metering point for OOS so the pre-October EAN is matchable only by elimination; the metered file carries one point in kWh with no sentence saying so; and the interval labels are interval-end with no sentence saying so. All three are designed Layer 1."
-   },
-   "delivered": "2026-10-18",
-   "returned": [
+  "task": "task197",
+  "status": "PAUSED",
+  "stage": 4,
+  "stage_name": "check",
+  "architecture": "v2",
+  "loops": 0,
+  "objective": "anomaly-detection",
+  "domain": "pharmacology-pharmacoepidemiology-safety",
+  "subdomain": "safety-signal-detection",
+  "drawn": "2026-11-02",
+  "card": ".claude/skills/fingerprint/cards/task197.json",
+  "updated": "2026-11-08",
+  "stump": "Read per pack sold, the default refers Dozinox Nighttime Sleep-Aid at 1.5, because Dozinox sold under half as many packs after its move to blisters while the bottles bought before it stayed in homes, and files Feverkind Junior Strength fourth at 1.1, because Feverkind sold a quarter more packs with its new cap while the packs a child could reach were still mostly bought before it; the packs in use, rebuilt from each product's own past purchases at the drain its own pre-change record fits, put Feverkind at 1.3, the only effect at 1.20 or more, and Dozinox at 1.0.",
+  "precut": {
+    "exit": 0,
+    "date": "2026-11-02",
+    "checks": 61
+  },
+  "leak": {
+    "leak_py": "REVIEW on the final cut (2026-11-02, --asof 2026-11-06): product codes as identifiers, the procedure's own estimand words, the register's UPCs and dates; each ruled harmless in the design note",
+    "reader": "stage 4 clean (Q1 to Q4 none, Q6 an analytical choice); two container tells fixed (workbook creator, sheet state)"
+  },
+  "duplicate_check": {
+    "heart": "PASS (2026-11-02, against the corpus as of that day's pull)",
+    "nearest": "0.06 task98 v7 stump; surface exit 0 with 2 pairs promoted for adjudication (task199 same gap and decision type, task245 same gap, pattern and Gate G, both differentiated on the card)"
+  },
+  "judge": {
+    "verdict": "NOT_DETERMINISTIC on the asks (main call forced: FKJ 1.302, runner-up 1.094; Gate G analytical_non_defect; Gate H pass)",
+    "disposition": "SEND_BACK, underspecified_objective on the 36 antidote course figures (external dependency, lesson 14)",
+    "report": "the main thread's stage 4 judge report"
+  },
+  "returned": [],
+  "resume": "PAUSED 2026-11-08 at stage 4, architecture 2 (refer Feverkind; the judge forced the main call). The container tells are fixed (cut 511f625f in this commit). The antidote asks are spent under lesson 14 (filed protocol: the careful cracker keeps 36 of 36). A replacement ask layer was being designed when the agent stopped on the usage limit; nothing of it is in the pack. Next: freeze.py snapshot on 511f625f, design two device families the pack forces on ask-only records (member centers and case export, the preliminary against revised point-of-sale files, the register history, the adverse-event reports), screen each as code with every filed document in hand, build, re-judge once, ship. Ask layer owed. The antidote asks are spent under lesson 14: filing their regimens and chain rules hands the honest cracker 36 of 36 (pair 83.5), and leaving them unfiled keeps the judge's external-dependency finding. Next: draw and build a replacement ask layer (two device families the pack forces on disjoint blocks plus a total, families not on the brief's list), with the main call frozen (freeze.py --mode rubric), then re-judge. The container tells from the stage 4 reader are fixed and every free gate is green.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "earlier_architectures": [
     {
-     "date": "2026-11-01",
-     "portal": "none: in-house re-check under the new leak gate (LEAK data_dictionary.csv: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3); LEAK metadata.json: gate_g uses the author's vocabulary ('stump'): metadata.json names the decision, the deliverables, the distractors and the provenance, never the method, the link or the mechanism)",
-     "repair": "leak",
-     "move": "The generator no longer writes data_dictionary.csv (each file's row grain and column list, and the archive's quality legend) or the asset register's Notes sheet (its pull date, one row per unit, and glosses on three columns, one pointing at the commitment file), which sweep 1 had at REVIEW and section 3 names as a describing sheet: 17 files, still four formats. metadata.json now holds the decision, the deliverables, the distractors and per-file provenance (source, coverage, rows, extract or issue date) and nothing else: the gate_g and notes paragraphs and the per-file role and row glosses are gone, among them the meter file's 'stamped with the instant the interval closes', which had filed ask C's device, and the prequalification distractor's text is corrected to its own rows (step tests 2017 to 2025 and four 2026 declarations). No sentence was added to any document: SF10 rests on every timestamp's own zone and clock suffix and clause 1 of the technical conditions; closure 18 on the exports' unit headers and the meter file's unit column, checked against the volumes it labels; closure 19 on the event log's own labels and, for the archive's E flag, on C1: the writer's flag is withheld from the extreme second of every qualifying episode (two samples of 1,194,352, values unchanged; before, dropping E-flagged samples took Dollardkust's count from 144 to 143), and every traverse span recovers exactly with them left out; SF5 on the register's own 'Usual FCR blocks (indicative)' header against the dated commitment file, its checks.py line rewritten to execute the alternative, which moves only Dollardkust's count (144 to 145), not Terborgh's and Meppelerdiep's as the row had said. checks.py gains 23 assertions (no describing file, sheet or field list in the pack, by name, sheet and content, positive-controlled on the two old forms; one per moved closure through the verifier's readers; metadata.json's files and row counts against the pack; the wrong-basis distractor's stated facts): 107 checks, 0 failed; verify.py 145 checks, 0 failed. figures.json loses one key, counts.dictionary (15, the dropped file's own row count, which nothing grades), freeze.py --mode determinism PASS with --allow counts.dictionary; submission.md, both goldens, all three PDFs and every CSV are byte-identical to the judged pack. The archive's bytes also differ from the shipped file because this container's SQLite (3.53.1) lays pages out differently from the 3.45.1 that cut the shipped zip, so even the unmodified generator rebuilt here gives bdf68a69, not fa5f18fd; its rows are identical but for the two flags. Gates on the final cut aa74426a (two builds byte-identical): precut exit 0 (61 checks, 0 FAIL, 8 WARN), voice-check PASS, figures_check 91 of 91, leak.py --asof 2026-10-13 REVIEW with no LEAK (each REVIEW ruled in the design note), guard.py surface exit 0, ceiling.py unchanged (pair 35.1, mirror leakage 6.0 per cent). Stage 4: the leak read on aa74426a is clean; judge pass 2 DETERMINISTIC, both timestamp conventions on asks 2 to 4 closed by convergence (SF10's row now names Ask B's logged-clock rows).",
-     "commit": "RESHIPPED (task197)"
+      "status": "PAUSED",
+      "stage": 5,
+      "architecture": "v1",
+      "objective": "anomaly-detection",
+      "domain": "energy-systems-utilities",
+      "subdomain": "grid-reliability-outage-analysis",
+      "drawn": "2026-10-17",
+      "card": ".claude/skills/fingerprint/cards/task197.json",
+      "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 50 of 50 against the recorded 9 of 50, SPENT on Asks A, B and C, so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
+      "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
+      "gates": {
+        "checks.py": "107 checks, 0 failed",
+        "verify.py": "145 checks, 0 failed",
+        "figures_check.py": "91 figures in blocks 1 to 4, 0 absent, exit 0",
+        "precut.py": "61 checks, 0 FAIL, 8 WARN, exit 0",
+        "voice-check.py": "PASS",
+        "ceiling.py": "pair ceiling 35.1, mirror leakage 6.0 per cent (unchanged)",
+        "leak.py": "REVIEW, no LEAK",
+        "guard surface": "clean, no personas in the pack",
+        "guard heart": "WARN (gate_g repeat and overuse, question form), answered in the draw table",
+        "rebuilds": "two byte-identical, 18 files; goldens byte-identical; target.zip cut from the final bytes, 18 members, content equal to the tree",
+        "input gates": "18 files, 4 formats, a 111,454-row csv and a 1,194,352-row sqlite, 2 distractors",
+        "md5": "target tree 7df50bb24a0535ecdbbff6f4b69dd317, golden tree 8249fd0fcac403ea786bb9ea8a53c0e7, target.zip 90cfc57e0096c24532325439066403d2",
+        "rebuild": "byte-identical, target.zip aa74426a897dc2ec22ea9c3eb0fab3a3 twice",
+        "freeze": "determinism PASS with --allow counts.dictionary (the dropped file's own row count, ungraded)",
+        "guard": "surface exit 0, heart WARN (no BLOCK)"
+      },
+      "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
+      "stage_name": "ship",
+      "updated": "2026-11-01",
+      "target_zip_md5": "aa74426a897dc2ec22ea9c3eb0fab3a3",
+      "ask_layer": {
+        "figures": 50,
+        "primaries": "A D9 the minute summary against its own seconds; B D8 the logged clock against start_local; C D6 the meter interval index",
+        "pair_ceiling": 35.1,
+        "mirror_leakage": 6.0,
+        "measured_by": "generator/ceiling.py"
+      },
+      "leak": {
+        "leak_py": "REVIEW, 0 LEAK (--asof 2026-10-13, the reshipped cut aa74426a, 2026-11-01)",
+        "reader": "wave 8 audit re-scored 2026-10-21 with provenance keys excluded: call 0 of 4 and wrong on every figure, ask layer 4 of 29 (13.8 per cent), PASS. The earlier 24 of 49 counted 20 pack row counts, stated constants and window dates as graded figures.",
+        "reship_reader": "2026-11-01, fresh copy, no dictionary or notes sheet: no decisive-step sentence, nothing ranks the sites, Q6 an analytical choice (the counterfactual baseline at the extreme second); the ask readings it named (the meter stamps' convention, the out-of-service meter's new EAN through the event log) are the asks' own steps, closed by the data per judge pass 2"
+      },
+      "judge": {
+        "verdict": "DETERMINISTIC",
+        "disposition": "APPROVE",
+        "taxonomy": "none; three advisories, none needing a rerun",
+        "report": "task197/determinism_check_report.md",
+        "gates": "A PASS every graded figure recomputes, B PASS, C PASS with advisories, D PASS, E PASS, F PASS strong, G PASS, H PASS",
+        "pass": "5; derive-before-read order kept and confirmed",
+        "scope": "the approve covers the pack at target.zip 90cfc57e0096c24532325439066403d2. The only change since is the September availability statement capacity column, which moves no graded figure (figures.json and submission.md byte-identical) and alters no clause a gate turned on, so under the filed rule the approve stands. Current zip fa5f18fd82ec50801231f4d763352d55.",
+        "key_closures": "two the judge established independently and that the design rests on. First, the traverse span criterion recovers each span uniquely to about a second, and every competing reading of it gives identical spans for all nine sites; the one reading that differs, committed boundaries, collapses for DLK, KPV and ZWT because the archive has no samples in the first two minutes there, so the uncommitted criterion is the only reading that identifies the call site. Second, only the ramp baseline reproduces quiet-minute power to the noise floor at a residual sd of 0.013 MW, while the rivals leave several MW after every boundary, so exactly one baseline is defensible once the power is compared against it. Rejected bases: period setpoint RDL 57.4, last pre-deviation power ZWT 71.7, common 120 s span RDL 72.1, common 300 s span ZWT 79.3.",
+        "advisories": "1, the energy-against-programme ask: the standard says programme energy is the setpoint the platform held for the period, so the step is the literal reading and the committed 114.4 and 242.6 reproduce, but a solver who has just found the traverse could carry it in and file 80.5 and 216.4. Closing it needs a pin that changes what solvers see, so it stays open and the judge did not treat it as blocking. 2, the nine events carrying start_local in UTC under a +02:00 label: the UTC reading is forced because an event cannot be logged before it starts, and the main call and the under-frequency table are unaffected. 3, the settled statements, availability statement, auction results and price file are fair distractors.",
+        "disclosure": "the thread disclosed an isolation near-miss honestly: it listed a shared scratch folder once by accident and overwrote two scratch files of its own naming, opening none of them and reading nothing from an earlier pass. That is my tooling fault rather than its breach, and later briefs now name a per-thread scratch directory.",
+        "pass2": "2026-11-01 on the reshipped cut aa74426a897dc2ec22ea9c3eb0fab3a3: DETERMINISTIC (the thread's FIX_NOW optional); the call (Kampvliet 72 per cent over 134 episodes, Reiderland 83, gap 11) and ask 1 reproduce exactly; the event log's nine withdrawal rows on the clock read in UTC (Ask B's logged-clock device) and the meter file's interval-ending stamps (Ask C's device) each closed by convergence in the data, not filed (the reship brief bars filing an ask's device); the technical conditions' 'every unit below 90 per cent' reading not a fork (the standard's single withdrawal, the same site under both); Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical; report task197/determinism_check_report_pass2.md"
+      },
+      "archive_spread": {
+        "recordings": 4617,
+        "rows": 1194352,
+        "kinds": "FREQ-DEV 3699, DPDT 878, MANUAL 17, ALARM 16, MODE 7",
+        "lengths": "371 distinct, 67 to 1,164 s",
+        "offsets": "268 distinct quarter-hour offsets",
+        "decisive_rows_share": "19.0 per cent (the rate-of-change captures the traverse is fitted over)",
+        "bounds_from_the_publication": "0 of 3,699 starts and 2 of 3,699 ends coincide with a published extract bound",
+        "site_independence": "0 of 36 site pairs share a bound set, highest start-set overlap 1.3 per cent",
+        "duration_spread": "per site sd 30 to 73 s, shortest 0.32 to 0.47 of the median, 99th centile 1.2 to 2.3 times it, 103 to 187 distinct lengths; longest in the archive 1,164 s against a median of 253",
+        "length_vs_span": "ring buffer 0.000, threshold 0.133, hold-off -0.167, flush ceiling -0.183, settle window 0.183 rank correlation against the traverse span",
+        "organ_exactness": "16 to 33 fitting boundaries per site at which it held no reserve commitment; all nine spans recover exactly, runner-up one second away",
+        "queue": "24 of 935 obliged under-frequency pairs and 12 of 443 over-frequency pairs have no recording, 2.6 per cent"
+      },
+      "frequency_spread": {
+        "published_windows": "666",
+        "qualifying_episodes": "515, unchanged by the added excursions on all 21 dates",
+        "minute_summary": "30,240 rows, every one carrying a mean; 32 carry the mean alone with the minimum and maximum columns empty, 0 read minimum, mean and maximum alike, 0 of 2,301 published minutes the extract overlaps are contradicted",
+        "why_nothing_graded_moves": "a site outside its committed blocks has its response gated to zero so its power does not depend on the frequency, and ask C scores only the periods a site holds no commitment for; all 20 exposure figures are unchanged and the tightest bin clearance is still 0.0303 MWh"
+      },
+      "approved": null,
+      "reader_findings": {
+        "gate_f": "STRONG, and this is the headline. The reader filed Reiderland at 57 per cent with about 85 per cent confidence, which is the golden ladder rung 1 exactly, the period-setpoint basis whose recorded figure is RDL 58. It saw the ramp, noted that the pre-event level is the previous period programme and the post-event level the current one, and concluded the counterfactual was the destination setpoint, missing that at about 80 seconds in the unit is still mid-traverse. Its whole scorecard is the rung 1 scorecard, five sites below tolerance rather than three. The stump worked on it.",
+        "must_fix": "the September group availability statement. Its \"Contracted capacity (MW, mean)\" column is the shipped 21 September to 11 October commitments summed per block and divided by 30, verified exactly on all six blocks: 140/30 is 4.67, 292/30 is 9.73, 357/30 is 11.90, 90/30 is 3.00, 410.5/30 is 13.68, 63/30 is 2.10. A document headed delivery month 2026-09 therefore carries figures that include eleven October dates and omit 1 to 20 September, and the derivation is reverse-engineerable from the shipped commitments file. Same family as the original defect: a document derived from the wrong source with the derivation visible. The fix is to give the September statement a capacity profile that is not a function of the review window, which is realistic because the pack only ships the window.",
+        "measured_and_dismissed": "its withdrawal-placement claim is wrong and the error is instructive. It reported that the 27 live reserve_unavailable windows never overlap a qualifying episode and inferred they were placed to avoid them. Measured: 7 of the 27 do overlap. Its stated expectation, that with roughly a quarter of periods carrying an episode many overlaps would be expected, was wrong by a factor near 20, because qualifying episodes cover 1.22 per cent of the extract span by duration, not a quarter. 7 of 27 against 1.22 per cent coverage is high, which is consistent with the generator deliberately placing some windows to cover an over-frequency extreme second for the ask device. Third reader structural claim tonight to fail on an implicit model inside it.",
+        "open": "the extreme-second concentration, now flagged by a second independent reader as the most generated-looking feature of the pack: 511 of 515 deepest seconds fall 60 to 90 seconds into the period, median 80, interquartile range 6 seconds. Its sharpest point is new and is the one that matters: no shipped document gives a cause that would pin the deviation to one 30-second window. The design note argues real physics, deterministic frequency deviation as schedules step at period boundaries, but the pack never says so, so a solver sees an unexplained concentration. Neither reader used it to find the answer and both fell short of the call, so it is not a leak. The candidate fix is a sentence in the technical conditions describing the recurring post-boundary deviation, which explains the Layer 1 timing without naming the baseline; the risk is that it points attention at the boundary where the traverse lives. Judge first, then decide.",
+        "also_reported": "the asset register ships no old metering point for OOS so the pre-October EAN is matchable only by elimination; the metered file carries one point in kWh with no sentence saying so; and the interval labels are interval-end with no sentence saying so. All three are designed Layer 1."
+      },
+      "delivered": "2026-10-18",
+      "returned": [
+        {
+          "date": "2026-11-01",
+          "portal": "none: in-house re-check under the new leak gate (LEAK data_dictionary.csv: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3); LEAK metadata.json: gate_g uses the author's vocabulary ('stump'): metadata.json names the decision, the deliverables, the distractors and the provenance, never the method, the link or the mechanism)",
+          "repair": "leak",
+          "move": "The generator no longer writes data_dictionary.csv (each file's row grain and column list, and the archive's quality legend) or the asset register's Notes sheet (its pull date, one row per unit, and glosses on three columns, one pointing at the commitment file), which sweep 1 had at REVIEW and section 3 names as a describing sheet: 17 files, still four formats. metadata.json now holds the decision, the deliverables, the distractors and per-file provenance (source, coverage, rows, extract or issue date) and nothing else: the gate_g and notes paragraphs and the per-file role and row glosses are gone, among them the meter file's 'stamped with the instant the interval closes', which had filed ask C's device, and the prequalification distractor's text is corrected to its own rows (step tests 2017 to 2025 and four 2026 declarations). No sentence was added to any document: SF10 rests on every timestamp's own zone and clock suffix and clause 1 of the technical conditions; closure 18 on the exports' unit headers and the meter file's unit column, checked against the volumes it labels; closure 19 on the event log's own labels and, for the archive's E flag, on C1: the writer's flag is withheld from the extreme second of every qualifying episode (two samples of 1,194,352, values unchanged; before, dropping E-flagged samples took Dollardkust's count from 144 to 143), and every traverse span recovers exactly with them left out; SF5 on the register's own 'Usual FCR blocks (indicative)' header against the dated commitment file, its checks.py line rewritten to execute the alternative, which moves only Dollardkust's count (144 to 145), not Terborgh's and Meppelerdiep's as the row had said. checks.py gains 23 assertions (no describing file, sheet or field list in the pack, by name, sheet and content, positive-controlled on the two old forms; one per moved closure through the verifier's readers; metadata.json's files and row counts against the pack; the wrong-basis distractor's stated facts): 107 checks, 0 failed; verify.py 145 checks, 0 failed. figures.json loses one key, counts.dictionary (15, the dropped file's own row count, which nothing grades), freeze.py --mode determinism PASS with --allow counts.dictionary; submission.md, both goldens, all three PDFs and every CSV are byte-identical to the judged pack. The archive's bytes also differ from the shipped file because this container's SQLite (3.53.1) lays pages out differently from the 3.45.1 that cut the shipped zip, so even the unmodified generator rebuilt here gives bdf68a69, not fa5f18fd; its rows are identical but for the two flags. Gates on the final cut aa74426a (two builds byte-identical): precut exit 0 (61 checks, 0 FAIL, 8 WARN), voice-check PASS, figures_check 91 of 91, leak.py --asof 2026-10-13 REVIEW with no LEAK (each REVIEW ruled in the design note), guard.py surface exit 0, ceiling.py unchanged (pair 35.1, mirror leakage 6.0 per cent). Stage 4: the leak read on aa74426a is clean; judge pass 2 DETERMINISTIC, both timestamp conventions on asks 2 to 4 closed by convergence (SF10's row now names Ask B's logged-clock rows).",
+          "commit": "RESHIPPED (task197)"
+        }
+      ],
+      "ask_audit_2026_11_01": {
+        "verdict": "SPENT on Asks A, B and C",
+        "careful_cracker_keeps": "50 of 50 against the recorded 9 of 50",
+        "pair": "57.6 (75.3 or more with the mirror on the same checks)",
+        "why": "two clocks on one event-log row (90 s against 7,290 s lag), and the meter series' unmatched interval at each end, the interval-ending signature; the script's Ask A recount also differs from figures.json on 5 sites",
+        "probe": "scratchpad audit_cracker/task197/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
+        "status_before": "SHIPPED"
+      },
+      "fate": "spent 2026-11-02: main call sound (judge pass 2 DETERMINISTIC), ask layer SPENT under the honest-cracker audit (careful solver 50 of 50); the /fix-rubric screen found no passing device as code (scratchpad task197_ask_screen.py); re-rooted the same day; the delivered version (target.zip aa74426a897dc2ec22ea9c3eb0fab3a3) stays on the portal as delivered"
     }
-   ],
-   "ask_audit_2026_11_01": {
-    "verdict": "SPENT on Asks A, B and C",
-    "careful_cracker_keeps": "50 of 50 against the recorded 9 of 50",
-    "pair": "57.6 (75.3 or more with the mirror on the same checks)",
-    "why": "two clocks on one event-log row (90 s against 7,290 s lag), and the meter series' unmatched interval at each end, the interval-ending signature; the script's Ask A recount also differs from figures.json on 5 sites",
-    "probe": "scratchpad audit_cracker/task197/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
-    "status_before": "SHIPPED"
-   },
-   "fate": "spent 2026-11-02: main call sound (judge pass 2 DETERMINISTIC), ask layer SPENT under the honest-cracker audit (careful solver 50 of 50); the /fix-rubric screen found no passing device as code (scratchpad task197_ask_screen.py); re-rooted the same day; the delivered version (target.zip aa74426a897dc2ec22ea9c3eb0fab3a3) stays on the portal as delivered"
-  }
- ]
+  ]
 }

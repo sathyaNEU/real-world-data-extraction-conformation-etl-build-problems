@@ -1,178 +1,175 @@
-"""An independent check of task458's goldens from the bundle alone, on its own code path: NPPES as the weekly files
-update it through 1 November 2026, the practising prescribers, the adult members by client identifier, the final
-claims, each county's members with each condition (each identified member weighted by 1 over the share of the members
-enrolled all year with the condition whom a claim identifies within the same number of months), the three standards,
-the designation, and the fee-for-service payments by county and quarter and by county and group; each compared with
-the deliverables."""
+"""An independent recompute of every graded figure from the cut pack with the standard library and openpyxl only (no
+pandas, no generator module but the file names and the dates fixed in the pack's documents), compared with
+figures.json."""
 import csv
 import datetime as dt
+import json
 import os
-import sys
+from collections import defaultdict
 
-import pandas as pd
+from openpyxl import load_workbook
 
-BH = {"2084P0800X", "2084P0804X", "2084P0802X", "2084P0805X", "2084A0401X", "207QA0401X", "207RA0401X", "363LP0808X",
-      "364SP0808X"}
-VISIT = {"99202", "99203", "99204", "99205", "99211", "99212", "99213", "99214", "99215", "90791", "90792"}
-NAMES = {"53001": "Adams", "53005": "Benton", "53007": "Chelan", "53017": "Douglas", "53021": "Franklin", "53025": "Grant",
-         "53037": "Kittitas", "53047": "Okanogan", "53071": "Walla Walla", "53077": "Yakima"}
+from pack import FILES
 
-
-def pdf_text(path):
-    """A PDF's text, whitespace collapsed (pypdf): the one reader the verifier and the checks share for NP-31."""
-    from pypdf import PdfReader
-    return " ".join(" ".join((p.extract_text() or "").split()) for p in PdfReader(path).pages)
+YE_RATE = 0.8648            # the rate table's year-end rate
+AVG25 = 0.8573              # the rate table's 2025 average
+SWITCH = dt.date(2025, 7, 7)
+DAYS_2027 = 349 + 4 * 363   # the store plan's table
+GROUP = {"Ashlund Home Ltd", "Ashlund Home Ireland Ltd", "Ashlund Home B.V.", "Valuehall Stores Ltd"}
 
 
-def policy(target):
-    """NP-31 read back from the PDF: the thresholds of 3.1 and the person and version sentences of 2.2 and 2.4."""
-    import re
-    txt = pdf_text(os.path.join(target, "np31_prescriber_service_area_designation.pdf"))
-    th = [float(x) for x in re.findall(r"Threshold: (\d+(?:\.\d+)?)", txt)]
-    person = "the client identifier on the enrollment record identifies the person" in txt
-    versions = "A claim that a later claim replaces, and a voided claim, identify nothing; the replacing claim does" in txt
-    return {"text": txt, "thresholds": th, "person": person, "versions": versions}
+def rows(path, delim=","):
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f, delimiter=delim))
 
 
-def months_between(a, b):
-    out = set()
-    y, m = a.year, a.month
-    while (y, m) <= (b.year, b.month):
-        if (2025, 7) <= (y, m) <= (2026, 6):
-            out.add((y, m))
-        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
-    return out
+def nl(s):
+    return float(s.replace(".", "").replace(",", "."))
 
 
-def main(target, golden):
-    t = lambda f: os.path.join(target, f)
-    pol = policy(target)
-    if pol["thresholds"] != [16.5, 23.0, 68.0] or not pol["person"] or not pol["versions"]:
-        raise SystemExit("verify failed: NP-31 could not be read back (%s)" % {k: v for k, v in pol.items() if k != "text"})
-    T_SMI, T_OUD, T_REACH = pol["thresholds"][0], pol["thresholds"][1], pol["thresholds"][2] / 100.0
-    # NPPES on 1 November: the monthly file, then each weekly file ending by 1 November, record by record
-    files = ["npidata_pfile_wa_20050523-20261011.csv", "npidata_pfile_wa_20261012-20261018.csv",
-             "npidata_pfile_wa_20261019-20261025.csv", "npidata_pfile_wa_20261026-20261101.csv"]
-    rec, live = {}, {}
-    for f in files:
-        for r in pd.read_csv(t(f), dtype=str, keep_default_na=False).to_dict("records"):
-            rec[r["NPI"]] = r
-            if r["Entity Type Code"] == "1" or r["Entity Type Code"] == "2":
-                live[r["NPI"]] = r
-    z = pd.read_excel(t("ZIP_COUNTY_062026.xlsx"), dtype={"ZIP": str, "COUNTY": str})
-    zc = z.sort_values(["ZIP", "BUS_RATIO"], ascending=[True, False]).drop_duplicates("ZIP").set_index("ZIP")["COUNTY"]
+def half_up(v, unit):
+    q = v / unit
+    return int(q + 0.5) * unit if q >= 0 else -int(-q + 0.5) * unit
 
-    def prim(r):
-        for k in range(1, 5):
-            if r["Healthcare Provider Primary Taxonomy Switch_%d" % k] == "Y":
-                return r["Healthcare Provider Taxonomy Code_%d" % k]
-        return ""
-    bh, place = set(), {}
-    for npi, r in rec.items():
-        src = r if r["Entity Type Code"] else live.get(npi)
-        if src is None or src["Entity Type Code"] != "1" or prim(src) not in BH:
+
+def main(target, fig_path):
+    f = json.load(open(fig_path))
+    p = lambda k: os.path.join(target, FILES[k])
+    master = {r["Item Code"]: r for r in rows(p("master"))}
+    cur = {k: (r["Superseded By"] or k) for k, r in master.items()}
+    xref = {r["Artikelnr"]: cur[r["Groepscode"]] for r in rows(p("ahb_xref"), ";")}
+    # stock, eaches and value in the company's currency
+    stock = defaultdict(lambda: [0, 0.0])
+    for r in rows(p("ahl_stock")):
+        stock[("AHL", r["Item Code"])][0] += int(r["Qty On Hand"])
+        stock[("AHL", r["Item Code"])][1] += float(r["Stock Value"])
+    ws = load_workbook(p("ahi_stock"), read_only=True).active
+    for r in list(ws.iter_rows(values_only=True))[5:]:
+        if r[0]:
+            stock[("AHI", str(r[0]))][0] += int(r[5]) * int(r[4])
+            stock[("AHI", str(r[0]))][1] += float(r[7])
+    for r in rows(p("ahb_stock"), ";"):
+        stock[("AHB", r["Artikelnr"])][0] += int(r["Voorraad"])
+        stock[("AHB", r["Artikelnr"])][1] += nl(r["Waarde"])
+    fx = {"AHL": 1.0, "AHI": YE_RATE, "AHB": YE_RATE}
+    # 2026 net shipments to customers
+    net = defaultdict(int)
+    sales25_u, sales25_v = defaultdict(int), defaultdict(float)
+
+    def div_of(code):
+        return master[cur.get(code, code)]["Division"]
+
+    ahl = [r for r in rows(p("ahl_orders")) if r["Status"] != "Cancelled" and r["Customer"] not in GROUP]
+    for r in ahl:
+        r["d"] = dt.datetime.strptime(r["Despatch Date"], "%d/%m/%Y").date()
+    # the customer's price for each item before the April 2025 rise, from its own despatches
+    before = {}
+    for r in ahl:
+        if r["Doc Type"] == "DESP" and r["d"] < dt.date(2025, 4, 1) and int(r["Qty"]) > 0:
+            u = round(float(r["Line Value"]) / int(r["Qty"]), 2)
+            k = (r["Customer"], r["Item Code"])
+            before[k] = min(before.get(k, u), u)
+    lines_of = defaultdict(list)
+    for r in ahl:
+        if r["Doc Type"] == "DESP":
+            lines_of[(r["Order No"], r["Customer"])].append(r)
+    for r in ahl:
+        q = int(r["Qty"])
+        if r["d"].year == 2026:
+            net[("AHL", r["Item Code"])] += q
+        elif r["d"].year == 2025:
+            if r["Doc Type"] != "PRICE":
+                sales25_u[div_of(r["Item Code"])] += q
+                sales25_v[div_of(r["Item Code"])] += float(r["Line Value"])
+                continue
+            # a price credit on the non-stock code belongs to the one line of its order whose overcharge it equals
+            hits = []
+            for l in lines_of[(r["Order No"], r["Customer"])]:
+                b = before.get((l["Customer"], l["Item Code"]))
+                if b is not None and int(l["Qty"]) > 0 and l["d"] >= dt.date(2025, 4, 1):
+                    over = round(float(l["Line Value"]) - int(l["Qty"]) * b, 2)
+                    if abs(over + float(r["Line Value"])) < 0.006:
+                        hits.append(l["Item Code"])
+            assert len(hits) == 1, (r["Order No"], r["Line Value"], hits)
+            sales25_v[div_of(hits[0])] += float(r["Line Value"])
+    ws = load_workbook(p("ahi_ship26"), read_only=True).active
+    for r in list(ws.iter_rows(values_only=True))[1:]:
+        if r[4] in GROUP:
             continue
-        bh.add(npi)
-        if r["Entity Type Code"] and r["Provider Business Practice Location Address State Name"] == "WA":
-            place[npi] = zc.get(r["Provider Business Practice Location Address Postal Code"][:5])
-    # members
-    s = pd.read_csv(t("enrollment_spans_2025-07-01_2026-06-30.csv"), dtype=str, keep_default_na=False)
-    s["a"] = pd.to_datetime(s["span_start_dt"]).dt.date.map(lambda d: max(d, dt.date(2025, 7, 1)))
-    s["b"] = s["span_end_dt"].map(lambda x: dt.date.fromisoformat(x) if x else dt.date(2026, 6, 30)).map(
-        lambda d: min(d, dt.date(2026, 6, 30)))
-    s = s[s["a"] <= s["b"]]
-    per = {}
-    for r in s.to_dict("records"):
-        p = per.setdefault(r["client_id"], {"months": set(), "end": None, "fips": None, "grp": None, "start": None})
-        p["months"] |= months_between(r["a"], r["b"])
-        if p["end"] is None or (r["b"], r["a"]) > (p["end"], p["start"]):
-            p["end"], p["start"], p["fips"], p["grp"] = r["b"], r["a"], r["res_county_fips"], r["elig_group_cd"]
-    mem = pd.DataFrame([{"cid": k, "county": NAMES[v["fips"]], "grp": v["grp"], "full": len(v["months"]) == 12,
-                         "m": len(v["months"])} for k, v in per.items()]).set_index("cid")
-    to_cid = dict(zip(s["mbr_id"], s["client_id"]))
-    # final claims
-    c = pd.read_csv(t("bh_claims_encounters_dos_2025-07-01_2026-06-30.csv"), dtype=str, keep_default_na=False)
-    replaced = set(c.loc[c["clm_freq_cd"] != "1", "orig_icn"])
-    c = c[(c["clm_freq_cd"] != "8") & ~c["clm_icn"].isin(replaced)].copy()
-    c["cid"] = c["mbr_id"].map(to_cid)
-    smi = {x.replace(".", "") for x in ("F20.0 F20.1 F20.2 F20.3 F20.5 F20.81 F20.89 F20.9 F21 F22 F25.0 F25.1 F25.8 F25.9 "
-                                        "F28 F29 F31.0 F31.10 F31.11 F31.12 F31.13 F31.2 F31.30 F31.31 F31.32 F31.4 F31.5 "
-                                        "F31.60 F31.61 F31.62 F31.63 F31.64 F31.70 F31.71 F31.72 F31.73 F31.74 F31.75 "
-                                        "F31.76 F31.77 F31.78 F31.81 F31.89 F31.9 F32.3 F33.3").split()}
-    dxcols = ["dx_cd_1", "dx_cd_2", "dx_cd_3", "dx_cd_4"]
-    has_smi = c[dxcols].isin(smi).any(axis=1)
-    has_oud = c[dxcols].apply(lambda col: col.str.match(r"^F11[12]")).any(axis=1)
-    mem["smi"] = mem.index.isin(set(c.loc[has_smi, "cid"]))
-    mem["oud"] = mem.index.isin(set(c.loc[has_oud, "cid"]))
-    month = (c["svc_from_dt"].str[:4].astype(int) - 2025) * 12 + c["svc_from_dt"].str[5:7].astype(int) - 6
-    for cond, has in (("smi", has_smi), ("oud", has_oud)):
-        first = month[has].groupby(c.loc[has, "cid"]).min()
-        f = first.reindex(mem.index[mem["full"] & mem[cond]])
-        share = [float((f <= k).mean()) for k in range(1, 13)]
-        mem["w_" + cond] = [1.0 / share[m - 1] if hit else 0.0 for m, hit in zip(mem["m"], mem[cond])]
-    mem["seen"] = mem.index.isin(set(c.loc[c["proc_cd"].isin(VISIT) & c["rendering_npi"].isin(bh), "cid"]))
-    rendering = set(c["rendering_npi"])
-    pract = {}
-    for npi in bh:
-        if npi in place and place[npi] in NAMES and npi in rendering:
-            pract[NAMES[place[npi]]] = pract.get(NAMES[place[npi]], 0) + 1
-    out = {}
-    for county, g in mem.groupby("county"):
-        e_smi, e_oud = g["w_smi"].sum(), g["w_oud"].sum()
-        seen = int((g["smi"] & g["seen"]).sum())
-        n = pract.get(county, 0)
-        v = {"n": n, "smi": e_smi, "oud": e_oud, "s1": n / e_smi * 1000, "s2": n / e_oud * 1000, "s3": seen / e_smi}
-        v["fails"] = int(v["s1"] < T_SMI) + int(v["s2"] < T_OUD) + int(v["s3"] < T_REACH)
-        out[county] = v
-    designated = sorted(k for k, v in out.items() if v["fails"] >= 2)
-    # payments: final fee-for-service claims rendered by a behavioral-health prescriber, each claim's paid amount once
-    ffs = c[c["fin_arrangement_cd"] == "FFS"]
-    claims = ffs[ffs["clm_icn"].isin(set(ffs.loc[ffs["rendering_npi"].isin(bh), "clm_icn"]))]
-    first = claims.groupby("clm_icn").first()
-    first = first.assign(county=first["cid"].map(mem["county"]), grp=first["cid"].map(mem["grp"]),
-                         q=first["svc_from_dt"].str[:7].map(lambda ym: "%s Q%d" % (ym[:4], (int(ym[5:7]) - 1) // 3 + 1)),
-                         paid=first["paid_amt"].astype(float))
-    pay_q = first.groupby(["county", "q"])["paid"].sum()
-    pay_g = first.groupby(["county", "grp"])["paid"].sum()
-    # the deliverables
-    from openpyxl import load_workbook
-    wb = load_workbook(os.path.join(golden, "prescriber_pilot_county_scorecard_2027.xlsx"), data_only=True)
-    ws = wb["Designation 2027"]
-    rows = [r for r in ws.iter_rows(values_only=True) if r and r[0] in out]
-    problems = []
-    for r in rows:
-        v = out[r[0]]
-        if r[2] != v["n"]:
-            problems.append(("prescribers", r[0], r[2], v["n"]))
-        if r[3] != int(round(v["smi"] / 10.0)) * 10 or r[4] != int(round(v["oud"] / 10.0)) * 10:
-            problems.append(("need", r[0], r[3], r[4], v["smi"], v["oud"]))
-        n10, o10 = int(round(v["smi"] / 10.0)) * 10, int(round(v["oud"] / 10.0)) * 10
-        seen = int((mem.loc[mem["county"] == r[0], "smi"] & mem.loc[mem["county"] == r[0], "seen"]).sum())
-        if (abs(r[5] - round(v["n"] / n10 * 1000, 1)) > 1e-9 or abs(r[7] - round(v["n"] / o10 * 1000, 1)) > 1e-9
-                or abs(r[9] - round(seen / n10 * 100) / 100) > 1e-9):
-            problems.append(("standards", r[0], r[5], r[7], r[9]))
-        if (r[6] == "Yes") != (v["s1"] >= T_SMI) or (r[8] == "Yes") != (v["s2"] >= T_OUD) or (r[10] == "Yes") != (v["s3"] >= T_REACH):
-            problems.append(("verdicts", r[0]))
-        if (r[12] == "Yes") != (v["fails"] >= 2):
-            problems.append(("designated", r[0]))
-    ws2 = wb["FFS payments"]
-    qs = ["2025 Q3", "2025 Q4", "2026 Q1", "2026 Q2"]
-    for r in ws2.iter_rows(values_only=True):
-        if r and r[0] in out:
-            for k, q in enumerate(qs, start=1):
-                if r[k] != int(round(pay_q.get((r[0], q), 0.0))):
-                    problems.append(("payment", r[0], q, r[k], pay_q.get((r[0], q), 0.0)))
-    with open(os.path.join(golden, "county_adult_members_2026_conformed.csv")) as fh:
-        for r in csv.DictReader(fh):
-            n = int(((mem["county"] == r["county"]) & (mem["grp"] == r["elig_group_cd"])).sum())
-            if int(r["adult_members"]) != n or int(r["ffs_paid_bh_prescriber_usd"]) != int(round(pay_g.get((r["county"], r["elig_group_cd"]), 0.0))):
-                problems.append(("conformed", r["county"], r["elig_group_cd"]))
-    print("verify: designated %s; %d scorecard rows, %d problems" % (", ".join(designated), len(rows), len(problems)))
-    for p in problems[:20]:
-        print("  ", p)
-    if designated != ["Adams", "Douglas", "Franklin", "Grant", "Okanogan"] or problems:
-        raise SystemExit("verify failed")
-
-
-if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+        sign = -1 if r[1] == "Return Receipt" else 1
+        net[("AHI", str(r[5]))] += sign * int(r[9]) * int(r[8])
+    for r in rows(p("ahi_arch25")):
+        if r["Cust Name"] in GROUP:
+            continue
+        d = dt.datetime.strptime(r["Doc Date"], "%d/%m/%Y").date()
+        sign = -1 if r["Doc Type"] == "CRN" else 1
+        q = int(r["Qty"]) * (int(master[r["Stock Code"]]["Case Qty"]) if d < SWITCH else 1)
+        sales25_u[div_of(r["Stock Code"])] += sign * q
+        sales25_v[div_of(r["Stock Code"])] += sign * float(r["Line Value"]) * AVG25
+    for r in rows(p("ahb_orders"), ";"):
+        if r["Status"] == "Geannuleerd" or r["Klantnaam"] in GROUP:
+            continue
+        d = dt.datetime.strptime(r["Leverdatum"], "%d-%m-%Y").date()
+        q = int(r["Aantal"])
+        if d.year == 2026:
+            net[("AHB", r["Artikelnr"])] += q
+        elif d.year == 2025:
+            sales25_u[div_of(xref[r["Artikelnr"]])] += q
+            sales25_v[div_of(xref[r["Artikelnr"]])] += nl(r["Bedrag"]) * AVG25
+    gross = excess = 0.0
+    by_sub = defaultdict(float)
+    for (sub, key), (q, v) in stock.items():
+        gbp = v * fx[sub]
+        gross += gbp
+        e = min(q, max(0, q - max(0, net.get((sub, key), 0))))
+        val = e * (gbp / q) if q else 0.0
+        excess += val
+        by_sub[sub] += val
+    # the outlet
+    wk = rows(p("vh_weeks"))
+    wk.sort(key=lambda r: (r["store"], r["week_commencing"]))
+    prev, per_day, sold_c, sold_x = {}, [], 0.0, 0.0
+    for r in wk:
+        op = prev.get(r["store"], 0.0)
+        days = int(r["trading_days"])
+        if days == 7 and op + float(r["goods_in_at_cost"]) >= 30000:
+            per_day.append(float(r["sales_at_cost"]) / 7)
+        prev[r["store"]] = float(r["closing_stock_at_cost"])
+        sold_c += float(r["sales_at_cost"])
+        sold_x += float(r["sales_ex_vat"])
+    last = max(r["week_commencing"] for r in wk)
+    vh = sum(float(r["closing_stock_at_cost"]) for r in wk if r["week_commencing"] == last)
+    rate = sum(per_day) / len(per_day)
+    r_out = sold_x / sold_c
+    ws = load_workbook(p("lots"), read_only=True).active
+    lr = [r for r in list(ws.iter_rows(values_only=True))[1:] if r[0]]
+    r_job = sum(float(r[6]) for r in lr) / sum(float(r[5]) for r in lr)
+    drawn = int([r for r in rows(p("rcf")) if r["value_date"] == "2026-12-31"][0]["drawn_balance_gbp"])
+    pool = excess + vh
+    cap = min(pool, rate * DAYS_2027)
+    prov = pool - (cap * r_out + (pool - cap) * r_job)
+    gross += vh
+    bb = 0.625 * (gross - prov)
+    got = {
+        "provision_gbp_m": half_up(prov, 1000000) / 1e6,
+        "borrowing_base_gbp_m": half_up(bb, 500000) / 1e6,
+        "shortfall_gbp_m": half_up(drawn - bb, 250000) / 1e6,
+        "inventories_after_provision_gbp_m": half_up(gross - prov, 500000) / 1e6,
+        "excess_by_company_gbp": {k: half_up(v, 10000) for k, v in by_sub.items()},
+        "units_2025_by_division": {k: half_up(v, 1000) for k, v in sales25_u.items()},
+        "sales_2025_gbp_by_division": {k: half_up(v, 1000) for k, v in sales25_v.items()},
+    }
+    bad = []
+    for k, v in got.items():
+        want = f[k]
+        if isinstance(v, dict):
+            for kk, vv in v.items():
+                if abs(vv - want[kk]) > 1e-9:
+                    bad.append("%s.%s %s against %s" % (k, kk, vv, want[kk]))
+        elif abs(v - want) > 1e-9:
+            bad.append("%s %s against %s" % (k, v, want))
+    if f["call"] != ("seek a waiver" if drawn > bb else "no waiver needed"):
+        bad.append("call")
+    print("verify: %d figures recomputed independently, %d differ%s" % (
+        3 + 1 + 3 + 10 + 2, len(bad), (": " + "; ".join(bad)) if bad else ""))
+    return not bad

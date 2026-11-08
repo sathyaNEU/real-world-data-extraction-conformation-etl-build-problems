@@ -1,942 +1,491 @@
-"""task197 generator checks: the three rules executed on the clean truth, every semantic fork, the
-ladder arithmetic, the bins, and the separation line between the ask devices and the main call.
-
-Usage: python3 task197/generator/checks.py
-"""
-import os, sys, json, csv, sqlite3, datetime as dt, statistics, collections, itertools
-import numpy as np
+"""task197 architecture 2 generator checks. Run after build.py; exit 1 on any failure."""
+import os, sys, json, csv, re, glob, zipfile, datetime as dt
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import sim, core, build
+import numpy as np
+import openpyxl
+from pypdf import PdfReader
+import sim, world, antidotes, docs, pack, askcalc as ac
+import analysis as an
+
 TASK = os.path.dirname(HERE)
 TGT = os.path.join(TASK, "target")
-FAILS, N = [], 0
+F = json.load(open(os.path.join(HERE, "figures.json")))
+RESULTS = []
 
-def ck(name, ok, detail=""):
-    global N
-    N += 1
-    if not ok:
-        FAILS.append("%s: %s" % (name, detail))
-        print("  FAIL %s: %s" % (name, detail))
 
-def edge(v, u=1.0):
-    return u / 2 - abs(v - round(v / u) * u)
+def check(label, ok, detail=""):
+    RESULTS.append((label, bool(ok), detail))
 
-def main():
-    sim._fcr_gate = build.fcr_active
-    core._scope_gate = build.scope_gate
-    W = core.window()
-    recs = core.recordings(W, build.capture_events())
-    cache = core.power_cache(W, recs)
-    under = core.episode_table(W, recs, cache, "under")
-    over = core.episode_table(W, recs, cache, "over")
-    su, so = core.site_scores(under), core.site_scores(over)
-    F = json.load(open(os.path.join(HERE, "figures.json")))
-    order = core.ranked(su, "traj")
-    call, runner = order[0][0], order[1][0]
 
-    # ---- rule 3: the analyst test, executed on the clean truth ------------------------------
-    # the easy route (the undisturbed level before the episode) on the generator's own clean
-    # arrays, every filed rule applied, names the default path's answer
-    naive = core.ranked(su, "pre")[0][0]
-    ck("analyst test names the default answer", naive == "VKF-ZWT",
-       "the easy route names %s at %.1f" % (naive, su[naive]["pre"]))
-    ck("the decisive step alone changes the answer", call == "VKF-KPV" and call != naive,
-       "trajectory baseline names %s, undisturbed level names %s" % (call, naive))
-    ck("default path figure differs from the golden by at least two printed units",
-       round(su[naive]["pre"]) - round(su[call]["traj"]) >= 2,
-       "default %.2f, golden %.2f" % (su[naive]["pre"], su[call]["traj"]))
-    ck("golden figure", abs(round(su[call]["traj"]) - F["call_gain"]) < 1e-9,
-       "%.4f against figures.json %.0f" % (su[call]["traj"], F["call_gain"]))
+def edge(v, unit=0.1):
+    return unit / 2 - abs(v - round(v / unit) * unit)
 
-    # ---- the ladder -------------------------------------------------------------------------
-    for key, who in (("pre", "VKF-ZWT"), ("sp", "VKF-RDL"), ("lin", "VKF-ZWT")):
-        r = core.ranked(su, key)
-        ck("rung %s names %s" % (key, who), r[0][0] == who,
-           "names %s at %.1f" % (r[0][0], r[0][1][key]))
-        ck("rung %s does not name the golden" % key, r[0][0] != call, "")
-    ck("golden sits 4th or 5th on the default path",
-       [k for k, _ in core.ranked(su, "pre")].index(call) in (3, 4),
-       "position %d" % ([k for k, _ in core.ranked(su, "pre")].index(call) + 1))
-    gap = round(su[runner]["traj"]) - round(su[call]["traj"])
-    ck("margin to the runner-up at least 2 printed units", gap >= 2, "%d pp" % gap)
-    ck("default path commits with margin",
-       round(core.ranked(su, "pre")[1][1]["pre"]) - round(su[naive]["pre"]) >= 2,
-       "%.1f pp" % (core.ranked(su, "pre")[1][1]["pre"] - su[naive]["pre"]))
-    # every single-baseline cell lands on a named answer
-    cells = {core.ranked(su, k)[0][0] for k in ("traj", "pre", "sp", "lin")}
-    ck("every baseline cell is a named answer", cells <= {"VKF-KPV", "VKF-ZWT", "VKF-RDL"},
-       ", ".join(sorted(cells)))
-    # dominance: the decisive move is not the smallest move on the graded quantity
-    moves = {k: statistics.fmean(abs(su[s]["traj"] - su[s][k]) for s in su) for k in ("pre", "sp", "lin")}
-    ck("the decisive move is not the smallest", min(moves.values()) > 1.0,
-       ", ".join("%s %.1f pp" % (k, v) for k, v in moves.items()))
 
-    # ---- bins and separation ----------------------------------------------------------------
-    worst = min([edge(v["traj"]) for v in su.values()] + [edge(v["traj"]) for v in so.values()])
-    ck("every graded gain mid-bin at one per cent", worst >= 0.3, "tightest clearance %.3f pp" % worst)
-    vals = sorted(round(v["traj"]) for v in su.values())
-    ck("adjacent ranks separated by more than the printed unit",
-       all(b - a > 1 for a, b in zip(vals, vals[1:])), ", ".join("%d" % v for v in vals))
-    dvals = sorted(round(v["traj"]) for v in so.values())
-    ck("adjacent down-regulation ranks separated", all(b - a > 1 for a, b in zip(dvals, dvals[1:])),
-       ", ".join("%d" % v for v in dvals))
-    ck("no figure on the tolerance", all(round(v["traj"]) != core.TOLERANCE_PCT for v in su.values()),
-       ", ".join("%d" % round(v["traj"]) for v in su.values()))
+def pdf_text(path):
+    return " ".join((pg.extract_text() or "") for pg in PdfReader(path).pages)
 
-    # ---- semantic forks ----------------------------------------------------------------------
-    # SF1 ratio of sums against mean of ratios
-    sums = {}
-    for r in under:
-        a = sums.setdefault(r["site"], [0.0, 0.0])
-        a[0] += r["resp_traj"]; a[1] += 1
-    alt = {s: 100 * a[0] / a[1] for s, a in sums.items()}
-    ck("SF1 ratio basis gives the same call", min(alt, key=lambda s: alt[s]) == call, "")
-    # SF2 threshold and duration variants
-    for thr, secs in ((49.900, 15), (49.920, 20)):
-        tmp = {}
-        for d in sim.dates():
-            f = W[d]["f"]
-            below = f <= thr
-            i, n = 0, len(f)
-            while i < n:
-                if not below[i]:
-                    i += 1; continue
-                j = i
-                while j < n and below[j]:
-                    j += 1
-                if j - i >= secs:
-                    seg = f[i:j]; k = int(np.argmin(seg))
-                    tmp.setdefault(d, []).append((i, j - 1, i + k, float(seg[k])))
-                i = j
-        Wx = {d: dict(W[d], under=tmp.get(d, [])) for d in sim.dates()}
-        sx = core.site_scores(core.episode_table(Wx, recs, cache, "under"))
-        ck("SF2 threshold %.3f/%ds gives the same call" % (thr, secs),
-           core.ranked(sx, "traj")[0][0] == call, "names %s" % core.ranked(sx, "traj")[0][0])
-    # SF3 the setpoint reading is contradicted by the shipped records: measure the gap
-    offs = []
-    for r in under:
-        offs.append(abs(r["base_traj"] - r["cur"]))
-    ck("SF3 setpoint reading contradicted by the records", max(offs) > 1.0,
-       "the programme is up to %.2f MW off the period setpoint at the measured second" % max(offs))
-    # SF4 denominator variant
-    ck("SF4 0.200 Hz denominator gives the same call",
-       min(su, key=lambda s: su[s]["traj"] * sim.SPAN / 0.200) == call, "")
-    # SF5 the register's usual blocks instead of the daily commitments. The alternative is executed:
-    # every site taken as contracted for its usual blocks on every date, the recorded power as it was.
-    real_commitments = sim.commitments
-    try:
-        sim.commitments = lambda site, d: site["blocks"]
-        sx = core.site_scores(core.episode_table(W, recs, cache, "under"))
-    finally:
-        sim.commitments = real_commitments
-    sf5_moved = sorted(k for k in su if k not in sx or sx[k]["n"] != su[k]["n"]
-                       or round(sx[k]["traj"]) != round(su[k]["traj"]))
-    ck("SF5 the register's indicative blocks give the same call", core.ranked(sx, "traj")[0][0] == call,
-       "names %s" % core.ranked(sx, "traj")[0][0])
-    ck("SF5 the alternative is a real one: it moves printed figures", bool(sf5_moved),
-       "sites whose printed gain or count moves: %s" % ", ".join(sf5_moved))
-    # SF6 tie-break
-    ties = sum(1 for d in sim.dates() for (t0, t1, tstar, fm) in W[d]["under"]
-               if list(W[d]["f"][t0:t1 + 1]).count(fm) > 1)
-    ck("SF6 no tie changes a printed figure", ties == 0 or True, "%d tied extremes" % ties)
-    # SF7 tolerance inclusivity
-    ck("SF7 tolerance inclusivity cannot move a site",
-       all(abs(v["traj"] - core.TOLERANCE_PCT) > 0.5 for v in su.values()), "")
-    # SF9 episode counts
-    ck("SF9 episode counts match the scorecard",
-       all(su[r["site"]]["n"] == r["episodes"] for r in F["scorecard"]), "")
-    # SF10 time base: the offset is constant across the window
-    ck("SF10 one offset for the whole window", sim.WINDOW_END < dt.date(2026, 10, 25),
-       "the window closes before the clock change")
-    # SF8 the decision rule picks one site
-    ck("SF8 one site furthest below contract", round(su[call]["traj"], 1) < round(su[runner]["traj"], 1), "")
 
-    # ---- the separation line -----------------------------------------------------------------
-    # Every reserve-withdrawal window, at its true place and at the place its own start_local
-    # field reads, must be clear of the main call's population. An over-frequency overlap is the
-    # designed hazard into ask A and is counted, not forbidden.
-    placed = build.unavail_rows()
-    bad_true = bad_stamp = over_true = 0
-    for r in placed:
-        s_site = sim.SITE_BY_ID[r["site"]]
-        for (dd, a) in ((r["date"], r["start"]), build.norm(r["date"], r["stamp_start"])):
-            if not (sim.WINDOW_START <= dd <= sim.WINDOW_END):
+CODE_OF = {v: k for k, v in world.PRODUCT_CODE.items()}
+prod, changes, SER = pack.series(TGT, sim.DAY0)
+CAND = {CODE_OF[pc]: (SER[pc], ch) for pc, ch in changes.items()}
+D = F["detail"]
+
+
+def windows(code):
+    ck = an.mkey(CAND[code][1])
+    return (list(range(an.mkey(sim.EXPORT_FROM), ck)), list(range(ck + 1, ck + 13)), list(range(ck - 12, ck)))
+
+
+proc_text_raw = pdf_text(os.path.join(TGT, "packaging_review/crp_referral_procedure_issue4.pdf"))
+call_text_raw = pdf_text(os.path.join(TGT, "packaging_review/call_for_referrals_2027_review.pdf"))
+
+# ---------------------------------------------------------------- the ladder and the call
+gold = {c: D[c]["effect"] for c in D}
+order = sorted(gold, key=lambda c: -gold[c])
+check("call: the golden names FKJ", order[0] == "FKJ", order[0])
+check("call: FKJ reaches the procedure's 1.20 and no other product does",
+      gold["FKJ"] >= 1.20 and all(gold[c] < 1.20 for c in gold if c != "FKJ"), str({c: round(v, 3) for c, v in gold.items()}))
+check("call: the excess over no change is at least 1.5x the runner-up's, and the printed gap is 0.2 or more",
+      (gold["FKJ"] - 1) / (gold[order[1]] - 1) >= 1.5 and F["gap"] >= 0.2,
+      "%.2f, gap %s" % ((gold["FKJ"] - 1) / (gold[order[1]] - 1), F["gap"]))
+check("call: runner-up is NIC", order[1] == "NIC", order[1])
+rungs = {"per_sold": "DOZ", "raw": "NIC", "its": "NIC"}
+for m, want in rungs.items():
+    o = sorted(D, key=lambda c: -D[c][m])
+    check("rung %s: winner %s" % (m, want), o[0] == want, "%s %.3f" % (o[0], D[o[0]][m]))
+    check("rung %s: margin at least 1.15x" % m, D[o[0]][m] / D[o[1]][m] >= 1.15, "%.3f" % (D[o[0]][m] / D[o[1]][m]))
+    pos = o.index("FKJ") + 1
+    check("rung %s: FKJ is not first" % m, pos > 1, str(pos))
+    if pos == 2:
+        check("rung %s: FKJ second only behind a 1.20x winner" % m, D[o[0]][m] / D["FKJ"][m] >= 1.2,
+              "%.3f" % (D[o[0]][m] / D["FKJ"][m]))
+o0 = sorted(D, key=lambda c: -D[c]["per_sold"])
+check("rung 0 (per pack sold): FKJ fourth or lower", o0.index("FKJ") + 1 >= 4, str(o0.index("FKJ") + 1))
+seconds = sum(1 for m in ("per_sold", "raw") if sorted(D, key=lambda c: -D[c][m]).index("FKJ") == 1)
+check("ladder: FKJ second on at most one rung", seconds <= 1, str(seconds))
+# Gate F: the count of cheap routes reaching the call, every flow-based route a capable analyst could take
+CHEAP = {}
+for c, (s, ch) in CAND.items():
+    pre_all, post, _ = windows(c)
+    CHEAP[c] = an.cheap_routes(s, pre_all, post)
+route_names = list(CHEAP["FKJ"].keys())
+landing = []
+for k in route_names:
+    o = sorted(CHEAP, key=lambda c: -CHEAP[c][k])
+    if o[0] == "FKJ" and CHEAP["FKJ"][k] >= 1.20:
+        landing.append(k)
+check("Gate F: none of the %d cheap flow-based routes refers FKJ (only the packs-in-use construction does)"
+      % len(route_names), not landing, ", ".join(landing))
+thin = [k for k in route_names if CHEAP["FKJ"][k] >= 1.20
+        and max(CHEAP[c][k] for c in CHEAP if c != "FKJ") < 1.05 * CHEAP["FKJ"][k]]
+check("Gate F: where a cheap route puts FKJ at 1.20 or more, another product leads it by 5 per cent or more",
+      not thin, ", ".join(thin))
+check("Gate F: the routes' referrals are spread over wrong products (DOZ, NIC)",
+      {sorted(CHEAP, key=lambda c: -CHEAP[c][k])[0] for k in route_names} == {"DOZ", "NIC"},
+      str(sorted({sorted(CHEAP, key=lambda c: -CHEAP[c][k])[0] for k in route_names})))
+
+# ---------------------------------------------------------------- determinism: the licensed family per product
+for c in D:
+    fam = list(D[c]["family"].values())
+    cells = {round(v + 1e-12, 1) for v in fam}
+    check("family %s: every licensed member prints %.1f" % (c, round(D[c]["effect"] + 1e-12, 1)), len(cells) == 1,
+          "%s" % sorted(round(v, 3) for v in fam))
+    check("family %s: every member at least 0.012 from a printed edge" % c, min(edge(v) for v in fam) >= 0.012,
+          "%.4f" % min(edge(v) for v in fam))
+for c in D:
+    want = {"fit", "drain_low", "drain_high", "quarterly"} | ({"gamma"} if D[c]["dnll_gamma"] < 2.0 else set()) \
+        | ({"box"} if D[c]["dnll_box"] < 2.0 else set())
+    check("family %s: every drain kernel the pre-change record does not refute (within 2 log-likelihood units) is a member"
+          % c, set(D[c]["family"]) == want, "%s gamma %.1f box %.1f" % (sorted(D[c]["family"]), D[c]["dnll_gamma"], D[c]["dnll_box"]))
+for c in ("FKJ", "NIC", "DOZ", "VAP", "EYE"):
+    check("fixed shelf-life kernel refuted for %s (10 dNLL or more)" % c, D[c]["dnll_box"] >= 10, "%.1f" % D[c]["dnll_box"])
+check("SF10 gap: the difference of the printed effects equals the unrounded difference printed",
+      round(gold["FKJ"] - gold["NIC"] + 1e-12, 1) == F["gap"], "%.3f %s" % (gold["FKJ"] - gold["NIC"], F["gap"]))
+for c in D:
+    check("SF9 threshold %s: clear of 1.20 by 0.05 or more under every member, so the printed and the unrounded effect agree" % c,
+          all(abs(v - 1.20) >= 0.05 for v in D[c]["family"].values()), "")
+
+# ---------------------------------------------------------------- lesson 12: the construction back-tested out of sample
+for c in D:
+    bt = D[c]["backtest"]
+    check("back-test %s: the stock construction predicts the last pre-change year at least as well as per pack sold" % c,
+          bt["stock"] <= bt["per_sold"] * 1.05 + 2.0, "%.1f vs %.1f" % (bt["stock"], bt["per_sold"]))
+for c in ("FKJ", "EYE", "IBC", "VAP", "CGH", "GUM", "NIC"):
+    bt = D[c]["backtest"]
+    check("back-test %s: per pack sold is refuted out of sample (deviance 3x or more)" % c,
+          bt["per_sold"] >= 3.0 * bt["stock"], "%.1f vs %.1f" % (bt["per_sold"], bt["stock"]))
+for c in ("FKJ", "NIC", "DOZ", "GUM", "EYE", "CGH"):
+    bt = D[c]["backtest"]
+    check("back-test %s: the time series on sales and trend is refuted out of sample (3x or more)" % c,
+          bt["its"] >= 3.0 * bt["stock"], "%.1f vs %.1f" % (bt["its"], bt["stock"]))
+TRUTH0 = sim.simulate(sim.TRUTH_SEED)
+for c in D:
+    bt = D[c]["backtest"]
+    pre, _, _ = windows(c)
+    test = pre[-12:]
+    s, _ = CAND[c]
+    y = np.array([s.expo.get(k, 0) for k in test], dtype=float)
+    mu = np.array([TRUTH0[c]["lam"][sim.MKEY == k].sum() for k in test])
+    floor = float(2 * np.sum(np.where(y > 0, y * np.log(y / mu), 0) - (y - mu)))
+    check("back-test %s: the stock construction's held-out deviance is within 1.6x of the true expectation's own (the floor)" % c,
+          bt["stock"] <= 1.6 * floor + 3.0, "%.1f vs floor %.1f" % (bt["stock"], floor))
+
+# ---------------------------------------------------------------- lesson 7: every assumption the golden makes
+for c in ("FKJ", "NIC"):
+    s, ch = CAND[c]
+    pre, post, _ = windows(c)
+    half = len(pre) // 2
+    L1, _, n1 = an.fit_drain(s, pre[:half])
+    L2, _, n2 = an.fit_drain(s, pre[half:])
+    lo, hi = D[c]["L_low"], D[c]["L_high"]
+    check("assumption, a constant drain: %s's drain fitted on each half of its pre-change record falls in the full fit's interval" % c,
+          lo * 0.8 <= L1 <= hi * 1.25 and lo * 0.8 <= L2 <= hi * 1.25, "%.1f %.1f in %.1f-%.1f" % (L1, L2, lo, hi))
+# a seasonal per-pack risk: fit risk x (1 + a cos + b sin) and test it
+for c in D:
+    s, ch = CAND[c]
+    pre, post, _ = windows(c)
+    st = s.monthly_stock(D[c]["L"])
+    y = np.array([s.expo.get(k, 0) for k in pre], dtype=float)
+    x = np.array([st[k] for k in pre])
+    m = np.array([k % 12 for k in pre])
+    X = np.column_stack([np.ones(len(pre)), np.cos(2 * np.pi * m / 12), np.sin(2 * np.pi * m / 12)])
+    off = np.log(x)
+    beta = np.array([np.log(y.sum() / x.sum()), 0, 0])
+    for _ in range(50):
+        mu = np.exp(X @ beta + off)
+        beta = beta + np.linalg.solve(X.T @ (mu[:, None] * X), X.T @ (y - mu))
+    mu = np.exp(X @ beta + off)
+    dev_s = float(2 * np.sum(np.where(y > 0, y * np.log(y / mu), 0) - (y - mu)))
+    mu0 = x * y.sum() / x.sum()
+    dev_0 = float(2 * np.sum(np.where(y > 0, y * np.log(y / mu0), 0) - (y - mu0)))
+    check("assumption, no season in the per-pack risk: %s's seasonal term is not supported (deviance drop under 9.2, 1 per cent on 2 df)" % c,
+          dev_0 - dev_s < 9.21, "%.2f" % (dev_0 - dev_s))
+# no opening stock: every UPC's first period is at or after its product's first-marketed date
+sales_first = {}
+with open(os.path.join(TGT, pack.POS_REV), newline="") as fh:
+    for r in csv.DictReader(fh):
+        sales_first.setdefault(r["upc"], r["period_ending"])
+ok = True
+for pc, e in prod.items():
+    for u in e["upcs"]:
+        launch = e["launch"].date() if isinstance(e["launch"], dt.datetime) else e["launch"]
+        fp = dt.date.fromisoformat(sales_first[u])
+        ok = ok and (fp - launch).days <= 28 and fp >= launch
+check("assumption, no opening stock: each UPC's sales begin in the period it was first marketed", ok)
+# the drain unchanged by the new packaging: the call holds with FKJ's post-change drain anywhere in its interval and NIC's too
+for lo_hi in ("L_low", "L_high"):
+    s, ch = CAND["FKJ"]
+    pre, post, _ = windows("FKJ")
+    hh, _ = an.fit_hazard(s, pre, D["FKJ"]["L"])
+    st_fit = s.monthly_stock(D["FKJ"]["L"])
+    st_alt = s.monthly_stock(D["FKJ"][lo_hi])
+    # the old packs keep the fitted drain; the changed packs drain at the interval's end: bound by the two stocks
+    cf_alt = hh * sum(st_alt[k] for k in post) * sum(st_fit[k] for k in pre) / sum(st_alt[k] for k in pre)
+    e_alt = D["FKJ"]["obs"] / cf_alt
+    check("assumption, the drain unchanged by the changed pack: FKJ still reaches 1.20 and leads with its drain at %s" % lo_hi,
+          e_alt >= 1.20 and e_alt / gold["NIC"] >= 1.15, "%.3f" % e_alt)
+
+# ---------------------------------------------------------------- the three rules, on the clean truth
+truth = sim.simulate(sim.TRUTH_SEED)
+clean = {}
+for c in sim.CANDIDATES:
+    p = sim.BYCODE[c]
+    ck = sim.month_key(p["change"])
+    post = [k for k in range(ck + 1, ck + 13)]
+    pre12 = list(range(ck - 12, ck))
+    mask = lambda ks: np.isin(sim.MKEY, ks)
+    lam = truth[c]["lam"]
+    buys = truth[c]["buys"]
+    clean[c] = dict(per_sold=(lam[mask(post)].sum() / buys[mask(post)].sum()) / (lam[mask(pre12)].sum() / buys[mask(pre12)].sum()),
+                    golden=lam[mask(post)].sum() / truth[c]["cf_lam"][mask(post)].sum(),
+                    raw=lam[mask(post)].sum() / lam[mask(pre12)].sum())
+check("R3a analyst test: per pack sold on the clean truth files DOZ, a wrong answer",
+      max(clean, key=lambda c: clean[c]["per_sold"]) == "DOZ", max(clean, key=lambda c: clean[c]["per_sold"]))
+check("R3b decisive step alone: the clean-truth counterfactual from the packs in use files FKJ",
+      max(clean, key=lambda c: clean[c]["golden"]) == "FKJ", max(clean, key=lambda c: clean[c]["golden"]))
+check("R3b lower rung: raw counts on the clean truth file a wrong product",
+      max(clean, key=lambda c: clean[c]["raw"]) != "FKJ", max(clean, key=lambda c: clean[c]["raw"]))
+check("R1 the field's raw material ships: row-level cases and period sales, no column holding packs in use or an expectation",
+      all(h not in open(os.path.join(TGT, pack.CASES)).readline() for h in ("stock", "expected", "in_use", "rate")) and
+      all(h not in open(os.path.join(TGT, pack.POS_REV)).readline() for h in ("stock", "in_use", "households")))
+# R2: each mess item mishandled leaves the call and every critical figure where they were
+def golden_with(month_of):
+    out = {}
+    for c in D:
+        s, ch = CAND[c]
+        pre, post, _ = windows(c)
+        L, h, _ = an.fit_drain(s, pre)
+        out[c] = an.effect_stock(s, pre, post, L, h)[2]
+    return out
+# local against UTC month: shift each call into UTC by its center's offset and recount
+zone_off = {"America/Chicago": 6, "America/Detroit": 5, "America/New_York": 5, "America/Indiana/Indianapolis": 5, "America/Denver": 7}
+cz = {c[0]: zone_off[c[3]] for c in world.CENTERS}
+moved = 0
+utc_counts = {}
+with open(os.path.join(TGT, pack.CASES), newline="") as fh:
+    for r in csv.DictReader(fh):
+        if r["reason"] != "Unintentional - general" or not r["product_code"] or int(r["patient_age_years"]) >= 6:
+            continue
+        t = dt.datetime.strptime(r["call_received_local"], "%Y-%m-%d %H:%M") + dt.timedelta(hours=cz[r["member_center"]])
+        k = t.year * 12 + t.month - 1
+        k0 = int(r["call_received_local"][:4]) * 12 + int(r["call_received_local"][5:7]) - 1
+        moved += k != k0
+        utc_counts.setdefault(r["product_code"], {}).setdefault(k, 0)
+        utc_counts[r["product_code"]][k] += 1
+utc_eff = {}
+for c in D:
+    s, ch = CAND[c]
+    pc = world.PRODUCT_CODE[c]
+    s2 = an.Series(sim.DAY0, s.ndays, [], utc_counts[pc])
+    s2.buys = s.buys
+    pre, post, _ = windows(c)
+    L, h, _ = an.fit_drain(s2, pre)
+    utc_eff[c] = an.effect_stock(s2, pre, post, L, h)[2]
+check("R2 (SF4) local clock read as UTC: %d calls change month, every effect prints the same" % moved,
+      all(round(utc_eff[c] + 1e-12, 1) == round(gold[c] + 1e-12, 1) for c in D), "")
+# sales spread over the period's days against booked to the period's end month
+end_eff = {}
+for c in D:
+    s, ch = CAND[c]
+    per = pack.period_sales(TGT, {world.PRODUCT_CODE[c]: prod[world.PRODUCT_CODE[c]]["upcs"]})[world.PRODUCT_CODE[c]]
+    per2 = [(b - dt.timedelta(days=0), b, u) for a, b, u in per]
+    s2 = an.Series(sim.DAY0, s.ndays, per2, s.expo)
+    pre, post, _ = windows(c)
+    L, h, _ = an.fit_drain(s2, pre)
+    end_eff[c] = an.effect_stock(s2, pre, post, L, h)[2]
+check("R2 four-week periods booked to their last day instead of spread: every effect prints the same",
+      all(round(end_eff[c] + 1e-12, 1) == round(gold[c] + 1e-12, 1) for c in D),
+      str({c: round(end_eff[c], 3) for c in D}))
+last_window_end = max(sim.key_to_date(windows(c)[1][-1]) for c in D)
+with open(os.path.join(TGT, pack.POS_PRE), newline="") as fh:
+    pre_first = min(dt.date.fromisoformat(r["period_ending"]) - dt.timedelta(days=27) for r in csv.DictReader(fh))
+check("R2 (SF6) preliminary release: no window reaches a preliminary period, so the revision alone sets every effect", pre_first > last_window_end + dt.timedelta(days=31),
+      "%s after %s" % (pre_first, last_window_end))
+check("R2 second substances carry no product code and so never enter a count",
+      all(r["product_code"] == "" for r in csv.DictReader(open(os.path.join(TGT, pack.CASES))) if r["substance_seq"] != "1"))
+rows_age = [r for r in csv.DictReader(open(os.path.join(TGT, pack.CASES))) if r["patient_age_months"]]
+check("R2 ages in months agree with ages in years for every child under two",
+      all(int(r["patient_age_months"]) // 12 == int(r["patient_age_years"]) for r in rows_age), str(len(rows_age)))
+
+# ---------------------------------------------------------------- fork table
+def recount(filter_fn):
+    out = {}
+    with open(os.path.join(TGT, pack.CASES), newline="") as fh:
+        for r in csv.DictReader(fh):
+            if not filter_fn(r):
                 continue
-            b = a + r["minutes"] * 60
-            for (t0, t1, tstar, fx) in W[dd]["under"]:
-                if a - 60 <= tstar < b + 60 and sim.contracted(s_site, np.array([float(tstar)]), dd)[0]:
-                    if a == r["start"] and dd == r["date"]:
-                        bad_true += 1
-                    else:
-                        bad_stamp += 1
-        for (t0, t1, tstar, fx) in W[r["date"]]["over"]:
-            if r["start"] <= tstar < r["start"] + r["minutes"] * 60 \
-                    and sim.contracted(s_site, np.array([float(tstar)]), r["date"])[0]:
-                over_true += 1
-    ck("R2 zero withdrawal windows touch the main call's population at their true place",
-       bad_true == 0, "%d overlaps" % bad_true)
-    ck("R2 zero withdrawal windows touch it at the place their own row reads",
-       bad_stamp == 0, "%d overlaps" % bad_stamp)
-    ck("the clock hazard removes over-frequency obligations, as designed",
-       over_true >= 5, "%d over-frequency obligations withdrawn" % over_true)
-    held = build.held_minutes()
-    bad_h = 0
-    for (dd, m) in held:
-        if (W[dd]["f"][m * 60:(m + 1) * 60] <= sim.QUALIFY_HZ).any():
-            bad_h += 1
-    ck("R2 zero held summary minutes hold a qualifying under-frequency second", bad_h == 0,
-       "%d of %d held minutes" % (bad_h, len(held)))
-    con = sqlite3.connect(os.path.join(TGT, "platform", "vkf_highres_archive.sqlite"))
-    dup = con.execute("""SELECT site_id, start_utc, count(*) c FROM recording
-                         GROUP BY site_id, start_utc HAVING c > 1""").fetchall()
-    dup_windows = [(r[0], r[1]) for r in dup]
-    hit = 0
-    for (sid, start) in dup_windows:
-        t = dt.datetime.strptime(start, "%Y-%m-%dT%H:%M:%SZ")
-        d = (t + dt.timedelta(hours=2)).date()
-        lo = int(((t + dt.timedelta(hours=2)) - dt.datetime(d.year, d.month, d.day)).total_seconds())
-        for (t0, t1, tstar, fx) in W[d]["under"]:
-            if lo <= tstar <= lo + 1200 and sim.contracted(sim.SITE_BY_ID[sid], np.array([float(tstar)]), d)[0]:
-                hit += 1
-    ck("the restored recording holds no under-frequency qualifying episode", hit == 0,
-       "%d under-frequency episodes inside a duplicated recording" % hit)
-    con.close()
+            d = r["call_received_local"][:10]
+            out.setdefault(r["product_code"], {}).setdefault(d, 0)
+            out[r["product_code"]][d] += 1
+    return out
 
-    # ---- coverage: what the archive carries, and what its own queue costs the population ------
-    want = 0
-    for d in sim.dates():
-        for (t0, t1, tstar, fx) in W[d]["under"]:
-            for s in sim.SITES:
-                if sim.contracted(s, np.array([float(tstar)]), d)[0] and \
-                        build.fcr_active(s, d, np.array([float(tstar)]))[0]:
-                    want += 1
-    got = sum(v["n"] for v in su.values())
-    ck("the archive carries the extreme second for most but not all obliged episodes",
-       0.96 <= got / float(want) < 1.0,
-       "%d obliged episode-site pairs, %d with a recording of the extreme second, %d the archive "
-       "writer's queue dropped or wrapped on" % (want, got, want - got))
 
-    # ---- Gate A: the documents' stated facts are true of the data -----------------------------
-    ck("the window the standard states matches the data",
-       sim.WINDOW_START == dt.date(2026, 9, 21) and sim.WINDOW_END == dt.date(2026, 10, 11), "")
-    ck("the tolerance the standard states matches the scorecard verdicts",
-       all(r["under"] == (r["gain_pct"] < core.TOLERANCE_PCT) for r in F["scorecard"]), "")
-    ck("at least three sites outside tolerance", sum(1 for r in F["scorecard"] if r["under"]) >= 3,
-       "%d" % sum(1 for r in F["scorecard"] if r["under"]))
+def effect_from_daily(c, daily, window_days=None):
+    s, ch = CAND[c]
+    pre, post, _ = windows(c)
+    monthly = {}
+    for d, n in daily.get(world.PRODUCT_CODE[c], {}).items():
+        k = int(d[:4]) * 12 + int(d[5:7]) - 1
+        monthly[k] = monthly.get(k, 0) + n
+    s2 = an.Series(sim.DAY0, s.ndays, [], monthly)
+    s2.buys = s.buys
+    L, h, _ = an.fit_drain(s2, pre)
+    if window_days is None:
+        return an.effect_stock(s2, pre, post, L, h)[2]
+    a = ch + dt.timedelta(days=1)
+    z = ch + dt.timedelta(days=window_days)
+    obs = sum(n for d, n in daily[world.PRODUCT_CODE[c]].items() if a <= dt.date.fromisoformat(d) <= z)
+    stock = s2.stock(L)
+    ia, iz = (a - sim.DAY0).days, (z - sim.DAY0).days
+    return obs / (h * stock[ia:iz + 1].sum())
 
-    # ---- the clean-data test -------------------------------------------------------------------
-    # with the archive's estimated-quality seconds removed the call and the naive answer both hold
-    ck("clean-data test", call == "VKF-KPV" and naive == "VKF-ZWT",
-       "the answer and the naive answer are unchanged on clean truth and still apart")
-    # the lens swap: the naive answer and the golden are different sites, not one site twice
-    ck("lens swap", call != naive, "")
 
-    # ---- the ask layer: mess neutrality, device forcing, bins and printed precision ----------
-    import ceiling, pack2
+base = lambda r: r["reason"] == "Unintentional - general" and r["product_code"] != "" and int(r["patient_age_years"]) < 6
+wide = lambda r: r["reason"].startswith("Unintentional") and r["product_code"] != "" and int(r["patient_age_years"]) < 6
+daily_base = recount(base)
+daily_wide = recount(wide)
+e_wide = {c: effect_from_daily(c, daily_wide) for c in D}
+check("SF1 accidental read as every unintentional reason: the call stays FKJ, and procedure 3.2 files unintentional general",
+      max(e_wide, key=e_wide.get) == "FKJ" and "recorded as unintentional general" in " ".join(proc_text_raw.split()),
+      str({c: round(v, 3) for c, v in e_wide.items()}))
+e_days = {c: effect_from_daily(c, daily_base, 365) for c in D}
+check("SF3 the window read as 365 days from the first retail sale: the call stays FKJ and every effect prints the same",
+      max(e_days, key=e_days.get) == "FKJ" and all(round(e_days[c] + 1e-12, 1) == round(gold[c] + 1e-12, 1) for c in D),
+      str({c: round(v, 3) for c, v in e_days.items()}))
+check("SF5 notified date against first retail sale: every change inside 1 January 2024 to 30 September 2025 either way",
+      all(dt.date(2024, 1, 1) <= world.NOTIFIED[c] <= dt.date(2025, 9, 30) for c in world.NOTIFIED) and
+      all(dt.date(2024, 1, 1) <= sim.BYCODE[c]["change"] <= dt.date(2025, 9, 30) for c in world.NOTIFIED))
+multi = {}
+with open(os.path.join(TGT, pack.CASES), newline="") as fh:
+    for r in csv.DictReader(fh):
+        if r["product_code"]:
+            multi[r["case_id"]] = multi.get(r["case_id"], 0) + 1
+older = lambda r: r["reason"] == "Unintentional - general" and r["product_code"] != "" and int(r["patient_age_years"]) <= 6
+daily_older = recount(older)
+e_older = {c: effect_from_daily(c, daily_older) for c in D}
+check("SF2 under six read as six and under: the call stays FKJ and every effect prints the same; procedure 3.2 files "
+      "'under six years of age at the time of the call'",
+      max(e_older, key=e_older.get) == "FKJ" and all(round(e_older[c] + 1e-12, 1) == round(gold[c] + 1e-12, 1) for c in D)
+      and "under six years of age at the time of the call" in " ".join(proc_text_raw.split()),
+      str({c: round(v, 3) for c, v in e_older.items()}))
+e_notified = {}
+for c in D:
+    s_, ch_ = CAND[c]
+    pre_, _, _ = windows(c)
+    kn = an.mkey(world.NOTIFIED[c])
+    post_n = list(range(kn + 1, kn + 13))
+    pre_n = [k for k in pre_ if k < kn]
+    Ln, hn, _ = an.fit_drain(s_, pre_n)
+    e_notified[c] = an.effect_stock(s_, pre_n, post_n, Ln, hn)[2]
+check("SF5 the twelve months read from the notified date instead: the register's column is headed 'Changed pack first "
+      "sold at retail' and procedure 3.3 names that date; read the other way the call is %s"
+      % max(e_notified, key=e_notified.get),
+      "first sold at retail is the date the network's watched-product register records" in " ".join(proc_text_raw.split()),
+      str({c: round(v, 3) for c, v in e_notified.items()}))
+second = {nm: sorted(D, key=lambda c: -(D[c]["family"].get(nm, D[c]["effect"])))[1] for nm in D["FKJ"]["family"]}
+check("SF8 runner-up read as the product with the next largest effect: NIC under every member of the licensed family",
+      set(second.values()) == {"NIC"}, str(second))
+check("SF7 no case involves two watched products, so 'counts once for each' never applies", max(multi.values()) == 1)
+names = [world.META[c]["name"].split()[0] for c in world.META]
+check("R3c no plant: neither governing document names a watched product, ranks anything or states a figure for one",
+      not any(n.lower() in (proc_text_raw + call_text_raw).lower() for n in names))
 
-    # R2 per device: the main call does not move when the device is switched off
-    su_nodev = core.site_scores(core.episode_table(W, recs, cache, "under"))
-    gate = core._scope_gate
-    try:
-        core._scope_gate = lambda a, b, c: True
-        su_open = core.site_scores(core.episode_table(W, recs, cache, "under"))
-    finally:
-        core._scope_gate = gate
-    ck("R2 the clock device moves no main-call figure",
-       all(round(su_open[k]["traj"]) == round(su[k]["traj"]) for k in su),
-       "under-frequency gains identical with the withdrawal scope open")
-    hits = {"n": 0}
-    real_met = core.metered
-    try:
-        core.metered = lambda *a, **k: (hits.__setitem__("n", hits["n"] + 1), real_met(*a, **k))[1]
-        core.episode_table(W, recs, cache, "under")
-    finally:
-        core.metered = real_met
-    ck("R2 the main call never reads the settlement meter file", hits["n"] == 0,
-       "%d reads of the metered series on the call's path" % hits["n"])
-    mins = list(csv.DictReader(open(os.path.join(
-        TGT, "operator", "system_frequency_minute_summary.csv"), encoding="utf-8")))
-    want = []
-    for d in sim.dates():
-        for m in range(1440):
-            seg = W[d]["f"][m * 60:(m + 1) * 60]
-            want.append((round(float(seg.min()), 4), round(float(seg.mean()), 4),
-                         round(float(seg.max()), 4)))
-    ck("the minute summary covers every minute of the window once", len(mins) == len(want),
-       "%d rows, %d minutes" % (len(mins), len(want)))
-    blank = [i for i, r in enumerate(mins) if not r["frequency_min_hz"].strip()]
-    ck("R2 the rows with no published minimum are exactly the minutes the summariser had only the "
-       "SCADA chain's one-minute average for", len(blank) == len(held),
-       "%d rows carry no minimum, %d minutes held" % (len(blank), len(held)))
-    bad_val, degen = [], []
-    for i, r in enumerate(mins):
-        lo, mn, hi = r["frequency_min_hz"], r["frequency_mean_hz"], r["frequency_max_hz"]
-        if float(mn) != want[i][1]:
-            bad_val.append(i)
-        if i in blank:
-            if hi.strip():
-                bad_val.append(i)
-            continue
-        if (float(lo), float(hi)) != (want[i][0], want[i][2]):
-            bad_val.append(i)
-        if float(lo) == float(mn) == float(hi):
-            degen.append(i)
-    ck("every figure the minute summary publishes is the minute's own", not bad_val,
-       "%d rows disagree with the seconds inside the minute" % len(bad_val))
-    ck("no published row carries one value in all three columns", not degen,
-       "%d rows read minimum, mean and maximum alike" % len(degen))
-    ck("R2 no minute without a published minimum holds a qualifying under-frequency second",
-       not [i for i in blank if want[i][0] <= sim.QUALIFY_HZ],
-       "%d of %d" % (len([i for i in blank if want[i][0] <= sim.QUALIFY_HZ]), len(blank)))
-    # the summary against the one-second extract that covers the same minute, read off the shipped
-    # bytes of both files: no minute may contradict an extract
-    ext = collections.defaultdict(list)
-    for r in csv.DictReader(open(os.path.join(
-            TGT, "operator", "system_frequency_1s_extracts.csv"), encoding="utf-8")):
-        ext[r["ts_utc"][:17] + "00Z"].append(float(r["frequency_hz"]))
-    clash, seen = [], 0
-    for r in mins:
-        v = ext.get(r["minute_utc"])
-        if not v or not r["frequency_min_hz"].strip():
-            continue
-        seen += 1
-        if min(v) < float(r["frequency_min_hz"]) - 1e-9 or max(v) > float(r["frequency_max_hz"]) + 1e-9:
-            clash.append(r["minute_utc"])
-    ck("positive control, the summary and the extract are compared on overlapping minutes",
-       seen > 2000, "%d minutes the extract overlaps carry a published minimum and maximum" % seen)
-    ck("no summary row contradicts the one-second extract covering the same minute", not clash,
-       "%d minutes contradicted, first %s" % (len(clash), clash[0] if clash else "none"))
-
-    # the devices' forcing, measured on the cut pack by ceiling.py's own reader
-    P = ceiling.load()
-    lag = {}
-    for e in P["ev"]:
-        if e["event_type"] != "reserve_unavailable":
-            continue
-        g = (ceiling._utc(e["logged_utc"]) + ceiling.OFFSET
-             - ceiling._local(e["start_local"])).total_seconds()
-        lag[g] = lag.get(g, 0) + 1
-    ck("device B is forced by the log's own two columns",
-       set(lag) == {90.0, 7290.0} and lag[7290.0] >= 8,
-       "logged_utc less start_local: " + ", ".join("%.0f s on %d rows" % (k, v)
-                                                   for k, v in sorted(lag.items())))
-    gb_true, gb_stamp = ceiling.ask_b(P, "true"), ceiling.ask_b(P, "stamped")
-    gaps_b = [abs(gb_true[b][1] - gb_stamp[b][1]) for b in range(1, 7)]
-    ck("device B moves every block's shortfall by more than the stated rounding",
-       min(gaps_b) > 0.1, "smallest block gap %.1f MWh, largest %.1f MWh" % (min(gaps_b), max(gaps_b)))
-    ck("device B moves every block's held-available figure too",
-       all(abs(gb_true[b][0] - gb_stamp[b][0]) > 0.1 for b in range(1, 7)), "")
-    gc_g, gc_n = ceiling.ask_c(P, "golden"), ceiling.ask_c(P, "natural")
-    gaps_c = ([abs(gc_g[0][k] - gc_n[0][k]) for k in gc_g[0]]
-              + [abs(gc_g[1][k] - gc_n[1][k]) for k in gc_g[1]])
-    ck("device C moves every site's exposure figure by more than the stated rounding",
-       min(gaps_c) > 0.05, "smallest site gap %.1f MWh, largest %.1f MWh" % (min(gaps_c), max(gaps_c)))
-    nbig = nearer_prev = nearer_own = 0
-    dev_own = dev_prev = []
-    dev_own, dev_prev = [], []
-    for d in sim.dates():
-        for s_site in sim.SITES:
-            sid = s_site["id"]
-            prog = W[d]["prog"][sid]
-            E = core.metered(W, d, sid)
-            cmask = np.zeros(96, dtype=bool)
-            for b in sim.commitments(s_site, d):
-                lo_h, hi_h = sim.BLOCK_HOURS[b]
-                cmask[lo_h * 4:hi_h * 4] = True
-            for pp in range(1, 96):
-                if not cmask[pp]:
-                    dev_prev.append(abs(E[pp] - prog[pp] * 0.25))
-                    dev_own.append(abs(E[pp - 1] - prog[pp] * 0.25))
-                if abs(prog[pp] - prog[pp - 1]) < 1.0:
-                    continue
-                nbig += 1
-                if abs(E[pp - 1] - prog[pp - 1] * 0.25) < abs(E[pp - 1] - prog[pp] * 0.25):
-                    nearer_prev += 1
-                else:
-                    nearer_own += 1
-    mo, mp = float(np.mean(dev_own)), float(np.mean(dev_prev))
-    ck("device C is forced by the programme the rows are paired against",
-       mo > 4 * mp and len(dev_prev) > 10000,
-       "over %d scored periods the mean absolute deviation from programme is %.4f MWh when a row is "
-       "paired with the interval it closes and %.4f MWh when it is paired with the period its own "
-       "index names, a factor of %.1f" % (len(dev_prev), mp, mo, mo / mp))
-    ck("the rows indexed at a setpoint step carry the level before the step",
-       nearer_prev > 20 * nearer_own,
-       "of %d periods whose setpoint steps by more than 1 MW, the row carrying that index sits "
-       "nearer the previous setpoint in %d and nearer its own in %d" % (nbig, nearer_prev, nearer_own))
-    ca = ceiling.ask_a(P, ("true", "extracts"))
-    cs = ceiling.ask_a(P, ("stamped", "summary"))
-    cx = ceiling.ask_a(P, ("stamped", "extracts"))
-    ck("device A moves the episode count a summary-first read reaches",
-       sum(1 for k in ca if ca[k] != cs[k]) >= 6,
-       "%d of 9 counts move" % sum(1 for k in ca if ca[k] != cs[k]))
-    ck("the clock hazard moves the episode count on either route",
-       sum(1 for k in ca if ca[k] != cx[k]) >= 5,
-       "%d of 9 counts move without device A" % sum(1 for k in ca if ca[k] != cx[k]))
-
-    # the independent reader reproduces the generator's ask goldens
-    ck("ceiling.py reproduces the ask B golden from the shipped bytes",
-       all(abs(gb_true[b][0] - dict((x["block"], x["available"]) for x in F["availability"])[b]) < 0.05
-           and abs(gb_true[b][1] - dict((x["block"], x["shortfall"]) for x in F["availability"])[b]) < 0.05
-           for b in range(1, 7)), "")
-    ck("ceiling.py reproduces the ask C golden from the shipped bytes",
-       abs(sum(gc_g[0].values()) - F["exposure_above_total"]) < 0.05
-       and abs(sum(gc_g[1].values()) - F["exposure_below_total"]) < 0.05, "")
-
-    # Bins. A gain is recovered through the traverse span, which a solver lands within a second or
-    # two of, so it carries path spread and takes the 0.3-of-a-unit floor. A block's capacity hours
-    # and a site's exposure are exact sums over shipped rows on a population the commitment file
-    # fixes, with the rounding path pinned in clause 4 and clause 5, so nothing on the solver's
-    # side can move them; those are asserted for exactness instead, with a floor that keeps no
-    # figure sitting on a printed boundary.
-    adh = pack2.adherence(W, "golden")
-    av = pack2.availability(W, placed, "golden")
-    gains = [("down gain %s" % sid, edge(v["traj"], 1.0)) for sid, v in so.items()]
-    ck("every graded gain sits at least 0.3 of a per cent from a bin edge",
-       all(e >= 0.3 for (_, e) in gains),
-       "tightest %s at %.3f pp" % min(gains, key=lambda x: x[1]))
-    bhours = [("available block %d" % b, edge(av["available"][b], 0.1)) for b in range(1, 7)] + \
-             [("shortfall block %d" % b, edge(av["lost"][b], 0.1)) for b in range(1, 7)]
-    ck("every graded capacity-hours figure sits at least 0.3 of its unit from a bin edge",
-       all(e >= 0.03 for (_, e) in bhours),
-       "tightest %s at %.4f MWh" % min(bhours, key=lambda x: x[1]))
-    expo = [("above %s" % k, edge(adh["above"][k], 0.1)) for k in adh["above"]] + \
-           [("below %s" % k, edge(adh["below"][k], 0.1)) for k in adh["below"]] + \
-           [("above portfolio", edge(adh["above_total"], 0.1)),
-            ("below portfolio", edge(adh["below_total"], 0.1))]
-    ck("every graded exposure figure sits at least 0.3 of its unit from a bin edge",
-       all(e >= 0.03 for (_, e) in expo),
-       "tightest %s at %.4f MWh from the edge" % min(expo, key=lambda x: x[1]))
-    # exactness: the pinned rounding path, and the one it closes, print the same figure
-    sum_then_round = {k: round(adh["above"][k], 1) for k in adh["above"]}
-    round_then_sum = {}
-    for s_site in sim.SITES:
-        sid = s_site["id"]
-        tot = 0.0
-        for d in sim.dates():
-            prog = W[d]["prog"][sid]
-            E = core.metered(W, d, sid)
-            cmask = np.zeros(96, dtype=bool)
-            for b in sim.commitments(s_site, d):
-                lo_h, hi_h = sim.BLOCK_HOURS[b]
-                cmask[lo_h * 4:hi_h * 4] = True
-            for pp in range(96):
-                if cmask[pp]:
-                    continue
-                dv = float(E[pp]) - float(prog[pp]) * 0.25
-                if dv >= 0:
-                    tot += round(dv, 1)
-        round_then_sum[sid] = round(tot, 1)
-    diff = [k for k in sum_then_round if sum_then_round[k] != round_then_sum[k]]
-    ck("clause 5's rounding path is the one that is pinned, and the alternative is closed",
-       len(diff) > 0, "round-each-period would move %d of 9 above-programme figures" % len(diff))
-
-    # ---- the archive's spread: an organ's realism is its variance, not its genre ---------------
-    trig = collections.Counter(r[2] for r in recs)
-    lens = {r[4] - r[3] for r in recs}
-    offs = {r[3] % 900 for r in recs}
-    ck("the archive holds captures of four or more kinds", len(trig) >= 4,
-       ", ".join("%s %d" % kv for kv in trig.most_common()))
-    ck("recording length and start offset vary across the archive",
-       len(lens) >= 100 and len(offs) >= 30,
-       "%d distinct lengths %d..%d, %d distinct quarter-hour offsets"
-       % (len(lens), min(lens), max(lens), len(offs)))
-    dp = [r for r in recs if r[2] == "DPDT"]
-    dlen = {r[4] - r[3] for r in dp}
-    doff = {r[3] % 900 for r in dp}
-    ck("the captures the decisive step reads are not the archive's only rows",
-       len(dp) / len(recs) < 0.5 and len(dp) > 200,
-       "%d of %d recordings, %.1f per cent" % (len(dp), len(recs), 100 * len(dp) / len(recs)))
-    ck("those captures are not identical on every dimension but their timestamps",
-       len(dlen) >= 50 and len(doff) >= 10,
-       "%d distinct lengths %d..%d, %d distinct offsets" % (len(dlen), min(dlen), max(dlen), len(doff)))
-    ck("captures other than the operator's deviation windows fall on every delivery date",
-       len({r[0] for r in recs if r[2] != "FREQ-DEV"}) == len(sim.dates()),
-       "%d of %d dates" % (len({r[0] for r in recs if r[2] != "FREQ-DEV"}), len(sim.dates())))
-    # A capture's length is its site's ring buffer plus a settle window drawn from one distribution
-    # for every site, so the only site attribute in it is the ring, and the ring is held at rank
-    # correlation zero against the traverse spans. Both halves are asserted.
-    posts = {s_site["id"]: float(np.mean([r[4] - r[3] - core.ring(s_site["id"])
-                                          for r in dp if r[1] == s_site["id"]]))
-             for s_site in sim.SITES}
-
-    def _spear(a, b):
-        ra = np.argsort(np.argsort(a)).astype(float)
-        rb = np.argsort(np.argsort(b)).astype(float)
-        return float(np.corrcoef(ra, rb)[0, 1])
-    rings = [core.ring(s_site["id"]) for s_site in sim.SITES]
-    ramps = [s_site["ramp_s"] for s_site in sim.SITES]
-    thrs = [sim.RECORDER[s_site["id"]]["thr"] for s_site in sim.SITES]
-    holds = [sim.RECORDER[s_site["id"]]["hold"] for s_site in sim.SITES]
-    flush = [sim.RECORDER[s_site["id"]]["flush"] for s_site in sim.SITES]
-    settle = [posts[s_site["id"]] for s_site in sim.SITES]
-    ck("no capture's length or offset carries anything about the site's traverse span",
-       max(abs(_spear(x, ramps)) for x in (rings, thrs, holds, flush, settle)) <= 0.25
-       and len(set(rings)) >= 6,
-       "rank correlation against the traverse span: ring buffer %.3f, recorder threshold %.3f, "
-       "hold-off %.3f, flush ceiling %.3f, settle window %.3f, over %d distinct pre-rolls"
-       % (_spear(rings, ramps), _spear(thrs, ramps), _spear(holds, ramps), _spear(flush, ramps),
-          _spear(settle, ramps), len(set(rings))))
-    # the organ's exactness: the span recovers at the boundaries the determination names, which are
-    # the ones the site held no reserve commitment at, by least squares over the DPDT captures there
-    byk = {}
-    for r in recs:
-        byk.setdefault((r[0], r[1]), []).append(r)
-    fitted = []
-    for s_site in sim.SITES:
-        sid = s_site["id"]
-        segs = []
-        for (dd, pp) in core.fit_boundaries(W, sid):
-            t = pp * 900
-            prog = W[dd]["prog"][sid]
-            for (d2, s2, tg, lo, hi) in byk.get((dd, sid), ()):
-                if lo <= t and t + 204 < hi:
-                    P = cache[(d2, sid, lo)]
-                    segs.append((float(prog[pp - 1]), float(prog[pp] - prog[pp - 1]),
-                                 P[t - lo:t - lo + 205]))
+# ---------------------------------------------------------------- asks: devices, exactness, uniqueness
+bags = ac.load(TGT)
+gold_ask, unexplained = ac.figures_golden(bags)
+check("asks: every acetylcysteine bag is accounted for by the regimen reading", unexplained == 0, str(unexplained))
+anti = antidotes.simulate(sim.SEED + 303 + 4000)
+nac_t, dfo_t = antidotes.ask_truth(anti)
+check("asks: the reconstruction from the shipped rows equals the clean truth in every hospital half-year",
+      all(gold_ask[k]["nac"] == nac_t[k] and gold_ask[k]["dfo"] == dfo_t[k] for k in gold_ask))
+rec = {(a["hospital"], a["half"]): a for a in F["antidote"]}
+check("asks: figures.json carries the reconstruction",
+      all(rec[k]["acetylcysteine_courses"] == gold_ask[k]["nac"] and rec[k]["deferoxamine_courses"] == gold_ask[k]["dfo"]
+          and rec[k]["antidote_courses"] == gold_ask[k]["nac"] + gold_ask[k]["dfo"] for k in gold_ask))
+# uniqueness: against the reconstruction's own first bags, every other bag fits exactly one course and no first bag
+# fits an earlier course
+starts, _ = ac.nac_resolve(bags)
+start_set = set(starts)
+amb = 0
+for h in {b["h"] for b in bags}:
+    lst = sorted([b for b in bags if b["drug"] == "NAC" and b["h"] == h], key=lambda x: x["t"])
+    firsts = [b for b in lst if (h, b["t"]) in start_set]
+    for b in lst:
+        fits = 0
+        for a in firsts:
+            if a is b:
+                continue
+            hrs = (b["t"] - a["t"]).total_seconds() / 3600
+            for load in ac.LOADING:
+                w = a["dose"] / load
+                if any(lo <= hrs <= hi and abs(b["dose"] / mgkg - w) <= 0.15 for mgkg, lo, hi in ac.FOLLOW[load]):
+                    fits += 1
                     break
-        best, bestres = None, None
-        for S in range(40, 361):
-            frac = np.minimum(1.0, np.arange(205) / float(S))
-            res = 0.0
-            for (prev, step, ys) in segs:
-                e = ys - (prev + step * frac)
-                res += float((e * e).sum())
-            if bestres is None or res < bestres:
-                best, bestres = S, res
-        fitted.append((sid, len(segs), best, s_site["ramp_s"]))
-    ck("every site's traverse span recovers exactly at the boundaries it held no commitment at",
-       all(n >= 8 and b == r for (_, n, b, r) in fitted),
-       ", ".join("%s %d segments fit %d against %d" % t for t in fitted))
-    # The bounds of a deviation recording are the site's own recorder logic and nothing else: the
-    # platform cannot know where the operator's published extract begins or ends.
-    fd = [r for r in recs if r[2] == "FREQ-DEV"]
-    exs = {(d, a) for d in sim.dates() for (a, b) in W[d]["exc"]}
-    exe = {(d, b) for d in sim.dates() for (a, b) in W[d]["exc"]}
-    on_s = sum(1 for r in fd if (r[0], r[3]) in exs)
-    on_e = sum(1 for r in fd if (r[0], r[4] - 1) in exe)
-    ck("no deviation recording is bounded by the operator's published extract",
-       on_s < 0.02 * len(fd) and on_e < 0.02 * len(fd),
-       "%d of %d recordings start on a published extract's first second and %d end on its last"
-       % (on_s, len(fd), on_e))
-    bset = {}
-    for r in fd:
-        a, b = bset.setdefault(r[1], [set(), set()])
-        a.add((r[0], r[3]))
-        b.add((r[0], r[4]))
-    prs = list(itertools.combinations(sorted(bset), 2))
-    same = [(x, y) for x, y in prs if bset[x][0] == bset[y][0] or bset[x][1] == bset[y][1]]
-    worst = max((len(bset[x][0] & bset[y][0]) / float(len(bset[x][0] | bset[y][0])), x, y)
-                for x, y in prs)
-    ck("no two sites record the same instants", not same and worst[0] < 0.05,
-       "%d of %d site pairs share a bound set, highest start-set overlap %.3f at %s and %s"
-       % (len(same), len(prs), worst[0], worst[1], worst[2]))
-    byfd = {}
-    for r in fd:
-        byfd.setdefault(r[1], []).append(r)
-    tight = []
-    for sid, v in sorted(byfd.items()):
-        du = sorted(r[4] - r[3] for r in v)
-        med = float(du[len(du) // 2])
-        tight.append((sid, statistics.pstdev(du), du[0] / med,
-                      du[min(len(du) - 1, int(0.99 * len(du)))] / med, len(set(du))))
-    allfd = sorted(r[4] - r[3] for r in fd)
-    ck("every site's recording lengths carry a spread, and the archive a tail",
-       all(sd >= 25 and lo <= 0.60 and hi >= 1.15 and nd >= 60
-           for (_, sd, lo, hi, nd) in tight)
-       and allfd[-1] >= 3.0 * allfd[len(allfd) // 2],
-       "; ".join("%s sd %.0f s, shortest %.2fx and 99th centile %.2fx its median, %d distinct" % t
-                 for t in tight)
-       + "; longest in the archive %d s against a median of %d"
-       % (allfd[-1], allfd[len(allfd) // 2]))
-    pre_gap = []
-    for d in sim.dates():
-        inside = np.abs(W[d]["f"] - 50.0) <= sim.DEADBAND
-        for (t0, t1, tstar, fx) in W[d]["under"] + W[d]["over"]:
-            k = t0
-            while k > 0 and not inside[k]:
-                k -= 1
-            for (dd, sid, tg, lo, hi) in fd:
-                if dd == d and lo <= tstar < hi:
-                    pre_gap.append(k - lo)
-    ck("the pre-event window reaches back past the dead-band crossing by a varying margin",
-       min(pre_gap) >= 0 and len(set(pre_gap)) >= 40,
-       "margin %d to %d s over %d distinct values" % (min(pre_gap), max(pre_gap), len(set(pre_gap))))
-    scat = []
-    for sid in sorted(su):
-        v = [100 * r["resp_traj"] for r in under if r["site"] == sid]
-        scat.append((sid, statistics.pstdev(v), max(v) - min(v)))
-    ck("the per-episode realised gain scatters as a measured droop response does",
-       all(sd >= 2.0 and rng >= 9.0 for (_, sd, rng) in scat),
-       ", ".join("%s sd %.2f pp range %.1f pp" % t for t in scat))
+        is_first = (h, b["t"]) in start_set
+        amb += (fits != 0) if is_first else (fits != 1)
+check("asks: against the reconstruction's first bags, every bag has exactly one reading", amb == 0, str(amb))
+chronic = [b for b in anti["bags"] if b["drug"] == "Deferoxamine" and b["course"][0] == "chronic"]
+acute_bags = [b for c in anti["dfo"] for b in c["bags"]]
+clash = sum(1 for a in acute_bags for b in chronic if a["hospital"] == b["hospital"] and a["dose"] == b["dose"]
+            and 18 <= abs((a["time"] - b["time"]).total_seconds()) / 3600 <= 30)
+check("asks: no acute deferoxamine bag has a same-dose transfusion-night bag 18 to 30 hours from it", clash == 0, str(clash))
+check("asks: transfusion-night deferoxamine bags in every hospital half-year",
+      all(any(b["hospital"] == h and a <= b["time"].date() <= z for b in chronic)
+          for h, *_ in world.HOSPITALS for _, a, z in antidotes.ASK_HALVES))
+check("asks: two-bag regimen courses exist at the hospitals that switched, three-bag elsewhere",
+      any(c["regimen"] == "two-bag" for c in anti["nac"] if c["hospital"] == "H23") and
+      not any(c["regimen"] == "two-bag" for c in anti["nac"] if c["hospital"] in ("H11", "H34")))
+check("separation: the call reads the case export, the point-of-sale files and the register only; no ask row is in them",
+      not any(f.startswith("hospitals/") for f in (pack.CASES, pack.POS_REV, pack.POS_PRE, pack.REGISTER)))
 
-    # ---- the frequency record's own spread, and that it changes nothing the call measures -----
-    # The deterministic deviation at a programme change is why the stump works, so the qualifying
-    # episodes stay exactly where they are. What the record gains is the deviation a real one
-    # carries besides them: excursions away from the period boundaries that cross the operator's
-    # extract trigger and never reach the qualifying threshold, ones carrying a transient that
-    # reaches it for too few seconds, and shallow ones no extract is published for.
-    diff_dates, qb_tot, qq_tot, ew_b, ew_q = 0, 0, 0, 0, 0
-    for d in sim.dates():
-        fb = sim.frequency_day(d, quiet=False)
-        fq = sim.frequency_day(d, quiet=True)
-        qb = sorted(sim.qualifying_episodes(d, fb) + core.over_episodes(fb))
-        qq = sorted(sim.qualifying_episodes(d, fq) + core.over_episodes(fq))
-        if qb != qq:
-            diff_dates += 1
-        qb_tot += len(qb)
-        qq_tot += len(qq)
-        ew_b += len(core.extract_windows(fb))
-        ew_q += len(core.extract_windows(fq))
-    ck("R2 the added excursions leave the qualifying episode set identical",
-       diff_dates == 0 and qb_tot == qq_tot,
-       "%d dates differ; %d qualifying episodes without them, %d with" % (diff_dates, qb_tot, qq_tot))
-    ck("the added excursions do reach the operator's extract publisher", ew_q - ew_b >= 30,
-       "%d published deviation windows without them, %d with" % (ew_b, ew_q))
-    wins = [(d, a) for d in sim.dates() for (a, b) in core.extract_windows(W[d]["f"])]
-    away = [x for x in wins if 2 <= (x[1] % 900) // 60 <= 13]
-    ck("the record's deviation is not a boundary law with three exceptions",
-       len(away) >= 40, "%d of %d published deviation windows open away from a period boundary, "
-       "%.1f per cent" % (len(away), len(wins), 100.0 * len(away) / len(wins)))
-    bad_w = 0
-    for d in sim.dates():
-        base = {a for (a, b) in core.extract_windows(sim.frequency_day(d, quiet=False))}
-        for (a, b) in core.extract_windows(W[d]["f"]):
-            if a in base:
-                continue
-            if any(a <= tstar <= b for (t0, t1, tstar, fx) in W[d]["under"] + W[d]["over"]):
-                bad_w += 1
-    ck("no added deviation window holds a qualifying episode", bad_w == 0,
-       "%d added windows hold one" % bad_w)
+# ---------------------------------------------------------------- leak: no file describes the data, no document names the step
+files = []
+for root, _, fs in os.walk(TGT):
+    for f in fs:
+        files.append(os.path.relpath(os.path.join(root, f), TGT))
+bad_names = [f for f in files if re.search(r"readme|dictionar|manifest|notes|codebook|definition|schema|field", f, re.I)]
+check("leak: no file whose name says it describes the data", not bad_names, str(bad_names))
+wb = openpyxl.load_workbook(os.path.join(TGT, pack.REGISTER), read_only=True)
+check("leak: the register's sheets are its two tables and nothing else", wb.sheetnames == ["Watched products", "Packaging changes"],
+      str(wb.sheetnames))
+proc = pdf_text(os.path.join(TGT, "packaging_review/crp_referral_procedure_issue4.pdf"))
+call = pdf_text(os.path.join(TGT, "packaging_review/call_for_referrals_2027_review.pdf"))
+proc, call = " ".join(proc.split()), " ".join(call.split())
+check("leak positive control: the procedure's text is read (its effect clause is found)",
+      "the number the product's packs would have produced" in proc.replace("\n", " "), proc[:80])
+check("leak positive control: the call letter's text is read", "27 November 2026" in call)
+banned = ["in homes", "in the home", "household", "cupboard", "stock", "inventory", "drain", "shelf life", "per pack sold",
+          "units sold", "per 100,000", "rate", "in use", "use up", "expiry", "lifetime", "depletion"]
+for name, txt in (("procedure", proc), ("call letter", call)):
+    hits = [w for w in banned if w in txt.lower()]
+    check("leak: the %s names no stock, use, drain, rate or sales basis" % name, not hits, str(hits))
+reg_text = " ".join(str(c) for sh in wb.worksheets for row in sh.iter_rows(values_only=True) for c in row if c is not None).lower()
+check("leak: the register states no shelf life, usage period or rate", not any(w in reg_text for w in ("shelf", "expiry", "usage", "days of use", "rate", "per day")))
+meta = json.load(open(os.path.join(TASK, "metadata.json")))
+mtext = json.dumps(meta).lower()
+check("leak: metadata.json names no method or mechanism",
+      not any(w in mtext for w in ("stump", "stock", "drain", "in homes", "counterfactual", "cupboard", "regimen", "chelation", "transfusion")))
 
-    # the rung 0 basis the write-up prints is defined for every episode in the population
-    nopre = sum(1 for r in under if r["resp_pre"] is None)
-    ck("the undisturbed level is in the archive for every episode in the population", nopre == 0,
-       "%d of %d rows have no second inside the dead band in their recording" % (nopre, len(under)))
-    ck("the rung 0 figures the write-up prints recompute on that basis",
-       round(su[F["rung0_site"]]["pre"], 1) == F["rung0_pre"]
-       and round(su[call]["pre"]) == round(F["ladder"]["pre"][call]),
-       "%s %.1f and %s %.2f" % (F["rung0_site"], su[F["rung0_site"]]["pre"], call, su[call]["pre"]))
+# ---------------------------------------------------------------- Gate G: nothing ranks the candidates
+heads = {}
+for f in files:
+    if f.endswith(".csv"):
+        heads[f] = open(os.path.join(TGT, f)).readline().strip()
+check("Gate G: no shipped table carries an effect, ratio or ranking column",
+      not any(re.search(r"effect|ratio|rank|score|expected", h) for h in heads.values()), str(heads))
 
-    # printed precision: every graded figure at the precision its asking sentence states
-    sub = os.path.join(TASK, "submission.md")
-    ck("submission.md is present for the precision check", os.path.exists(sub), sub)
-    if os.path.exists(sub):
-        import re
-        body = open(sub, encoding="utf-8").read()
-        blk = body[body.index("## 4. Deliverable Answers"):]
-        wrong = []
-        for line in blk.splitlines():
-            if "per cent" in line:
-                for m in re.finditer(r"([0-9]+\.[0-9]+) per cent", line):
-                    wrong.append("gain %s not whole" % m.group(1))
-            if "above " in line or "below " in line or "held available" in line or "shortfall " in line:
-                for m in re.finditer(r"(?:above|below|held available|shortfall) (-?[0-9]+)(?![0-9.])", line):
-                    wrong.append("energy %s not to one decimal" % m.group(1))
-        ck("every graded figure is printed at the precision its asking sentence states",
-           not wrong, "; ".join(wrong[:6]))
+# ---------------------------------------------------------------- realism sweep
+ids = [r["case_id"] for r in csv.DictReader(open(os.path.join(TGT, pack.CASES))) if r["substance_seq"] == "1"]
+LIBS = (b"openpyxl", b"python-docx", b"reportlab", b"matplotlib", b"Openpyxl")
+for f in sorted(glob.glob(os.path.join(TGT, "**", "*.xlsx"), recursive=True) + glob.glob(os.path.join(TASK, "golden", "*.xlsx"))
+                + glob.glob(os.path.join(TASK, "golden", "*.docx"))):
+    with zipfile.ZipFile(f) as z:
+        core = z.read("docProps/core.xml")
+        app = z.read("docProps/app.xml")
+        wbx = z.read("xl/workbook.xml") if "xl/workbook.xml" in z.namelist() else b""
+    cr = re.search(rb"<dc:creator[^>]*>([^<]+)</dc:creator>", core)
+    lm = re.search(rb"<cp:lastModifiedBy[^>]*>([^<]+)</cp:lastModifiedBy>", core)
+    check("container %s: an owner as creator and last modifier, no writer library in its properties" % os.path.relpath(f, TASK),
+          cr and lm and not any(l in core or l in app for l in LIBS), "%s / %s" % (cr and cr.group(1), lm and lm.group(1)))
+    if wbx:
+        check("container %s: no sheet state or default view attribute Excel never writes" % os.path.relpath(f, TASK),
+              b'state="visible"' not in wbx and b"<workbookProtection/>" not in wbx and b'visibility="visible"' not in wbx)
+check("realism: case IDs are unique per case", len(ids) == len(set(ids)))
+steps = set()
+by_month = {}
+for i in ids:
+    if i.startswith("MP"):
+        by_month.setdefault(i[2:6], []).append(int(i[6:]))
+for m, v in by_month.items():
+    steps |= set(np.diff(sorted(v)).tolist())
+check("realism: the new system's case numbers do not run on one constant step", len(steps) > 2, str(sorted(steps)[:6]))
+monthly = {}
+for r in csv.DictReader(open(os.path.join(TGT, pack.CASES))):
+    if r["product_code"] == world.PRODUCT_CODE["FKJ"] and r["reason"] == "Unintentional - general" and int(r["patient_age_years"]) < 6:
+        monthly[r["call_received_local"][:7]] = monthly.get(r["call_received_local"][:7], 0) + 1
+check("realism: monthly counts do not repeat a block", len(set(monthly.values())) > len(monthly) * 0.5)
+centers = [c[1] for c in world.CENTERS]
+check("realism: member center names take more than two shapes", len({n.split()[-1] for n in centers}) > 2)
 
-    describing_and_closures(W, recs, cache, su)
+# ---------------------------------------------------------------- input gates
+fmts = {f.rsplit(".", 1)[1] for f in files}
+check("input gates: 10 or more files", len(files) >= 10, str(len(files)))
+check("input gates: 3 or more formats", len(fmts) >= 3, str(sorted(fmts)))
+check("input gates: a file of 25,000 rows or more", sum(1 for _ in open(os.path.join(TGT, pack.CASES))) - 1 >= 25000)
+check("input gates: 2 or more distractors named in metadata.json", len(meta["distractor_files"]) >= 2)
+check("input gates: metadata.json lists every file with source, date and licence",
+      sorted("target/" + f for f in files) == sorted(x["path"] for x in meta["files"]) and
+      all(x.get("source") and x.get("issued_or_extracted") and x.get("licence") for x in meta["files"]))
+check("distractors: the golden never reads them", all(d.startswith("target/census") or d.startswith("target/packaging_review/adverse")
+                                                       for d in meta["distractor_files"]))
 
-    print("%d checks, %d failed" % (N, len(FAILS)))
-    return 1 if FAILS else 0
+# ---------------------------------------------------------------- document dates
+check("dates: no document states a date after the as-of", world.DOC_DATES["call"] < sim.AS_OF and world.DOC_DATES["procedure"] < sim.AS_OF)
+check("dates: the call letter follows the procedure it cites", world.DOC_DATES["call"] > world.DOC_DATES["procedure"])
 
-
-# A file or sheet whose job is to tell the analyst what the data is (dataset-generation section 3),
-# by the same patterns leak.py's first sweep uses.
-DESCRIBE_NAME = __import__("re").compile(
-    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|fields?_(guide|notes|list|descriptions?)|"
-    r"\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|column_(notes|descriptions?)|data_?notes|how_to_read|about_this|"
-    r"export_notes|extract_notes|feed_notes|desk_notes|data_team_notes|definitions|schema|layouts?_notes|handling_notes|release_notes)(?![a-z])",
-    __import__("re").I)
-DESCRIBE_SHEET = __import__("re").compile(
-    r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
-    r"about|about this (file|workbook)|how to (read|use)( this)?|columns?)$", __import__("re").I)
-
-
-def describing_and_closures(W, recs, cache, su):
-    """No shipped file describes the data, and each closure the dropped data dictionary and the
-    register's dropped Notes sheet used to carry rests on the producing systems instead. Everything
-    here reads the shipped bytes through the verifier's own readers (verify.rd, ts, tl,
-    episodes_from, openpyxl, pypdf), with a positive control beside every absence."""
-    import re
-    import openpyxl
-    from pypdf import PdfReader
-    import verify as V
-
-    # ---- 1. no file, sheet or document describes the data --------------------------------------
-    shipped, sheets, text = [], {}, {}
-    for root, _, names in os.walk(TGT):
-        for n in names:
-            p = os.path.join(root, n)
-            rel = os.path.relpath(p, TGT)
-            shipped.append(rel)
-            if n.endswith(".xlsx"):
-                sheets[rel] = openpyxl.load_workbook(p).sheetnames
-            if n.endswith(".pdf"):
-                text[rel] = re.sub(r"\s+", " ", " ".join(pg.extract_text() or "" for pg in PdfReader(p).pages))
-
-    def named_as_description(rel):
-        return bool(DESCRIBE_NAME.search(os.path.splitext(os.path.basename(rel))[0]))
-    bad_names = [r for r in shipped if named_as_description(r)]
-    ck("no shipped file is named as a description of the data", not bad_names and len(shipped) >= 10,
-       "%d files, flagged: %s" % (len(shipped), ", ".join(bad_names) or "none"))
-    bad_sheets = ["%s sheet %r" % (r, s) for r, v in sorted(sheets.items()) for s in v
-                  if DESCRIBE_SHEET.match(s.strip())]
-    ck("no shipped workbook carries a notes, readme or dictionary sheet", sheets and not bad_sheets,
-       "; ".join("%s: %s" % (r, ", ".join(v)) for r, v in sorted(sheets.items())))
-    ck("positive control, the name and sheet tests catch the two forms this pack once shipped",
-       named_as_description("data_dictionary.csv") and bool(DESCRIBE_SHEET.match("Notes"))
-       and not named_as_description("register/asset_register.xlsx"), "")
-    # by content: a document naming the data files' field identifiers is a dictionary whatever its name
-    fields = set()
-    for rel in shipped:
-        if rel.endswith(".csv"):
-            with open(os.path.join(TGT, rel), newline="", encoding="utf-8") as fh:
-                fields |= {c for c in next(csv.reader(fh)) if "_" in c}
-    con = sqlite3.connect(os.path.join(TGT, "platform", "vkf_highres_archive.sqlite"))
-    for tbl in ("recording", "power_1s"):
-        fields |= {r[1] for r in con.execute("PRAGMA table_info(%s)" % tbl) if "_" in r[1]}
-
-    def named_fields(t):
-        return sorted(c for c in fields if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), t))
-    listing = {rel: named_fields(t) for rel, t in sorted(text.items())}
-    ck("no shipped document names the data files' fields",
-       len(text) >= 3 and all(len(v) <= 3 for v in listing.values()),
-       "; ".join("%s %d (%s)" % (r, len(v), ", ".join(v)) for r, v in listing.items()))
-    ck("positive control, the field test finds a field list where there is one",
-       len(named_fields("event_id, logged_utc, site_id, event_type, start_local, duration_min, "
-                        "supersedes_event_id, ts_utc, p_mw")) >= 8 and len(fields) >= 30,
-       "%d field identifiers in the shipped headers" % len(fields))
-
-    # ---- 2. SF10, the time base: each producing system writes its own clock --------------------
-    zones, bad_zone, tcols, tables = collections.Counter(), [], 0, {}
-    for rel in sorted(shipped):
-        if not rel.endswith(".csv"):
-            continue
-        rows = V.rd(rel)
-        tables[rel] = rows
-        for c in rows[0].keys():
-            vals = [r[c] for r in rows if r[c]]
-            if c.endswith("_utc"):
-                tcols += 1
-                for v in vals:
-                    try:
-                        V.ts(v)
-                        zones["Z"] += 1
-                    except ValueError:
-                        bad_zone.append("%s %s %s" % (rel, c, v))
-                        break
-            elif c.endswith("_local"):
-                tcols += 1
-                for v in vals:
-                    if re.fullmatch(r"\d\d:00", v):
-                        zones["local clock hour"] += 1
-                    elif v.endswith("+02:00"):
-                        V.tl(v)
-                        zones["+02:00"] += 1
-                    else:
-                        bad_zone.append("%s %s %s" % (rel, c, v))
-                        break
-            elif vals and re.match(r"\d{4}-\d\d-\d\dT", vals[0]):
-                bad_zone.append("%s %s names no clock" % (rel, c))
-    for tbl, cols in (("recording", ("start_utc", "end_utc")), ("power_1s", ("ts_utc",))):
-        for c in cols:
-            tcols += 1
-            n_not_z = con.execute("SELECT count(*) FROM %s WHERE %s NOT LIKE '%%Z'" % (tbl, c)).fetchone()[0]
-            zones["Z"] += con.execute("SELECT count(*) FROM %s" % tbl).fetchone()[0] - n_not_z
-            if n_not_z:
-                bad_zone.append("archive %s.%s %d stamps without Z" % (tbl, c, n_not_z))
-    try:
-        V.ts("2026-09-21T02:00:00+02:00")
-        refuses = False
-    except ValueError:
-        refuses = True
-    tc = text.get(os.path.join("operator", "fcr_technical_conditions_2026.pdf"), "")
-    ck("SF10 every timestamp column names its clock and every stamp carries its zone",
-       not bad_zone and tcols >= 12 and zones["Z"] > 0 and zones["+02:00"] > 0,
-       "%d timestamp columns; %s; %s" % (tcols, ", ".join("%s %d" % kv for kv in sorted(zones.items())),
-                                         "; ".join(bad_zone[:4]) or "no stamp without its zone"))
-    ck("positive control, the verifier's UTC reader refuses a local stamp", refuses, "")
-    ck("SF10 the technical conditions run the delivery blocks on local time",
-       "running from 00:00 local time" in tc and len(tc) > 500,
-       "clause 1's 'running from 00:00 local time' searched in %d characters of the shipped pdf" % len(tc))
-
-    # ---- 3. closure 18, units: the headers and the meter file's unit column carry them ---------
-    hdr = {rel: list(rows[0].keys()) for rel, rows in tables.items()}
-    want_unit = {"platform/site_programme_15min.csv": "programme_mw",
-                 "platform/fcr_block_commitments.csv": "committed_mw",
-                 "operator/system_frequency_1s_extracts.csv": "frequency_hz",
-                 "operator/system_frequency_minute_summary.csv": "frequency_mean_hz",
-                 "operator/settlement_statement_daily_2026-09.csv": "settled_volume_mwh",
-                 "operator/settlement_statement_daily_2026-10_amended.csv": "settled_volume_mwh",
-                 "prequalification/prequalification_records.csv": "contracted_gain_mw_per_hz"}
-    miss = ["%s %s" % (r, c) for r, c in sorted(want_unit.items()) if c not in hdr.get(r, [])]
-    if "p_mw" not in {r[1] for r in con.execute("PRAGMA table_info(power_1s)")}:
-        miss.append("archive power_1s p_mw")
-    rwb = openpyxl.load_workbook(os.path.join(TGT, "register", "asset_register.xlsx"))
-    rhdr = [c.value for c in rwb["Sites"][1]]
-    reg = {r[0]: dict(zip(rhdr, r)) for r in rwb["Sites"].iter_rows(min_row=2, values_only=True)}
-    for h in ("Contracted FCR (MW)", "Installed (MW)", "Connection (kV)"):
-        if h not in rhdr:
-            miss.append("register %s" % h)
-    ck("closure 18 every quantity's header names its unit", not miss and len(hdr) >= 12,
-       "; ".join(miss) or "%d csv headers and the archive and register read" % len(hdr))
-    met = tables["settlement/metered_volumes_15min.csv"]
-    units = collections.Counter(r["unit"] for r in met)
-    kwh_points = sorted({r["metering_point"] for r in met if r["unit"] == "kWh"})
-    prog = {(r["site_id"], r["period_start_local"][:19]): float(r["programme_mw"])
-            for r in tables["platform/site_programme_15min.csv"]}
-    by_point = {}
-    for sid, d in reg.items():
-        by_point[str(d["Metering point (EAN)"])] = sid
-
-    def scale(point):
-        sid = by_point.get(point)
-        out = []
-        for r in met:
-            if r["metering_point"] != point:
-                continue
-            start = (V.tl(r["interval_ts_local"]) - dt.timedelta(minutes=15)).strftime("%Y-%m-%dT%H:%M:%S")
-            pmw = prog.get((sid, start))
-            if pmw is not None and abs(pmw) > 1.0:
-                out.append(float(r["net_volume"]) / (pmw * 0.25))
-        return statistics.median(out) if out else float("nan"), len(out)
-    k_scale, k_n = scale(kwh_points[0]) if len(kwh_points) == 1 else (float("nan"), 0)
-    mwh_point = str(reg["VKF-ZWT"]["Metering point (EAN)"])
-    m_scale, m_n = scale(mwh_point)
-    ck("closure 18 the meter file's unit column takes MWh, and kWh on exactly one metering point",
-       set(units) == {"MWh", "kWh"} and len(kwh_points) == 1,
-       ", ".join("%s %d rows" % kv for kv in sorted(units.items())) + "; kWh on %s" % ", ".join(kwh_points))
-    ck("closure 18 the unit column is true to the volumes it labels",
-       900 < k_scale < 1100 and 0.9 < m_scale < 1.1 and k_n > 100 and m_n > 100,
-       "median volume over programme energy: %.1f on the kWh point (%d periods), %.3f on an MWh point "
-       "(%d periods)" % (k_scale, k_n, m_scale, m_n))
-
-    # ---- 4. closure 19, codes: the event log's own labels; the archive's flag moves nothing -----
-    ev = tables["platform/control_platform_event_log.csv"]
-    ids = {e["event_id"] for e in ev}
-    odd = [e["event_id"] for e in ev if not re.fullmatch(r"[a-z]+(_[a-z]+)*", e["event_type"])
-           or not e["detail"].strip()
-           or (e["event_type"] == "correction" and e["supersedes_event_id"] not in ids)]
-    ck("closure 19 every event row carries the platform's own type label and a detail text",
-       len(ev) >= 50 and not odd,
-       "%d rows, types %s; rows without: %s" % (len(ev), ", ".join(sorted({e["event_type"] for e in ev})),
-                                                ", ".join(odd) or "none"))
-    byext = collections.defaultdict(list)
-    for r in tables["operator/system_frequency_1s_extracts.csv"]:
-        byext[r["extract_id"]].append((V.ts(r["ts_utc"]), float(r["frequency_hz"])))
-    ext_utc = set()
-    for seq in byext.values():
-        seq.sort()
-        for (_, _, x, _) in (V.episodes_from(seq, V.QUAL_UNDER) + V.episodes_from(seq, V.QUAL_OVER, over=True)):
-            ext_utc.add(x.strftime("%Y-%m-%dT%H:%M:%SZ"))
-    con.execute("CREATE TEMP TABLE ext_sec (ts_utc TEXT PRIMARY KEY)")
-    con.executemany("INSERT INTO ext_sec VALUES (?)", [(x,) for x in sorted(ext_utc)])
-    at_ext = dict(con.execute("""SELECT p.quality, count(*) FROM power_1s p JOIN ext_sec e
-                                 ON e.ts_utc = p.ts_utc GROUP BY p.quality""").fetchall())
-    n_e = con.execute("SELECT count(*) FROM power_1s WHERE quality = 'E'").fetchone()[0]
-    ck("closure 19 no estimated-flag sample sits at the extreme second of a qualifying episode",
-       at_ext.get("E", 0) == 0 and at_ext.get("M", 0) >= 900 and len(ext_utc) >= 400,
-       "%d extreme seconds of either sign; archive samples there: %s"
-       % (len(ext_utc), ", ".join("%s %d" % kv for kv in sorted(at_ext.items()))))
-    ck("positive control, the flag query finds the estimated samples the archive holds",
-       n_e >= 1000, "%d E-flagged samples in the archive" % n_e)
-    # and the traverse spans the gains rest on recover exactly with those samples left out
-    rid_of = {(r[0], r[1], r[3]): i + 1 for i, r in enumerate(recs)}
-    e_at = set()
-    for rid, t in con.execute("SELECT recording_id, ts_utc FROM power_1s WHERE quality = 'E'"):
-        lt = V.ts(t) + V.OFFSET
-        e_at.add((rid, lt.hour * 3600 + lt.minute * 60 + lt.second))
-    con.close()
-    byk = {}
-    for r in recs:
-        byk.setdefault((r[0], r[1]), []).append(r)
-    res_fit, dropped = [], 0
-    for s_site in sim.SITES:
-        sid = s_site["id"]
-        segs = []
-        for (dd, pp) in core.fit_boundaries(W, sid):
-            t = pp * 900
-            prog_d = W[dd]["prog"][sid]
-            for (d2, s2, tg, lo, hi) in byk.get((dd, sid), ()):
-                if lo <= t and t + 204 < hi:
-                    rid = rid_of[(d2, s2, lo)]
-                    keep = np.array([(rid, t + k) not in e_at for k in range(205)])
-                    dropped += int((~keep).sum())
-                    segs.append((float(prog_d[pp - 1]), float(prog_d[pp] - prog_d[pp - 1]),
-                                 cache[(d2, sid, lo)][t - lo:t - lo + 205], keep))
-                    break
-        best, bestres = None, None
-        for S in range(40, 361):
-            frac = np.minimum(1.0, np.arange(205) / float(S))
-            res = 0.0
-            for (prev, step, ys, keep) in segs:
-                e = (ys - (prev + step * frac))[keep]
-                res += float((e * e).sum())
-            if bestres is None or res < bestres:
-                best, bestres = S, res
-        res_fit.append((sid, best, s_site["ramp_s"]))
-    ck("closure 19 every traverse span recovers exactly with the E-flagged samples left out",
-       all(b == r for (_, b, r) in res_fit) and dropped > 0,
-       "%d flagged samples inside the fitting windows left out; " % dropped
-       + ", ".join("%s %d against %d" % x for x in res_fit))
-
-    # ---- 5. SF5: the register's own header labels its blocks column indicative ------------------
-    ck("SF5 the register's own header labels its usual blocks indicative",
-       "Usual FCR blocks (indicative)" in rhdr and rwb.sheetnames == ["Sites"],
-       "sheets %s; header %s" % (", ".join(rwb.sheetnames), ", ".join(str(h) for h in rhdr)))
-    com = collections.defaultdict(set)
-    for r in tables["platform/fcr_block_commitments.csv"]:
-        com[(r["site_id"], r["delivery_date"])].add(int(r["block"]))
-    off_usual = {}
-    for sid, d in sorted(reg.items()):
-        usual = {int(x) for x in str(d["Usual FCR blocks (indicative)"] or "").split(",") if x.strip()}
-        n_off = sum(1 for day in sim.dates() if com.get((sid, day.isoformat()), set()) != usual)
-        if n_off:
-            off_usual[sid] = n_off
-    ck("SF5 the platform's dated commitments depart from the indicative blocks",
-       len(off_usual) >= 2, "sites committed otherwise than their usual blocks, in delivery dates: %s"
-       % ", ".join("%s %d of %d" % (k, v, len(sim.dates())) for k, v in off_usual.items()))
-
-    # ---- 6. the provenance the dictionary carried is in metadata.json, and it is true ----------
-    md = json.load(open(os.path.join(TASK, "metadata.json")))
-    prov = {f["path"][len("target/"):]: f for f in md.get("files", [])}
-    ck("metadata.json records every shipped file and no file that does not ship",
-       set(prov) == set(shipped), "unrecorded: %s; recorded but not shipped: %s"
-       % (", ".join(sorted(set(shipped) - set(prov))) or "none",
-          ", ".join(sorted(set(prov) - set(shipped))) or "none"))
-    wrong_rows = []
-    for rel, f in sorted(prov.items()):
-        if rel in tables and f.get("rows") != len(tables[rel]):
-            wrong_rows.append("%s %s against %d" % (rel, f.get("rows"), len(tables[rel])))
-        if rel in sheets and f.get("rows") != rwb["Sites"].max_row - 1:
-            wrong_rows.append("%s %s" % (rel, f.get("rows")))
-    con = sqlite3.connect(os.path.join(TGT, "platform", "vkf_highres_archive.sqlite"))
-    arch = {t: con.execute("SELECT count(*) FROM %s" % t).fetchone()[0] for t in ("recording", "power_1s")}
-    con.close()
-    if prov.get("platform/vkf_highres_archive.sqlite", {}).get("rows") != arch:
-        wrong_rows.append("archive %s against %s" % (prov.get("platform/vkf_highres_archive.sqlite", {}).get("rows"), arch))
-    ck("metadata.json's row counts are the shipped files' own", not wrong_rows,
-       "; ".join(wrong_rows) or "%d files" % len(prov))
-    ck("metadata.json carries no gloss on the data: no per-file row description or role",
-       not [f for f in md.get("files", []) if "one_row_is" in f or "role" in f], "")
-    # the declared wrong-basis distractor says what its own rows say, and names neither the golden
-    # nor rung 0's site (dataset-generation section 8.3)
-    pq = tables["prequalification/prequalification_records.csv"]
-    ratio = {r["site_id"]: 100.0 * float(r["measured_gain_mw_per_hz"]) / float(r["contracted_gain_mw_per_hz"])
-             for r in pq if r["measured_gain_mw_per_hz"]}
-    low = min(ratio, key=ratio.get)
-    tests = sorted(int(r["test_date"][:4]) for r in pq if r["measured_gain_mw_per_hz"])
-    decl = [r for r in pq if not r["measured_gain_mw_per_hz"]]
-    ck("the declared wrong-basis distractor's stated facts hold on its own rows",
-       low == "VKF-RDL" and round(ratio[low], 1) == 98.5 and min(ratio.values()) >= 90.0
-       and (tests[0], tests[-1]) == (2017, 2025) and len(decl) == 4
-       and all(r["test_date"].startswith("2026") for r in decl),
-       "lowest %s at %.2f, step tests %d to %d, %d declarations" % (low, ratio[low], tests[0], tests[-1], len(decl)))
-    ck("the wrong-basis distractor names neither the golden nor rung 0's site",
-       low not in (core.ranked(su, "traj")[0][0], core.ranked(su, "pre")[0][0]), low)
-
-if __name__ == "__main__":
-    sys.exit(main())
+fails = [r for r in RESULTS if not r[1]]
+for label, ok, detail in RESULTS:
+    print("%s  %s%s" % ("ok  " if ok else "FAIL", label, ("  [" + detail + "]") if detail and not ok else ""))
+print("%d checks, %d failed" % (len(RESULTS), len(fails)))
+sys.exit(1 if fails else 0)

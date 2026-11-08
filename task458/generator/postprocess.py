@@ -4,7 +4,7 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "Sandhollow Health Plan"
+COMPANY = "Ashlund Home Group plc"
 
 
 def _x(s):
@@ -13,14 +13,15 @@ def _x(s):
 APP = {".xlsx": ("Microsoft Excel", "16.0300"), ".docx": ("Microsoft Office Word", "16.0000"),
        ".pptx": ("Microsoft Office PowerPoint", "16.0000")}
 XML_DECL = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
-INLINE = re.compile(rb'<c((?: [a-zA-Z:]+="[^"]*")*?) t="inlineStr"((?: [a-zA-Z:]+="[^"]*")*)><is><t>(.*?)</t></is></c>')
+INLINE = re.compile(rb'<c((?: [a-zA-Z:]+="[^"]*")*?) t="inlineStr"((?: [a-zA-Z:]+="[^"]*")*)><is><t(?: xml:space="preserve")?>(.*?)</t></is></c>', re.S)
 # the part order Excel writes when it saves a workbook
 EXCEL_ORDER = ("[Content_Types].xml", "_rels/.rels", "xl/workbook.xml", "xl/_rels/workbook.xml.rels", "xl/worksheets/",
                "xl/theme/", "xl/styles.xml", "xl/sharedStrings.xml", "docProps/core.xml", "docProps/app.xml")
 
 
 def _sheet_no(name):
-    return int(re.search(r"sheet(\d+)\.xml$", name).group(1))
+    m = re.search(r"sheet(\d+)\.xml(?:\.rels)?$", name)
+    return int(m.group(1)) if m else 0
 
 
 def share_strings(items):
@@ -113,7 +114,7 @@ def _excel_styles(data):
            'xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision">' % (MAIN, X14AC)]
     if used:
         out.append('<numFmts count="%d">%s</numFmts>' % (len(used), "".join(
-            '<numFmt numFmtId="%d" formatCode="%s"/>' % (renum[o], fmts[o]) for o in used)))
+            '<numFmt numFmtId="%d" formatCode="%s"/>' % (renum[o], _x(fmts[o]).replace('"', "&quot;")) for o in used)))
     fonts = []
     for f in root.findall("m:fonts/m:font", ns):
         get = lambda tag: f.find("m:" + tag, ns)
@@ -264,6 +265,20 @@ def excel_dialect(items, key, app_version="16.0300", company=None):
             ov("/xl/styles.xml", CT_SHEET + ".styles+xml"), ov("/xl/sharedStrings.xml", CT_SHEET + ".sharedStrings+xml"),
             ov("/docProps/core.xml", "application/vnd.openxmlformats-package.core-properties+xml"),
             ov("/docProps/app.xml", "application/vnd.openxmlformats-officedocument.extended-properties+xml"))).encode()
+    extra = sorted(nm for nm in parts if nm.startswith(("xl/drawings/", "xl/charts/", "xl/worksheets/_rels/")))
+    over = "".join(ov("/" + nm, "application/vnd.openxmlformats-officedocument.drawing+xml") for nm in extra
+                   if re.match(r"xl/drawings/drawing\d+\.xml$", nm))
+    over += "".join(ov("/" + nm, "application/vnd.openxmlformats-officedocument.drawingml.chart+xml") for nm in extra
+                    if re.match(r"xl/charts/chart\d+\.xml$", nm))
+    if over:
+        parts["[Content_Types].xml"] = parts["[Content_Types].xml"].replace(
+            b'<Override PartName="/xl/theme/theme1.xml"', over.encode() + b'<Override PartName="/xl/theme/theme1.xml"', 1)
+    for nm in extra:
+        if nm.endswith(".rels"):
+            body = parts[nm].decode()
+            body = re.sub(r'Target="/xl/(drawings|charts)/', lambda m: 'Target="../%s/' % m.group(1), body)
+            parts[nm] = (XML_DECL + re.sub(r"^<\?xml[^>]*\?>\s*", "", body).encode()) if not body.startswith("<?xml") \
+                else body.encode()
     parts["docProps/app.xml"] = XML_DECL + (
         '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
         'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Application>Microsoft Excel'
@@ -281,7 +296,9 @@ def excel_dialect(items, key, app_version="16.0300", company=None):
     parts["xl/theme/theme1.xml"] = XML_DECL + re.sub(rb">\s+<", b"><", re.sub(rb"^<\?xml[^>]*\?>\s*", b"", theme)).strip()
     order = ["[Content_Types].xml", "_rels/.rels", "xl/workbook.xml", "xl/_rels/workbook.xml.rels"] + \
         ["xl/worksheets/sheet%d.xml" % k for k in range(1, n + 1)] + \
-        ["xl/theme/theme1.xml", "xl/styles.xml", "xl/sharedStrings.xml", "docProps/core.xml", "docProps/app.xml"]
+        ["xl/theme/theme1.xml", "xl/styles.xml", "xl/sharedStrings.xml"] + \
+        [nm for nm in extra if not nm.endswith(".rels")] + [nm for nm in extra if nm.endswith(".rels")] + \
+        ["docProps/core.xml", "docProps/app.xml"]
     assert sorted(order) == sorted(parts), sorted(set(parts) ^ set(order))
     return [(nm, parts[nm]) for nm in order]
 
@@ -314,7 +331,8 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
                 data = data.replace(b"</Properties>", b"<Company>" + _x(company or COMPANY).encode() + b"</Company></Properties>")
         out.append((name, data))
     if ext == ".xlsx":
-        out = [(n, d if d.startswith(b"<?xml") else XML_DECL + d) for n, d in share_strings(out)]
+        out = [(n, d if d.startswith(b"<?xml") or not n.endswith((".xml", ".rels")) else XML_DECL + d)
+               for n, d in share_strings(out)]
         if excel:
             out = excel_dialect(out, key=path.replace("\\", "/").rsplit("/", 1)[-1], company=company)
     with zipfile.ZipFile(path, "w") as z:

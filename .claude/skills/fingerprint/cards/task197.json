@@ -2,16 +2,16 @@
   "task": "task197",
   "architecture": "v2",
   "drawn": "2026-11-02",
-  "slot_note": "Re-rooted 2026-11-02 from architecture 1 (energy-systems-utilities, FCR droop response), whose main call is sound but whose ask layer the honest careful-solver cracker spent and the /fix-rubric screen could not repair. Drawn outside every domain in flight or shipped today (no energy, physical or environmental sciences, biomedical, survey and official statistics, human factors, banking, product analytics, general statistics, healthcare delivery or accounting).",
+  "slot_note": "Re-rooted 2026-11-02 from architecture 1 (energy-systems-utilities, FCR droop response), whose main call is sound but whose ask layer the honest careful-solver cracker spent and the /fix-rubric screen could not repair. Drawn outside every domain in flight or shipped today (no energy, physical or environmental sciences, biomedical, survey and official statistics, human factors, banking, product analytics, general statistics, healthcare delivery or accounting). The world was moved from New Zealand to a United States regional network at the draw's design stage, because each product's own drain is identified only at a scale of exposures New Zealand cannot honestly carry; the mechanism, pairing, shape and decision are unchanged.",
   "domain": "pharmacology-pharmacoepidemiology-safety",
   "subdomain": "safety-signal-detection",
-  "niche": "paediatric toxicovigilance at a national poisons advice service: which watched over-the-counter medicine's packaging change raised accidental exposures of children under six above what the product would have produced unchanged, when the packs a child can reach are the ones its past sales left in household cupboards",
+  "niche": "paediatric toxicovigilance at a regional poison data network: which watched over-the-counter product's 2024-25 packaging change raised accidental exposures of children under six above what its packs would have produced unchanged, when the packs a child can reach are the ones its past sales left in household cupboards",
   "objective": "anomaly-detection",
   "shape": "17",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "generator/figures.json: call_product, call_ratio",
+  "answer": "Refer Feverkind Junior Strength Acetaminophen Oral Suspension: effect 1.3, the only change at 1.20 or more; runner-up Embercalm Nicotine Polacrilex Lozenge Mint 1.1, gap 0.2",
+  "answer_source": "generator/figures.json: call, call_effect, runner_up, runner_up_effect, gap",
   "gap": [
     "population",
     "time"
@@ -36,51 +36,67 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:exposure-stock-against-sales-flow",
   "layer1": [
-    "enquiry records one row per substance line, several products on one enquiry",
-    "free-text product names matched to the service's product index with variants and misspellings",
-    "a case-management system migration mid-window with recoded circumstance and caller lists",
-    "local time across daylight saving changes",
-    "market sales in four-week reporting periods, not calendar months, with a preliminary and a revised release",
-    "pack-size variants under one product",
-    "age recorded in months for infants and years otherwise"
+    "case IDs change format at the member centers' move to one case-management system in July 2023",
+    "free-text substance names beside the network's product code, brand and flavour variants",
+    "second substances on some cases with no product code",
+    "local call times per member center's own zone, DST included",
+    "point-of-sale units in four-week periods ending Saturdays, not calendar months, across UPCs and channels",
+    "a revised and a preliminary point-of-sale release",
+    "ages in months for children under two",
+    "the antidote records carry no patient key and bags are prepared ahead or one by one by hospital"
   ],
-  "stakeholder_role": "the toxicovigilance unit of a national poisons advice service",
+  "stakeholder_role": "the toxicovigilance unit of a regional poison data network",
   "role_family": "research_desk",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "enquiries/poisons_enquiries.csv",
-    "rows": 60000,
-    "entity": "one substance line of one poisons enquiry",
-    "grain": "enquiry x substance",
+    "file": "target/network/case_export_watched_products.csv",
+    "rows": 467885,
+    "entity": "one substance line of one poison center exposure case involving a watched product",
+    "grain": "case x substance line",
     "source": "synthetic"
   },
   "forum": "line_manager_or_team",
   "forcing_event": "audit_or_inspection",
   "org_family": "university_or_school",
   "world": {
-    "geography": "New Zealand",
-    "currency": "NZD",
-    "org_type": "a national poisons advice service hosted by a university, referring to an invented medicines regulator's child-resistant packaging review",
-    "invented_names": [],
+    "geography": "United States (a regional poison data network across fifteen Midwest, Plains and Great Lakes states; all organisations, products and people invented)",
+    "currency": "USD",
+    "org_type": "a regional poison data network pooling its member poison centers' case records, referring to an invented federal packaging review office",
+    "invented_names": [
+      "Midcontinent Poison Data Network",
+      "Child Packaging Safety Office",
+      "Halcyon Retail Measurement",
+      "Feverkind",
+      "Dozinox",
+      "Sunnybear",
+      "Clearview",
+      "Embercalm",
+      "Ibucalm",
+      "Vapocare",
+      "Coughex",
+      "Wrenfield",
+      "Ferrocare"
+    ],
     "people": [
-      "Lesley Johansen",
-      "Gregory Watkins"
+      "Timothy Moran",
+      "Gary Richards"
     ]
   },
   "deliverables": [
     "packaging_referral.docx",
-    "exposure_effects.csv",
-    "counterfactual_chart.png"
+    "referral_tables.xlsx",
+    "effects_chart.png"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "what",
   "driver": "Each unit's events come from a stock that its past inflows built and that drains at the unit's own pace, so a change's effect has to be read against the events that stock would have produced, recovered from the unit's own record before the change, because a rate on the current inflow credits a change with every move of the inflow.",
   "driver_concrete": "Each watched medicine's accidental under-six exposures in the twelve months after its packaging change are set against the exposures its packs in homes would have produced unchanged, a stock its past sales built that drains at the product's own pace and that only the product's own exposure record before the change pins, because a rate on the year's packs sold rises for a product whose sales fell while its old packs stayed in cupboards and stays flat for a product whose new packaging lifted both its sales and its per-pack risk.",
   "stump": "The default path divides each product's accidental under-six exposures by its packs sold, compares the twelve months after its packaging change with the twelve before and refers the product whose sales fell after its change, while the product whose new cap made each pack in a home riskier shows a flat rate because the same cap also lifted its sales.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task270": "task270 v6 reads where an item sold without a fixed slot actually landed, a placement recovered by joining a sales record to a landing record; this build has no slot and no placement, and its decisive move rebuilds the packs a product's past sales left in household cupboards, which drain at the product's own pace, as the exposure base a packaging change's effect is read against.",
-    "task245": "task245 rebuilds periods a recorder lost, non-randomly, from a shared driver and the recorder's own response to it; this build has no missing periods, every exposure is recorded, and its decisive move is the at-risk stock behind complete counts, built from the product's sales history and its own depletion, against which a packaging change's effect is read."
+    "task245": "task245 rebuilds periods a recorder lost, non-randomly, from a shared driver and the recorder's own response to it; this build has no missing periods, every exposure is recorded, and its decisive move is the at-risk stock behind complete counts, built from the product's sales history and its own depletion, against which a packaging change's effect is read.",
+    "task199": "task199 reads a media-sourced event count against the observation effort that produced it, a detection base; this build has no detection layer (every exposure is recorded by the member centers) and reads each product's exposure count against the stock at risk that its own past purchases built and that drains at its own fitted pace."
   },
   "lineage": [
     {
@@ -149,11 +165,11 @@
       "deliverable set": "md+xlsx"
     }
   ],
-  "registered": "2026-11-02T20:41:04Z",
+  "registered": "2026-11-02T21:32:12Z",
   "shell": {
-    "question form": "which",
-    "second-sentence opener": "put",
-    "rounding opener": "give",
-    "deliverable set": "xlsx"
+    "question form": "whether",
+    "second-sentence opener": "the",
+    "rounding opener": "effects",
+    "deliverable set": "docx+png+xlsx"
   }
 }

@@ -1,82 +1,100 @@
-"""task197: the governing documents, the register, the settlement files and the distractors."""
-import os, csv, zipfile, shutil, datetime as dt
+"""task197 architecture 2: the governing documents, the register, the lookups and the distractors."""
+import os, csv, zipfile, shutil, re, datetime as dt
 import numpy as np
 from reportlab import rl_config
-rl_config.invariant = 1          # fixed PDF dates and document ids, so a rebuild is byte-identical
-from reportlab.lib.pagesizes import A4
+rl_config.invariant = 1          # fixed PDF control dates and ids, so a rebuild is byte-identical
+from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
+from openpyxl.styles import Font, Alignment
+import sim
+import world
+
+FIXED_PDF_DATE = b"D:20000101000000+00'00'"
+THRESHOLD = 1.20
+
 
 def _styles():
     ss = getSampleStyleSheet()
-    ss.add(ParagraphStyle("Body9", parent=ss["BodyText"], fontName="Helvetica", fontSize=9, leading=12.5))
+    ss.add(ParagraphStyle("Body9", parent=ss["BodyText"], fontName="Helvetica", fontSize=9.5, leading=13))
     ss.add(ParagraphStyle("H1x", parent=ss["Heading1"], fontName="Helvetica-Bold", fontSize=13, spaceAfter=6))
-    ss.add(ParagraphStyle("H2x", parent=ss["Heading2"], fontName="Helvetica-Bold", fontSize=10.5, spaceBefore=10, spaceAfter=4))
-    ss.add(ParagraphStyle("Small", parent=ss["BodyText"], fontName="Helvetica", fontSize=7.5, leading=9.5,
+    ss.add(ParagraphStyle("H2x", parent=ss["Heading2"], fontName="Helvetica-Bold", fontSize=10.5, spaceBefore=9,
+                          spaceAfter=3))
+    ss.add(ParagraphStyle("Small", parent=ss["BodyText"], fontName="Helvetica", fontSize=7.8, leading=10,
                           textColor=colors.HexColor("#555555")))
     return ss
 
-# reportlab's invariant mode writes a fixed 2000-01-01 control date so the rebuild is byte
-# identical. The date is substituted afterwards for the one the document states about itself, at
-# equal byte length so the cross-reference offsets still hold.
-FIXED_PDF_DATE = b"D:20000101000000+00'00'"
 
-
-def pdf(path, title, blocks, author="", subject="", issued="2026-10-13 07:12"):
+def pdf(path, title, blocks, author, issued):
+    """Write a short operational PDF; its control dates carry the date the document states for itself."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     ss = _styles()
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20*mm, rightMargin=20*mm,
-                            topMargin=18*mm, bottomMargin=16*mm, title=title, author=author,
-                            subject=subject, creator=author,
-                            producer=(author + " document control") if author else "")
+    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=22 * mm, rightMargin=22 * mm, topMargin=18 * mm,
+                            bottomMargin=16 * mm, title=title, author=author, subject="", creator=author,
+                            producer=author + " document control")
     flow = []
     for kind, body in blocks:
-        if kind == "h1": flow.append(Paragraph(body, ss["H1x"]))
-        elif kind == "h2": flow.append(Paragraph(body, ss["H2x"]))
-        elif kind == "p": flow.append(Paragraph(body, ss["Body9"])); flow.append(Spacer(1, 3))
-        elif kind == "small": flow.append(Paragraph(body, ss["Small"]))
-        elif kind == "gap": flow.append(Spacer(1, body))
-        elif kind == "table":
-            data, widths = body
-            t = Table(data, colWidths=widths, hAlign="LEFT")
-            t.setStyle(TableStyle([
-                ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8),
-                ("FONT", (0, 1), (-1, -1), "Helvetica", 8),
-                ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor("#333333")),
-                ("LINEBELOW", (0, 1), (-1, -2), 0.25, colors.HexColor("#cccccc")),
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
-            ]))
-            flow.append(t); flow.append(Spacer(1, 5))
+        if kind == "h1":
+            flow.append(Paragraph(body, ss["H1x"]))
+        elif kind == "h2":
+            flow.append(Paragraph(body, ss["H2x"]))
+        elif kind == "p":
+            flow.append(Paragraph(body, ss["Body9"]))
+            flow.append(Spacer(1, 3))
+        elif kind == "small":
+            flow.append(Paragraph(body, ss["Small"]))
+        elif kind == "gap":
+            flow.append(Spacer(1, body))
     doc.build(flow)
-    stamp = ("D:%s%s%s%s%s00+00'00'" % (issued[0:4], issued[5:7], issued[8:10],
-                                        issued[11:13], issued[14:16])).encode("ascii")
-    assert len(stamp) == len(FIXED_PDF_DATE), (stamp, FIXED_PDF_DATE)
+    stamp = ("D:%s000000+00'00'" % issued.strftime("%Y%m%d")).encode("ascii")
+    assert len(stamp) == len(FIXED_PDF_DATE)
     raw = open(path, "rb").read()
     assert FIXED_PDF_DATE in raw, path
     open(path, "wb").write(raw.replace(FIXED_PDF_DATE, stamp))
 
-def normalise_zip(path, when=(2026, 10, 13, 9, 0, 0)):
-    """Rewrite a zip container (xlsx) with fixed entry timestamps so rebuilds match byte for byte."""
-    import re as _re
+
+WB_DEFAULTS = [rb' state="visible"', rb' visibility="visible"', rb' minimized="0"', rb' showHorizontalScroll="1"',
+               rb' showVerticalScroll="1"', rb' showSheetTabs="1"', rb' tabRatio="600"', rb' firstSheet="0"',
+               rb' autoFilterDateGrouping="1"', rb'<workbookProtection/>']
+
+
+def strip_workbook_defaults(data):
+    """Excel writes a sheet's state only for a hidden sheet and leaves default view attributes out."""
+    for d in WB_DEFAULTS:
+        data = data.replace(d, b"")
+    return data
+
+
+def normalise_zip(path, when, owner, application="Microsoft Excel"):
+    """Rewrite a zip container with fixed entry timestamps, its owner as author and the office suite's own name."""
     with zipfile.ZipFile(path) as z:
         items = []
         for i in sorted(z.infolist(), key=lambda i: i.filename):
             data = z.read(i.filename)
             if i.filename == "docProps/core.xml":
-                # openpyxl stamps the save time on every save; fix it so rebuilds match
-                data = _re.sub(rb"<dcterms:modified([^>]*)>[^<]*</dcterms:modified>",
-                               rb"<dcterms:modified\1>2026-10-13T09:00:00Z</dcterms:modified>", data)
+                stamp = ("%04d-%02d-%02dT%02d:%02d:00Z" % when[:5]).encode()
+                data = re.sub(rb"<dcterms:modified([^>]*)>[^<]*</dcterms:modified>",
+                              rb"<dcterms:modified\1>" + stamp + rb"</dcterms:modified>", data)
+                data = re.sub(rb"<dcterms:created([^>]*)>[^<]*</dcterms:created>",
+                              rb"<dcterms:created\1>" + stamp + rb"</dcterms:created>", data)
+                data = re.sub(rb"(<dc:creator[^>]*>)[^<]*(</dc:creator>)", rb"\g<1>" + owner.encode() + rb"\g<2>", data)
+                if b"lastModifiedBy" in data:
+                    data = re.sub(rb"(<cp:lastModifiedBy[^>]*>)[^<]*(</cp:lastModifiedBy>)", rb"\g<1>" + owner.encode() + rb"\g<2>", data)
+                else:
+                    data = data.replace(b"</cp:coreProperties>", b"<cp:lastModifiedBy>" + owner.encode() + b"</cp:lastModifiedBy></cp:coreProperties>")
+            if i.filename == "xl/workbook.xml":
+                data = strip_workbook_defaults(data)
             if i.filename == "docProps/app.xml":
-                # the writing library names itself in the extended properties, which no workbook the
-                # desk exports would carry; the application is the desk's own reporting tool
-                data = _re.sub(rb"<Application>[^<]*</Application>",
-                               rb"<Application>Veerkracht Flex reserve reporting</Application>", data)
-                data = _re.sub(rb"<AppVersion>[^<]*</AppVersion>", rb"<AppVersion>4.2</AppVersion>", data)
+                data = (b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+                        b'<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+                        b'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
+                        b'<Application>' + application.encode() + b'</Application><DocSecurity>0</DocSecurity>'
+                        b'<ScaleCrop>false</ScaleCrop><Company>' + world.NETWORK.encode() + b'</Company>'
+                        b'<LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc>'
+                        b'<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion></Properties>')
             items.append((i.filename, data))
     tmp = path + ".tmp"
     with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as z:
@@ -91,140 +109,147 @@ def normalise_zip(path, when=(2026, 10, 13, 9, 0, 0)):
 def write_csv(path, header, rows):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\n"); w.writerow(header); w.writerows(rows)
+        w = csv.writer(fh, lineterminator="\n")
+        w.writerow(header)
+        w.writerows(rows)
     return len(rows)
 
 
-def technical_conditions(path, tso):
-    pdf(path, "%s FCR technical conditions 2026" % tso, [
-        ("h1", "%s: technical conditions for frequency containment reserve (FCR)" % tso),
-        ("small", "Edition 2026-07-01. Applies to every reserve-providing unit and reserve-providing group "
-                  "prequalified for the FCR product. Supersedes edition 2025-07-01."),
-        ("h2", "1. The product"),
-        ("p", "FCR is procured in six four-hour delivery blocks per delivery day, running from 00:00 local time. "
-              "Capacity is contracted symmetrically: a reserve-providing unit holding a contracted FCR capacity "
-              "of C megawatts owes an upward response of up to C megawatts at low system frequency and a "
-              "downward response of up to C megawatts at high system frequency."),
-        ("h2", "2. The response characteristic"),
-        ("p", "The response owed at any instant follows a linear characteristic in the frequency deviation. "
-              "There is no response obligation inside a dead band of plus or minus 10 millihertz. Beyond the "
-              "dead band the obligation rises linearly with the deviation and reaches the full contracted "
-              "capacity at a deviation of 200 millihertz. The response owed is therefore C multiplied by the "
-              "deviation beyond the dead band divided by 190 millihertz, capped at C, and is delivered as a "
-              "change in active power at the connection point in the direction that opposes the deviation."),
-        ("p", "A unit shall reach the response owed within 30 seconds of the deviation arising and shall sustain "
-              "it for as long as the deviation persists."),
-        ("h2", "3. Prequalification and re-prequalification"),
-        ("p", "Prequalification is by witnessed step test against the characteristic in clause 2, repeated on "
-              "material change to the unit, its controller or its connection. A provider whose own performance "
-              "review finds a unit delivering less than 90 per cent of the response its contracted "
-              "characteristic requires shall withdraw that unit from the reserve portfolio and present it for "
-              "re-prequalification. The provider shall notify the system operator of the withdrawal, and of the "
-              "unit withdrawn, before the start of the delivery month to which it applies."),
-        ("p", "Witnessing capacity is limited. One re-prequalification test per provider per delivery month is "
-              "scheduled; a provider withdrawing more than one unit in a month shall carry the remainder at "
-              "zero contracted capacity until a test slot is available."),
-        ("h2", "4. Performance review"),
-        ("p", "The provider is responsible for reviewing the delivered response of each unit in its portfolio "
-              "against the characteristic in clause 2, on the system frequency published by the system operator "
-              "and on its own metering and high-resolution records. The system operator reviews the aggregate "
-              "response of the reserve-providing group and does not attribute aggregate performance to "
-              "individual units."),
-        ("h2", "5. Programme and reserve"),
-        ("p", "A reserve-providing unit may follow a market programme while providing reserve. The response owed "
-              "under clause 2 is additional to the active power the unit would deliver under its programme, and "
-              "nothing in a unit's programme reduces the response owed. A unit withdrawn from reserve by its "
-              "provider for any part of a delivery block, including for a control-system alarm or an energy "
-              "limitation, holds no response obligation for that part of the block and shall be reported as "
-              "unavailable capacity for it."),
-        ("h2", "6. Settlement"),
-        ("p", "Capacity is settled per delivery block on the contracted capacity held available. Energy "
-              "delivered under clause 2 is not separately settled. Metered volumes at the connection point are "
-              "settled against the provider's nominated programme under the imbalance settlement rules."),
-        ("small", "Rijksnet publishes system frequency at one-second resolution for sustained deviations "
-                  "beyond 75 millihertz where the high-resolution record is available, and a minute "
-                  "summary for every day. Document reference RN-TC-FCR-2026-07."),
-    ], author=tso, subject="FCR technical conditions", issued="2026-01-05 11:20")
+def procedure(path):
+    pdf(path, "Child-Resistant Packaging Review: referral procedure CRP-3", [
+        ("h1", "%s: Child-Resistant Packaging Review" % world.OFFICE),
+        ("small", "Referral procedure CRP-3, issue 4, approved 9 March 2026. Supersedes issue 3 (2025)."),
+        ("h2", "1. The review"),
+        ("p", "Each year the Office re-examines the packaging of one over-the-counter product and may order a "
+              "change to its closure or pack for the following year's sale. The 2027 review takes one product, "
+              "chosen from the referrals the Office receives under this procedure."),
+        ("h2", "2. Who refers, and what"),
+        ("p", "A poison data network whose member poison centers record their exposure calls on a common system "
+              "may refer one product from its watched-product list whose packaging changed between "
+              "1 January 2024 and 30 September 2025."),
+        ("h2", "3. The effect of a packaging change"),
+        ("p", "3.1 The effect of a packaging change is the number of accidental exposures of children under six "
+              "to the product that the network's member centers recorded in the twelve calendar months after "
+              "the month in which the changed pack was first sold at retail, divided by the number the "
+              "product's packs would have produced in those months had they kept their previous packaging."),
+        ("p", "3.2 An accidental exposure is a case whose reason the member center recorded as unintentional "
+              "general, in a patient under six years of age at the time of the call. A case involving more than "
+              "one watched product counts once for each of them."),
+        ("p", "3.3 A case falls in the calendar month of the date its member center recorded the call. The date "
+              "the changed pack was first sold at retail is the date the network's watched-product register "
+              "records for the change, and the twelve months begin on the first day of the month after it."),
+        ("h2", "4. Which product is referred"),
+        ("p", "The network refers the product whose packaging change had the largest effect, provided that "
+              "effect is at least %.2f. If no change reaches %.2f, the network makes no referral this year." %
+              (THRESHOLD, THRESHOLD)),
+        ("h2", "5. Dates"),
+        ("p", "Referrals for the 2027 review close on 27 November 2026. The Office acknowledges each referral "
+              "within ten working days and publishes the product it takes in January 2027."),
+        ("gap", 8),
+        ("small", "%s, Review Secretariat. Questions on this procedure to the Review Secretary." % world.OFFICE),
+    ], world.OFFICE, world.DOC_DATES["procedure"])
 
 
-def performance_standard(path, org, tol, window_from, window_to, as_of):
-    pdf(path, "%s reserve performance standard v4" % org, [
-        ("h1", "%s: reserve performance standard" % org),
-        ("small", "Version 4, effective 2026-07-01. Owner: reserve portfolio desk. Replaces version 3 "
-                  "(2025-09-01)."),
-        ("h2", "1. Purpose"),
-        ("p", "This standard sets out how the desk measures what each contracted site delivers against the "
-              "response its FCR contract requires, and how the desk decides which site to withdraw when the "
-              "system operator's technical conditions call for a re-prequalification."),
-        ("h2", "2. The measure"),
-        ("p", "A site's <b>realised response gain</b> over a review window is the active power the site "
-              "delivered in excess of the output it would have produced at that second had the system frequency "
-              "stayed inside the dead band, divided by the frequency deviation beyond the dead band, taken at "
-              "the extreme second of each qualifying episode in a settlement period for which the site was "
-              "contracted, averaged with equal weight across those episodes, and expressed as a percentage of "
-              "the gain the site's contract requires, which is its contracted FCR capacity divided by 190 "
-              "millihertz. The figure is reported to the nearest whole per cent."),
-        ("p", "A <b>qualifying under-frequency episode</b> is a period in which the published system frequency "
-              "is at or below 49.920 hertz for at least 15 consecutive seconds; its extreme second is the "
-              "second of its lowest published frequency, and the earliest such second where more than one "
-              "second carries it. A <b>qualifying over-frequency episode</b> is a period in which the published "
-              "frequency is at or above 50.080 hertz for at least 15 consecutive seconds, its extreme second "
-              "being the second of its highest published frequency on the same tie-break. Upward and downward "
-              "response are reviewed separately and are never averaged together."),
-        ("p", "Episodes in a settlement period the site was not contracted for are out of scope, as are the "
-              "parts of a delivery block for which the site was withdrawn from reserve."),
-        ("h2", "3. The review window and the decision"),
-        ("p", "The review window for a delivery month is the reserve quarter to date, ending with the "
-              "delivery date two days before the desk's determination. For the determination dated %s the "
-              "window runs from %s to %s inclusive." % (as_of.strftime("%-d %B %Y"),
-                                                        window_from.strftime("%-d %B %Y"),
-                                                        window_to.strftime("%-d %B %Y"))),
-        ("p", "A site whose realised response gain on under-frequency episodes is below %.0f per cent of the "
-              "gain its contract requires is outside tolerance. Where the system operator's single monthly "
-              "test slot is to be used, the desk withdraws the one site whose realised response gain sits "
-              "furthest below the gain its contract requires, and carries the remaining sites that are outside "
-              "tolerance at their contracted capacity until a further slot is available." % tol),
-        ("h2", "4. Reserve capacity held available"),
-        ("p", "The reserve capacity hours the portfolio held available in a delivery block over a review window "
-              "are the contracted capacity of each site committed to that block multiplied by the hours of the "
-              "block, less, for each site, its contracted capacity multiplied by the hours of that block in "
-              "which the site was not holding reserve; the shortfall is the difference between the two. The "
-              "hours counted are the hours in which the site was in fact not holding reserve, and the control "
-              "platform's event log is the desk's record of them. Capacity hours are summed over the window's "
-              "delivery dates and reported in megawatt hours to one decimal place."),
-        ("h2", "5. Imbalance exposure outside reserve"),
-        ("p", "In a settlement period for which a site holds no delivery-block commitment the whole difference "
-              "between the energy the site delivers and the energy its market programme sets for that period "
-              "falls to the desk's own imbalance position, and upward and downward exposure are priced "
-              "separately. The desk therefore reports, for each site and for the portfolio, the energy "
-              "delivered above programme and the energy delivered below programme over the review window, "
-              "each as a positive quantity in megawatt hours, summed over those periods and rounded once at "
-              "the end. A site's delivered energy for a period is the net volume its own settlement meters "
-              "register for that site over the period, before any adjustment the system operator applies at "
-              "settlement; its programme energy is the setpoint the control "
-              "platform held for that period taken over the quarter hour."),
-        ("p", "The system operator's settlement statements carry the volumes it settles for each metering "
-              "point, with a grid loss adjustment at connections above 110 kilovolts, and the desk reconciles "
-              "them to its own meters on the monthly settlement run."),
-        ("small", "Document reference VKF-STD-RP-004. Review annually or on a change to the system operator's "
-                  "technical conditions."),
-    ], author=org, subject="Reserve performance standard", issued="2026-06-24 16:35")
+def call_letter(path):
+    pdf(path, "Call for referrals: 2027 Child-Resistant Packaging Review", [
+        ("h1", "Call for referrals: 2027 Child-Resistant Packaging Review"),
+        ("small", "%s, Review Secretariat. 21 September 2026." % world.OFFICE),
+        ("p", "To the Director of Toxicovigilance, %s." % world.NETWORK),
+        ("p", "The Office invites your network's referral for the 2027 Child-Resistant Packaging Review under "
+              "procedure CRP-3 (issue 4). The review takes one product. A referral names the product, "
+              "states the effect of its packaging change as section 3 of the procedure defines it, and is "
+              "received by the Secretariat no later than 27 November 2026."),
+        ("p", "Networks that refer no product this year are asked to say so by the same date."),
+        ("gap", 6),
+        ("p", "%s<br/>Review Secretary" % world.PEOPLE["secretary"]),
+    ], world.OFFICE, world.DOC_DATES["call"])
 
 
-def availability_report(path, tso, org, month, blocks_pct, group_id):
-    rows = [["Delivery block", "Contracted capacity (MW, mean)", "Group availability (%)"]]
-    for (b, mw, pct) in blocks_pct:
-        rows.append([b, "%.2f" % mw, "%.2f" % pct])
-    pdf(path, "%s FCR group availability %s" % (tso, month), [
-        ("h1", "%s: FCR group availability statement" % tso),
-        ("small", "Reserve-providing group %s (%s). Delivery month %s. Issued on the fifth working day of the "
-                  "following month." % (group_id, org, month)),
-        ("p", "Availability is measured on the aggregate response of the reserve-providing group against the "
-              "group's contracted capacity, sampled at every deviation beyond the dead band and weighted by "
-              "the seconds of deviation. The statement is issued at group level; the system operator does not "
-              "attribute group availability to individual reserve-providing units."),
-        ("table", (rows, [38*mm, 58*mm, 40*mm])),
-        ("p", "No capacity payment adjustment arises for this delivery month. Availability below 98.00 per cent "
-              "in two consecutive delivery months is reviewed with the provider."),
-        ("small", "Document reference RN-AV-%s-%s." % (group_id, month.replace(" ", "").replace("-", ""))),
-    ], author=tso, subject="FCR group availability", issued="2026-10-07 09:41")
+def register(path, products):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Watched products"
+    head = ["Product code", "Product", "Manufacturer", "Active ingredient", "Strength", "Dosage form",
+            "Pack", "UPC", "First marketed", "Current closure"]
+    ws.append(head)
+    for p in products:
+        m = world.META[p["code"]]
+        closure = m["closure_new"] or m["closure_old"]
+        for upc, _, pack, _ in m["packs"]:
+            ws.append([world.PRODUCT_CODE[p["code"]], m["name"], m["maker"], m["ingredient"], m["strength"],
+                       m["form"], pack, upc, p["launch"], closure])
+    ws2 = wb.create_sheet("Packaging changes")
+    ws2.append(["Product code", "Product", "Previous packaging", "Changed packaging",
+                "Changed pack first sold at retail", "Change notified to network"])
+    for p in products:
+        if p["change"] is None:
+            continue
+        m = world.META[p["code"]]
+        ws2.append([world.PRODUCT_CODE[p["code"]], m["name"], m["closure_old"], m["closure_new"], p["change"],
+                    world.NOTIFIED[p["code"]]])
+    for sh in (ws, ws2):
+        for c in sh[1]:
+            c.font = Font(bold=True)
+        for col in sh.columns:
+            width = max(len(str(c.value)) if c.value is not None else 0 for c in col)
+            sh.column_dimensions[col[0].column_letter].width = min(max(10, width + 2), 60)
+        for row in sh.iter_rows(min_row=2):
+            for c in row:
+                if isinstance(c.value, dt.date):
+                    c.number_format = "yyyy-mm-dd"
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    wb.save(path)
+    normalise_zip(path, (2026, 10, 30, 16, 40, 0), world.PEOPLE["lead"])
+
+
+def centers(path):
+    return write_csv(path, ["member_center", "center_name", "states_served", "call_log_time_zone"],
+                     [[c[0], c[1], c[2], c[3]] for c in world.CENTERS])
+
+
+def hospitals(path):
+    return write_csv(path, ["hospital_code", "hospital", "city", "state", "member_center"],
+                     [list(h) for h in world.HOSPITALS])
+
+
+def census(path, seed):
+    rng = np.random.default_rng(seed)
+    base = {"KS": 214000, "NE": 147000, "ND": 63000, "SD": 72000, "MN": 401000, "MI": 640000, "OH": 806000,
+            "KY": 318000, "MO": 431000, "AR": 211000, "IA": 222000, "WI": 384000, "IN": 474000, "IL": 838000,
+            "CO": 371000}
+    rows = []
+    for st, b in base.items():
+        for y in range(2019, 2027):
+            v = b * (1 - 0.007 * (y - 2019)) * (1 + rng.normal(0, 0.004))
+            rows.append([st, str(y), str(int(round(v, -1))), "July 1 estimate" if y < 2026 else "July 1 projection"])
+    return write_csv(path, ["state", "year", "population_age_0_5", "basis"], rows)
+
+
+def adverse_events(path, seed):
+    rng = np.random.default_rng(seed)
+    terms = {"FKJ": ["Accidental exposure to product by child", "Vomiting", "Product taste abnormal",
+                     "Incorrect dose administered"],
+             "DOZ": ["Somnolence", "Dry mouth", "Accidental overdose", "Hallucination"],
+             "GUM": ["Accidental exposure to product by child", "Abdominal pain", "Product colour issue"],
+             "EYE": ["Eye irritation", "Accidental exposure to product by child", "Somnolence"],
+             "NIC": ["Nausea", "Hiccups", "Accidental exposure to product by child", "Palpitations"],
+             "IBC": ["Vomiting", "Rash", "Incorrect dose administered"],
+             "VAP": ["Skin irritation", "Accidental exposure to product by child", "Seizure"],
+             "CGH": ["Somnolence", "Dizziness", "Accidental exposure to product by child"],
+             "FKI": ["Incorrect dose administered", "Vomiting"], "ALC": ["Somnolence", "Headache"],
+             "IBT": ["Dyspepsia", "Rash"], "FER": ["Constipation", "Abdominal pain", "Accidental overdose"]}
+    rows = []
+    n = 0
+    for code, tl in terms.items():
+        k = int(rng.integers(40, 160))
+        for _ in range(k):
+            d = dt.date(2019, 1, 1) + dt.timedelta(days=int(rng.integers(0, 2860)))
+            n += 1
+            rows.append(["AER-%07d" % (2210000 + n * 7 + int(rng.integers(0, 6))), d.isoformat(),
+                         world.META[code]["name"], str(rng.choice(["Consumer", "Physician", "Pharmacist",
+                                                                    "Manufacturer", "Nurse"])),
+                         str(rng.choice(["0-5", "6-11", "12-17", "18-64", "65+", "Unknown"])),
+                         tl[int(rng.integers(0, len(tl)))], "Y" if rng.random() < 0.18 else "N"])
+    rows.sort(key=lambda r: r[1])
+    return write_csv(path, ["report_id", "received_date", "product", "reporter_type", "patient_age_group",
+                            "reaction_term", "serious"], rows)

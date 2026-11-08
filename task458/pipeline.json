@@ -1,33 +1,34 @@
 {
   "task": "task458",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "accounting-audit-forensic (house domain; client domain general-statistics-data-science, task type data-integration-record-linkage-entity-resolution)",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-11-02",
-  "stump": "The default path values each line's excess over its 2027 demand at the recovery the group outlet has achieved on everything sent to it and books about 4.3 million pounds, leaving tangible net worth above the bank's floor; the outlet's five stores clear a fixed value a store-week when stocked, so only about a third of the excess can go through them in 2027 and the rest is jobbed at about a tenth of cost, which puts the provision at about 5.9 million pounds and net worth below the floor (figures fixed at build).",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-11-08",
+  "stump": "The default path books a GBP 2.8m provision and finds GBP 1.0m of headroom (no waiver) because it values the whole GBP 7.2m surplus at the 0.617 Valuehall recovers on what it sells; a stocked Valuehall store sells about GBP 1,377 at cost a trading day whatever it holds, so its 1,801 trading days in 2027 take GBP 2.48m, the other GBP 4.72m goes to trade buyers at 0.102, and the provision is GBP 5.2m with a GBP 0.5m shortfall.",
   "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-02"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (--asof 2027-01-22): sweeps 3, 4 and 6, each ruled in ## Leak check",
+    "reader": "pass 1 clean: questions 1 to 4 none, question 6 an analytical choice; mild tells fixed where cheap"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "check on the registered card 2026-11-02: PASS (NOTE test.same_driver_older differentiated against task456); nearest 0.06 task181 draft, 0.05 task252, 0.05 task196"
+    "heart": "WARN, not BLOCK (2026-11-02): nearest stump text 0.12 task306 v4; repeat.deliverables pdf+xlsx against task501 v5; NOTE test.same_driver_older differentiated against task456 v2; answered in ## Draw",
+    "nearest": "check on the registered card 2026-11-02: PASS (NOTE test.same_driver_older differentiated against task456); nearest 0.06 task181 draft, 0.05 task252, 0.05 task196",
+    "surface": "exit 0 (2026-11-02), personas found in the pack: none"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC on ask 7 only (pass 1, 2026-11-02)",
+    "disposition": "SEND_BACK, repaired in one pass",
+    "report": "main call forced (provision 5.19m, inventories 39.41m, base 24.63m, shortfall 0.49m; breakeven about 4.41m); asks 1 to 6 reproduced; Gate G binding_constraint, analytical_non_defect; Gate H passes"
   },
   "returned": [],
-  "resume": "stage 2 of architecture 3 (drawn and registered 2026-11-02): default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder (screened as code first on the clean truth), closure table, literal reader, oracles and the ask sheet with both ask devices screened as code against the honest cracker, then prompt.txt and precut.py; then the generator under task458/generator/.",
+  "resume": "PAUSED 2026-11-08 at stage 4, architecture 3. The repaired cut (target.zip 34700ecb) is in this commit: ask 7's July price credits now sit on the non-stock code NS001 with one credit per corrected line (each equal to one line's overcharge to the penny), and the bridge figures moved to precisions the 5,440-member method family holds (provision to the nearest million, inventories and borrowing base to 0.5 million, shortfall to 250,000; the call, waiver needed, is unchanged). The leak re-read on 34700ecb was clean. The single re-judge was started and its thread died on the usage limit before writing a verdict. Next: regenerate the judge brief on 34700ecb (determinism-judge agent, run id a3b or later), run the thread once, and on DETERMINISTIC ship: pre-ship check final line, ledger row, git add -f target.zip and golden/, commit SHIPPED. freeze.py rubric mode flags the three re-rounded main figures by design (both commands recorded in the design note). Open: a careful on-call response that catches one ask device scores 72.5 (two equal disjoint blocks).",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -125,5 +126,7 @@
     },
     "source_note": "no seed: a draw outside the seeds in General Statistics & Data Science (data integration), objective ETL, re-rooted from architecture 1 (seed ET15, healthcare delivery)",
     "fate": "spent 2026-11-02 at the stage 4 determinism judge (cut 950254e3), NOT_DETERMINISTIC, SEND_BACK, Gate H3: the golden's imputation of unpaid vehicles over a window no neighbourhood record covered was argued, not forced by the data, and the mean-count reading was licensed; re-rooted at stage 1 into architecture 3"
-  }
+  },
+  "target_zip_md5": "34700ecb91eb3b9e1c298fe3dc3b80f2",
+  "leak_copy": "scratchpad/leak-task458-build (prompt.txt and target/ unzipped from target.zip; the zip holds its files at its root)"
 }

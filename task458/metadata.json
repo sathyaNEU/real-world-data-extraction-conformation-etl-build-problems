@@ -1,178 +1,221 @@
 {
  "task": "task458",
- "architecture": 1,
- "title": "Which of a Medicaid managed care plan's ten eastern Washington counties are designated for its 2027 behavioral-health prescriber loan-repayment pilot, each county's members with a serious mental illness and with an opioid use disorder estimated from claims against enrollment",
- "domain": "Healthcare Delivery & Health Economics",
- "subdomain": "payment-claims-health-plan-analytics (a Medicaid managed care plan's county designation for a behavioral-health prescriber loan-repayment pilot, from its claims, enrollment and provider records for a closed contract year)",
+ "title": "Ashlund Home Group FY2026 stock provision and borrowing base",
  "objective": "Data Extraction & Conformation (ETL)",
- "prompt_shape": "10: a scorecard against thresholds (three standards for each of ten counties, two of three to designate), with quarterly payments and the conformed county and eligibility-group file",
- "as_of": "2026-11-12",
- "deliverables": [
-  "prescriber_pilot_county_scorecard_2027.xlsx",
-  "county_adult_members_2026_conformed.csv"
- ],
- "distractor_files": [
-  "network_adequacy_time_distance_2026q2.xlsx",
-  "ofm_april1_population_2026.csv",
-  "npidata_pfile_wa_20261102-20261108.csv"
- ],
- "stated_inputs": [
-  "2027",
-  "2026",
-  "2025",
-  "31",
-  "10",
-  "1,000",
-  "16.5",
-  "23.0",
-  "68"
- ],
- "input_gates": {
-  "files": 14,
-  "formats": [
-   "csv",
-   "pdf",
-   "xlsx"
-  ],
-  "largest_file": "enrollment_spans_2025-07-01_2026-06-30.csv",
-  "largest_file_rows": 137838
- },
- "sources": [
-  {
-   "files": "all files under target/",
-   "origin": "constructed for this task by task458/generator/build.py (seeded, deterministic) in the public layouts of the NPPES downloadable files and deactivation report, the HUD-USPS ZIP-county crosswalk and the NUCC taxonomy code set, and in the idiom of a Medicaid managed care plan's claims and enrollment extracts; the plan, its agencies, practices, clinicians, members and people are fictional, as are every NPI and address.",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work)"
-  }
- ],
- "created": "2026-11-12",
- "generator": "task458/generator/build.py",
+ "domain": "General Statistics & Data Science (house domain: Accounting, Audit & Forensic Analytics)",
+ "task_type": "data-integration-record-linkage-entity-resolution",
+ "setting_date": "2027-01-22",
  "files": [
   {
-   "path": "NPPES_Deactivated_NPI_Report_20261110.xlsx",
-   "format": "xlsx",
-   "bytes": 58028,
-   "rows": null,
-   "source": "Constructed: the NPPES deactivated NPI report of 10 November 2026, in the CMS report layout",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "ZIP_COUNTY_062026.xlsx",
-   "format": "xlsx",
-   "bytes": 11247,
-   "rows": null,
-   "source": "Constructed: a ZIP code to county crosswalk for the second quarter of 2026 in the HUD-USPS crosswalk layout, for the ZIP codes of the plan's members and providers",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "bh_claims_encounters_dos_2025-07-01_2026-06-30.csv",
+   "file": "AHL_stock_valuation_2026-12-31.csv",
    "format": "csv",
-   "bytes": 14259512,
-   "rows": 104860,
-   "source": "Constructed: the plan's claims system extract of behavioral-health claims and encounters with a service date in the contract year, every version, paid or accepted through 31 October 2026",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "source": "Ashlund Home Ltd ERP, stock valuation report by bin",
+   "as_of": "2027-01-04",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Ashlund Home Ltd stock on hand at 31 December 2026 at unit cost, by bin",
+   "rows": 1678,
+   "bytes": 101147,
+   "role": "evidence"
   },
   {
-   "path": "bh_professional_fee_schedule_fy2026.csv",
+   "file": "AHI_Inventory_Valuation_31-12-2026.xlsx",
+   "format": "xlsx",
+   "source": "Ashlund Home Ireland Ltd ERP, inventory valuation (cost specification)",
+   "as_of": "2027-01-05",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Ashlund Home Ireland Ltd inventory at 31 December 2026 in euro",
+   "rows": 585,
+   "bytes": 35305,
+   "role": "evidence"
+  },
+  {
+   "file": "AHB_voorraadwaardering_31122026.csv",
    "format": "csv",
-   "bytes": 3643,
+   "source": "Ashlund Home B.V. ERP, voorraadwaardering",
+   "as_of": "2027-01-05",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Ashlund Home B.V. stock at 31 December 2026 in euro, by article",
+   "rows": 744,
+   "bytes": 45751,
+   "role": "evidence"
+  },
+  {
+   "file": "AHB_artikel_groepscode.csv",
+   "format": "csv",
+   "source": "Ashlund Home B.V. ERP, article to group code table",
+   "as_of": "2027-01-05",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Ashlund Home B.V. article numbers and the group item codes they carry",
+   "rows": 744,
+   "bytes": 30735,
+   "role": "evidence"
+  },
+  {
+   "file": "group_item_master_2027-01-11.csv",
+   "format": "csv",
+   "source": "Group item master (product data team)",
+   "as_of": "2027-01-11",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Group item codes, divisions and case quantities",
+   "rows": 1418,
+   "bytes": 83699,
+   "role": "evidence"
+  },
+  {
+   "file": "AHL_sales_order_lines_2025-2026.csv",
+   "format": "csv",
+   "source": "Ashlund Home Ltd ERP, sales order line report",
+   "as_of": "2027-01-04",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Ashlund Home Ltd order lines despatched and returned, 2025 and 2026",
+   "rows": 50545,
+   "bytes": 5525034,
+   "role": "evidence"
+  },
+  {
+   "file": "AHI_Sales_Shipment_Lines_2026.xlsx",
+   "format": "xlsx",
+   "source": "Ashlund Home Ireland Ltd ERP (from 1 January 2026), posted shipment and return receipt lines",
+   "as_of": "2027-01-05",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Ashlund Home Ireland Ltd posted shipment and return lines, 2026",
+   "rows": 9903,
+   "bytes": 467688,
+   "role": "evidence"
+  },
+  {
+   "file": "AHI_legacy_sales_archive_2025.csv",
+   "format": "csv",
+   "source": "Ashlund Home Ireland Ltd previous ERP, read-only archive, invoice and credit note lines",
+   "as_of": "2026-12-18",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Ashlund Home Ireland Ltd invoice and credit note lines, 2025",
+   "rows": 10031,
+   "bytes": 958307,
+   "role": "evidence"
+  },
+  {
+   "file": "AHB_verkooporderregels_2025-2026.csv",
+   "format": "csv",
+   "source": "Ashlund Home B.V. ERP, verkooporderregels",
+   "as_of": "2027-01-05",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Ashlund Home B.V. order lines, 2025 and 2026",
+   "rows": 29565,
+   "bytes": 3410593,
+   "role": "evidence"
+  },
+  {
+   "file": "valuehall_store_weeks_2021-2026.csv",
+   "format": "csv",
+   "source": "Valuehall Stores Ltd stock system, weekly store trading summary",
+   "as_of": "2027-01-06",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Valuehall store weeks since March 2021",
+   "rows": 980,
+   "bytes": 77820,
+   "role": "evidence"
+  },
+  {
+   "file": "trade_lot_register_2021-2026.xlsx",
+   "format": "xlsx",
+   "source": "Group finance, trade lot register",
+   "as_of": "2027-01-08",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Lots of surplus stock sold to trade buyers, 2021 to 2026",
    "rows": 44,
-   "source": "Constructed: the plan's fee schedule for behavioral-health professional services in the contract year",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "bytes": 8589,
+   "role": "evidence"
   },
   {
-   "path": "enrollment_spans_2025-07-01_2026-06-30.csv",
-   "format": "csv",
-   "bytes": 12494828,
-   "rows": 137838,
-   "source": "Constructed: the plan's enrollment system spans for every member number with coverage in the contract year",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "network_adequacy_time_distance_2026q2.xlsx",
+   "file": "group_fx_rates_EURGBP_2025-2026.xlsx",
    "format": "xlsx",
-   "bytes": 6823,
-   "rows": null,
-   "source": "Constructed: the plan's network adequacy time and distance report for behavioral-health prescribers, second quarter of 2026",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "source": "Group finance, rate table",
+   "as_of": "2027-01-04",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "EUR to GBP average and month-end rates, 2025 and 2026",
+   "rows": 24,
+   "bytes": 6835,
+   "role": "evidence"
   },
   {
-   "path": "np31_prescriber_service_area_designation.pdf",
+   "file": "rcf_daily_utilisation_2026.csv",
+   "format": "csv",
+   "source": "Group treasury system, facility utilisation",
+   "as_of": "2027-01-04",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Daily drawn balance on the revolving facility, 2026",
+   "rows": 365,
+   "bytes": 7695,
+   "role": "evidence"
+  },
+  {
+   "file": "FIN-07_Stock_Provisioning_Policy.pdf",
    "format": "pdf",
-   "bytes": 46995,
+   "source": "Group finance policy manual, FIN-07 (version 4)",
+   "as_of": "2025-03-14",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Stock provisioning policy",
    "rows": null,
-   "source": "Constructed: the plan's Network Policy NP-31, Prescriber Service Area Designation (approved 21 May 2026)",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "bytes": 63391,
+   "role": "evidence"
   },
   {
-   "path": "npidata_pfile_wa_20050523-20261011.csv",
-   "format": "csv",
-   "bytes": 1131229,
-   "rows": 2974,
-   "source": "Constructed: the NPPES monthly file of October 2026, the records with a Washington practice or mailing address and the plan's provider file NPIs, in the NPPES downloadable file layout (selected columns)",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "file": "RCF_Facility_Agreement_extract.pdf",
+   "format": "pdf",
+   "source": "Revolving credit facility agreement, extract of clauses 1 and 21",
+   "as_of": "2024-06-28",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Borrowing base definitions and financial covenant",
+   "rows": null,
+   "bytes": 62991,
+   "role": "evidence"
   },
   {
-   "path": "npidata_pfile_wa_20261012-20261018.csv",
-   "format": "csv",
-   "bytes": 33083,
-   "rows": 82,
-   "source": "Constructed: the NPPES weekly incremental file of 12 to 18 October 2026, same selection and layout",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "file": "Valuehall_2027_Store_Plan.pdf",
+   "format": "pdf",
+   "source": "Valuehall Stores Ltd, 2027 store plan",
+   "as_of": "2026-11-20",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Valuehall stores, trading days and closures in 2027",
+   "rows": null,
+   "bytes": 63166,
+   "role": "evidence"
   },
   {
-   "path": "npidata_pfile_wa_20261019-20261025.csv",
+   "file": "AHL_open_purchase_orders_2027.csv",
    "format": "csv",
-   "bytes": 33802,
-   "rows": 84,
-   "source": "Constructed: the NPPES weekly incremental file of 19 to 25 October 2026, same selection and layout",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "source": "Ashlund Home Ltd ERP, open purchase order lines",
+   "as_of": "2027-01-04",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Purchase order lines due for delivery in 2027",
+   "rows": 240,
+   "bytes": 17017,
+   "role": "distractor"
   },
   {
-   "path": "npidata_pfile_wa_20261026-20261101.csv",
+   "file": "dc_pallet_occupancy_2026.csv",
    "format": "csv",
-   "bytes": 33621,
-   "rows": 84,
-   "source": "Constructed: the NPPES weekly incremental file of 26 October to 1 November 2026, same selection and layout",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "npidata_pfile_wa_20261102-20261108.csv",
-   "format": "csv",
-   "bytes": 28296,
-   "rows": 69,
-   "source": "Constructed: the NPPES weekly incremental file of 2 to 8 November 2026, same selection and layout",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "nucc_taxonomy_261.csv",
-   "format": "csv",
-   "bytes": 4781,
-   "rows": 40,
-   "source": "Constructed: the provider taxonomy codes the NPPES records carry, in the NUCC code set layout (code, grouping, classification, specialization, display name, section)",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "ofm_april1_population_2026.csv",
-   "format": "csv",
-   "bytes": 449,
-   "rows": 10,
-   "source": "Constructed: county population estimates of 1 April 2026 for the ten counties, in the layout of the state Office of Financial Management's estimates",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
+   "source": "Group logistics, warehouse management system",
+   "as_of": "2027-01-04",
+   "licence": "Synthetic data generated for this task by the author's generator (task458/generator); no third-party content. Released for evaluation use under CC BY 4.0.",
+   "description": "Weekly pallet positions occupied at each DC, 2026",
+   "rows": 156,
+   "bytes": 5362,
+   "role": "distractor"
   }
- ]
+ ],
+ "distractors": [
+  {
+   "file": "AHL_open_purchase_orders_2027.csv",
+   "why_relevant": "Purchases still to arrive add to stock in 2027.",
+   "why_unused": "The provision measures stock held at 31 December 2026 (FIN-07 2.5); orders not yet received are not in it."
+  },
+  {
+   "file": "dc_pallet_occupancy_2026.csv",
+   "why_relevant": "Warehouse occupancy shows how full the distribution centres were with the stock being provided for.",
+   "why_unused": "Occupancy measures space, not the cost, the demand or the disposal proceeds of any line."
+  }
+ ],
+ "generator": "task458/generator/build.py"
 }

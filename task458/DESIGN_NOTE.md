@@ -1,22 +1,23 @@
 # task458 design note
 
-Architecture 3, drawn 2026-11-02 as a re-root (architecture 2, a city's meter rates from midday occupancy in General Statistics & Data Science, spent at the stage 4 judge; architecture 1, a Medicaid plan's county designation in healthcare delivery, spent on its ask layer: see `## Architecture 2 record`, `## Architecture 1 record` and `## Tried and rejected`). A new world, dataset, generator and shell, on the coordinator's route into the accounting house domain: Ashlund Home Group's FY2026 consolidated stock provision, and whether it takes the group's tangible net worth below its bank's covenant floor.
+Architecture 3, drawn 2026-11-02 as a re-root (architecture 2, a city's meter rates from midday occupancy in General Statistics & Data Science, spent at the stage 4 judge; architecture 1, a Medicaid plan's county designation in healthcare delivery, spent on its ask layer: see `## Architecture 2 record`, `## Architecture 1 record` and `## Tried and rejected`). A new world, dataset, generator and shell, on the coordinator's route into the accounting house domain: Ashlund Home Group's FY2026 consolidated stock provision, and whether it takes the borrowing base on the group's revolving facility below what was drawn at the year end.
 
 ## Draw
 
 Ten-line summary (sent to the main thread at registration; figures are fixed at build):
 
 1. **Pairing:** house domain Accounting, Audit & Forensic Analytics (`accounting-audit-forensic`, subdomain `general-ledger-close-consolidation`), naming client domain General Statistics & Data Science and its task type `data-integration-record-linkage-entity-resolution`; objective Data Extraction & Conformation (ETL).
-2. **Niche:** a UK homewares and hardware importer-distributor group's FY2026 consolidated stock provision under IAS 2, conformed from three trading subsidiaries' stock registers and order books (UK, Ireland, Netherlands; three ERPs, sterling and euro, eaches and cases) and the records of the group's own clearance outlet chain (Valuehall, five stores) and its jobbers, in the year a lost DIY customer programme and a failed smart-lighting range left far more excess stock than the outlet can clear in 2027; the provision decides whether the audited accounts breach the bank's minimum tangible net worth covenant.
-3. **Default path against golden:** the default finds each line's stock beyond its 2027 demand and values that excess at the recovery Valuehall has achieved on everything the subsidiaries transferred to it (about 42 per cent of cost), books about £4.3m and finds net worth above the floor (no waiver needed); the golden caps what Valuehall can take in 2027 at its five stores' stocked store-week throughput, values the rest at the jobbers' recovery (about 9 per cent), books about £5.9m and finds net worth below the floor (ask the bank for a waiver before the accounts are signed).
+2. **Niche:** a UK homewares and hardware importer-distributor group's FY2026 consolidated stock provision under IAS 2, conformed from three trading subsidiaries' stock registers and order books (UK, Ireland, Netherlands; three ERPs, sterling and euro, eaches and cases) and the records of the group's own clearance outlet chain (Valuehall, five stores) and its trade buyers, in the year a lost DIY customer programme and a failed smart-lighting range left far more excess stock than the outlet can clear in 2027; the provision decides whether the audited accounts breach the revolving facility's borrowing base covenant.
+3. **Default path against golden:** the default values the GBP 7.2m surplus (excess beyond twelve months' net shipments, with Valuehall's own stock) at the 0.617 Valuehall recovers on what it sells, books GBP 2.8m and finds GBP 1.0m of headroom on the borrowing base (no waiver); the golden caps what Valuehall can sell in 2027 at its stocked trading-day rate (GBP 2.48m), values the other GBP 4.72m at the trade buyers' 0.102, books GBP 5.2m and finds a GBP 0.5m shortfall (seek the bank's waiver before the accounts are delivered).
 4. **Stump sentence:** under `## Stump sentence` once the ladder is measured; in one line, the outlet's recovery rate looks proportional to what it is sent only because a store opened each year the excess grew, and its stores' stocked weeks show the cap.
 5. **Shape:** 03, a bridge from the group's year-end stock at cost to the provision and the covenant headroom, each reconciling item by subsidiary and division; decision `go_hold_or_stop` with the provision as the call's critical component; question form `whether`.
-6. **Deliverables (provisional, fixed with the prompt):** a provision workbook (the bridge by subsidiary and division, the conformed line-level excess) and a one-page note to the audit committee.
+6. **Deliverables:** `Ashlund_FY2026_stock_provision.xlsx` (the bridge, the excess by company and division, the disposal working, the 2025 shipments and the conformed line-level excess) and `FY2026_stock_provision_note.pdf` (a one-page note to the audit committee).
 7. **Nearest driver (`guard.py mechanisms`, `check`):** 0.08 task252 v1 (a channel's mean error), 0.06 task181 draft, 0.06 task301 v1; none values a surplus through a channel capped by its own stocked throughput. NOTE `test.same_driver_older` (gap time, pattern C, Gate G binding_constraint) differentiated on the card against task456; task106 (the approved F3 build) differentiated too.
 8. **Guard:** PASS on the registered card (2026-11-02), the NOTE above only.
-9. **Ask records:** the subsidiaries' purchase receipts against the group transfer-price list (the consolidated stock at group cost, the intercompany margin removed from the Irish and Dutch stock) and the jobbers' lot contracts with their collection notes (the 2026 jobber recovery by division, lots sold as mixed pallets at one price and collected over several loads). Both devices are screened as code against the honest cracker at stage 2, before any data is cut.
-10. **Layer 1:** three ERPs (the Dutch subsidiary's own item codes through a crosswalk with superseded group codes, cases against eaches, euro at historical cost with the year-end rate filed once), Valuehall's till and goods-in records with shut and thinly stocked weeks and stores opening part-way through 2022 to 2025, order books with cancellations and credit notes.
+9. **Ask records:** the 2025 order books, what each division shipped to customers the year before the excess, in units (the Irish company's old-system archive prints case quantities under the each unit it converted to in July 2025) and in invoiced pounds (the UK company's July 2025 price credits, each raised from its order's credit screen on the order's first line whatever lines it corrects); both screened as code against the honest cracker before the pack was cut (`## Ask sheet`; the draw's first two records and a first Ask B device were replaced, `## Tried and rejected`).
+10. **Layer 1:** three ERPs (the Dutch subsidiary's own article numbers through its table with superseded group codes, Irish case lines against eaches, euro at the year-end and average rates filed once in the rate table, the Irish company's old system's 2025 archive), Valuehall's weekly store trading summary with shut and thinly stocked weeks, a week cut at the year end and stores opening part-way through 2021 to 2025, order books with transfers to Valuehall, cancellations and returns under each system's own convention.
 
+- **Heart at stage 3 (2026-11-02): WARN, not BLOCK.** Nearest stump text 0.12 task306 v4 (a strategy's backtest alpha net of the turnover cost the desk's own executions show): a trading cost on turnover, not a disposal channel capped by its stocked throughput, nothing shared. `repeat.deliverables` pdf+xlsx against task501 v5: a provision workbook and a committee note are the genre a controller files, the shell's question form and openers differ, and voice-check holds the set under its corpus quota. `test.same_driver_older` against task456 v2 stays differentiated on the card (a fixed solvent capacity behind an oxidizer is a per-candidate engineering limit; here a sales capacity is read off the channel's own stocked periods behind a recovery its growth kept steady).
 - **Card:** `.claude/skills/fingerprint/cards/task458.json`, architecture v3, registered 2026-11-02 and `check` re-run on the registered card (PASS, one NOTE). Architecture 2's identity is in the card's lineage with `architecture_spent` and its fate; architecture 1's stays there; both shells sit in `lineage_shells`.
 - **Axes redrawn at the draw, each to the honester label:** gap `objective` first BLOCKed `test.same_puzzle_older` and `test.same_driver_older` (the objective-and-C signature is spent in six and ten older builds), and `time` is the honester first gap anyway: the outlet's recovery was measured at volumes its stores could absorb, and the 2027 window holds a volume the record never saw (`objective` kept second). The call is the covenant verdict, `go_hold_or_stop`, with the provision as its critical component; `quantity_figure` with `how-much` also repeated task467, the last build. Forum `committee_or_panel` (the audit committee approves the provision and the covenant position), forcing event `period_close`, organisation `other` (wholesale importer-distributor; the vocabulary's retailer key is the wrong trade and is banned in the window besides), role `finance_controller`, context artifact `register`, calibration form `settled_transaction_ledger` (the outlet's and jobbers' settled sales of past years' excess). Personas Caroline Burns (group financial controller) and Liam Elliott (Valuehall operations) from `guard.py names --geo "United Kingdom" --seed 458`.
 - **Why this route:** every ETL cell measured closed for an honest unrepeated driver in this session (seasonal adjustment, census-register, emissions inventory: `## Tried and rejected`); on the coordinator's word the draw takes a house domain whose client domain carries the data-integration task type, in a world no ETL cell has used. The work is data integration (three subsidiaries' registers, order books and transfer records, the outlet's tills and goods-in records and the jobbers' contracts conformed into one group stock valuation); the house domain is the honest label because the decision is a year-end consolidated stock provision and the covenant it tests.
@@ -31,6 +32,293 @@ Ten-line summary (sent to the main thread at registration; figures are fixed at 
   - `stumping/references/strategies.md` F3 binding constraint (the metric is correct and is not what the decision is scored on; the limit is shared across candidates): the recovery rate is right on what the outlet took; the realisable value is capped by what it can take.
   - `stumping/references/client/layer2-rigor-patterns.md`, data integration card 1 (propagate integration error into the estimate): the conformation of three ERPs' registers into group lines is Layer 1 here and is asserted neutral on the call.
   - `dataset-generation/references/layer1-messiness.md`: several sources for one picture, imperfect keys, units and currencies, real coverage; none on the decisive step.
+
+## Default path
+
+The pipeline a competent analyst builds from the prompt's words and the files' grain, with the field's own method for
+the deciding quantity in it: an excess-and-obsolescence reserve that values the excess at the clearance channel's
+historical recovery.
+
+1. Reads FIN-07 2.1 to 2.6 and clauses 1.1 and 21 of the facility extract: excess is stock beyond twelve months' net
+   shipments to customers, carried at the net proceeds ex VAT from its disposal in 2027 through Valuehall and trade
+   buyers; the borrowing base is 62.5 per cent of inventories at the lower of cost and net realisable value.
+2. Conforms the three registers (AHL's bins summed; AHI's case lines at their pack quantity; AHB's semicolon file with
+   decimal commas, its articles through its group-code table and superseded codes to their successors), euro at the
+   0.8648 year-end rate, and adds Valuehall's stock at its week cut at 31 December: GBP 44.60m at cost.
+3. Nets each line's 2026 despatches and returns to customers in its own company (cancelled lines and transfers to
+   Valuehall and group companies out, AHI's return receipts subtracted): excess GBP 7.00m (AHL 5.08m, AHI 0.50m, AHB
+   1.43m); with Valuehall's GBP 0.20m the surplus to clear in 2027 is GBP 7.20m.
+4. Measures the clearance channel the way the reserve does: Valuehall's proceeds ex VAT over its cost of sales, 0.617,
+   between 0.615 and 0.622 in every year from 2021 to 2026.
+5. Values the surplus at that recovery: proceeds GBP 4.44m, provision GBP 2.76m; inventories after it GBP 41.84m.
+6. Borrowing base 62.5 per cent of GBP 41.84m is GBP 26.15m against GBP 25.12m drawn: headroom GBP 1.03m.
+
+Ends on: GBP 2.8m provision, GBP 1.0m headroom, no waiver needed
+Golden: GBP 5.2m provision, GBP 0.5m shortfall, seek a waiver
+
+## Stump sentence
+
+The default path books a GBP 2.8m provision and finds GBP 1.0m of headroom, so no waiver, because it values the whole
+GBP 7.2m surplus at the 0.617 Valuehall recovers on what it sells, a rate steady every year only because a store opened
+each year as the surplus grew; a stocked Valuehall store sells about GBP 1,377 at cost a trading day whatever it holds,
+so the five stores' 1,801 trading days in 2027 take GBP 2.48m, the other GBP 4.72m goes to trade buyers at 0.102, and
+the provision is GBP 5.2m with a GBP 0.5m shortfall.
+
+## Three rules
+
+- **Task type:** data-integration-record-linkage-entity-resolution in General Statistics & Data Science (house domain accounting-audit-forensic, subdomain general-ledger-close-consolidation), which serves Data Extraction & Conformation: three ERPs' registers and order books, Valuehall's stock system, the lot register and the rate table conformed into one group stock valuation that the provision and the covenant test run on.
+- **Domain test:** the deciding quantity is the net realisable value of the group's year-end surplus under IAS 2, the cash its disposal routes will return in 2027; the field values excess stock at its clearance channel's historical recovery, and here what that channel can take in the window decides the value.
+- **Swap:** "does the provision against the hospital's waiting list leave its borrowing base above what was drawn" stops making sense: nothing on a waiting list is carried at the lower of cost and net realisable value, no clearance chain sells it, and no bank lends against it.
+- **Layer 1:** three ERPs (AHL sterling eaches by bin; AHI's new system in euro with case lines and return receipts, its old system's 2025 archive; AHB's Dutch semicolon export with decimal commas, its own article numbers and a table with superseded group codes), transfers to Valuehall inside the order books, cancelled lines and customer returns, a week cut at the year end in Valuehall's stock system, euro at a year-end and an average rate; each produced by the system that holds it, nothing placed to be caught.
+- **Layer 2:** allocation_constraints (capacity and queueing): the surplus is realised through a shared channel whose stocked throughput, not its recovery rate, limits what it takes in the window, and the excess over that limit goes to the channel that recovers far less.
+- **Decisive step:** seeing that Valuehall's yearly sales grew with its store count and not with what it was sent, and reading what its five stores can sell in 2027 off their stocked trading days, so the surplus beyond that is valued at trade prices.
+- **Not semantics:** every field read right (cases at their pack quantity, AHB's decimal commas and articles, euro at the year-end rate, returns, cancellations and transfers) gives the same GBP 7.20m surplus and the same 0.617 recovery; the easy route values it all at that recovery and files no waiver.
+- **Not rule application:** FIN-07 2.4 files the outcome (net proceeds ex VAT), the routes and the window, and no filed rule says how much either route takes; the enumerated family (no limit, the blended recovery on everything Valuehall received, yearly sales fitted on goods in, 2026 sales, every full week, stocked weeks from GBP 20,000 to 60,000, mean or median, January sale in or out, part weeks prorated, each recovery and trade-rate window) spans a provision of GBP 2.76m to 6.47m; the standing family (no limit, the blend and the fit refuted by 2023 and by the stores' flat stocked rate) spans GBP 5.13m to 5.25m over 5,440 members (`## Pre-ship check`), every one filing the waiver and the same four covenant figures at the units the prompt grades them in; the ruling-out is the store weeks' own record, no sentence.
+- **Analyst test:** a strong analyst who conforms every file and reads every rule values the GBP 7.2m surplus at Valuehall's 0.617, books a GBP 2.8m provision and finds GBP 1.0m headroom, no waiver needed; the golden books GBP 5.2m and finds a GBP 0.5m shortfall.
+- **Estimand:** FIN-07 2.2 to 2.6 (excess beyond twelve months' net shipments to customers in the same company; carried at the net proceeds ex VAT from disposal in the year after the balance sheet date through Valuehall and trade buyers; Valuehall's own stock measured with the excess; assessed on the stock held; euro at the year-end rate) and the facility's clauses 1.1 and 21 (62.5 per cent of the Group's inventories at the lower of cost and net realisable value against the Outstandings at close of business on 31 December).
+- **No decoy:** nothing is planted: no draft provision, committee paper, prior-year memo, auditor letter, budget or capacity figure ships; 2023's surplus at the stores and the February 2024 trade lots are an ordinary year in the outlet's record; no document states a recovery, a rate, a provision or an answer (checks.py doc.neutral).
+- **No certified replay:** there is no certified figure to reproduce; the golden's limit is estimated from the store weeks and checked on 2023, a year the estimate is never fitted to reproduce.
+- **Lesson:** a clearance channel's recovery rate is half of a net realisable value; when the surplus outgrows what the channel can sell in the window, the channel's own stocked periods decide how much goes at the low price, and no build on file values a surplus through a channel capped by its stocked throughput behind a rate the capacity's growth kept steady.
+
+## Survivor anatomy
+
+- **Actor:** Valuehall's 2027 limit has no column: the store weeks hold goods in, sales, trade-outs and closing stock, and the limit is a relation among them (sales level at about GBP 1,377 a trading day once a store holds three weeks of stock, whatever more it holds).
+- **Link:** a comparison the reserve never asks for: the surplus against what the chain can sell in the window, read within store weeks (sales against stock held) and across years (sales against store-days, not goods in); no key, no clause.
+- **Reflex:** the field's method, an excess-and-obsolescence reserve at the clearance channel's recovery, is rung 0 and files GBP 2.8m and no waiver.
+- **Back-test:** the textbook route validates: Valuehall's recovery on what it sells is 0.615 to 0.622 in every year, and its yearly sales tracked what it was sent in four of six years.
+- **Second use:** every file the decisive step reads is in the pack for the default path: the store weeks give the recovery and Valuehall's year-end stock, the store plan shows Valuehall trading in 2027 (FIN-07's route exists), the lot register gives the trade rate.
+- **Shock:** 2023's full stores and the February 2024 trade lots read as one ordinary clear-out in a six-year record; the stocked rate is flat by store, by year and by promotion; no store, year or line is an outlier on any sort.
+- **Pins:** FIN-07, the group's own policy, files the outcome, window, routes and population; no filed sentence names a limit, a throughput, store-days as a limit, or how much either route takes (checks.py doc.neutral on all three documents).
+
+## Readability screen
+
+| Rung | What reads it | Verdict |
+|---|---|---|
+| 0 the surplus at Valuehall's recovery on cost of sales (default path) | nothing: the recovery is steady in every year | silent |
+| 1 the blended recovery on everything Valuehall received, its own trade lots included | nothing: the 2024 trade lots sit in the blend as one ordinary clear-out | silent |
+| 2 Valuehall's yearly sales extended in line with what it was sent | nothing: four of six years sold about what they were sent | silent |
+| 3 (decisive) Valuehall's 2027 sales capped at its stocked trading-day rate, the rest at trade prices | nothing in any file or sentence names a limit; only sales against stock held within store weeks, and 2023 against its trading days, show it | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | Valuehall's stock at 31 December | close of the stock system's week cut at 31 December (28 to 31 December, 4 trading days) | close of the week to 3 January; Valuehall's stock left out | same call | the file's last week is cut at the year end; same call without it (checks SF1) |
+| SF2 | net shipments | despatches less customer returns | despatches only | same call (provision GBP 5.10m) | FIN-07 2.2 "despatches less customer returns" |
+| SF3 | a line whose 2026 net shipments are negative | excess is the stock held | excess above the stock held | same call (one line) | FIN-07 2.2 "the quantity of a line held" |
+| SF4 | AHI's case lines | quantity times the line's Qty. per Unit of Measure | cases read as eaches | same call | the register's own unit and pack columns |
+| SF5 | euro stock | year-end rate 0.8648 | the 2026 average | same call | FIN-07 2.6 and the rate table's note |
+| SF6 | cost | each company's landed cost in its register | a group standard cost | same call (none ships) | FIN-07 2.1 |
+| SF7 | proceeds | ex VAT | including VAT | waiver either way, figure moves | FIN-07 2.4 "excluding VAT" |
+| SF8 | selling costs | not deducted | Valuehall's store costs deducted | not computable from the pack | FIN-07 2.5 |
+| SF9 | window | disposal in the year after the balance sheet date | clearance over several years | no waiver (rival) | FIN-07 2.4 "in the year after the balance sheet date" |
+| SF10 | Valuehall's own stock | in the surplus with the excess | valued apart at Valuehall's rate | same call (GBP 5.09m) | FIN-07 2.4 "measured with the excess" |
+| SF11 | 2027 trading days | the store plan's 1,801 | 365 days a store | same call (GBP 5.18m) | the store plan's table |
+| SF12 | trade-buyer rate window | all lots 2021 to 2026 | 2026, 2025 to 2026, 2024 to 2026 | same call | records converge (checks SF12) |
+| SF13 | Valuehall recovery window | 2021 to 2026 | 2026, 2025 to 2026 | same call | records converge (checks SF13) |
+| SF14 | eligible inventory | the Group's inventories, Valuehall's included | Valuehall's stock left out | same call | clause 1.1 "the inventories of the Group" |
+| SF15 | drawn balance | Outstandings at close of business on 31 December, GBP 25.12m | the year's average | same call | clause 1.1 Outstandings and Test Date |
+| SF16 | exceed | Outstandings above the base | a tie | same call (GBP 0.49m clear) | clause 21.1 |
+| SF17 | the provision's unit | the nearest million, rounded once from the unrounded figure | the nearest 0.1 million, which the defensible family crosses (GBP 5.13m to 5.25m) | same call | the prompt's rounding clause; every member sits in one million bin, GBP 0.25m clear of its edges (checks SF17.provision) |
+| SF18 | inventories, base and shortfall | inventories and base to the nearest 0.5 million, the shortfall to the nearest 250,000, each from the unrounded provision | 0.1 million, which the family crosses for the inventories and the base | same call | the prompt's rounding clause; every member sits in one bin of each, GBP 0.07m or more clear (checks SF18.inventories, SF18.bb, SF18.shortfall) |
+| SF19 | stock to be assessed | the stock held at 31 December | with surplus arising in 2027 sharing the stores | same call (only raises it) | FIN-07 2.5 "assessed on the stock held at the balance sheet date" |
+| SF20 | superseded codes in AHB's table | the successor's line (same division) | the retired code | same call | the master's Superseded By |
+| SF21 | an item's division | the master's division | none other ships | same call | one division per code |
+| SF22 | 2025 shipments to customers | eaches, returns netted, cancelled lines and transfers out | transfers in | not the call (asks) | the prompt "to customers"; FIN-07 2.2 |
+| SF23 | 2025 net value invoiced in pounds | line values net of returns and price credits, euro at the 2025 average 0.8573 | monthly averages, the year-end rate; credits left out | not the call (asks) | the prompt "the net value invoiced for them"; the rate table's note "Income statement items are translated at the year's average rate" |
+| SF24 | Lumio's twelve months | its ten months since the March launch, as shipped | annualised | same call (GBP 5.12m) | FIN-07 2.2 "in the twelve months to that date" |
+| SF25 | the stores' working stock at the end of 2027 | the whole surplus is disposed of in 2027; the stores' end-2027 stock comes from 2027's own surplus | three weeks of stock per store held back from the trade buyers and valued at Valuehall's rate in 2028 | same call | FIN-07 2.4 "from its disposal in the year after the balance sheet date" and 2.5 "assessed on the stock held at the balance sheet date" |
+
+## Ladder
+
+| Rung | Route | Provision | Borrowing base | Headroom (shortfall) | Call |
+|---|---|---|---|---|---|
+| 0 | the GBP 7.20m surplus at Valuehall's 0.617 (default path) | GBP 2.76m | GBP 26.15m | 1.03m | no waiver |
+| 1 | the blended recovery 0.562 on everything Valuehall received, its trade lots included | GBP 3.16m | GBP 25.90m | 0.78m | no waiver |
+| 2 | Valuehall's yearly sales fitted on goods in (slope 0.78) and extended to the surplus | GBP 3.41m | GBP 25.75m | 0.63m | no waiver |
+| 3 (golden) | GBP 1,376.5 a trading day in 772 stocked full weeks times 1,801 trading days takes GBP 2.48m at 0.617; GBP 4.72m to trade buyers at 0.102 | GBP 5.19m | GBP 24.63m | (0.49m) | seek a waiver |
+
+The call flips at a provision of GBP 4.41m; the nearest default-side rung sits GBP 1.00m below it and the golden GBP
+0.78m above. Pricing: a response on rungs 0 to 2 keeps the excess figures and loses the call, the provision, the
+inventories, the base and the shortfall. The rungs that land the call (2026 sales, every full week, GBP 5.18m to 5.24m)
+each take the decisive step; checks.py counts no route that leaves Valuehall unlimited landing it. Every trade buyer
+route (the whole surplus at 0.102, GBP 6.47m) contradicts FIN-07 2.4's Valuehall route.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | the three companies' lines held at 31 December 2026 and Valuehall's stock | FIN-07 2.2 and 2.4 filed; C1 |
+| 2 Unit of account | a line in a company | FIN-07 2.1 and 2.2 |
+| 3 Attribution window | demand in the twelve months to 31 December 2026; disposal in 2027; asks in 2025 | FIN-07 2.2 and 2.4; the prompt |
+| 4 As-of dating | the balance sheet date; Valuehall's week cut at the year end | SF1 |
+| 5 Version basis | registers and order books as extracted; superseded codes to their successors | SF20, C1 |
+| 6 Denominator | recovery over cost of sales; trade price over stock at cost | records converge, SF12, SF13 |
+| 7 Weighting | stocked trading days pooled; per store and per year within 2 per cent | C1, checks L7 |
+| 8 Window length | recovery and trade-rate windows | C1, SF12, SF13, SF17 |
+| 9 Boundary inclusivity | Outstandings exceed the base | SF16, GBP 0.49m clear |
+| 10 Rounding path | each sterling figure once from unrounded; units and values once | SF17, SF18 |
+| 11 Tie-break | no ranking | not needed |
+| 12 Maturity and censoring | Lumio's ten months since launch as shipped | SF24, same call |
+| 13 Order of operations | excess line by line, then the surplus split across the routes | uniform rates make the order immaterial, C1 |
+| 14 Row order | no step reads file order | C1 |
+| 15 Duplicate resolution | no duplicate rows; identical projected lines are separate order lines | full rows unique, C1 |
+| 16 Identity normalisation | AHB articles through AHB's table; superseded codes through the master | SF20 |
+| 17 Netting against gross | net shipments; a negative net caps the excess at the stock held | SF2, SF3 |
+| 18 Dimensional units | eaches and sterling | SF4, SF5 |
+| 19 Code and status semantics | Cancelled and Geannuleerd out; RTN, CRN, Return Receipt and Retour are returns; group companies are transfers | the systems' own codes; FIN-07 2.2 |
+| 20 Integerisation | none | not needed |
+| 21 Clause scope | clause 21.1 on the 31 December 2026 Test Date on the audited accounts | clause 21.2 |
+| 22 Forward window contents | Valuehall's 2027 trading days from the store plan; no sixth store; the stock held | SF11, SF19, checks L7.five_stores |
+
+## Literal reader
+
+Executed word for word, FIN-07 2.2 gives GBP 7.00m of excess and 2.4 carries it, with Valuehall's GBP 0.20m, at the
+net proceeds ex VAT its disposal returns in 2027 through Valuehall and trade buyers. No sentence says how much each
+route takes, so the literal reader must estimate Valuehall's 2027 sales; the records rule out every reading that leaves
+it unlimited (in 2023 the stores were sent GBP 2.35m and sold GBP 1.36m, the stocked rate's prediction being GBP
+1.36m; stocked sales are flat in the stock held, by store, by year and in the January sale), and every reading that
+reads the limit from the stores' own trading days files the same four covenant figures at the prompt's units (SF17, SF18). Every other row of the fork table
+is same call or ruled out by a quoted sentence. The asks' readings are each forced row by row (Ask sheet).
+
+## Oracles
+
+- `generator/figures.json`, written by golden.py through calc.py from the cut pack.
+- `generator/verify.py`: an independent recompute of 19 graded figures with the standard library and openpyxl only.
+- `generator/checks.py`: 95 assertions (input gates, SF1 to SF25, the three-rules block, lesson 7's assumptions, the
+  2023 back-test, both devices, the documents).
+- `generator/ceiling.py`: the careful-solver cracker, the stops and the pair arithmetic on the cut pack.
+
+## Ask sheet
+
+The asks are the year before the excess, which the committee needs whatever the call: what each division shipped to
+customers in 2025, in units and in invoiced pounds, against the 2026 shipments the excess rests on. They read rows the
+call never reads (2025 order lines; the AHI archive is 2025 only) and columns it never reads (invoiced value).
+
+- **Ask A, net units each division shipped to customers in 2025 (5 figures, nearest 1,000).** H18 home: the audit
+  trail of the demand the excess lost. Files: AHI_legacy_sales_archive_2025.csv (Doc Type, Doc Date, Cust Name, Stock
+  Code, Qty, UOM, Line Value), the 2025 rows of AHL's and AHB's order books, the item master (Division, Case Qty), AHB's
+  group-code table. Primary device (D2, a label taken across a silent switch by a false-clean join to the item's current
+  unit): AHI's old system converted its stock unit from case to each on 7 July 2025, and the archive prints every line
+  with the item's current unit, EA, so the lines before the switch carry cases. Forced row by row: on 3,055 pre-switch
+  customer lines the invoiced value over the quantity is the case quantity times the same item's later price to the same
+  customer (checks dev.forcing.cases), and every later line is a whole number of cases. Over-cleaning half: converting
+  every archive line at its case quantity (KD 4.68m units over). Hazards: returns under three conventions, cancelled
+  lines, transfers to Valuehall, AHB's articles. Pin test: the sentence pins units, customers, 2025 and net; the device
+  sits in which unit a row's quantity carries, a dimension no pin names.
+
+  | Reading | KD | SL | LE | TH | GO |
+  |---|---|---|---|---|---|
+  | golden (pre-switch lines as cases) | 11,743,000 | 7,603,000 | 7,616,000 | 6,215,000 | 2,874,000 |
+  | as labelled (cracker) | 11,329,000 | 7,322,000 | 7,408,000 | 5,997,000 | 2,787,000 |
+  | every archive line converted | 16,423,000 | 11,006,000 | 9,906,000 | 8,287,000 | 4,007,000 |
+
+- **Ask B, the net value invoiced for those shipments in pounds by division (5 figures, nearest GBP 1,000).** H18
+  home: the same audit trail in the money the committee reads. Files: the 2025 rows of
+  AHL_sales_order_lines_2025-2026.csv (Order No, Doc Type, Despatch Date, Customer, Item Code, Qty, Line Value), the AHI
+  archive, AHB's order book, the item master (Division), the rate table. Primary device (D6, an amount booked at a grain
+  above the line it belongs to, placed by the weights the rows record): AHL's list prices rose by range on 1 April 2025
+  (2 to 13 per cent); five key accounts were held at their old prices to 30 June, but the hold was missing on many of
+  their lines, which were invoiced at the new price. In July AHL credited each overcharged line. Its system takes a
+  price-only credit on the non-stock code NS001 (a stock item on a credit line would book goods back in), so the 754
+  credits (Doc Type PRICE, no quantity) sit under their original orders on a code no division carries. As booked, no
+  credit has a division (dev.impossible.no_division), and leaving them out is not a net value invoiced. Forced row by
+  row: each credit equals, to the penny, the overcharge on exactly one line of its order, the line's quantity times its
+  excess over the customer's own price for the item before 1 April, and the 262 credited orders carry exactly 754 such
+  lines (dev.forcing.price_identity). Over-cleaning half: spreading each credit over its order's lines by value (the
+  battery's header-to-items pairing, the cracker's route), over the customer's 2025 lines, or leaving the credits out,
+  each misses every division by GBP 13,000 or more. Pin test: the sentence pins pounds, the net value invoiced and the
+  year; the device sits in which line a credit belongs to, a dimension no pin names.
+
+  | Reading | KD | SL | LE | TH | GO |
+  |---|---|---|---|---|---|
+  | golden (each credit on the line whose overcharge it equals) | 41,162,000 | 33,105,000 | 36,168,000 | 29,568,000 | 25,081,000 |
+  | spread over the order's lines by value (cracker) | 41,125,000 | 33,126,000 | 36,183,000 | 29,547,000 | 25,104,000 |
+  | spread over the customer's 2025 lines | 41,118,000 | 33,130,000 | 36,187,000 | 29,544,000 | 25,105,000 |
+  | credits left out | 41,178,000 | 33,172,000 | 36,237,000 | 29,581,000 | 25,137,000 |
+
+- **Main population zero-counts:** the archive has no 2026 row, and every price credit is dated July 2025 and carries
+  no quantity (dev.separation); the call reads 2026 customer quantities, the registers, the store weeks, the lots and
+  the rcf file, and deleting both devices leaves every call figure unchanged (freeze.py rubric check).
+- **Disjoint blocks:** the cases device moves no value and a price credit carries no quantity (checks dev.disjoint), so
+  a response that handles one keeps half the ask weight.
+
+| Ask | Cracker route (lands the call, reads every field plainly, runs the battery) | Cracker |
+|---|---|---|
+| A, units by division (5) | the archive's quantities in the unit it prints, EA | miss |
+| B, net value invoiced by division (5) | each price credit on the orphan code paired to its order's item rows by value | miss |
+| A and B, the full includer | both devices handled; reproduces figures.json | yes |
+
+Pair ceiling: 31.6 (cracker 45.0 on the call, mirror 18.1 off it); two careful responses on the call at most 45.0 each; the best single-device handler keeps 27.5 of the 55 ask points, 72.5 on the call and 45.6 off it (two disjoint blocks put a one-device handler on the call at 45 plus half the ask weight)
+Mirror leakage: 0.0 per cent of ask weight (the mirror runs the cracker's ask routes)
+Measured by: generator/ceiling.py on the cut pack (sha256 printed by the script)
+
+
+## Leak check
+
+`leak.py task458 --asof 2027-01-22`: REVIEW, no LEAK (18 files, 28 golden figures). Each REVIEW ruled:
+- Sweep 3, `FIN-07_Stock_Provisioning_Policy.pdf` carries "2.5": the policy's section number (2.5 Net realisable value), not the GBP 2.5 million Valuehall takes in 2027; harmless.
+- Sweep 4, the policy shares seven ordinary nouns with the stump paragraph (Valuehall, surplus, stores, record, records, system, year-end): they name the route FIN-07 2.4 files, its scope, the store costs 2.5 leaves undeducted and the cost each company records in its own system; no sentence names a limit, a throughput or how much either route takes (checks doc.neutral); harmless.
+- Sweep 6, `trade_lot_register_2021-2026.xlsx` names the three trading companies beside lot costs and prices: it records lots by seller and ranks nothing on the decision question (the waiver); harmless.
+
+## Pre-ship check
+
+Stage 4, pass 1 (2026-11-02). The leak reader was clean (questions 1 to 4 none; question 6 an analytical choice, how
+much each disposal route can take; every sweep line harmless). The judge forced the main call (provision 5.19m,
+inventories 39.41m, base 24.63m, shortfall 0.49m, every variant 5.17m to 5.21m, breakeven about 4.41m; asks 1 to 6
+reproduced; Gate G binding_constraint, analytical_non_defect; Gate H passes) and returned NOT_DETERMINISTIC on ask 7
+only, SEND_BACK, a repair on a sound architecture. One repair pass, for one re-judge:
+
+1. **Ask 7.** The as-booked reading of AHL's July price credits (each netted in the division of the item the credit
+   screen defaulted to) was coherent. A pin in the asking sentence would hand the careful cracker the reconstruction,
+   so the repair is in the rows: AHL's system books a price-only credit on its non-stock code NS001, one credit per
+   corrected line, and no division carries that code. As booked, no credit can be placed in a division, and leaving
+   the credits out is not a net value invoiced. Each of the 754 credits equals, to the penny, the overcharge on exactly
+   one line of its order (dev.forcing.price_identity). The careful cracker finds the orphan code and pairs each credit to
+   its order's item rows by value, which misses every division by GBP 14,000 or more (Ask sheet).
+2. **The four covenant figures.** The pass-2 report's member (the non-promotion recovery with 1,390 a day) filed
+   5.1 against 5.2. Measured over 5,440 defensible members, the 0.1 million bins were crossed, so the figures moved to
+   the units the family holds in, by the prompt's rounding clause alone (no method filed, no world re-centred):
+
+| Members | Provision (GBP m) | Inventories after it | Borrowing base | Shortfall |
+|---|---|---|---|---|
+| golden | 5.193 | 39.409 | 24.631 | 0.489 |
+| every member (5440) | 5.128 to 5.245 | 39.357 to 39.474 | 24.598 to 24.671 | 0.449 to 0.522 |
+| recovery: all years | 5.162 to 5.241 | 39.362 to 39.441 | 24.601 to 24.651 | 0.469 to 0.519 |
+| recovery: 2025 to 2026 | 5.166 to 5.245 | 39.358 to 39.437 | 24.599 to 24.648 | 0.472 to 0.521 |
+| recovery: non-promotion weeks | 5.128 to 5.209 | 39.393 to 39.474 | 24.621 to 24.671 | 0.449 to 0.499 |
+| recovery: January sale out | 5.145 to 5.225 | 39.377 to 39.457 | 24.611 to 24.661 | 0.459 to 0.509 |
+| recovery: 2021 | 5.147 to 5.227 | 39.376 to 39.455 | 24.610 to 24.660 | 0.460 to 0.510 |
+| recovery: 2022 | 5.162 to 5.241 | 39.362 to 39.441 | 24.601 to 24.650 | 0.470 to 0.519 |
+| recovery: 2023 | 5.153 to 5.233 | 39.370 to 39.449 | 24.606 to 24.656 | 0.464 to 0.514 |
+| recovery: 2024 | 5.159 to 5.239 | 39.364 to 39.443 | 24.602 to 24.652 | 0.468 to 0.518 |
+| recovery: 2025 | 5.165 to 5.244 | 39.359 to 39.438 | 24.599 to 24.648 | 0.472 to 0.521 |
+| recovery: 2026 | 5.167 to 5.245 | 39.357 to 39.436 | 24.598 to 24.647 | 0.473 to 0.522 |
+| daily rate: full stocked weeks, GBP 20,000 to 100,000 | 5.151 to 5.221 | 39.382 to 39.452 | 24.614 to 24.657 | 0.463 to 0.506 |
+| daily rate: every week, no stock test | 5.159 to 5.237 | 39.365 to 39.443 | 24.603 to 24.652 | 0.468 to 0.517 |
+| daily rate: by year, by promotion, store by store | 5.145 to 5.245 | 39.357 to 39.458 | 24.598 to 24.661 | 0.459 to 0.522 |
+| daily rate: probes at 1,390 and 1,400 a day | 5.128 to 5.186 | 39.417 to 39.474 | 24.635 to 24.671 | 0.449 to 0.485 |
+| 2027 days: store-days | 5.132 to 5.245 | 39.357 to 39.470 | 24.598 to 24.669 | 0.451 to 0.522 |
+| 2027 days: 258 store-weeks | 5.128 to 5.242 | 39.361 to 39.474 | 24.600 to 24.671 | 0.449 to 0.520 |
+| trade rate: pooled | 5.135 to 5.245 | 39.357 to 39.468 | 24.598 to 24.667 | 0.453 to 0.522 |
+| trade rate: lot by lot | 5.135 to 5.245 | 39.357 to 39.468 | 24.598 to 24.667 | 0.453 to 0.522 |
+| trade rate: lots over 150,000 | 5.131 to 5.242 | 39.361 to 39.471 | 24.601 to 24.670 | 0.450 to 0.519 |
+| trade rate: 2026 lots | 5.128 to 5.239 | 39.364 to 39.474 | 24.602 to 24.671 | 0.449 to 0.518 |
+| graded unit and bin | nearest 1.0: [4.5, 5.5) | nearest 0.5: [39.25, 39.75) | nearest 0.5: [24.25, 24.75) | nearest 0.25: [0.375, 0.625) |
+| the 0.1 million bins the family crossed | 5.1 and 5.2 | 39.4 and 39.5 | 24.6 and 24.7 | 0.4 and 0.5 (the 1,400 probe files 0.449) |
+
+3. **The reader's mild tells.** Lot TL144 was dated Christmas Day 2026; a lot dated on a bank holiday now moves to the
+   next working day after the draws, so no price moves. The two range clear-out lots are no longer round sums (GBP
+   236,412.37 and 318,764.91). The facility balance now moves on most working days in 50,000s, the year-end balance
+   unchanged. None moves a graded figure (the trade rate stays 0.102).
+4. **The 10/10 rules re-read against the built pack.** The decisive step is still the analytical one: the outlet's
+   2027 take from its stocked trading days, checked on 2023. The mess is still Layer 1 only. Both asks still sit on
+   rows the call never reads: 2025 rows, credits with no quantity, an ask-only archive.
+5. **freeze.py.** The rubric check flags exactly the three figures whose units changed, in figures.json and in
+   blocks 1 and 2. With those three keys allowed, only the block 1 and 2 number lists still differ (5.2 to 5, 24.6 to
+   24.5, 39.4 to 39.5). Every other frozen item is unchanged: the call, the stump, the shortfall 0.5, the recovery
+   0.617, the trade rate 0.102, the daily rate 1,377, the 1,801 days, the rungs and the excess figures. freeze.py was
+   not edited; both commands and outputs are in the hand-back.
 
 ## Architecture 2 record (spent 2026-11-02)
 
@@ -438,3 +726,13 @@ None. No control, published figure or reconciliation column confirms any rung: t
 - 2026-11-02, architecture 3 draw, seasonal-adjustment-official-time-series-production screened closed for an honest analytical ETL call (reported to the main thread): benchmarking and the step problem (task123, task482 and task465 on file: the current-year extrapolation is a fork, Denton's end ratio sits within tenths of pro-rata's, the ratio path is assumed; the back-tested ratio trend is the QNA's own bias adjustment, a named refinement; a panel-redraw sawtooth is a visible jump unlinked and a plain trend linked; a ratio varying by season or unit is task474 v1's spent driver), chain-linking overlaps (a convention filed or a fork; chain drift is task463; an overlap window's mix is task481), calendar and trading-day regressors (every calendar composition is task477's opportunity count; moving holidays spent by task162, task467, task135), outlier types at a break (task453 v1, task146, task467; a school-calendar seasonal break is task482 arch 12's reflex), concurrent against revised factors and revisions (task482 arch 12: rule application once vintages ship; Layer 1 by CLAUDE.md; completion spent), the seasonal filter itself (task464 Horn C: 0 of 7 settings), and on paper a collection gap imputed from an uninterrupted series, weather normalisation with a data-forced balance point, card- or registry-driven benchmark ratios, intercensal error-of-closure wedges, staggered VAT quarters and cohort-carried intercensal profiles, each dead on a named record or rule.
 - 2026-11-02, architecture 3 draw, census-register-administrative-data-quality and emissions-inventory screened closed on the coordinator's lifted bar (reported to the main thread): every input an inventory figure has and every register-quality quantity has a record (task464's 10-27 enumerations plus task453 v3 and task454 v2 since), and each candidate died on paper: abandoned-mine methane decline (the IPCC hyperbolic is the field's method; a cumulative-gas decline is task180's law; a flooding cut-off needs task154's groundwater world), tuned stack tests (task478 v6), feed-additive dose response (task478's input property), sub-threshold facilities by a truncated size fit, lease fleets at the lessor's address (task454), soil and wastewater N2O pulses (task452 v1), purge-cycle over-coverage (lesson 10, the silence family, task476's phase), stale industry codes by time since check (the classification family, 1.1c), the cancer registry's flow method (task448, task471), own-children birth completeness (task243), threshold bunching (the fit forks), coverage ratios carried from a census (the ratio-forecast fork), attainment completed by cohort (task453 v3).
 - 2026-11-02, architecture 3 draw, the house route into data integration screened before this card, each dead before a harness: a convex N2O response to field nitrogen (task229's Jensen gap), unconstrained demand behind stockouts (task18, task108, task168, task137), sticky contract prices passed through at renewals (task179's reset-month screen), appraisal-smoothed private fund marks rolled to the year-end (task308, task167, task128, task135: Geltner and Dimson are taken on sight), distributor returns from each holder's channel stock (task154's 11-02 screen, beside task161), learning curves in a contract's estimate at completion (task46, task132, task170, task174), salmon biomass shortfalls per handling event (task180's usage law in fish), counter coincidence losses and size-biased net sampling (task473's level-dependent catch), feed-implied biomass (task482 v12's load-per-head), first-expiry queues for dated stock (beside task467 v2's leaving order), state transitions over unequal inspection intervals (task301), stockpile density by pile height (a covariate one column away, 1.1c), mirror-trade freight by weight (a rate on the wrong exposure, beside the batch's trade world), stock write-downs by forward cover against age (the excess-and-obsolescence reserve is the textbook and lands the call), and pack-size price benchmarks (the comparison is WHAT).
+
+- 2026-11-02, architecture 3 stage 2, the covenant: a minimum tangible net worth floor (the draw's first wording) moves with the provision net of the tax it saves, and the tax effect is a convention the pack would have to file (a fork on the call); the facility's borrowing base, 62.5 per cent of inventories at the lower of cost and net realisable value, moves with the provision itself, so the call runs on it.
+- 2026-11-02, architecture 3 stage 2, the draw's two ask records: the intercompany margin in stock (purchase receipts against a transfer-price list) is the textbook consolidation elimination, which the careful solver performs on sight (the coordinator's flag); the trade buyers' mixed lots sit on the rows the call reads for its trade rate, so an ask device there would sit in the main population. Both replaced by the 2025 order books.
+- 2026-11-02, architecture 3 stage 2, ask devices screened on paper and dropped: the item master's 2027 divisions against the 2026 stamps (a vintage pin names the device's dimension, and without it IFRS 8's restated comparatives make the master's divisions a coherent literal reading); the old system's cutover closing open orders as despatched on 31 December 2025 (the duplicate in the new system's January lines leaves the archive's reading coherent, lesson 8); a customer's own article numbers swapped into the item column of its EDI lines (silent only if every customer number collided with an AHB article, which no real numbering does; otherwise the orphans hand it over); price corrections posted as credit and rebill (the battery's rescind handling nets them right); a container's freight posted on a later month's line (the posting month is a coherent literal reading of the cost's period).
+- 2026-11-02, architecture 3 stage 2, calibration: the trade buyers' biggest lots (Valuehall's 2024 clear-out) first recovered below the small lots by chance, which a judge could read as a trade rate that falls with volume; two of the subsidiaries' own range clear-outs were added as single large lots and the price noise narrowed, so lots over GBP 150,000 recover 0.102 against the rest's 0.101 with no slope in lot size (checks L7.trade_not_capped). The pool, the drawn balance and the normal lines' cover were set so the standing family of the provision, the inventories after it, the base and the shortfall each sit inside one 0.1 million bin (SF17, SF18).
+
+- 2026-11-02, architecture 3, Ask B's first device (the UK company's euro-invoiced Irish customer under an order report with no currency column, forced by matching euro prices) replaced at the coordinator's order before stage 4: task467 v2 shipped the same family an hour earlier (an Irish site's voucher values in euro with no currency column), and two builds in one batch carrying one device read as templated. Screened for the replacement and dropped: invoiced value booked on despatch against a year-end transit cut-off (it moves units with values, so the blocks stop being disjoint, and its rows sit at the edge of the call's 2026 window); rebates netted on some customers' invoice lines and not others (the net-or-gross reading is a fork the asking sentence would have to pin, and the terms that force it would be a schedule the cracker reconciles to). The price credits on the order's first line replace it.
+
+- 2026-11-02, stage 4 judge (ask 7 only, NOT_DETERMINISTIC, SEND_BACK on a sound architecture): AHL's July price credits sat on the item the credit screen defaults to, the order's first line, and the judge read "net value invoiced by division" as the ledger as booked, a coherent literal reading (KD 40,977,000 against 41,162,000); that 182 credits sat on items charged the customer's own price was an economic impossibility, not a literal one. Route 1, a pin in the asking sentence ("at the prices its customers were due", or "net of the price credits against the lines they corrected"), screened and dropped: the pin tells the careful cracker that credits correct lines and the only way to find them is the overcharge comparison, so the cracker lands the block. Repaired in the rows instead: AHL's system takes a price-only credit on its non-stock code NS001 (a stock item on a credit line books goods back in), one credit per corrected line, so as booked no credit has a division and the as-booked reading cannot be formed; each credit equals one line's overcharge to the penny.
+- 2026-11-02, the four covenant figures at 0.1 million: the pass-2 report paired the non-promotion recovery (0.628) with 1,390 a day for a GBP 5.14m provision (5.1 against 5.2, inventories 39.5 against 39.4, base 24.7 against 24.6); measured over 5,440 defensible members (`## Pre-ship check`) the provision runs GBP 5.13m to 5.25m, the inventories 39.36m to 39.47m, the base 24.60m to 24.67m and the shortfall 0.449m to 0.522m, so every 0.1 million bin but the shortfall's was crossed and the shortfall's held only without the 1,400 probe. Moved to the units the family holds in (determinism-check section 3), with no method filed and the world unchanged: the provision to the nearest million, the inventories and the base to the nearest 0.5 million, the headroom or shortfall to the nearest 250,000.

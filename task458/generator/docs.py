@@ -1,161 +1,172 @@
-"""The bundle's document: Network Policy NP-31, Prescriber Service Area Designation (approved May 2026)."""
+"""The pack's three documents, each in its owner's voice: the group's stock provisioning policy (FIN-07), the
+facility agreement's borrowing base clauses, and Valuehall's 2027 store plan. No document describes a data file,
+states a recovery, a rate, a provision or an outlet budget, or proposes an answer."""
+import datetime as dt
+
 from reportlab import rl_config
 
 rl_config.invariant = 1
 from reportlab.lib import colors                                                      # noqa: E402
-from reportlab.lib.pagesizes import letter                                            # noqa: E402
+from reportlab.lib.pagesizes import A4                                                # noqa: E402
 from reportlab.lib.styles import ParagraphStyle                                       # noqa: E402
 from reportlab.lib.units import mm                                                    # noqa: E402
 from reportlab.pdfbase import pdfmetrics                                              # noqa: E402
 from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
-import world as W   # noqa: E402
+from world import *    # noqa: E402
 
 FONT_DIR = "/usr/share/fonts/truetype/liberation/"
-for nm, f in (("LiberationSans", "Regular"), ("LiberationSans-Bold", "Bold"), ("LiberationSans-Italic", "Italic")):
-    pdfmetrics.registerFont(TTFont(nm, FONT_DIR + nm.split("-")[0] + "-" + f + ".ttf"))
-INK = colors.HexColor("#1d2226")
-GREY = colors.HexColor("#5b6268")
-TEAL = colors.HexColor("#1f5560")
-BODY = ParagraphStyle("b", fontName="LiberationSans", fontSize=9.6, leading=13.6, textColor=INK, spaceAfter=6)
-NUM = ParagraphStyle("n", parent=BODY, leftIndent=28, firstLineIndent=-28)
-H1 = ParagraphStyle("h1", fontName="LiberationSans-Bold", fontSize=15, leading=19, textColor=TEAL, spaceAfter=2)
-SUB = ParagraphStyle("sub", fontName="LiberationSans", fontSize=9, leading=12.4, textColor=GREY, spaceAfter=12)
-H2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.6, leading=14, textColor=TEAL, spaceBefore=9,
+for nm, f in (("LiberationSerif", "Regular"), ("LiberationSerif-Bold", "Bold"), ("LiberationSerif-Italic", "Italic"),
+              ("LiberationSans", "Regular"), ("LiberationSans-Bold", "Bold"), ("LiberationSans-Italic", "Italic")):
+    try:
+        pdfmetrics.getFont(nm)
+    except KeyError:
+        pdfmetrics.registerFont(TTFont(nm, FONT_DIR + nm.split("-")[0] + "-" + f + ".ttf"))
+INK = colors.HexColor("#1d1d1f")
+GREY = colors.HexColor("#5b5f66")
+NAVY = colors.HexColor("#1f3a5f")
+BODY = ParagraphStyle("body", fontName="LiberationSans", fontSize=9.6, leading=13.4, textColor=INK, spaceAfter=6)
+SERIF = ParagraphStyle("serif", fontName="LiberationSerif", fontSize=10.4, leading=14.2, textColor=INK, spaceAfter=7)
+H1 = ParagraphStyle("h1", fontName="LiberationSans-Bold", fontSize=13.5, leading=17, textColor=NAVY, spaceAfter=4)
+H2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.2, leading=13.5, textColor=NAVY, spaceBefore=6,
                     spaceAfter=3)
-CELL = ParagraphStyle("c", fontName="LiberationSans", fontSize=8.4, leading=10.8, textColor=INK)
-CELLB = ParagraphStyle("cb", parent=CELL, fontName="LiberationSans-Bold")
+SMALL = ParagraphStyle("small", fontName="LiberationSans", fontSize=8, leading=10.4, textColor=GREY)
+CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.6, leading=10.8, textColor=INK)
+CELLB = ParagraphStyle("cellb", parent=CELL, fontName="LiberationSans-Bold")
+NUM = ParagraphStyle("num", parent=SERIF, leftIndent=9 * mm, firstLineIndent=-9 * mm)
+
+PROVENANCE = [
+    # key, source, as-of date, description (for metadata.json only)
+    ("ahl_stock", "Ashlund Home Ltd ERP, stock valuation report by bin", "2027-01-04",
+     "Ashlund Home Ltd stock on hand at 31 December 2026 at unit cost, by bin"),
+    ("ahi_stock", "Ashlund Home Ireland Ltd ERP, inventory valuation (cost specification)", "2027-01-05",
+     "Ashlund Home Ireland Ltd inventory at 31 December 2026 in euro"),
+    ("ahb_stock", "Ashlund Home B.V. ERP, voorraadwaardering", "2027-01-05",
+     "Ashlund Home B.V. stock at 31 December 2026 in euro, by article"),
+    ("ahb_xref", "Ashlund Home B.V. ERP, article to group code table", "2027-01-05",
+     "Ashlund Home B.V. article numbers and the group item codes they carry"),
+    ("master", "Group item master (product data team)", "2027-01-11", "Group item codes, divisions and case quantities"),
+    ("ahl_orders", "Ashlund Home Ltd ERP, sales order line report", "2027-01-04",
+     "Ashlund Home Ltd order lines despatched and returned, 2025 and 2026"),
+    ("ahi_ship26", "Ashlund Home Ireland Ltd ERP (from 1 January 2026), posted shipment and return receipt lines",
+     "2027-01-05", "Ashlund Home Ireland Ltd posted shipment and return lines, 2026"),
+    ("ahi_arch25", "Ashlund Home Ireland Ltd previous ERP, read-only archive, invoice and credit note lines", "2026-12-18",
+     "Ashlund Home Ireland Ltd invoice and credit note lines, 2025"),
+    ("ahb_orders", "Ashlund Home B.V. ERP, verkooporderregels", "2027-01-05",
+     "Ashlund Home B.V. order lines, 2025 and 2026"),
+    ("vh_weeks", "Valuehall Stores Ltd stock system, weekly store trading summary", "2027-01-06",
+     "Valuehall store weeks since March 2021"),
+    ("lots", "Group finance, trade lot register", "2027-01-08", "Lots of surplus stock sold to trade buyers, 2021 to 2026"),
+    ("fx", "Group finance, rate table", "2027-01-04", "EUR to GBP average and month-end rates, 2025 and 2026"),
+    ("rcf", "Group treasury system, facility utilisation", "2027-01-04", "Daily drawn balance on the revolving facility, 2026"),
+    ("policy", "Group finance policy manual, FIN-07 (version 4)", "2025-03-14", "Stock provisioning policy"),
+    ("facility", "Revolving credit facility agreement, extract of clauses 1 and 21", "2024-06-28",
+     "Borrowing base definitions and financial covenant"),
+    ("vhplan", "Valuehall Stores Ltd, 2027 store plan", "2026-11-20", "Valuehall stores, trading days and closures in 2027"),
+    ("open_po", "Ashlund Home Ltd ERP, open purchase order lines", "2027-01-04",
+     "Purchase order lines due for delivery in 2027"),
+    ("pallets", "Group logistics, warehouse management system", "2027-01-04", "Weekly pallet positions occupied at each DC, 2026"),
+]
 
 
-def _doc(path):
-    def frame(canvas, doc):
-        canvas.saveState()
-        canvas.setFont("LiberationSans", 7.4)
-        canvas.setFillColor(GREY)
-        canvas.drawString(20 * mm, 11 * mm, "%s Network Policy %s, %s. Approved 21 May 2026." % (W.ORG, W.POLICY_ID,
-                                                                                                 W.POLICY_TITLE))
-        canvas.drawRightString(letter[0] - 20 * mm, 11 * mm, "Page %d" % doc.page)
-        canvas.restoreState()
-    d = SimpleDocTemplate(path, pagesize=letter, leftMargin=22 * mm, rightMargin=22 * mm, topMargin=18 * mm,
-                          bottomMargin=20 * mm, title="%s %s" % (W.POLICY_ID, W.POLICY_TITLE), author=W.ORG,
-                          subject="", creator="", producer="")
-    return d, frame
-
-
-def _codes_table(rows, widths):
-    t = Table([[Paragraph(a, CELLB if i == 0 else CELL) for a in r] for i, r in enumerate(rows)], colWidths=widths,
-              repeatRows=1)
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, TEAL), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                           ("TOPPADDING", (0, 0), (-1, -1), 2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-                           ("LINEBELOW", (0, -1), (-1, -1), 0.4, GREY)]))
-    return t
+def _doc(path, story, title, author):
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=17 * mm,
+                            bottomMargin=17 * mm, title=title, author=author, subject="", creator="", producer="")
+    doc.build(story)
 
 
 def write_policy(path):
-    d, frame = _doc(path)
-    P = lambda t: Paragraph(t, NUM)
-    smi_f2 = ", ".join(c for c in W.SMI_CODES if c.startswith("F2"))
-    smi_f3 = ", ".join(c for c in W.SMI_CODES if c.startswith("F3"))
-    oud = ", ".join(W.OUD_CODES)
-    story = [
-        Paragraph("Network Policy %s: %s" % (W.POLICY_ID, W.POLICY_TITLE), H1),
-        Paragraph("%s. Owner: %s. Approved by the Board of Directors on 21 May 2026 for the %s, 2027 to 2029. "
-                  "Supersedes no earlier policy." % (W.ORG, W.TEAM, W.PILOT), SUB),
-        Paragraph("1. Purpose", H2),
-        P("1.1&nbsp;&nbsp;The %s offers loan repayment to behavioral-health prescribers who commit to three years of "
-          "practice in a designated county. This policy sets how the plan designates the counties of its service area "
-          "where the awards are offered: Adams, Benton, Chelan, Douglas, Franklin, Grant, Kittitas, Okanogan, Walla Walla "
-          "and Yakima." % W.PILOT),
-        P("1.2&nbsp;&nbsp;Network Development prepares the designation for the board each autumn, from the contract year "
-          "that ended on the previous 30 June. The board approves the designated counties with the pilot's budget."),
-        Paragraph("2. Definitions", H2),
-        P("2.1&nbsp;&nbsp;<i>Contract year</i>: 1 July 2025 to 30 June 2026, the plan's contract year under its Apple "
-          "Health integrated managed care contract."),
-        P("2.2&nbsp;&nbsp;<i>Adult member</i>: a person enrolled with the plan on at least one day of the contract year (the "
-          "plan enrolls adults aged 19 and over). A person counts once however many member numbers the plan has issued "
-          "them; the client identifier on the enrollment record identifies the person."),
-        P("2.3&nbsp;&nbsp;<i>A member's county</i>: the county of residence on the enrollment record that covers the "
-          "member's last day of enrollment in the contract year."),
-        P("2.4&nbsp;&nbsp;<i>Serious mental illness</i> and <i>opioid use disorder</i>: the conditions whose diagnosis codes "
-          "Appendix A lists. A claim or encounter identifies a member's condition when it carries a listed code in any "
-          "diagnosis position for a service rendered to the member in the contract year. A claim that a later claim "
-          "replaces, and a voided claim, identify nothing; the replacing claim does."),
-        P("2.5&nbsp;&nbsp;<i>Adult members with a serious mental illness</i> (or <i>with an opioid use disorder</i>): the "
-          "county's adult members who have the condition. A member who has the condition counts whether or not a claim or "
-          "encounter in the contract year identifies it. Network Analytics estimates the number of members with each "
-          "condition in each county from the plan's enrollment, claims and encounter records, and measures each county "
-          "from its own members; a member enrolled in all twelve months of the contract year whom no claim or encounter "
-          "identifies is counted as not having the condition."),
-        P("2.6&nbsp;&nbsp;<i>Behavioral-health prescriber</i>: a clinician whose primary taxonomy in NPPES on 1 November 2026 "
-          "is one of the codes Appendix B lists, or, for an NPI deactivated by that day, whose primary taxonomy was one of "
-          "them before its deactivation. NPPES on 1 November 2026 means the monthly file as the weekly incremental files "
-          "update it, record by record, through that day."),
-        P("2.7&nbsp;&nbsp;<i>Practising behavioral-health prescriber</i> in a county: a behavioral-health prescriber whose "
-          "NPI is active on 1 November 2026, whose practice location on that day is in the county, and who is the rendering "
-          "provider of at least one claim or encounter for a service to an adult member in the contract year. The practice "
-          "location is the NPPES business practice location address, not the mailing address. Its county is the county "
-          "holding the larger share of the ZIP code's business addresses in the HUD-USPS ZIP-county crosswalk for the "
-          "second quarter of 2026."),
-        P("2.8&nbsp;&nbsp;<i>Visit with a behavioral-health prescriber</i>: a service Appendix C lists, rendered by a "
-          "behavioral-health prescriber, in person or by telehealth, wherever the prescriber practises."),
-        Paragraph("3. Standards", H2),
-        P("3.1&nbsp;&nbsp;Each county is measured against three standards over the contract year:"),
-        P("(a)&nbsp;&nbsp;<i>Prescribers for serious mental illness</i>: practising behavioral-health prescribers in the "
-          "county per 1,000 adult members with a serious mental illness. Threshold: 16.5."),
-        P("(b)&nbsp;&nbsp;<i>Prescribers for opioid use disorder</i>: practising behavioral-health prescribers in the county "
-          "per 1,000 adult members with an opioid use disorder. Threshold: 23.0."),
-        P("(c)&nbsp;&nbsp;<i>Prescriber reach</i>: the share of the county's adult members with a serious mental illness who "
-          "had at least one visit with a behavioral-health prescriber in the contract year. Threshold: 68 per cent."),
-        P("3.2&nbsp;&nbsp;A county fails a standard when its value is below the threshold. Values are compared with the "
-          "thresholds unrounded."),
-        Paragraph("4. Designation", H2),
-        P("4.1&nbsp;&nbsp;A county is designated when it fails at least two of the three standards."),
-        P("4.2&nbsp;&nbsp;A designation holds for the pilot's three years. A county not designated for 2027 may be "
-          "designated in a later year under the standards then in force."),
-        Paragraph("5. Records", H2),
-        P("5.1&nbsp;&nbsp;The enrollment spans of the plan's enrollment system; the claims and encounters of the plan's "
-          "claims system for services in the contract year, paid or accepted through 31 October 2026; NPPES, as published "
-          "by the Centers for Medicare &amp; Medicaid Services; and the HUD-USPS ZIP-county crosswalk."),
-        P("5.2&nbsp;&nbsp;Network Analytics keeps the extracts it used, as pulled, with the designation for the pilot's three "
-          "years."),
-        Paragraph("6. Awards", H2),
-        P("6.1&nbsp;&nbsp;In each designated county the pilot offers up to four awards a year. An award repays up to $45,000 "
-          "of qualifying education loans over three years to a behavioral-health prescriber who practises at least 24 hours "
-          "a week in the county and keeps a panel open to the plan's members."),
-        P("6.2&nbsp;&nbsp;A prescriber already practising in a designated county may apply. Awards are paid in arrears each "
-          "contract year, after Network Development confirms the practice hours and the prescriber's claims and encounters "
-          "for the plan's members in the county."),
-        P("6.3&nbsp;&nbsp;Awards are funded from the plan's community reinvestment budget as the board approves it with the "
-          "designation."),
-        Paragraph("7. Responsibilities", H2),
-        P("7.1&nbsp;&nbsp;Network Analytics prepares each county's measures from the records in section 5 and documents "
-          "the extracts it used."),
-        P("7.2&nbsp;&nbsp;Network Development reviews the measures, prepares the board paper and notifies the contracted "
-          "behavioral health agencies and practices in the designated counties."),
-        P("7.3&nbsp;&nbsp;The Chief Medical Officer presents the designation to the board."),
-        Paragraph("8. Review", H2),
-        P("8.1&nbsp;&nbsp;Network Development reviews this policy before the designation for 2030, with the pilot's results "
-          "for its first two years."),
-        Spacer(1, 6),
-        Paragraph("Appendix A. Diagnosis codes (ICD-10-CM)", H2),
-        _codes_table([["Condition", "Codes"],
-                      ["Serious mental illness", "Schizophrenia spectrum and other psychotic disorders: %s. Bipolar "
-                       "disorders and major depressive disorder, severe, with psychotic features: %s." % (smi_f2, smi_f3)],
-                      ["Opioid use disorder", "Opioid abuse and opioid dependence: %s." % oud]],
-                     [40 * mm, 132 * mm]),
-        Spacer(1, 6),
-        Paragraph("Appendix B. Behavioral-health prescriber taxonomy codes", H2),
-        _codes_table([["Code", "Classification and specialization"]] +
-                     [[k, v] for k, v in W.BH_TAXONOMY.items()], [32 * mm, 140 * mm]),
-        Spacer(1, 6),
-        Paragraph("Appendix C. Visit services", H2),
-        _codes_table([["Codes", "Service"],
-                      ["99202 to 99205", "Office or other outpatient visit, new patient"],
-                      ["99211 to 99215", "Office or other outpatient visit, established patient"],
-                      ["90791", "Psychiatric diagnostic evaluation"],
-                      ["90792", "Psychiatric diagnostic evaluation with medical services"],
-                      ["Telehealth", "Any code above billed with modifier 95 or with place of service 02 or 10"]],
-                     [52 * mm, 120 * mm]),
-    ]
-    d.build(story, onFirstPage=frame, onLaterPages=frame)
+    s = [Paragraph("Ashlund Home Group plc", SMALL),
+         Paragraph("FIN-07 Stock provisioning", H1),
+         Paragraph("Group finance policy manual. Version 4, approved by the audit committee on 12 March 2025. "
+                   "Owner: group financial controller. Applies to every trading company of the group.", SMALL),
+         Spacer(1, 4 * mm),
+         Paragraph("1. Scope", H2),
+         Paragraph("This policy sets how the group measures its inventories at each half-year and year end under IAS 2. "
+                   "It applies to finished goods held by Ashlund Home Ltd, Ashlund Home Ireland Ltd, Ashlund Home B.V. and "
+                   "Valuehall Stores Ltd, wherever the stock is held.", SERIF),
+         Paragraph("2. Measurement", H2),
+         Paragraph("2.1 Inventories are carried at the lower of cost and net realisable value, line by line. Cost is the "
+                   "landed cost each trading company records in its own system.", NUM),
+         Paragraph("2.2 In Ashlund Home Ltd, Ashlund Home Ireland Ltd and Ashlund Home B.V., excess stock is the "
+                   "quantity of a line held at the balance sheet date beyond that line's net shipments to customers in the "
+                   "twelve months to that date, in the same company. Net shipments are despatches less customer returns. "
+                   "Transfers to Valuehall Stores Ltd and to other group companies are not shipments to customers.", NUM),
+         Paragraph("2.3 Stock that is not excess is carried at cost.", NUM),
+         Paragraph("2.4 Excess stock is carried at the net proceeds, excluding VAT, the group expects to receive for it "
+                   "from its disposal in the year after the balance sheet date, where those proceeds are below cost. The "
+                   "group disposes of surplus stock through Valuehall Stores Ltd and through trade buyers. Stock held by "
+                   "Valuehall Stores Ltd at the balance sheet date is surplus stock awaiting disposal and is measured "
+                   "with the excess.", NUM),
+         Paragraph("2.5 Net realisable value is assessed on the stock held at the balance sheet date. The group's own "
+                   "selling, store, warehouse and transport costs are period costs and are not deducted.", NUM),
+         Paragraph("2.6 Stock held in euro is translated into sterling at the group's year-end rate.", NUM),
+         Paragraph("3. Reporting", H2),
+         Paragraph("3.1 The provision, the excess stock on which it rests and the stock carried after it are reported to "
+                   "the audit committee for each trading company and each division before the accounts are approved.", NUM),
+         Paragraph("3.2 The group's divisions are Kitchen and Dining (KD), Storage and Laundry (SL), Lighting and "
+                   "Electrical (LE), Tools and Hardware (TH) and Garden and Outdoor (GO).", NUM),
+         Spacer(1, 6 * mm),
+         Paragraph("Superseded: version 3 (March 2022). Next review: March 2027.", SMALL)]
+    _doc(path, s, "FIN-07 Stock provisioning", "Group Finance")
+
+
+def write_facility(path):
+    s = [Paragraph("EXECUTION VERSION", SMALL),
+         Paragraph("GBP 32,000,000 Revolving Credit Facility Agreement", H1),
+         Paragraph("between Ashlund Home Group plc as Parent, the Borrowers listed in Schedule 1 and Northgate "
+                   "Commercial Bank plc as Lender. Dated 28 June 2024. Extract: clause 1.1 (selected definitions) and "
+                   "clause 21 (financial covenant).", SMALL),
+         Spacer(1, 4 * mm),
+         Paragraph("1.1 Definitions", H2),
+         Paragraph("<b>Audited Accounts</b> means the audited consolidated financial statements of the Group for a "
+                   "Financial Year delivered under clause 19.1.", SERIF),
+         Paragraph("<b>Borrowing Base</b> means, at any Test Date, 62.5 per cent. of Eligible Inventory at that Test "
+                   "Date.", SERIF),
+         Paragraph("<b>Eligible Inventory</b> means the inventories of the Group, at the lower of cost and net realisable "
+                   "value, as stated in the consolidated balance sheet contained in the Audited Accounts for the Financial "
+                   "Year ending on that Test Date.", SERIF),
+         Paragraph("<b>Outstandings</b> means the aggregate principal amount of all Loans outstanding at the close of "
+                   "business on a Test Date.", SERIF),
+         Paragraph("<b>Test Date</b> means 31 December in each year.", SERIF),
+         Paragraph("21. Financial covenant", H2),
+         Paragraph("21.1 The Parent shall ensure that on each Test Date the Outstandings do not exceed the Borrowing "
+                   "Base.", NUM),
+         Paragraph("21.2 Compliance with clause 21.1 is tested on the Audited Accounts and shown in a Compliance "
+                   "Certificate delivered with them, signed by two directors of the Parent.", NUM),
+         Paragraph("21.3 A breach of clause 21.1 is an Event of Default under clause 23 unless, before the Audited "
+                   "Accounts are delivered, the Lender has waived it in writing.", NUM),
+         Spacer(1, 6 * mm),
+         Paragraph("Clauses 2 to 20 and 22 onwards are not reproduced in this extract.", SMALL)]
+    _doc(path, s, "RCF Facility Agreement extract", "Northgate Commercial Bank plc")
+
+
+def write_vhplan(path):
+    rows = [[Paragraph(h, CELLB) for h in ("Store", "Opened", "2027 closures", "Trading days 2027")]]
+    days = {"VH01": 349, "VH02": 363, "VH03": 363, "VH04": 363, "VH05": 363}
+    clos = {"VH01": "1 to 14 February (refit); 25 and 26 December"}
+    for code, nm, op in STORES:
+        rows.append([Paragraph("%s %s" % (code, nm), CELL), Paragraph(op.strftime("%d %B %Y").lstrip("0"), CELL),
+                     Paragraph(clos.get(code, "25 and 26 December"), CELL), Paragraph("%d" % days[code], CELL)])
+    rows.append([Paragraph("Total", CELLB), "", "", Paragraph("%d" % sum(days.values()), CELLB)])
+    t = Table(rows, colWidths=[52 * mm, 30 * mm, 62 * mm, 26 * mm])
+    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, NAVY), ("LINEABOVE", (0, -1), (-1, -1), 0.4, GREY),
+                           ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5)]))
+    s = [Paragraph("Valuehall Stores Ltd", SMALL),
+         Paragraph("2027 store plan", H1),
+         Paragraph("Prepared by Valuehall operations for the group property committee, 20 November 2026.", SMALL),
+         Spacer(1, 4 * mm),
+         Paragraph("Valuehall will trade from its five existing stores throughout 2027. The Kettering site reviewed in "
+                   "September is deferred: the landlord's works will not finish before the spring, and the committee "
+                   "agreed to look at it again for a 2028 opening. No store closes in 2027.", SERIF),
+         Paragraph("Leicester Fosse Park will close for its refit from Monday 1 February to Sunday 14 February 2027: new "
+                   "lighting, a second till bank and the stockroom racking moved to the rear dock. All stores close on "
+                   "Christmas Day and Boxing Day and trade on every other day of the year, including bank holidays.",
+                   SERIF),
+         Spacer(1, 2 * mm), t, Spacer(1, 5 * mm),
+         Paragraph("Opening hours are unchanged: 9am to 8pm Monday to Saturday and 10am to 4pm on Sunday (Leicester and "
+                   "Nottingham 10.30am to 4.30pm). Deliveries from the group's distribution centres continue on the "
+                   "current fortnightly rota for each store.", SERIF)]
+    _doc(path, s, "Valuehall 2027 store plan", "Valuehall Operations")

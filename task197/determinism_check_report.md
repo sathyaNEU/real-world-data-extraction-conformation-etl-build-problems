@@ -1,58 +1,73 @@
-# task197 determinism review (isolated judge thread)
+# determinism-check report, task197 (architecture 2, run a2), 2026-11-02
 
-**Order kept.** I derived from the prompt and the pack first and wrote the derivation to disk (task197_derivation.md) before opening task197_graded_blocks.md. I did not open any forbidden path, run no git command and spawned nothing.
-**Disclosure.** The scratchpad folder `w/` already held many working files from earlier passes. I listed it once by accident (ls) and opened none of them, but my first script was written to `w/ep.py` and `w/eps.pkl` and overwrote two earlier files of those names (an earlier pass's scratch only, not part of the task folder). All later work is in my own folder `j197/`. Nothing from an earlier pass was used.
-
-**Verdict:** DETERMINISTIC
-**Disposition:** APPROVE (advisories below, none needs a rerun)
+## Verdict
+NOT_DETERMINISTIC, on referral_tables.xlsx ask 2 only (the antidote course counts). The main recommendation is DETERMINISTIC and reproduced.
+**Disposition:** SEND_BACK. The send-back touches the supplementary asks only, not the decisive step. Fix location: input_files and prompt, ask 2 only.
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-Every committed figure reproduced from the shipped files with an independent rebuild: Kampvliet 72 per cent over 134 episodes, Reiderland 83 per cent, gap 11 points, three sites outside tolerance, all nine under and eight over-frequency gains, the six capacity-hour blocks and the nine-site energy table. The call is forced because the baseline is identified by the data (the quiet-minute power follows a per-site traverse, the step and undisturbed-level baselines do not), and the gap to the runner-up is 10.7 points.
+The 12 hospital by half-year course counts (acetylcysteine, deferoxamine for an iron poisoning, the sum; 36 figures) do not follow from the shipped text. The prompt says only "courses started". The regimens, the dose ratios and hours, the iron-poisoning chain rule and the transfusion-admission exclusion appear in no shipped file, including both procedure PDFs. They exist only in submission.md step 7. The judge's literal reconstruction missed the golden in roughly 20 of 36 cells (off by 0 to 4). Riverbend (H34) prepares its sets in a batch, so a literal "at the regimen's hours" rule gives it zero acetylcysteine courses, against a golden of 59/77/57. Gates B and C fail for ask 2. Label: underspecified_objective, with an external_dependency component.
+The main call is forced. Feverkind 1.3, Embercalm 1.1, gap 0.2, and the other six at 1.0 all reproduce.
 
-## Gate table
-| Gate | Result | Line |
-|---|---|---|
-| A correct | PASS | All load-bearing and supplementary figures recompute; 911 pairs, 134 episodes, spans 90 s (KPV) and 300 s (TRB) all reproduce |
-| B facts in files | PASS | Everything is in the pack. The old OOS meter code is not in the register but is the only unmatched meter, ends where the new one starts and matches event 4112 |
-| C uniquely forced | PASS with advisories | Main call forced (see recomputations). Forks that exist: step vs ramp programme energy (literal text gives step), face-value vs UTC clock on 9 withdrawal events (logged_utc forces UTC), cancelled events (stated). None moves the main call |
-| D hard for right reason | PASS | Splits come from the counterfactual baseline, not from wording |
-| E prompt unambiguous | PASS | One site, one gain, one runner-up, units and rounding in the sentence |
-| F stump power | PASS, strong | Step setpoint files RDL 57 per cent, undisturbed level files ZWT 72 per cent, ramp files KPV 72 per cent |
-| G stumping type | PASS | line below |
-| H three rules | PASS | line below |
+## Recomputation ledger
+| Figure | Claimed | Judge recomputed | Reproduced |
+|---|---|---|---|
+| Feverkind exposures, Oct 2024 to Sep 2025 (case export: reason, age under 6, product_code, local month) | 5,475 | 5,475 | yes |
+| Embercalm exposures, May 2025 to Apr 2026 | 13,038 | 13,038 | yes |
+| Feverkind effect | 1.3 | 1.302 | yes |
+| Embercalm effect | 1.1 | 1.094 | yes |
+| Dozinox, Vapocare, Coughex, Ibucalm, Sunnybear, Clearview | 1.0 each | 1.011, 1.000, 1.001, 0.990, 0.989, 0.977 | yes |
+| Gap | 0.2 | 0.208, and 0.2 from the rounded effects | yes |
+| Eight changes and Feverkind first sale 16 Sep 2024 (register, Packaging changes sheet) | as claimed | as claimed | yes |
+| Acetylcysteine and deferoxamine, 12 cells x 3 columns (36 figures) | as in submission.md | about 20 cells differ; Riverbend not reproducible from the text | no |
 
-**Gate G:** `mechanism: other (counterfactual baseline identification, with a binding tolerance rule)`, `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. No reported figure is wrong: the programme, frequency and power are all correct as published, and the difficulty is estimating the output the site would have produced, which survives on perfectly clean data.
+Robustness of the main call: the effects hold across the fit start (2019 or 2021) and the fit end. Feverkind stays within 1.297 to 1.303 and Embercalm within 1.092 to 1.095.
 
-**Gate H:** `domain: pass`, `layers: pass`, `decisive_step: analytical`. Swap test: the deciding quantity is a primary-response gain measured against the characteristic of a frequency reserve standard, which no other field estimates in this form. Layer 1: end-stamped meters with a misleading period column, kWh at one meter, a meter replaced mid window, UTC clock written as local on 9 log events, duplicate recording, corrections that cancel log entries. Layer 2: the counterfactual output (traverse recovered at uncommitted boundaries). Easy route for an analyst who read everything right: take the period setpoint as the undisturbed output (RDL 57 per cent, files Reiderland) or the last pre-deviation power (ZWT 72 per cent, files Zwartewater).
+## Competing answers that survived
+Ask 2 (the antidote courses) has open forks, none closed by a shipped sentence:
+- Whether a lone or repeat bag starts a course.
+- Whether a 0 to 4 h pair of deferoxamine bags is a course.
+- Chain length and spacing for an iron-poisoning course.
+- How a transfusion admission is told apart.
+- The Riverbend batch-preparation convention.
+- The regimen ratios and hours themselves.
 
-## Recomputation 1: traverse span
-Fitted at boundaries where the site held no commitment, measured samples, linear ramp from previous to new setpoint, start at the boundary:
-DLK 100 s, HGZ 185, KPV 90, MPD 200, NWV 95, OOS 85, RDL 190, TRB 300, ZWT 80. Unique to about 1 s: a span 1 s away has an error only 3 to 37 per cent larger; 5 s away it is 2.0x (OOS, KPV) to 10x (TRB) larger, so the runner-up on the 5 s grid is the neighbour (KPV 85 or 95 s). Fractional fit lands on the same integers (KPV 90.0 to 90.25). Competing readings of the criterion (new period uncommitted, both periods, previous period, either, all boundaries, with or without a quiet-frequency filter) all give the same nine spans. The one reading that differs is boundaries where the site WAS committed: the archive has no samples in the first two minutes after those boundaries for DLK, KPV and ZWT, so the fit collapses to 1 s (unidentified); for the other six it agrees. The criterion therefore recovers each span uniquely and is the only one that identifies KPV.
+Main call, counterfactual baseline. This is the residual the thread flagged. Procedure 3.1 reads "the number the product's packs would have produced", and it never says "packs in use". The readings give:
 
-## Recomputation 2: realised gain and counterfactual baselines (under-frequency, per cent)
-Ramp with fitted span (answer): DLK 93.1, HGZ 88.0, KPV 72.1, MPD 97.1, NWV 90.9, OOS 94.8, RDL 82.8, TRB 101.1, ZWT 98.8. Below 90: KPV, RDL, HGZ.
-| baseline left open by the text | furthest below |
-|---|---|
-| ramp, fitted span | KPV 72.1 |
-| period setpoint (step) | RDL 57.4 (below: RDL, KPV, HGZ, TRB 76.8, MPD 78.7) |
-| previous setpoint or last pre-deviation power | ZWT 71.7 (below: ZWT, OOS 80.7, NWV 87.6) |
-| common span 120 s | RDL 72.1 |
-| common span 300 s | ZWT 79.3 |
-Only the ramp reproduces quiet-minute power to the noise floor (residual sd 0.013 MW). The other baselines leave several MW of residual after every boundary, so exactly one is defensible once the power is compared with it. Almost every extreme second falls 60 to 100 s after a boundary, so the baseline decides every gain. Margin KPV to RDL 10.7 points; plus or minus 5 s on every span moves KPV 70.6 to 73.5 and RDL 82.3 to 83.3, ranking unchanged.
+| Reading | Feverkind | Embercalm | Dozinox | Call |
+|---|---|---|---|---|
+| Packs in use (golden) | 1.30 | 1.09 | 1.01 | Feverkind |
+| Exposures per pack sold | 1.19 | 0.92 | 1.64 | Dozinox |
+| Raw count against prior year | 1.37 | 2.75 | 0.86 | Embercalm |
 
-## Recomputation 3: counts and missing recordings
-Contracted pairs 1383 (935 under, 448 over). Valid withdrawals remove 5 over-frequency pairs, leaving 1378 (935 under, 443 over). Archive carries a recording of the extreme second for 911 of the 935 under-frequency pairs (the write-up's 911), 431 of 443 over-frequency, 1342 of 1378 in total (1346 of 1383 before withdrawals). Missing pairs are all obliged by construction (24 under, 13 over before withdrawals): HGZ 7, TRB 7, RDL 6, ZWT 6, KPV 3, MPD 3, NWV 3, DLK 1, OOS 1. The pattern is the reverse of "only unobliged missing": the archive holds 97 per cent of obliged pairs but only about 7 per cent (228 of 3252) of unobliged ones. Missing pairs are scattered over days and blocks, with the same deviation depth as recorded ones (median 0.082 against 0.086 Hz); two are a recording that ends seconds before the extreme second. Nothing in the pattern tells a solver the direction of a gain.
+The thread's own held-out back-test removes the competing readings on the data. The stock model's deviance is 6 to 20 per 12 months on all eight products, against 130 to 1,580 for per-pack-sold. Feverkind's decay is tightly pinned. The thread treats this as a method choice the data forces, which is allowed, and records the residual as a risk and not a failure. The residual stands: a literal reader who takes "packs" as packs sold lands on Dozinox. The method is open only through the data's separation of the candidates, and no filed selection criterion names the back-test. I record it as an open risk and not a failure. The thread's optional line for procedure 3.1 (that packs "in use" are meant) is filing the WHAT, but it would sit close to naming the stump. The main session should weigh that against CLAUDE.md's rule to file WHAT and never HOW.
 
-## Recomputation 4: distance from rounding edge
-Under-frequency gains, in whole per cent from the nearest x.5 edge: DLK 0.403, HGZ 0.470, KPV 0.417, MPD 0.446, NWV 0.381, OOS 0.283, RDL 0.277, TRB 0.434, ZWT 0.349. Over-frequency: DLK 0.499, HGZ 0.353, KPV 0.462, NWV 0.466, OOS 0.342, RDL 0.350, TRB 0.486, ZWT 0.326. Capacity hours are exact at one decimal (18.0, 17.0, 20.9, 7.1, 26.5, 7.8; no rounding at all). Energy (step programme, units of 0.1 MWh): closest are RDL above 0.303, KPV above 0.311, KPV below 0.337, ZWT below 0.391, all others 0.36 to 0.49. No figure prints on a tie; nothing prints within 0.27 of a unit of its edge. The 90 per cent line is cleared by NWV under-frequency at 90.88 (0.88 above) and HGZ at 88.03 (1.97 below).
+## Spec gates
+| Gate | Required | Actual | Pass |
+|---|---|---|---|
+| Files | 10 or more | 11 | yes |
+| Formats | 3 or more | csv, pdf, xlsx | yes |
+| Large file | 25,000 rows or more | case_export_watched_products.csv, 470,106 rows | yes |
+| Distractors | 2 or more in metadata.json, none named by file name | census/population_age_0_5_by_state.csv and packaging_review/adverse_event_reports_watched_products.csv; neither file name labels it | yes |
+| Distractor relevance | unused by the solution, relevant enough to weigh, ruled out by a shipped fact | the thread found both unused; I did not recompute whether either reproduces a graded quantity | partial, not recomputed |
+| Deliverables | 1 to 3, all in the golden, no format family required | 3 (docx, xlsx, png); the golden folder holds all three | yes |
+| Asks | multi-dimensional, unit and rounding stated | 8 effects, plus 12 hospital/half-year cells x 3 columns; "ratios to one decimal and courses are whole numbers" is in the prompt | yes on form, ask 2 fails determinism |
+| Prompt shape and rubric | shape identifiable; 25 or more criteria | prompt is one paragraph, question first, under 1,000 characters, with no data-held count; the 25-criteria rubric is generated downstream and not checkable here (8 effects + 36 cells + referral items is ample) | yes, rubric not verified |
+| Reads as real, not LLM generated | clean | the thread found the antidote file clean and plausible, and the layer-1 mess realistic; I did not independently judge golden realism | yes, per thread |
 
-## Figures that did not reproduce
-None. Every graded figure in the three blocks reproduced to its stated rounding. The one difference is not a failing: my first energy reading used the ramp for programme energy (portfolio 80.5 above, 216.4 below), the submission uses the period setpoint (114.4, 242.6), and the step figures reproduce exactly.
+## Gate G reconciliation
+The thread reports `method_or_model_selection`, `analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. The design note and card agree. The card says `stump_class: analytical`. The note's stump sentence is the packs-in-use baseline fitted per product and validated on its held-out year, against the per-pack-sold default that refers Dozinox. The thread did not name the declared distractors (population and adverse-event reports) as the surface read, so they are not too load-bearing. No mismatch. The reported counts and sales are honest, and the difficulty is the exposure base.
 
-## Advisories (none needs a rerun)
-1. Energy against programme: the standard says programme energy is "the setpoint the control platform held for that period", and clause 6 settles against the nominated programme, so the step is the literal reading, but a solver who has just found the traverse could carry it into this ask and file 80.5 / 216.4 (site rows move by 3 to 7 MWh). Closing it would need a pin in the standard or the prompt, which changes what solvers see.
-2. Nine log events have start_local written in UTC clock time under a +02:00 label (logged_utc minus the label is 7290 s instead of 90 s). Read at face value, no over-frequency pair is withdrawn: OOS over-frequency becomes 89.9 per cent (below tolerance instead of 96), KPV 69.5, ZWT 92.5, HGZ 86.3, and the capacity shortfalls become 10.5, 14.2, 17.5, 4.7, 18.8, 6.5. The UTC reading is forced (an event cannot be logged two hours before it starts; every event then lies in a block the site holds; four recorded seconds show no response). Main call and under-frequency table are unaffected.
-3. Settled-statement files, the group availability statement, auction and price files are unused and are fair distractors.
+## Gate H reconciliation
+Thread: `domain: pass`, `layers: pass`, `decisive_step: analytical`. Layer 1 is the case-system change on 10 Jul 2023, preliminary against revised POS, 4-week periods against calendar months, and UPC mapping. Layer 2 is the pack-stock counterfactual baseline validated by back-test. Design note and card match (`estimation_fit`, analyst test and domain test both present). The thread classed the decisive step analytical by the easy-route test, and not merely because the packs-in-use method is a field standard: the per-pack-sold route files Dozinox at 1.64, or no referral at all. The thread did not reach the golden by applying a textbook method with no judgment. It found the method by comparing candidate models on held-out years. The residual is that the method is not filed (procedure 3.1 never says "packs in use"), so the stump is analytical only because the back-test separates the candidates, and the thread's own back-test confirms that it does. No Gate H failure.
 
-## Hygiene
-18 files, formats csv, sqlite, pdf, xlsx (4); one sqlite of 1,194,352 power rows and 4,617 recordings; no authoring language seen in the files read. PASS. Not a cross-batch check (no other task folder may be read).
+## Stump power (Gate F)
+Good. The per-pack-sold route is the field's conventional base and gives a specific wrong call, Dozinox at 1.64, with Feverkind at 1.19 below the 1.20 line. A strong model that does not model the stock of packs in homes and validate it out of sample falls into it. The stock model is a recognised organ in the field, so a strong solver could land it by modelling the home stock without the back-test. That is for the main thread to weigh against the ladder in the design note. Ask 2 adds determinism risk, not stump power.
+
+## Findings, ranked
+1. Ask 2, referral_tables.xlsx, 36 figures: the regimen, chain, lone-bag and transfusion-exclusion definitions are filed nowhere in the shipped files. The golden is not reproducible from the text, and Riverbend is zero under a literal reading. SEND_BACK. Note CLAUDE.md allows asks to turn on semantics or rule application, but they still must be determinate from shipped text.
+2. Main call residual: procedure 3.1 does not say "packs in use". This is a risk the held-out back-test closes on the data. No finding on the main call's determinism.
+3. The distractor spec check is incomplete: I did not recompute whether either distractor reproduces a graded quantity arithmetically.
+
+## Next action for the author
+Re-derive ask 2 from filed definitions. File in the shipped text or pack what makes a course (the regimen ratios and hours, how a hospital's preparation time relates to administration, whether a lone or repeat bag starts a course, and the chain length and spacing that make an iron-poisoning course and tell a transfusion admission apart), then recompute all 36 figures from those definitions. Or drop the antidote asks. Keep the main call, the packaging data and the eight effects frozen, since they reproduce.

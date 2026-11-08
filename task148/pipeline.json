@@ -1,58 +1,58 @@
 {
- "task": "task148",
- "status": "PAUSED",
- "domain": "urban-regional-science/municipal-service-demand-resource-allocation",
- "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-11-01",
- "stump": "Running the standard Erlang C staffing model on the board's FY2028 late-shift forecast with the measured busy time and four call-takers puts five months, May to September, below the 90 per cent standard (July 2027 83 per cent) and asks for a fifth call-taker from May to September; the step that lands it there is treating every caller as waiting until answered, when the late shift's own callers hang up after about two minutes and those who hang up shorten the wait for those who stay, so only June, July and August fall short (July 88 per cent); the patience has to be the late shift's own, measured over every one of its calls' waits, because one patience for the whole week (577 seconds) puts May to September short again and the hang-ups' own waits (38 seconds) leave no month short.",
- "architecture": 2,
- "loops": 2,
- "precut": {
-  "exit": 1,
-  "date": "2026-11-01",
-  "fail": "cracker misses every ask (the careful solver keeps 14 of 14)"
- },
- "leak": {
-  "leak_py": "REVIEW 2026-10-16 on the shipped cut (3 lines answered in the note's Build record and Leak review; no LEAK)",
-  "reader": "round 1 on the first pack 027f6ff: clean; round 2 on the hardened pack eb89e4a: clean, decisive step analytical, nothing planted; round 3, targeted, on 1eb79d0: clean, April read at 51.5 on the task's stamp (the B2 device working, closed by the filed sentence)"
- },
- "duplicate_check": {
-  "heart": "WARN 2026-10-16 (repeat.gate_g, overuse.gate_g, repeat.question_form; answered in the note)",
-  "nearest": "0.07 task500 v1 lineage, 0.07 task119 v2",
-  "note": "architecture 2 registered 2026-10-16: guard WARN repeat.gate_g, repeat.decision, repeat.question_form, answered in the note; task254 v2 and task501 v2 differentiated (same-driver older signature)",
-  "surface": "exit 0, 0 promoted pairs (2026-10-16, hardened pack)"
- },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task148/determinism_check_report.md (the hardened pack, commit eb89e4a); round 1 in task148/determinism_check_report_round1.md",
-  "brief": "findings closed in the record: the April 2026 callback linkage (README sentence, stamp-only reading asserted at 51.5) and the moment-matched patience's figure exposure (asserted, noted)"
- },
- "returned": [
-  {
-   "date": "2026-11-01",
-   "portal": "none: in-house re-check under the new leak gate (LEAK README.md: a file whose name says it describes the data (README): no dictionary, field notes, readme or manifest ships (dataset-generation section 3); LEAK README.md: names 33 column(s) of the data files verbatim, 88% of che_location_records_fy2026_northeast.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3))",
-   "repair": "leak",
-   "move": "The generator no longer writes README.md (a file list and field notes: 33 columns glossed, the code lists, the clocks, the location rule, the callback desk's task model and the pseudonym note) or qa_extract_log.csv (a file list with each file's system, record count and pull date, a describing file under section 3 though the sweep did not flag it): 12 files, five formats. Each file's system and coverage moved to metadata.json as files[].provenance, whose title and subdomain no longer narrate the method. The one fact an ask's determinism needs, Ask A's location rule, is filed once as SOP 2.10 6.2 (\"Calls are reported by where they were placed from, a wireless call by the last handset location received for it.\"); every other README fact is carried by the producing systems or converges in the data, each asserted in checks.py through the verifier's new PDF and cover-sheet extractor (SF5, SF8, SF10, SF18, SF20, SF24; Ask A's handset readings; Ask B's never-dialled tasks, plain number linkage, callback numbers and desk clock), and the fork table, closure table and ask sheet cite the new homes. The board's cover sheet lost its two column glosses. checks.py 220 assertions 0 failed, verify reads back 11 filed sentences, two builds byte-identical, figures.json, submission.md and the goldens unchanged, freeze determinism PASS, leak.py REVIEW with no LEAK. generator/ceiling.py (new, step 6b) measured the ask layer on the cut: the careful solver keeps all 14 ask figures (pair 57.7, mirror leakage 6.2 per cent), so precut FAILs on the cracker sheet and the ask layer is owed /fix-rubric before this cut ships.",
-   "commit": ""
-  }
- ],
- "resume": "ASK LAYER owed before any reship (measured 2026-11-01): the leak repair is done on ce339aaf (README.md and qa_extract_log.csv no longer ship; SOP 2.10 6.2 files the location rule as a WHAT), but generator/ceiling.py with the careful-solver cracker keeps all 14 ask figures (pair 57.7 only because the mirror is off the call), so precut FAILs 'cracker misses every ask'. A /fix-rubric pass found no re-site that survives both tests as the asks are worded: the i3 log the call reads gives every call its own incident and callback number, so devices can only move attribution, and every attribution path has a referee or rests on an unforced inference (candidate table in the design note's Tried and rejected and the agent's prototypes). Next: replace the asks with ones on ask-only systems that can carry duplication (new ask wording in the prompt's second sentence, a replacement distractor, new world mechanics), measured with the careful solver before any data is cut, then the leak reader and the judge; or re-root at stage 1 if no pair of asks passes.",
- "approved": null,
- "delivered": "2026-10-16",
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "wave": "wave 4 (new), seed FC19 number only (architecture 2 redrawn outside the seed's world)",
- "source_note": "re-root of FC19's slot: architecture 1 kept the seed's world (an SBA lender's CECL allowance) and was spent at stage 4 (judge NOT_DETERMINISTIC, SEND_BACK; rule 3 AT_RISK; a task133-like shell); architecture 2 draws a new world (a county 911 center's late-shift answer-time forecast)",
- "rule3_audit": "PASS on the hardened pack (2026-10-16), ship the data as is and correct the record: corrections of Erlang C fitted on a per-hour back-test, and crude four-call-taker lookups, land the set; one strong solver lands about 0.25, both of two about 0.07; the residual is recorded in the design note and asserted in checks.py",
- "shipped": {
-  "commit_cut": "1eb79d0",
-  "target_zip_sha256": "f7c143a8a5abe478f7fa14abfc8c68bbb9ddca128dc22f1affd6b3e21eff1661",
-  "call": "July 2027, August 2027 and June 2028 for a seasonal fifth call-taker (88, 89 and 89 per cent with four)"
- },
- "target_zip_md5": "ce339aaf4758c1c4cb95946f0bb2b63e"
+  "task": "task148",
+  "status": "PAUSED",
+  "domain": "urban-regional-science/municipal-service-demand-resource-allocation",
+  "objective": "forecasting",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-11-08",
+  "stump": "Running the standard Erlang C staffing model on the board's FY2028 late-shift forecast with the measured busy time and four call-takers puts five months, May to September, below the 90 per cent standard (July 2027 83 per cent) and asks for a fifth call-taker from May to September; the step that lands it there is treating every caller as waiting until answered, when the late shift's own callers hang up after about two minutes and those who hang up shorten the wait for those who stay, so only June, July and August fall short (July 88 per cent); the patience has to be the late shift's own, measured over every one of its calls' waits, because one patience for the whole week (577 seconds) puts May to September short again and the hang-ups' own waits (38 seconds) leave no month short.",
+  "architecture": 2,
+  "loops": 2,
+  "precut": {
+    "exit": 1,
+    "date": "2026-11-01",
+    "fail": "cracker misses every ask (the careful solver keeps 14 of 14)"
+  },
+  "leak": {
+    "leak_py": "REVIEW 2026-10-16 on the shipped cut (3 lines answered in the note's Build record and Leak review; no LEAK)",
+    "reader": "round 1 on the first pack 027f6ff: clean; round 2 on the hardened pack eb89e4a: clean, decisive step analytical, nothing planted; round 3, targeted, on 1eb79d0: clean, April read at 51.5 on the task's stamp (the B2 device working, closed by the filed sentence)"
+  },
+  "duplicate_check": {
+    "heart": "WARN 2026-10-16 (repeat.gate_g, overuse.gate_g, repeat.question_form; answered in the note)",
+    "nearest": "0.07 task500 v1 lineage, 0.07 task119 v2",
+    "note": "architecture 2 registered 2026-10-16: guard WARN repeat.gate_g, repeat.decision, repeat.question_form, answered in the note; task254 v2 and task501 v2 differentiated (same-driver older signature)",
+    "surface": "exit 0, 0 promoted pairs (2026-10-16, hardened pack)"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task148/determinism_check_report.md (the hardened pack, commit eb89e4a); round 1 in task148/determinism_check_report_round1.md",
+    "brief": "findings closed in the record: the April 2026 callback linkage (README sentence, stamp-only reading asserted at 51.5) and the moment-matched patience's figure exposure (asserted, noted)"
+  },
+  "returned": [
+    {
+      "date": "2026-11-01",
+      "portal": "none: in-house re-check under the new leak gate (LEAK README.md: a file whose name says it describes the data (README): no dictionary, field notes, readme or manifest ships (dataset-generation section 3); LEAK README.md: names 33 column(s) of the data files verbatim, 88% of che_location_records_fy2026_northeast.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3))",
+      "repair": "leak",
+      "move": "The generator no longer writes README.md (a file list and field notes: 33 columns glossed, the code lists, the clocks, the location rule, the callback desk's task model and the pseudonym note) or qa_extract_log.csv (a file list with each file's system, record count and pull date, a describing file under section 3 though the sweep did not flag it): 12 files, five formats. Each file's system and coverage moved to metadata.json as files[].provenance, whose title and subdomain no longer narrate the method. The one fact an ask's determinism needs, Ask A's location rule, is filed once as SOP 2.10 6.2 (\"Calls are reported by where they were placed from, a wireless call by the last handset location received for it.\"); every other README fact is carried by the producing systems or converges in the data, each asserted in checks.py through the verifier's new PDF and cover-sheet extractor (SF5, SF8, SF10, SF18, SF20, SF24; Ask A's handset readings; Ask B's never-dialled tasks, plain number linkage, callback numbers and desk clock), and the fork table, closure table and ask sheet cite the new homes. The board's cover sheet lost its two column glosses. checks.py 220 assertions 0 failed, verify reads back 11 filed sentences, two builds byte-identical, figures.json, submission.md and the goldens unchanged, freeze determinism PASS, leak.py REVIEW with no LEAK. generator/ceiling.py (new, step 6b) measured the ask layer on the cut: the careful solver keeps all 14 ask figures (pair 57.7, mirror leakage 6.2 per cent), so precut FAILs on the cracker sheet and the ask layer is owed /fix-rubric before this cut ships.",
+      "commit": ""
+    }
+  ],
+  "resume": "2026-11-08: a time-boxed ask screen, else re-root, was started on 2026-11-02 and stopped on the usage limit before any draw or file change; its screen notes were in the session scratchpad and are lost. Restart it: freeze the main call, screen two pack-forced device families on ask-only records as code, and if none passes, re-root at stage 1 into another world. ASK LAYER owed before any reship (measured 2026-11-01): the leak repair is done on ce339aaf (README.md and qa_extract_log.csv no longer ship; SOP 2.10 6.2 files the location rule as a WHAT), but generator/ceiling.py with the careful-solver cracker keeps all 14 ask figures (pair 57.7 only because the mirror is off the call), so precut FAILs 'cracker misses every ask'. A /fix-rubric pass found no re-site that survives both tests as the asks are worded: the i3 log the call reads gives every call its own incident and callback number, so devices can only move attribution, and every attribution path has a referee or rests on an unforced inference (candidate table in the design note's Tried and rejected and the agent's prototypes). Next: replace the asks with ones on ask-only systems that can carry duplication (new ask wording in the prompt's second sentence, a replacement distractor, new world mechanics), measured with the careful solver before any data is cut, then the leak reader and the judge; or re-root at stage 1 if no pair of asks passes.",
+  "approved": null,
+  "delivered": "2026-10-16",
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "wave": "wave 4 (new), seed FC19 number only (architecture 2 redrawn outside the seed's world)",
+  "source_note": "re-root of FC19's slot: architecture 1 kept the seed's world (an SBA lender's CECL allowance) and was spent at stage 4 (judge NOT_DETERMINISTIC, SEND_BACK; rule 3 AT_RISK; a task133-like shell); architecture 2 draws a new world (a county 911 center's late-shift answer-time forecast)",
+  "rule3_audit": "PASS on the hardened pack (2026-10-16), ship the data as is and correct the record: corrections of Erlang C fitted on a per-hour back-test, and crude four-call-taker lookups, land the set; one strong solver lands about 0.25, both of two about 0.07; the residual is recorded in the design note and asserted in checks.py",
+  "shipped": {
+    "commit_cut": "1eb79d0",
+    "target_zip_sha256": "f7c143a8a5abe478f7fa14abfc8c68bbb9ddca128dc22f1affd6b3e21eff1661",
+    "call": "July 2027, August 2027 and June 2028 for a seasonal fifth call-taker (88, 89 and 89 per cent with four)"
+  },
+  "target_zip_md5": "ce339aaf4758c1c4cb95946f0bb2b63e"
 }

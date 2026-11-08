@@ -1,241 +1,362 @@
-"""The golden deliverables, computed from the shipped files only (conform.py): the board's county scorecard
-(prescriber_pilot_county_scorecard_2027.xlsx) and the conformed county and eligibility-group table
-(county_adult_members_2026_conformed.csv); and generator/figures.json, every figure the write-up states."""
-import csv
+"""The golden: figures.json, the provision workbook and the one-page note to the audit committee, all computed from
+the cut pack through calc.py."""
 import json
 import os
 
-import conform as CF
+import numpy as np
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+from openpyxl.utils import get_column_letter
 
-SCORECARD = "prescriber_pilot_county_scorecard_2027.xlsx"
-CONFORMED = "county_adult_members_2026_conformed.csv"
-GROUP_NAME = {"SSI-DIS": "Disabled adults (SSI-related)", "ADULT-EXP": "Expansion adults", "PARENT-CR": "Parents and caretaker relatives",
-              "AGED-65": "Adults 65 and over"}
-QNAME = {"2025 Q3": "Jul-Sep 2025", "2025 Q4": "Oct-Dec 2025", "2026 Q1": "Jan-Mar 2026", "2026 Q2": "Apr-Jun 2026"}
+import bundle as B
+import calc as C
+from world import *
 
-
-def r10(x):
-    return int(round(x / 10.0)) * 10
-
-
-def dollars(x):
-    return int(round(x))
+GOLDEN = {"workbook": "Ashlund_FY2026_stock_provision.xlsx", "note": "FY2026_stock_provision_note.pdf"}
+SUBNAME = {"AHL": "Ashlund Home Ltd", "AHI": "Ashlund Home Ireland Ltd", "AHB": "Ashlund Home B.V."}
 
 
-def figures(a):
-    sc, cg = a["scorecard"], a["cg"]
-    designated = [c for c in CF.COUNTIES if sc.loc[c, "designated"]]
-    f = {"designated": designated, "counties": {}, "payments": {}, "conformed": {}}
-    for c in CF.COUNTIES:
-        x = sc.loc[c]
-        # the ratios and the reach as the board's table shows them: from the counts rounded to the nearest 10 (each
-        # standard is judged on the unrounded values, NP-31 3.2)
-        n_smi, n_oud = r10(x["est_smi"]), r10(x["est_oud"])
-        f["counties"][c] = {
-            "prescribers": int(x["prescribers"]), "members": int(x["members"]),
-            "smi": n_smi, "oud": n_oud, "smi_unrounded": round(float(x["est_smi"]), 2),
-            "oud_unrounded": round(float(x["est_oud"]), 2), "seen": int(x["seen_smi"]),
-            "s_smi": round(int(x["prescribers"]) / n_smi * 1000, 1), "s_oud": round(int(x["prescribers"]) / n_oud * 1000, 1),
-            "s_reach_pct": int(round(int(x["seen_smi"]) / n_smi * 100)),
-            "meets_smi": not bool(x["fail_smi"]), "meets_oud": not bool(x["fail_oud"]),
-            "meets_reach": not bool(x["fail_reach"]), "fails": int(x["fails"]), "designated": bool(x["designated"])}
-        f["payments"][c] = {q: dollars(a["pay"][(c, q)]) for q, _, _ in CF.QUARTERS}
-    for row in cg.to_dict("records"):
-        f["conformed"]["%s|%s" % (row["county"], row["group"])] = {
-            "members": int(row["members"]), "paid": dollars(a["pay_group"][(row["county"], row["group"])])}
-    mem = a["members"]
-    f["totals"] = {"adult_members": int(len(mem)), "full_year": int(mem["full_year"].sum()),
-                   "rec_smi": int(mem["rec_smi"].sum()), "rec_oud": int(mem["rec_oud"].sum()),
-                   "practising": int(sum(len(v) for v in a["practising"].values()))}
-    cap = a["capture"]
-    f["capture_pct"] = {"smi_1": round(cap["smi"][0] * 100, 1), "smi_3": round(cap["smi"][2] * 100, 1),
-                        "smi_6": round(cap["smi"][5] * 100, 1)}
-    # the same window, two kinds of member: expansion adults enrolled three months against the expansion adults enrolled
-    # all year within their first three months
-    exp = mem[mem["group"] == "ADULT-EXP"]
-    two = exp[exp["months"] == 2]
-    fy = exp[exp["full_year"]]
-    f["window_yield_pct"] = {"exp_two_months": round(float(two["rec_smi"].mean()) * 100, 1),
-                             "exp_full_year_first_two": round(float((fy["first_smi"] <= 2).mean()) * 100, 1),
-                             "exp_two_months_n": int(len(two))}
-    # the reader's route and the default path: the full-year members' prevalence carried to every member, by group
-    import methods as MT
-    R = MT.routes(a)
-    nd = MT.needs(a)
-    df, st = R["full_year_group"]
-    f["full_year_route"] = {"designated": list(st), "yakima_smi": r10(nd["full_year_group"][0]["Yakima"]),
-                            "yakima_s_smi": round(float(df.loc["Yakima", "s_smi"]), 1),
-                            "yakima_reach_pct": int(round(float(df.loc["Yakima", "s_reach"]) * 100))}
-    f["identified_count_designated"] = list(R["recorded"][1])
-    # what the write-up quotes from NP-31 and the prompt: the thresholds, the ratio base, the sections it cites and the
-    # age that names an eligibility group
-    f["stated"] = {"threshold_smi": 16.5, "threshold_oud": 23.0, "threshold_reach_pct": 68, "per_members": 1000,
-                   "sections": [2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 3.1, 3.2, 4.1], "aged_group_age": 65,
-                   "months": [1, 3, 12]}
-    return f
+UNIT = {"provision": 1_000_000, "inventories": 500_000, "bb": 500_000, "shortfall": 250_000}
 
 
-def write_scorecard(a, f, path):
-    from openpyxl import Workbook
-    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-    from openpyxl.utils import get_column_letter
+def mu(v, key):
+    return round(C.rnd(v, UNIT[key]) / 1e6, 2)
+
+
+def m1(v):
+    return round(C.rnd(v, 100_000) / 1e6, 1)
+
+
+def k10(v):
+    return C.rnd(v, 10_000)
+
+
+def rungs(target):
+    out = {}
+    for k in ("none", "blended", "fit", "sales2026", "jobber"):
+        r = C.compute(target, capacity=k)
+        out[k] = {"provision_m": m1(r["provision"]), "headroom_m": m1(r["headroom"]), "waiver": bool(r["waiver"]),
+                  "provision": round(r["provision"], 2)}
+    return out
+
+
+def backtest_2023(target, g):
+    w = B.vh_weeks(target)
+    w = w[w["week"].map(lambda d: d.year) == 2023]
+    return {"goods_in": round(float(w["goods_in_at_cost"].sum()), 0), "sold": round(float(w["sales_at_cost"].sum()), 0),
+            "predicted": round(g["per_day"] * float(w["trading_days"].sum()), 0)}
+
+
+def figures(target):
+    g = C.compute(target)
+    u25, v25 = C.shipped_2025(target)
+    fig = {
+        "call": "seek a waiver" if g["waiver"] else "no waiver needed",
+        "provision_gbp_m": mu(g["provision"], "provision"),
+        "borrowing_base_gbp_m": mu(g["bb"], "bb"),
+        "drawn_gbp_m": round(g["drawn"] / 1e6, 2),
+        "shortfall_gbp_m": mu(-g["headroom"], "shortfall") if g["waiver"] else 0.0,
+        "headroom_gbp_m": mu(g["headroom"], "shortfall") if not g["waiver"] else 0.0,
+        "inventories_after_provision_gbp_m": mu(g["carried"], "inventories"),
+        "stock_at_cost_gbp": {**{k: k10(v) for k, v in g["gross_sub"].items()}, "VH": k10(g["vh_stock"]),
+                              "total": k10(g["gross"])},
+        "excess_by_company_gbp": {k: k10(v) for k, v in g["excess_sub"].items()},
+        "excess_by_division_gbp": {d: k10(g["excess_div"].get(d, 0.0)) for d in DIVISIONS},
+        "excess_total_gbp": k10(g["excess"]),
+        "surplus_pool_gbp": k10(g["pool"]),
+        "surplus_pool_gbp_m": m1(g["pool"]),
+        "through_valuehall_gbp_m": m1(g["cap"]),
+        "to_trade_buyers_gbp_m": m1(g["pool"] - g["cap"]),
+        "through_valuehall_gbp": k10(g["cap"]),
+        "to_trade_buyers_gbp": k10(g["pool"] - g["cap"]),
+        "valuehall_per_trading_day_gbp": round(g["per_day"], 0),
+        "valuehall_recovery": round(g["r_out"], 3),
+        "trade_recovery": round(g["r_job"], 3),
+        "store_days_2027": g["days27"],
+        "units_2025_by_division": {d: C.rnd(u25[d], 1000) for d in DIVISIONS},
+        "sales_2025_gbp_by_division": {d: C.rnd(v25[d], 1000) for d in DIVISIONS},
+        "advance_pct": 62.5,
+        "stocked_threshold_gbp": C.STOCKED,
+        "fx_close": FX_CLOSE,
+        "fx_avg_2025": FX_AVG_2025,
+        "rungs": rungs(target),
+        "backtest_2023": backtest_2023(target, g),
+        "exact": {"provision": round(g["provision"], 2), "bb": round(g["bb"], 2), "headroom": round(g["headroom"], 2),
+                  "gross": round(g["gross"], 2), "pool": round(g["pool"], 2), "cap": round(g["cap"], 2),
+                  "units_2025": u25, "sales_2025": {d: round(v, 2) for d, v in v25.items()}},
+    }
+    return fig, g
+
+
+# ---------------------------------------------------------------- workbook
+
+THIN = Side(style="thin", color="9AA3AD")
+HEAD = PatternFill("solid", fgColor="DCE3EA")
+BOLD = Font(name="Calibri", bold=True, size=11)
+NORM = Font(name="Calibri", size=11)
+GBP = '#,##0;(#,##0);"-"'
+GBPM = '#,##0.0;(#,##0.0)'
+
+
+def _head(ws, row, vals):
+    for j, v in enumerate(vals, 1):
+        c = ws.cell(row=row, column=j, value=v if v != "" else None)
+        c.font = BOLD
+        c.fill = HEAD
+        c.border = Border(bottom=THIN)
+        c.alignment = Alignment(wrap_text=True, vertical="bottom")
+
+
+def write_workbook(target, fig, g, path):
     wb = Workbook()
     ws = wb.active
-    ws.title = "Designation 2027"
-    navy = "1F4E5A"
-    thin = Side(style="thin", color="9AA5AB")
-    ws["A1"] = "%s qualify for the 2027 Prescriber Service Award Pilot under NP-31" % (
-        ", ".join(f["designated"][:-1]) + " and " + f["designated"][-1])
-    ws["A1"].font = Font(name="Calibri", size=14, bold=True, color=navy)
-    ws["A2"] = ("Contract year 1 July 2025 to 30 June 2026. Practising prescribers as of 1 November 2026. Network Analytics "
-                "for the Board of Directors, meeting of 19 November 2026.")
-    ws["A2"].font = Font(name="Calibri", size=9, italic=True, color="5B6268")
-    hdr = ["County", "Adult members", "Practising behavioral-health prescribers",
-           "Adult members with a serious mental illness", "Adult members with an opioid use disorder",
-           "Prescribers per 1,000 with a serious mental illness (16.5)", "Meets",
-           "Prescribers per 1,000 with an opioid use disorder (23.0)", "Meets",
-           "Reach: share with a serious mental illness seen by a prescriber (68%)", "Meets", "Standards failed",
-           "Designated"]
-    ws.append([])
-    ws.append(hdr)
-    hr = ws.max_row
-    for k, h in enumerate(hdr, start=1):
-        cell = ws.cell(row=hr, column=k)
-        cell.font = Font(name="Calibri", size=9.5, bold=True, color="FFFFFF")
-        cell.fill = PatternFill("solid", fgColor=navy)
-        cell.alignment = Alignment(wrap_text=True, vertical="center", horizontal="center" if k > 1 else "left")
-    ws.row_dimensions[hr].height = 58
-    yes, no = "Yes", "No"
-    for c in CF.COUNTIES:
-        x = f["counties"][c]
-        sc = a["scorecard"].loc[c]
-        ws.append([c, x["members"], x["prescribers"], x["smi"], x["oud"], x["s_smi"], yes if x["meets_smi"] else no,
-                   x["s_oud"], yes if x["meets_oud"] else no, x["s_reach_pct"] / 100, yes if x["meets_reach"] else no,
-                   x["fails"], yes if x["designated"] else no])
-        r = ws.max_row
-        for k in range(1, 14):
-            cell = ws.cell(row=r, column=k)
-            cell.font = Font(name="Calibri", size=10, bold=bool(x["designated"]) and k in (1, 13))
-            cell.border = Border(bottom=thin)
-            if k > 1:
-                cell.alignment = Alignment(horizontal="right" if k not in (7, 9, 11, 13) else "center")
-        for k in (7, 9, 11):
-            if ws.cell(row=r, column=k).value == no:
-                ws.cell(row=r, column=k).font = Font(name="Calibri", size=10, bold=True, color="A12A2A")
-        if x["designated"]:
-            for k in range(1, 14):
-                ws.cell(row=r, column=k).fill = PatternFill("solid", fgColor="F3E6D8")
-        ws.cell(row=r, column=2).number_format = "#,##0"
-        ws.cell(row=r, column=4).number_format = "#,##0"
-        ws.cell(row=r, column=5).number_format = "#,##0"
-        ws.cell(row=r, column=6).number_format = "0.0"
-        ws.cell(row=r, column=8).number_format = "0.0"
-        ws.cell(row=r, column=10).number_format = "0%"
-    last = ws.max_row
-    ws.append([])
-    ws.append(["Designated: %s (each fails at least two of the three standards)." % ", ".join(f["designated"])])
-    ws.cell(row=ws.max_row, column=1).font = Font(name="Calibri", size=10, bold=True)
-    ws.append(["Members with a condition are rounded to the nearest 10, and the ratios and the reach shown are computed "
-               "from those counts; each standard is judged on the unrounded values (NP-31 3.2). See Notes."])
-    ws.cell(row=ws.max_row, column=1).font = Font(name="Calibri", size=9, italic=True, color="5B6268")
-    widths = [13, 10, 13, 14, 14, 15, 7, 15, 7, 17, 7, 9, 10]
-    for k, wdt in enumerate(widths, start=1):
-        ws.column_dimensions[get_column_letter(k)].width = wdt
-    ws.freeze_panes = ws.cell(row=hr + 1, column=2)
-    ws.print_title_rows = "%d:%d" % (hr, hr)
-    ws.page_setup.orientation = "landscape"
-    ws.page_setup.fitToWidth = 1
-    ws.print_area = "A1:M%d" % (last + 3)
+    ws.title = "Bridge"
+    ws["A1"] = "Ashlund Home Group plc: stock provision and borrowing base at 31 December 2026"
+    ws["A1"].font = Font(name="Calibri", bold=True, size=13)
+    ws["A2"] = "Sterling. Euro stock at the year-end rate of %.4f. Draft for the audit committee." % FX_CLOSE
+    _head(ws, 4, ["", "GBP"])
+    rows = [("Stock at cost", None, True)]
+    for k in SUBS:
+        rows.append(("  " + SUBNAME[k], g["gross_sub"][k], False))
+    rows.append(("  Valuehall Stores Ltd", g["vh_stock"], False))
+    rows.append(("Total stock at cost", g["gross"], True))
+    rows.append(("", None, False))
+    rows.append(("Excess stock at cost (beyond twelve months' net shipments)", None, True))
+    for k in SUBS:
+        rows.append(("  " + SUBNAME[k], g["excess_sub"][k], False))
+    rows.append(("  Valuehall Stores Ltd stock", g["vh_stock"], False))
+    rows.append(("Surplus to dispose of in 2027", g["pool"], True))
+    rows.append(("  through Valuehall stores", g["cap"], False))
+    rows.append(("  through trade buyers", g["pool"] - g["cap"], False))
+    rows.append(("Expected proceeds ex VAT", None, True))
+    rows.append(("  Valuehall stores", g["cap"] * g["r_out"], False))
+    rows.append(("  trade buyers", (g["pool"] - g["cap"]) * g["r_job"], False))
+    rows.append(("Provision", g["provision"], True))
+    rows.append(("", None, False))
+    rows.append(("Inventories after provision", g["carried"], True))
+    rows.append(("Borrowing base (62.5%)", g["bb"], True))
+    rows.append(("Drawn at 31 December 2026", g["drawn"], False))
+    rows.append(("Headroom / (shortfall)", g["headroom"], True))
+    r = 5
+    for label, v, bold in rows:
+        if label:
+            ws.cell(row=r, column=1, value=label).font = BOLD if bold else NORM
+        if v is not None:
+            c = ws.cell(row=r, column=2, value=round(float(v), 0))
+            c.number_format = GBP
+            c.font = BOLD if bold else NORM
+        r += 1
+    r += 1
+    ws.cell(row=r, column=1, value="Reported figures (GBP million: provision to the nearest million, inventories and "
+            "borrowing base to the nearest 0.5 million, shortfall to the nearest 0.25 million)").font = BOLD
+    r += 1
+    for label, v in (("Provision", fig["provision_gbp_m"]),
+                     ("Inventories after provision", fig["inventories_after_provision_gbp_m"]),
+                     ("Borrowing base", fig["borrowing_base_gbp_m"]),
+                     ("Drawn", fig["drawn_gbp_m"]),
+                     ("Shortfall" if g["waiver"] else "Headroom", fig["shortfall_gbp_m"] if g["waiver"] else fig["headroom_gbp_m"])):
+        ws.cell(row=r, column=1, value="  " + label)
+        c = ws.cell(row=r, column=2, value=v)
+        c.number_format = "0.00" if label in ("Drawn", "Shortfall", "Headroom") else "0.0"
+        r += 1
+    ws.cell(row=r + 1, column=1, value="Conclusion: the borrowing base is below the drawn balance; a waiver of clause 21.1 "
+            "is needed before the audited accounts are delivered." if g["waiver"] else
+            "Conclusion: the borrowing base covers the drawn balance; no waiver is needed.").font = BOLD
+    ws.column_dimensions["A"].width = 62
+    ws.column_dimensions["B"].width = 16
 
-    ws2 = wb.create_sheet("FFS payments")
-    ws2["A1"] = "Net fee-for-service payments for services behavioral-health prescribers rendered to each county's adult members"
-    ws2["A1"].font = Font(name="Calibri", size=12, bold=True, color=navy)
-    ws2["A2"] = ("Claims with a service date in the quarter, as paid through 31 October 2026, net of replacements and voids; "
-                 "each claim's paid amount once. US dollars.")
-    ws2["A2"].font = Font(name="Calibri", size=9, italic=True, color="5B6268")
-    ws2.append([])
-    hdr2 = ["County"] + ["%s (%s)" % (q, QNAME[q]) for q, _, _ in CF.QUARTERS]
-    ws2.append(hdr2)
-    h2 = ws2.max_row
-    for k in range(1, len(hdr2) + 1):
-        cell = ws2.cell(row=h2, column=k)
-        cell.font = Font(name="Calibri", size=9.5, bold=True, color="FFFFFF")
-        cell.fill = PatternFill("solid", fgColor=navy)
-        cell.alignment = Alignment(wrap_text=True, horizontal="center" if k > 1 else "left", vertical="center")
-    ws2.row_dimensions[h2].height = 30
-    for c in CF.COUNTIES:
-        ws2.append([c] + [f["payments"][c][q] for q, _, _ in CF.QUARTERS])
-        for k in range(2, 6):
-            ws2.cell(row=ws2.max_row, column=k).number_format = "$#,##0"
-            ws2.cell(row=ws2.max_row, column=k).border = Border(bottom=thin)
-        ws2.cell(row=ws2.max_row, column=1).border = Border(bottom=thin)
-    for k, wdt in enumerate([14, 18, 18, 18, 18], start=1):
-        ws2.column_dimensions[get_column_letter(k)].width = wdt
-    ws2.freeze_panes = ws2.cell(row=h2 + 1, column=2)
+    ws = wb.create_sheet("Excess by division")
+    ws["A1"] = "Excess stock at cost by company and division, GBP"
+    ws["A1"].font = BOLD
+    ex = C.excess_lines(target)
+    piv = ex.groupby(["sub", "division"])["excess_gbp"].sum()
+    _head(ws, 3, ["Division"] + [SUBNAME[k] for k in SUBS] + ["Group"])
+    names = {"KD": "Kitchen and Dining", "SL": "Storage and Laundry", "LE": "Lighting and Electrical",
+             "TH": "Tools and Hardware", "GO": "Garden and Outdoor"}
+    r = 4
+    for d in DIVISIONS:
+        ws.cell(row=r, column=1, value="%s %s" % (d, names[d]))
+        tot = 0.0
+        for j, k in enumerate(SUBS, 2):
+            v = float(piv.get((k, d), 0.0))
+            tot += v
+            ws.cell(row=r, column=j, value=round(v, 0)).number_format = GBP
+        ws.cell(row=r, column=5, value=round(tot, 0)).number_format = GBP
+        r += 1
+    ws.cell(row=r, column=1, value="Total").font = BOLD
+    for j, k in enumerate(SUBS, 2):
+        c = ws.cell(row=r, column=j, value=round(g["excess_sub"][k], 0))
+        c.number_format = GBP
+        c.font = BOLD
+    c = ws.cell(row=r, column=5, value=round(g["excess"], 0))
+    c.number_format = GBP
+    c.font = BOLD
+    ws.column_dimensions["A"].width = 28
+    for col in "BCDE":
+        ws.column_dimensions[col].width = 18
 
-    ws3 = wb.create_sheet("Notes")
-    notes = [
-        ("Standards", "NP-31 section 3: practising behavioral-health prescribers per 1,000 adult members with a serious mental "
-         "illness (16.5) and with an opioid use disorder (23.0), and the share of adult members with a serious mental illness "
-         "who had a visit with a behavioral-health prescriber (68 per cent). A county is designated when it fails two or more."),
-        ("Adult members", "Persons enrolled on at least one day of the contract year, by client identifier, each in the "
-         "county and eligibility group of the enrollment span covering their last enrolled day."),
-        ("Members with a condition", "Claims identify a serious mental illness or an opioid use disorder only through the "
-         "services billed while a member is enrolled, and in Adams, Franklin, Grant and Yakima many expansion adults and "
-         "parents are enrolled for a few months at a season. Those seasonal members have the conditions less often than "
-         "the members enrolled all year, so the full-year members' prevalence is not carried to them. Each member a final "
-         "claim or encounter identifies (NP-31 Appendix A codes in any position) counts as 1 over the share of the members "
-         "enrolled all twelve months with the condition whom a claim identifies within the same number of months; a "
-         "county's members with a condition are the sum over its identified members."),
-        ("Reach", "Members with a serious mental illness who had an Appendix C service from a behavioral-health prescriber "
-         "(every such member is among those a claim identifies), over the county's members with a serious mental illness."),
-        ("Rounding", "Members with a condition are shown to the nearest 10, and the ratios (one decimal) and the reach (whole "
-         "per cent) in the table are computed from the counts as shown. Whether a county meets a standard is decided on "
-         "the unrounded estimates, as NP-31 3.2 requires; no county lies within 7 per cent of a threshold."),
-        ("Practising prescribers", "NPPES monthly file of October 2026 updated by the weekly files through 1 November 2026; "
-         "primary taxonomy in Appendix B; NPI active on 1 November; practice location ZIP code assigned to the county holding "
-         "the larger share of its business addresses (HUD-USPS, second quarter 2026); rendering provider of a final claim or "
-         "encounter for an adult member in the contract year."),
-        ("Payments", "Final fee-for-service claims (frequency 7 replacements in place of the claims they replace, voided "
-         "claims removed) whose rendering provider is a behavioral-health prescriber, each claim's paid amount once (it "
-         "repeats on each line of the claim), by the member's county and the quarter of the service date. Sub-capitated "
-         "encounters carry no payment."),
-        ("Sources", "enrollment_spans_2025-07-01_2026-06-30.csv; bh_claims_encounters_dos_2025-07-01_2026-06-30.csv; "
-         "npidata_pfile_wa_20050523-20261011.csv and the weekly files to 1 November 2026; ZIP_COUNTY_062026.xlsx; NP-31."),
+    ws = wb.create_sheet("Disposal in 2027")
+    ws["A1"] = "How the surplus is expected to go in 2027"
+    ws["A1"].font = BOLD
+    w = C.outlet_weeks(target)
+    yr = w["week"].map(lambda d: d.year)
+    full = w[(w.trading_days == 7) & (w.available >= C.STOCKED)]
+    lines = [
+        ("Valuehall sales at cost per trading day, full weeks with at least GBP 30,000 of stock to sell", round(g["per_day"], 2)),
+        ("Store weeks behind that figure", g["n_weeks"]),
+        ("Store trading days in 2027 (store plan)", g["days27"]),
+        ("Valuehall sales at cost in 2027", round(g["cap"], 0)),
+        ("Valuehall proceeds ex VAT over cost of sales, 2021 to 2026", round(g["r_out"], 4)),
+        ("Trade buyer prices over stock at cost, all lots 2021 to 2026", round(g["r_job"], 4)),
     ]
-    ws3.append(["Item", "Note"])
-    for c in ws3[1]:
-        c.font = Font(name="Calibri", size=10, bold=True, color="FFFFFF")
-        c.fill = PatternFill("solid", fgColor=navy)
-    for k, v in notes:
-        ws3.append([k, v])
-        ws3.cell(row=ws3.max_row, column=1).font = Font(name="Calibri", size=10, bold=True)
-        ws3.cell(row=ws3.max_row, column=2).alignment = Alignment(wrap_text=True, vertical="top")
-        ws3.cell(row=ws3.max_row, column=1).alignment = Alignment(vertical="top")
-    ws3.column_dimensions["A"].width = 22
-    ws3.column_dimensions["B"].width = 120
+    r = 3
+    for label, v in lines:
+        ws.cell(row=r, column=1, value=label)
+        ws.cell(row=r, column=2, value=v)
+        r += 1
+    r += 1
+    ws.cell(row=r, column=1, value="Valuehall by year: what the stores were sent and sold").font = BOLD
+    r += 1
+    _head(ws, r, ["Year", "Goods in at cost", "Sales at cost", "Trading days", "Sales at cost per trading day",
+                  "Sales at the stocked daily rate", "Sent to trade buyers at cost"])
+    r += 1
+    for y in sorted(set(yr)):
+        sub = w[yr == y]
+        cells = [y, round(sub.goods_in_at_cost.sum(), 0), round(sub.sales_at_cost.sum(), 0), int(sub.trading_days.sum()),
+                 round(sub.sales_at_cost.sum() / sub.trading_days.sum(), 1), round(g["per_day"] * sub.trading_days.sum(), 0),
+                 round(sub.to_trade_buyers_at_cost.sum(), 0)]
+        for j, v in enumerate(cells, 1):
+            c = ws.cell(row=r, column=j, value=v)
+            if j in (2, 3, 6, 7):
+                c.number_format = GBP
+        r += 1
+    r += 1
+    ws.cell(row=r, column=1, value="Stocked full weeks by store").font = BOLD
+    r += 1
+    _head(ws, r, ["Store", "Weeks", "Sales at cost per trading day"])
+    r += 1
+    for s, grp in full.groupby("store"):
+        ws.cell(row=r, column=1, value=s)
+        ws.cell(row=r, column=2, value=int(len(grp)))
+        ws.cell(row=r, column=3, value=round(float((grp.sales_at_cost / grp.trading_days).mean()), 1))
+        r += 1
+    ws.column_dimensions["A"].width = 70
+    for col in "BCDEFG":
+        ws.column_dimensions[col].width = 17
+
+    ws = wb.create_sheet("2025 shipments")
+    ws["A1"] = ("Net shipments to customers in 2025 by division, net of returns and price credits (euro at the 2025 "
+                "average rate of %.4f)" % FX_AVG_2025)
+    ws["A1"].font = BOLD
+    _head(ws, 3, ["Division", "Units", "GBP"])
+    r = 4
+    for d in DIVISIONS:
+        ws.cell(row=r, column=1, value="%s %s" % (d, names[d]))
+        ws.cell(row=r, column=2, value=fig["exact"]["units_2025"][d]).number_format = "#,##0"
+        ws.cell(row=r, column=3, value=round(fig["exact"]["sales_2025"][d], 0)).number_format = GBP
+        r += 1
+    ws.column_dimensions["A"].width = 28
+    ws.column_dimensions["B"].width = 14
+    ws.column_dimensions["C"].width = 16
+
+    ws = wb.create_sheet("Excess lines")
+    _head(ws, 1, ["Company", "Line key", "Group code", "Division", "Stock (each)", "Net shipments 2026 (each)",
+                  "Excess (each)", "Unit cost GBP", "Excess at cost GBP"])
+    r = 2
+    for row in ex[ex.excess_qty > 0].sort_values(["sub", "code", "key"]).itertuples(index=False):
+        vals = [row.sub, row.key, row.code, row.division, int(row.qty), int(row.net26), int(row.excess_qty),
+                round(row.unit_gbp, 4), round(row.excess_gbp, 2)]
+        for j, v in enumerate(vals, 1):
+            ws.cell(row=r, column=j, value=v)
+        r += 1
+    for col, wd in zip("ABCDEFGHI", (9, 10, 11, 9, 12, 14, 12, 12, 15)):
+        ws.column_dimensions[col].width = wd
+    ws.freeze_panes = "A2"
     wb.save(path)
 
 
-def write_conformed(a, f, path):
-    cols = ["county_fips", "county", "elig_group_cd", "elig_group", "adult_members", "ffs_paid_bh_prescriber_usd"]
-    fips = {v: k for k, v in CF.COUNTY_FIPS.items()}
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\n")
-        w.writerow(cols)
-        for c in CF.COUNTIES:
-            for g in CF.GROUPS:
-                x = f["conformed"]["%s|%s" % (c, g)]
-                w.writerow([fips[c], c, g, GROUP_NAME[g], x["members"], x["paid"]])
+# ---------------------------------------------------------------- the note
+
+def write_note(fig, g, path):
+    from reportlab import rl_config
+    rl_config.invariant = 1
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.units import mm
+    from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+    import docs  # noqa: F401  (registers the fonts)
+    ink = colors.HexColor("#1d1d1f")
+    body = ParagraphStyle("b", fontName="LiberationSans", fontSize=9.4, leading=12.6, textColor=ink, spaceAfter=5)
+    h = ParagraphStyle("h", fontName="LiberationSans-Bold", fontSize=12.5, leading=15.5, textColor=colors.HexColor("#1f3a5f"),
+                       spaceAfter=3)
+    small = ParagraphStyle("s", fontName="LiberationSans", fontSize=7.8, leading=10, textColor=colors.HexColor("#5b5f66"))
+    cell = ParagraphStyle("c", fontName="LiberationSans", fontSize=8.6, leading=10.6, textColor=ink)
+    cellb = ParagraphStyle("cb", parent=cell, fontName="LiberationSans-Bold")
+
+    def gm(v):
+        return "%.1f" % (C.rnd(v, 100_000) / 1e6)
+
+    def gu(v, key):
+        x = C.rnd(v, UNIT[key]) / 1e6
+        return ("%.0f" % x) if key == "provision" else ("%.2f" % x).rstrip("0").rstrip(".") if key == "shortfall" \
+            else "%.1f" % x
+
+    t_rows = [[Paragraph("GBP million", cellb), Paragraph("", cellb)],
+              [Paragraph("Stock at cost, group", cell), Paragraph(gm(g["gross"]), cell)],
+              [Paragraph("Surplus to clear in 2027 (excess lines plus Valuehall's own stock)", cell), Paragraph(gm(g["pool"]), cell)],
+              [Paragraph("of which Valuehall can sell in 2027", cell), Paragraph(gm(g["cap"]), cell)],
+              [Paragraph("of which goes to trade buyers", cell), Paragraph(gm(g["pool"] - g["cap"]), cell)],
+              [Paragraph("Provision (nearest million)", cellb), Paragraph(gu(g["provision"], "provision"), cellb)],
+              [Paragraph("Inventories after provision (nearest 0.5 million)", cell), Paragraph(gu(g["carried"], "inventories"), cell)],
+              [Paragraph("Borrowing base at 62.5 per cent (nearest 0.5 million)", cellb), Paragraph(gu(g["bb"], "bb"), cellb)],
+              [Paragraph("Drawn at 31 December 2026", cell), Paragraph("%.2f" % (g["drawn"] / 1e6), cell)],
+              [Paragraph(("Shortfall" if g["waiver"] else "Headroom") + " (nearest 0.25 million)", cellb),
+               Paragraph(gu(abs(g["headroom"]), "shortfall"), cellb)]]
+    t = Table(t_rows, colWidths=[118 * mm, 30 * mm])
+    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor("#1f3a5f")),
+                           ("ALIGN", (1, 0), (1, -1), "RIGHT"), ("TOPPADDING", (0, 0), (-1, -1), 1.8),
+                           ("BOTTOMPADDING", (0, 0), (-1, -1), 1.8)]))
+    s = [Paragraph("Ashlund Home Group plc: audit committee, 10 February 2027", small),
+         Paragraph("FY2026 stock provision and the borrowing base test", h),
+         Paragraph("<b>%s.</b> On the provision below, inventories after provision are about GBP %sm and the borrowing "
+                   "base about GBP %sm against GBP %.2fm drawn at 31 December, a shortfall of about GBP %sm. Clause 21.1 is "
+                   "breached on the audited accounts unless Northgate waives it in writing before they are delivered, so the "
+                   "request should go to the bank now." % ("We need a waiver" if g["waiver"] else "No waiver is needed",
+                                                          gu(g["carried"], "inventories"), gu(g["bb"], "bb"), g["drawn"] / 1e6,
+                                                          gu(abs(g["headroom"]), "shortfall")), body),
+         Paragraph("<b>Provision about GBP %sm.</b> Excess stock under FIN-07 (stock beyond twelve months' net shipments to "
+                   "customers, transfers excluded) is GBP %sm at cost across the three trading companies, most of it the "
+                   "Lumio range and the lines bought for the Kestrel programme. With Valuehall's own year-end stock the "
+                   "surplus to clear in 2027 is GBP %sm." % (gu(g["provision"], "provision"), gm(g["excess"]), gm(g["pool"])),
+                   body),
+         Paragraph("<b>Why the provision is not the Valuehall rate on the whole surplus.</b> Valuehall has recovered about "
+                   "%d pence in the pound on what it sells, in every year since 2021, and applying that to the whole surplus "
+                   "would give a provision of about GBP %sm and no breach. But a stocked Valuehall store sells about GBP "
+                   "%s of stock at cost a trading day however much it holds, at full price or in the January sale, and "
+                   "its yearly sales grew only as stores opened. The five stores have %s trading days in 2027, so they "
+                   "can take about GBP %sm of the surplus. In 2023, the one year the stores were sent more than they could "
+                   "sell, they sold what that daily rate predicts and the rest went to trade buyers the following February. "
+                   "The balance of GBP %sm goes to trade buyers, who have paid about %d pence in the pound on every lot "
+                   "since 2021, large or small." % (round(100 * g["r_out"]), gm(g["pool"] * (1 - g["r_out"])),
+                                                    "{:,.0f}".format(g["per_day"]), "{:,}".format(g["days27"]),
+                                                    gm(g["cap"]), gm(g["pool"] - g["cap"]), round(100 * g["r_job"])), body),
+         Spacer(1, 2 * mm), t, Spacer(1, 3 * mm),
+         Paragraph("Workings, by company and division, and the line-level excess are in the provision workbook. Euro stock "
+                   "is at the year-end rate of %.4f." % FX_CLOSE, small),
+         Paragraph("Group Finance, 22 January 2027", small)]
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=16 * mm,
+                            bottomMargin=16 * mm, title="FY2026 stock provision", author="Group Finance", subject="",
+                            creator="", producer="")
+    doc.build(s)
 
 
-def main(target, out, figures_path):
-    os.makedirs(out, exist_ok=True)
-    a = CF.analysis(target)
-    f = figures(a)
-    write_scorecard(a, f, os.path.join(out, SCORECARD))
-    write_conformed(a, f, os.path.join(out, CONFORMED))
-    with open(figures_path, "w") as fh:
-        json.dump(f, fh, indent=1, sort_keys=True)
-        fh.write("\n")
-    return {"analysis": a, "figures": f}
+def main(target, gdir, fig_path):
+    os.makedirs(gdir, exist_ok=True)
+    fig, g = figures(target)
+    write_workbook(target, fig, g, os.path.join(gdir, GOLDEN["workbook"]))
+    write_note(fig, g, os.path.join(gdir, GOLDEN["note"]))
+    with open(fig_path, "w") as f:
+        json.dump(fig, f, indent=1, sort_keys=True, default=lambda o: int(o) if isinstance(o, np.integer) else float(o))
+        f.write("\n")
+    return fig, g
