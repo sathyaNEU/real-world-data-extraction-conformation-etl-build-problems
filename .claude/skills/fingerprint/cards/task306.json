@@ -1,229 +1,294 @@
 {
- "task": "task306",
- "architecture": "v4 (re-root at stage 4: a London systematic equity desk's 2027 allocation of GBP 400 million of new capital to one of three backtested UK strategies, each strategy's gross alpha netted of the market impact its rebalances would pay at that size, priced on the desk's own executions)",
- "drawn": "2026-10-31",
- "slot_note": "re-root of task306 in the same objective (Opportunity Sizing), batch 1",
- "domain": "quantitative-finance",
- "subdomain": "portfolio-construction-risk",
- "client_domain": "quantitative-finance",
- "niche": "a London asset manager's systematic equity desk placing GBP 400 million of new 2027 capital with one of three backtested UK strategies, the alpha each keeps once its 2026 rebalances are traded at that size and priced on the impact the desk's own orders paid as their share of a stock's daily value grew",
- "objective": "opportunity-sizing-decision",
- "shape": "other",
- "decision_type": "pick_one_of_n",
- "answer_unit": "currency",
- "answer": "Give the GBP 400 million to the UK mid-cap value strategy, which keeps about GBP 8 million of alpha a year once its rebalances are priced at that size, against the large-cap quality strategy and the small-cap momentum strategy, whose gross lead is spent on impact.",
- "answer_source": "task306/submission.md block 1, from generator/figures.json",
- "gap": [
-  "objective",
-  "population"
- ],
- "pattern": [
-  "E"
- ],
- "generators": [
-  "G14",
-  "G16"
- ],
- "gate_g": "binding_constraint",
- "calibration_form": "settled_transaction_ledger",
- "stump_strategy": "binding_constraint",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "filed_standard",
- "stump_class": "analytical",
- "analyst_test": "An analyst who reads every field and rule correctly nets each strategy's backtest gross alpha of its 2026 rebalances priced at the cost the desk's own orders paid per traded pound in stocks of the same size, and files the small-cap momentum strategy, when at GBP 400 million its month-end trades would take several per cent of each small cap's daily traded value and the desk's orders show impact rising with the square root of that share, which spends most of its gross lead.",
- "domain_test": "Capacity is systematic equity's own question: the alpha a strategy keeps net of the market impact its trades pay at the capital it runs, estimated from the desk's transaction cost analysis with impact rising with the square root of participation in the stock's daily volume; with another field's nouns there is no participation, no implementation shortfall against an arrival price and no square-root impact law to price a rebalance at a new size.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:capacity-aware-net-alpha-priced-on-the-desks-impact-curve",
- "layer1": [
-  "London prices quoted in pence while one broker's fills report pounds",
-  "an order's fills split across many rows, a re-sent batch repeating fills under the same execution id",
-  "order timestamps in UTC against a London trading day",
-  "stock identifiers as SEDOL in the market data and ISIN in the backtest weights, joined through the security master",
-  "share consolidations changing a stock's share count partway through the market data",
-  "cancelled orders whose unfilled remainder stays on the blotter"
- ],
- "stakeholder_role": "the desk's head of systematic equities, who puts the 2027 allocation to the investment committee",
- "role_family": "portfolio_manager",
- "scoring_unit": "other",
- "spine": {
-  "file": "oms_fills_2025-2026.csv",
-  "rows": 61700,
-  "entity": "one fill of a desk order",
-  "grain": "fill",
-  "source": "synthetic"
- },
- "forum": "committee_or_panel",
- "forcing_event": "launch_or_rollout",
- "org_family": "financial_institution",
- "world": {
-  "geography": "United Kingdom (London)",
-  "currency": "GBP",
-  "org_type": "a London asset manager's systematic equity desk",
-  "invented_names": [
-   "Wealdmoor Investment Management",
-   "Orchard Lane Securities",
-   "Calder Row Brokers",
-   "Brightwater Execution",
-   "Hythe Street Markets"
-  ],
-  "people": [
-   "Carole Shaw",
-   "Howard Simpson",
-   "Sarah Ford"
-  ]
- },
- "deliverables": [
-  "capital_allocation_2027.pptx",
-  "strategy_capacity_2027.xlsx"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is what a candidate's measured edge keeps once its own activity is priced at the scale it is being given, when the cost of that activity rises with its size relative to what the market around it absorbs each day and the organisation's cost record was paid at a fraction of that scale; carrying the recorded average cost to the new scale leaves the candidate whose activity is largest against its market looking best.",
- "driver_concrete": "At GBP 400 million the small-cap momentum strategy's month-end rebalances would trade several per cent of each small cap's daily traded value, and the desk's own orders show impact rising with the square root of that share, so its 4.8 per cent gross alpha keeps about 1.3 per cent, under the mid-cap value strategy's 2.0 and the large-cap quality strategy's 1.5, while the desk's average realised cost leaves momentum first.",
- "stump": "A competent solver nets each strategy's backtest gross alpha of its 2026 turnover priced at what the desk's own orders paid for stocks of that size and gives the GBP 400 million to small-cap momentum; the step that lands it there is pricing the trades at the cost of the desk's far smaller orders, when impact grows with each trade's share of the stock's daily traded value and at GBP 400 million momentum's trades take several per cent of its small caps' volume.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task310": "task310 caps an added store's yield at a site's send-out limit, a hard ceiling on what the record let through; here nothing caps the trades, their cost rises smoothly with size against each stock's own daily volume, and the curve is fitted on the desk's own orders.",
-  "task106": "task106 shares one finite pool of spare capacity among candidates; here each candidate trades its own stocks and only one is funded, the cost is a function of its own size.",
-  "task309": "task309 carries one effect ratio across an intensity range where it varies; here the quantity carried is a cost per traded pound that varies with trade size against daily volume, measured on executions, not on outcomes.",
-  "task118": "task118 prices a resource on the consecutive day it is called; here the response is a cost curve in trade size, with no sequence in time.",
-  "task83": "task83 ranks strata of a capped retention budget by a randomized holdout's measured treatment effect, single-peaked in a risk score; here nothing is randomized or capped, one candidate is funded whole, and the carried quantity is a trading cost per pound whose level rises with the trade's share of the stock's daily traded value, fitted on the desk's own executions and applied at a scale the desk has not traded.",
-  "task178": "task178 calibrates the market's price impact on an hour's dealer flow and corrects the regression's simultaneity with customer flow as the instrument, to price options on the volatility left when the central bank stops; here nothing is instrumented and no volatility is forecast: the desk's own orders trace cost against each order's share of the stock's day, and the decision reads that curve at the size a new strategy would trade.",
-  "task305": "task305 reads a forced choice's response from the members an existing limit already forces; here no member chooses and no limit forces anything: the evidence is the desk's executions, and the response read is a cost curve in each order's share of the stock's day, applied at a new size.",
-  "task308": "task308's second architecture carried an event's loss to a larger book claim by claim while repair capacity surged the cost of simultaneous claims; here there are no events, claims or repairers: each trade's cost is read off the desk's own order-level executions at that trade's own share of the stock's daily traded value, a square root in participation fitted on orders, and the decision funds one strategy whole."
- },
- "lineage": [
-  {
-   "domain": "urban-regional-science",
-   "subdomain": "regional-input-output-economic-impact",
-   "objective": "opportunity-sizing-decision",
-   "shape": "07",
-   "decision_type": "pick_one_of_n",
-   "answer_unit": "currency",
-   "gap": [
-    "objective",
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G5",
-    "G14"
-   ],
-   "gate_g": "decomposition_attribution",
-   "driver": "The decisive quantity is the part of a candidate's second-round effect that stays inside the area, when that round runs through the incomes the candidate pays and a published multiplier carries the area's average share of those incomes spent at home; one candidate's earners mostly live outside the area, which only its operator's roster joined to a location lookup shows, so the multiplier credits it with spending that happens elsewhere and ranks it first.",
-   "stump_strategy": "composition_mix",
-   "forum": "committee_or_panel",
-   "forcing_event": "vote_or_meeting",
-   "org_family": "government_agency",
-   "role_family": "programme_officer",
-   "architecture": "v2 (re-root: a development corporation's 2027 inward investment fund award between two projects, the regional GVA each adds once its induced round is read where its staff live)",
-   "drawn": "2026-10-31",
-   "fate": "spent 2026-10-31 at stage 2, before any data was cut: the survivor anatomy's Actor test failed on paper, since the deciding property (where the distribution centre's staff live) is one join from a column (the roster's postcode against the postcode directory's local authority) and any shipped residence datum is a column or a sentence, so the decisive rung would be readable; re-rooted into actuarial reinsurance capital"
-  },
-  {
-   "domain": "energy-systems-utilities",
-   "subdomain": "asset-condition-maintenance",
-   "objective": "opportunity-sizing-decision",
-   "shape": "other",
-   "decision_type": "allocation_to_total",
-   "answer_unit": "count",
-   "gap": [
+  "task": "task306",
+  "architecture": "v5 (re-root after the portal FAILED_TO_STUMP on architecture 4: an English GP federation's 2027 medicines safety programme funding one practice-pharmacist deprescribing review of three across its member practices, valued by the serious harms the patients each review would take off their medicine would avoid, the take-off read from the 2026 pilot practices)",
+  "drawn": "2026-11-08",
+  "slot_note": "re-root of task306 in the same objective (Opportunity Sizing), architecture 5, one architecture per world: energy, urban, actuarial and quantitative finance spent in this slot",
+  "domain": "pharmacology-pharmacoepidemiology-safety",
+  "subdomain": "benefit-risk-assessment",
+  "client_domain": "pharmacology-pharmacoepidemiology-safety",
+  "niche": "an English GP federation's 2027 medicines safety programme choosing which one of three practice-pharmacist deprescribing reviews its pharmacist team runs across the member practices, by the serious harms the patients each review would take off their medicine for good would avoid, when practice pharmacists almost never stop a medicine a specialist service started and the pilot practices' patients were mostly practice-started",
+  "objective": "opportunity-sizing-decision",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
     "population",
-    "time"
-   ],
-   "pattern": [
+    "objective"
+  ],
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G13",
-    "G6",
-    "G12"
-   ],
-   "gate_g": "forecasting",
-   "driver": "The decisive quantity is next year's failures in an asset base that keeps taking in old units the current roll does not hold yet: a forecast summed over today's roll leaves out the units still to arrive, which arrive past their cover and fail in their first months, so one segment's demand runs a fifth short and its share of a fixed capacity goes to the segments the roll overstates.",
-   "stump_strategy": "maturity_censoring",
-   "forum": "line_manager_or_team",
-   "forcing_event": "purchase_order_or_contract",
-   "org_family": "manufacturer",
-   "role_family": "capacity_planner",
-   "architecture": "v1 (Voltwerk's 2027 EV pack refurbishment slots across five platforms, the used imports still to arrive)",
-   "drawn": "2026-10-24",
-   "fate": "spent 2026-10-31 at the batch 1 triage: shipped 10-24, determinism repair reshipped 10-26; its isolated cold reader landed the call (all five slots and the 3,800 total), and the design note named the decisive step reflex reachable (conditioning a survival curve on survival to the as-of date); re-rooted in a new world"
+  ],
+  "generators": [
+    "G5",
+    "G14",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stump_class": "analytical",
+  "analyst_test": "An analyst who conforms every record and reads every document correctly carries each review's 2026 pilot take-off rate (the share of reviewed patients off the medicine six months later, the same across the pilot's practices, ages and sexes) to the federation's eligible patients and weights them by the filed harm rates, and funds the antipsychotic review, when practice pharmacists almost never stopped a medicine a specialist service had started, the pilot practices' antipsychotic users were mostly practice-started and the federation's are mostly specialist-started, so the antipsychotic review would take far fewer patients off than the pilot rate says and the benzodiazepine review avoids more harm.",
+  "domain_test": "Weighing a medicine's harms against stopping it is pharmacology's benefit-risk question: the serious harms (falls with fracture, strokes, deaths) a deprescribing review avoids, the absolute harm each patient's continued use carries at their age times the patients the review actually takes off; with another field's nouns there is no medicine, no specialist who started it, no attributable harm per patient-year and no pharmacist's review to stop it.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:a-pilot-deprescribing-rate-carried-by-who-started-each-medicine",
+  "layer1": [
+    "practice prescribing issues coded by dm+d virtual product while the specialists' letters name medicines in free text with strengths and brand names",
+    "practices merged during 2025 and 2026, their patients re-registered under the surviving practice code on a dated change",
+    "repeat and acute issues mixed, with re-authorised repeats starting a new course identifier for the same medicine",
+    "specialist letters from two trusts with different date formats and a service code list that changed in April 2026",
+    "pilot outcomes recorded at review and again at six months, a later row superseding an earlier one",
+    "patients identified by the board's linked pseudonym, with a small share of letters carrying only a hospital number resolved through a lookup"
+  ],
+  "stakeholder_role": "the federation's medicines optimisation lead, who puts the 2027 medicines safety programme to the federation's medicines optimisation committee",
+  "role_family": "programme_officer",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "practice_prescribing_issues_2025-2026.csv",
+    "rows": 0,
+    "entity": "one issue of a prescription item to a patient",
+    "grain": "prescription issue",
+    "source": "synthetic"
   },
-  {
-   "domain": "actuarial-science-insurance",
-   "subdomain": "reinsurance-capital",
-   "objective": "opportunity-sizing-decision",
-   "shape": "07",
-   "decision_type": "go_hold_or_stop",
-   "answer_unit": "currency",
-   "gap": [
-    "objective",
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G6",
-    "G16"
-   ],
-   "gate_g": "forecasting",
-   "driver": "The decisive quantity is the tail of a forward loss distribution built from simulated years of events and calibrated to the organisation's own recorded losses, when an event that strikes within weeks of the event before it costs more per unit of modelled loss than an event on a quiet spell, a class no column marks and only the order of the record's events rebuilds; one pooled calibration across all events undercosts the later events of a run, which are the only ones a cover on second and later events pays on, and values that cover below its cost.",
-   "stump_strategy": "composition_mix",
-   "forum": "board_of_directors",
-   "forcing_event": "vote_or_meeting",
-   "org_family": "cooperative_or_member_body",
-   "role_family": "procurement_lead",
-   "world": {
-    "geography": "United Kingdom (South West England)",
+  "forum": "committee_or_panel",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "England (West Midlands)",
     "currency": "GBP",
-    "org_type": "a county farm and rural home mutual insurer",
+    "org_type": "a GP federation whose pharmacist team serves its member practices under the integrated care board's medicines safety contract",
     "invented_names": [
-     "Hartcombe Mutual",
-     "Seaborne Risk",
-     "Penwarden Reinsurance Brokers",
-     "Penhallow Loss Adjusters"
+      "Marches Primary Care Collaborative",
+      "NHS Severn Marches Integrated Care Board",
+      "Wrekinside Teaching Hospitals NHS Trust",
+      "Marches Mental Health NHS Trust",
+      "Clun Valley Primary Care Network"
     ],
     "people": [
-     "Mandy George",
-     "Arthur Begum",
-     "Elizabeth Farmer"
+      "Leigh Bond",
+      "Colin French",
+      "Sylvia McDonald"
     ]
-   },
-   "deliverables": [
-    "windstorm_programme_board_paper_2027.pdf",
-    "windstorm_programme_2027.xlsx"
-   ],
-   "architecture": "v3 (re-root at stage 2: a county farm-and-home mutual's 2027 windstorm reinsurance, whether to add the second-event cover the broker quoted, valued by the 1-in-200 capital it releases once each simulated storm is costed at what the mutual's claims show for storms like it)",
-   "spent": "2026-10-31 at stage 4: the FIX_NOW failed its second pass (pass 2 found the 2026 storms asks open on reopened claim lines' damage day, a rule filed nowhere); the main call held throughout"
-  }
- ],
- "notes": "",
- "shell": {
-  "question form": "which",
-  "second-sentence opener": "my",
-  "rounding opener": "capital",
-  "deliverable set": "pdf+xlsx"
- },
- "lineage_shells": [
-  {
-   "question form": "whether",
-   "second-sentence opener": "i",
-   "rounding opener": "the",
-   "deliverable set": "png+xlsx"
   },
-  {
-   "question form": "how-much",
-   "second-sentence opener": "my",
-   "rounding opener": "capital",
-   "deliverable set": "pdf+xlsx"
+  "deliverables": [
+    "medicines_safety_review_2027.pdf",
+    "deprescribing_reviews_2026.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "The decisive quantity is how many units a programme would move once it runs across a whole population, when its measured success rate depends on where each unit's current arrangement came from, a provenance no field records and only another body's correspondence shows; the pilot ran where nearly every arrangement came from the more movable source, so carrying its average rate to a population whose arrangements mostly came from the other source ranks first the candidate that would move least.",
+  "driver_concrete": "Practice pharmacists in the 2026 pilot took about two in five reviewed patients off their antipsychotic for good, but almost none of the patients whose antipsychotic the mental health trust's memory service had started; the pilot practices' users were mostly practice-started and the federation's are mostly specialist-started, so across the federation the antipsychotic review would take far fewer patients off, and avoid less harm, than the benzodiazepine review.",
+  "stump": "A competent solver carries each review's pilot take-off rate to the federation's eligible patients, weights them by the filed harm rates and funds the antipsychotic review; the step that lands it there is carrying the pilot's average rate to every eligible patient, when practice pharmacists almost never stopped a medicine a specialist service started and most of the federation's antipsychotic users were started by one.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task258": "task258 carries a performance playbook only to page loads whose served document carries the preload, a precondition of the mechanism every past engagement met; here the review reaches every eligible patient and nothing in the mechanism is absent: what differs is how often a reviewed patient actually comes off, which depends on who started the medicine, read from the specialists' letters.",
+    "task309": "task309 carries a roof's protective cut class by class of peak gust, a physical intensity that weakens the effect; here nothing varies in intensity: the take-off rate depends on a medicine's provenance, a practice or a specialist service, read per patient from correspondence another trust sends.",
+    "task124": "task124 carries a verified share within the kind of main a line sits on, the verification having been done on lead mains; here nothing is verified: every pilot review has an outcome, and what decides is that the pilot practices' patients mostly had practice-started medicines.",
+    "task141": "task141 reads a capped term's petition rate from the record's terms already at their class maximum, the forward condition's own members; here no forward condition is imposed: the reviews run as piloted and only the mix of specialist-started patients differs.",
+    "task137": "task137's second architecture restarted stopped medicines on the record's own restart clock; here nothing restarts: the decisive quantity is how many reviewed patients come off at all, which depends on who started the medicine.",
+    "task303": "task303 takes out of each feeder's outage minutes the substation losses its siblings logged in the same minute; here there are no siblings or shared causes: each patient's chance of coming off depends on their own medicine's provenance.",
+    "task128": "task128 reads a call's effect at the dialler's daily cut-off, a natural experiment in who was reached; here nothing is assigned by a cut-off: every pilot patient was reviewed, and the take-off rate is carried to the federation by who started each patient's medicine, a provenance read from the specialists' letters.",
+    "task304": "task304's pilot yield fails forward because a competing service absorbs one candidate's pool from a fixed date and another candidate's pilot swept a standing stock once; here nothing is absorbed and nothing is swept: the pilot rate holds patient by patient, and it fails only in aggregate because the pilot practices' patients mostly had practice-started medicines while the federation's antipsychotic users mostly had specialist-started ones.",
+    "task98": "task98's first architecture forecast from a filed provision a candidate made elsewhere; here nothing is provided elsewhere for the candidates: the provenance is of each patient's medicine, read from specialist letters, and it moves only how often a pharmacist's review takes the patient off."
+  },
+  "lineage": [
+    {
+      "domain": "urban-regional-science",
+      "subdomain": "regional-input-output-economic-impact",
+      "objective": "opportunity-sizing-decision",
+      "shape": "07",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "currency",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G5",
+        "G14"
+      ],
+      "gate_g": "decomposition_attribution",
+      "driver": "The decisive quantity is the part of a candidate's second-round effect that stays inside the area, when that round runs through the incomes the candidate pays and a published multiplier carries the area's average share of those incomes spent at home; one candidate's earners mostly live outside the area, which only its operator's roster joined to a location lookup shows, so the multiplier credits it with spending that happens elsewhere and ranks it first.",
+      "stump_strategy": "composition_mix",
+      "forum": "committee_or_panel",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "government_agency",
+      "role_family": "programme_officer",
+      "architecture": "v2 (re-root: a development corporation's 2027 inward investment fund award between two projects, the regional GVA each adds once its induced round is read where its staff live)",
+      "drawn": "2026-10-31",
+      "fate": "spent 2026-10-31 at stage 2, before any data was cut: the survivor anatomy's Actor test failed on paper, since the deciding property (where the distribution centre's staff live) is one join from a column (the roster's postcode against the postcode directory's local authority) and any shipped residence datum is a column or a sentence, so the decisive rung would be readable; re-rooted into actuarial reinsurance capital"
+    },
+    {
+      "domain": "energy-systems-utilities",
+      "subdomain": "asset-condition-maintenance",
+      "objective": "opportunity-sizing-decision",
+      "shape": "other",
+      "decision_type": "allocation_to_total",
+      "answer_unit": "count",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G6",
+        "G12"
+      ],
+      "gate_g": "forecasting",
+      "driver": "The decisive quantity is next year's failures in an asset base that keeps taking in old units the current roll does not hold yet: a forecast summed over today's roll leaves out the units still to arrive, which arrive past their cover and fail in their first months, so one segment's demand runs a fifth short and its share of a fixed capacity goes to the segments the roll overstates.",
+      "stump_strategy": "maturity_censoring",
+      "forum": "line_manager_or_team",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "manufacturer",
+      "role_family": "capacity_planner",
+      "architecture": "v1 (Voltwerk's 2027 EV pack refurbishment slots across five platforms, the used imports still to arrive)",
+      "drawn": "2026-10-24",
+      "fate": "spent 2026-10-31 at the batch 1 triage: shipped 10-24, determinism repair reshipped 10-26; its isolated cold reader landed the call (all five slots and the 3,800 total), and the design note named the decisive step reflex reachable (conditioning a survival curve on survival to the as-of date); re-rooted in a new world"
+    },
+    {
+      "domain": "actuarial-science-insurance",
+      "subdomain": "reinsurance-capital",
+      "objective": "opportunity-sizing-decision",
+      "shape": "07",
+      "decision_type": "go_hold_or_stop",
+      "answer_unit": "currency",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G16"
+      ],
+      "gate_g": "forecasting",
+      "driver": "The decisive quantity is the tail of a forward loss distribution built from simulated years of events and calibrated to the organisation's own recorded losses, when an event that strikes within weeks of the event before it costs more per unit of modelled loss than an event on a quiet spell, a class no column marks and only the order of the record's events rebuilds; one pooled calibration across all events undercosts the later events of a run, which are the only ones a cover on second and later events pays on, and values that cover below its cost.",
+      "stump_strategy": "composition_mix",
+      "forum": "board_of_directors",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "cooperative_or_member_body",
+      "role_family": "procurement_lead",
+      "world": {
+        "geography": "United Kingdom (South West England)",
+        "currency": "GBP",
+        "org_type": "a county farm and rural home mutual insurer",
+        "invented_names": [
+          "Hartcombe Mutual",
+          "Seaborne Risk",
+          "Penwarden Reinsurance Brokers",
+          "Penhallow Loss Adjusters"
+        ],
+        "people": [
+          "Mandy George",
+          "Arthur Begum",
+          "Elizabeth Farmer"
+        ]
+      },
+      "deliverables": [
+        "windstorm_programme_board_paper_2027.pdf",
+        "windstorm_programme_2027.xlsx"
+      ],
+      "architecture": "v3 (re-root at stage 2: a county farm-and-home mutual's 2027 windstorm reinsurance, whether to add the second-event cover the broker quoted, valued by the 1-in-200 capital it releases once each simulated storm is costed at what the mutual's claims show for storms like it)",
+      "spent": "2026-10-31 at stage 4: the FIX_NOW failed its second pass (pass 2 found the 2026 storms asks open on reopened claim lines' damage day, a rule filed nowhere); the main call held throughout"
+    },
+    {
+      "domain": "quantitative-finance",
+      "subdomain": "portfolio-construction-risk",
+      "objective": "opportunity-sizing-decision",
+      "shape": "other",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "currency",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G16"
+      ],
+      "gate_g": "binding_constraint",
+      "driver": "The decisive quantity is what a candidate's measured edge keeps once its own activity is priced at the scale it is being given, when the cost of that activity rises with its size relative to what the market around it absorbs each day and the organisation's cost record was paid at a fraction of that scale; carrying the recorded average cost to the new scale leaves the candidate whose activity is largest against its market looking best.",
+      "stump_strategy": "binding_constraint",
+      "forum": "committee_or_panel",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "financial_institution",
+      "role_family": "portfolio_manager",
+      "world": {
+        "geography": "United Kingdom (London)",
+        "currency": "GBP",
+        "org_type": "a London asset manager's systematic equity desk",
+        "invented_names": [
+          "Wealdmoor Investment Management",
+          "Orchard Lane Securities",
+          "Calder Row Brokers",
+          "Brightwater Execution",
+          "Hythe Street Markets"
+        ],
+        "people": [
+          "Carole Shaw",
+          "Howard Simpson",
+          "Sarah Ford"
+        ]
+      },
+      "deliverables": [
+        "capital_allocation_2027.pptx",
+        "strategy_capacity_2027.xlsx"
+      ],
+      "architecture": "v4 (re-root at stage 4: a London systematic equity desk's 2027 allocation of GBP 400 million of new capital to one of three backtested UK strategies, each strategy's gross alpha netted of the market impact its rebalances would pay at that size, priced on the desk's own executions)",
+      "drawn": "2026-10-31",
+      "stump": "A competent solver nets each strategy's backtest gross alpha of its 2026 turnover priced at what the desk's own orders paid for stocks of that size and gives the GBP 400 million to small-cap momentum; the step that lands it there is pricing the trades at the cost of the desk's far smaller orders, when impact grows with each trade's share of the stock's daily traded value and at GBP 400 million momentum's trades take several per cent of its small caps' volume.",
+      "driver_concrete": "At GBP 400 million the small-cap momentum strategy's month-end rebalances would trade several per cent of each small cap's daily traded value, and the desk's own orders show impact rising with the square root of that share, so its 4.8 per cent gross alpha keeps about 1.3 per cent, under the mid-cap value strategy's 2.0 and the large-cap quality strategy's 1.5, while the desk's average realised cost leaves momentum first.",
+      "fate": "spent 2026-11-07 on its first portal round, FAILED_TO_STUMP: both responses filed the golden (UK Mid Cap Value 8, UK Large Cap Quality 6, momentum 5, gap 2) by the field's own textbook, a per-band fit of shortfall on volatility times the square root of participation validated on a holdout against flat band costs, so the data revealed the right method by fit; both also took all 24 ask figures, whose devices were filed. The market-impact world, the capacity driver and its shell are spent."
+    }
+  ],
+  "notes": "",
+  "lineage_shells": [
+    {
+      "question form": "whether",
+      "second-sentence opener": "i",
+      "rounding opener": "the",
+      "deliverable set": "png+xlsx"
+    },
+    {
+      "question form": "how-much",
+      "second-sentence opener": "my",
+      "rounding opener": "capital",
+      "deliverable set": "pdf+xlsx"
+    },
+    {
+      "question form": "which",
+      "second-sentence opener": "my",
+      "rounding opener": "capital",
+      "deliverable set": "pdf+xlsx"
+    },
+    {
+      "question form": "what",
+      "second-sentence opener": "the",
+      "rounding opener": "alpha",
+      "deliverable set": "pptx+xlsx"
+    }
+  ],
+  "registered": "2026-11-08T00:04:58Z",
+  "shell": {
+    "question form": "how-much",
+    "second-sentence opener": "a",
+    "rounding opener": "patients",
+    "deliverable set": "csv+pdf"
   }
- ],
- "registered": "2026-10-31T21:07:51Z",
- "architecture_spent": true
 }
