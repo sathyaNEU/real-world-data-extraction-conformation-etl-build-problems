@@ -1,33 +1,33 @@
 {
  "task": "task306",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "pharmacology-pharmacoepidemiology-safety / benefit-risk-assessment (client pharmacology-pharmacoepidemiology-safety)",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-08",
- "stump": "The default path carries each review's pilot take-off rate to the federation's eligible patients and funds the antipsychotic review at about 30 harms a year; the step that lands it there is carrying the pilot's average rate to every eligible patient, when practice pharmacists almost never stopped a medicine a specialist service had started, the pilot practices' antipsychotic users were mostly practice-started and most of the federation's were started by the mental health trust, so the antipsychotic review would avoid about 11 harms a year against the benzodiazepine review's 15.",
+ "stump": "The default path carries each review's pilot take-off rate to the federation's patients in scope and funds the antipsychotic review at about 24 harms a year; the step that lands it there is carrying the pilot's average rate to every patient, when practice pharmacists almost never stopped a medicine a specialist service had started (4 of 96 in the pilot), the pilot's antipsychotic patients were mostly practice-started (136 of 160) and a specialist service started 86 per cent of the antipsychotic patients in scope, so the antipsychotic review would avoid about 6 harms a year against the benzodiazepine review's 12.",
  "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-08"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-08 on target.zip 0bacf975, no LEAK; 7 lines ruled harmless in the design note",
+  "reader": "pending: not run in the building session (no Agent tool); brief written against target.zip 0bacf975"
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": ""
+  "heart": "PASS 2026-11-08 on the final cut",
+  "surface": "exit 0 2026-11-08 on the final cut; 8 pairs promoted for the author's clone check (task304, task305, task307, task308, task310, task467, task169, task128)"
  },
  "judge": {
-  "verdict": "",
+  "verdict": "pending",
   "disposition": "",
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: write the three rules, survivor anatomy, readability screen, fork table, ladder, closure, literal reader, oracles and ask sheet; precut.py exit 0; then the generator",
+ "resume": "stage 4: spawn the isolated leak reader and the determinism judge (Sonnet, medium) together on target.zip 0bacf975 (/leak-check step 4; .claude/agents/determinism-judge.md); fix every finding in the generator in one pass; re-run every gate on the final cut; then ship (target.zip and golden/ force-added, ledger row, card current)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -188,6 +188,15 @@
   {
    "date": "2026-11-08",
    "event": "DRAWN: architecture 5, pharmacology benefit-risk x opportunity sizing: Marches Primary Care Collaborative's 2027 deprescribing review, the pilot's take-off carried by who started each medicine; registered 2026-11-08"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "BUILD: generator, pack (18 files in 4 formats, the letters feed 176,956 rows), goldens and submission; call review B, benzodiazepines and Z-drugs (12 serious harms a year) over review C (8) and review A (6), gap 4; the default path files review A at about 24; every free gate green on target.zip 0bacf975"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "PAUSED at stage 4: the leak reader and the determinism judge not run (no Agent tool in the building session); briefs written"
   }
- ]
+ ],
+ "zip": "0bacf975417942bda8ded8b87d3c590433362b13976eb95853d4c95eb95b59f9"
 }

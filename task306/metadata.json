@@ -1,98 +1,154 @@
 {
- "architecture": 4,
- "as_of": "2026-12-01",
+ "architecture": 5,
+ "as_of": "2027-01-06",
+ "call": "BZ",
  "deliverables": [
-  "capital_allocation_2027.pptx",
-  "strategy_capacity_2027.xlsx"
+  "medicines_safety_review_2027.pdf",
+  "pharmacist_consultations_2026.csv"
  ],
+ "distractor_notes": {
+  "emergency_admissions_falls_65plus_2025-2026.csv": "falls admissions by network; relevant to harm but unused, since the specification files the harm rates",
+  "epact2_prescribing_summary_2025-26.xlsx": "prescribing volume by practice and BNF section; relevant to the size of each review's pool but unused, since eligibility is the protocol's search"
+ },
  "distractors": [
-  "broker_commission_schedule_2026.xlsx",
-  "esg_exclusions_2026.csv"
+  "epact2_prescribing_summary_2025-26.xlsx",
+  "emergency_admissions_falls_65plus_2025-2026.csv"
  ],
  "files": {
-  "backtest_rebalance_trades_2025-2026.csv": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "clinical_system_pharmacist_activity_2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
    "role": "evidence",
-   "source": "a backtest engine's rebalance trade log"
+   "source": "the practices' clinical systems' pharmacist consultation extract"
   },
-  "broker_commission_schedule_2026.xlsx": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "clun_valley_pilot_close_out_2026.pdf": {
+   "date": "2027-01-05",
+   "license": "synthetic, CC0, generated for this task",
+   "role": "evidence",
+   "source": "the pharmacist team's pilot close-out report"
+  },
+  "deprescribing_pilot_outcome_log_2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
+   "role": "evidence",
+   "source": "the pharmacist team's deprescribing outcome log"
+  },
+  "deprescribing_review_protocols_2026.pdf": {
+   "date": "2025-12-08",
+   "license": "synthetic, CC0, generated for this task",
+   "role": "evidence",
+   "source": "the federation's deprescribing review search and review protocols"
+  },
+  "emergency_admissions_falls_65plus_2025-2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
    "role": "distractor",
-   "source": "a dealing desk's broker commission schedule"
+   "source": "the integrated care board's emergency admissions extract for falls in people aged 65 and over"
   },
-  "cio_request_2026-12-01.eml": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
-   "role": "evidence",
-   "source": "the chief investment officer's email"
-  },
-  "esg_exclusions_2026.csv": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "epact2_prescribing_summary_2025-26.xlsx": {
+   "date": "2026-11-20",
+   "license": "synthetic, CC0, generated for this task",
    "role": "distractor",
-   "source": "an asset manager's ESG exclusion list"
+   "source": "the integrated care board's ePACT2 prescribing summary"
   },
-  "ic_capital_allocation_policy_2026.pdf": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "hub_group_session_register_2026.xlsx": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
    "role": "evidence",
-   "source": "an investment committee's capital allocation policy"
+   "source": "the hub team's group session attendance register"
   },
-  "lse_daily_market_data_2025-2026.parquet": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "medicines_safety_programme_2027.pdf": {
+   "date": "2026-11-18",
+   "license": "synthetic, CC0, generated for this task",
    "role": "evidence",
-   "source": "an exchange data vendor's daily closes and volumes for the London market"
+   "source": "the federation's medicines safety programme specification agreed with the integrated care board"
   },
-  "oms_block_allocations_2025-2026.csv": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "member_practice_register_2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
    "role": "evidence",
-   "source": "an order management system's post-trade block allocation export"
+   "source": "the federation's member practice register"
   },
-  "oms_fills_2025-2026.csv": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "patient_registrations_2020-2026.parquet": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
    "role": "evidence",
-   "source": "an order management system's fill (execution) export"
+   "source": "the linked registration history extract (pseudonymised)"
   },
-  "oms_orders_2025-2026.csv": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "pharmacist_hub_appointments_2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
    "role": "evidence",
-   "source": "an order management system's order blotter export"
+   "source": "the pharmacist hubs' booking system export"
   },
-  "research_backtests_2027_candidates.xlsx": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "practice_document_workflow_2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
    "role": "evidence",
-   "source": "a quantitative research team's backtest summary workbook"
+   "source": "the practices' document workflow log of received hospital documents"
   },
-  "tca_standard_rev4.pdf": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "prescribing_issues_2025-07_2026-12.parquet": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
    "role": "evidence",
-   "source": "a dealing desk's transaction cost analysis standard"
+   "source": "the practices' clinical systems' prescription issue extract"
   },
-  "trading_account_register.csv": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "problem_list_extract_2026-12-31.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
    "role": "evidence",
-   "source": "a dealing desk's trading account register"
+   "source": "the practices' clinical systems' problem list extract for the protocols' code clusters"
   },
-  "wealdmoor_security_master_2026-11-30.csv": {
-   "date": "2026-12-01",
-   "license": "synthetic, CC0",
+  "registered_list_sizes_2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
    "role": "evidence",
-   "source": "the dealing desk's security master (SEDOL, ISIN, index band, corporate actions)"
+   "source": "the federation's monthly registered list size extract"
+  },
+  "repeat_medication_courses_2026-12-31.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
+   "role": "evidence",
+   "source": "the practices' clinical systems' repeat medication courses extract"
+  },
+  "trust_hospital_number_lookup.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
+   "role": "evidence",
+   "source": "the federation's hospital number to pseudonym linkage table"
+  },
+  "trust_medicine_letters_feed_2019-2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0, generated for this task",
+   "role": "evidence",
+   "source": "the shared care record's feed of the two trusts' medicine letters"
   }
  },
- "fills_rows": 62375,
+ "gap": 4,
  "largest_file": {
-  "name": "lse_daily_market_data_2025-2026.parquet",
-  "rows": 329800
+  "name": "patient_registrations_2020-2026.parquet",
+  "rows": 317930
+ },
+ "rows": {
+  "clinical_system_pharmacist_activity_2026.csv": 9301,
+  "deprescribing_pilot_outcome_log_2026.csv": 1410,
+  "emergency_admissions_falls_65plus_2025-2026.csv": 40,
+  "epact2_prescribing_summary_2025-26.xlsx": 672,
+  "hub_group_session_register_2026.xlsx": 234,
+  "member_practice_register_2026.csv": 30,
+  "patient_registrations_2020-2026.parquet": 317930,
+  "pharmacist_hub_appointments_2026.csv": 3404,
+  "practice_document_workflow_2026.csv": 43805,
+  "prescribing_issues_2025-07_2026-12.parquet": 287970,
+  "problem_list_extract_2026-12-31.csv": 6261,
+  "registered_list_sizes_2026.csv": 364,
+  "repeat_medication_courses_2026-12-31.csv": 16547,
+  "trust_hospital_number_lookup.csv": 105234,
+  "trust_medicine_letters_feed_2019-2026.csv": 176956
+ },
+ "runner_up": "GB",
+ "stated_inputs": {
+  "40.0": "the pilot's six-month off rate for review A, as the close-out report states it"
  },
  "task": "task306"
 }

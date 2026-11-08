@@ -1,4 +1,4 @@
-"""task306: the investment house's PDFs, written the way an office writes them. A document's story (paragraphs,
+"""task306: the federation's PDFs, written the way an office writes them. A document's story (paragraphs,
 spacers, tables and page breaks) becomes a Word document, LibreOffice Writer exports it to PDF, and the PDF's
 dates and file identifier are set to the issue date at equal length, so the cross-reference table holds and two
 builds are byte-identical. Producer and Creator stay as Writer wrote them."""
@@ -16,7 +16,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Mm, Pt, RGBColor
-from reportlab.platypus import PageBreak, Paragraph, Spacer, Table
+from reportlab.platypus import Image, PageBreak, Paragraph, Spacer, Table
 
 FONT = "Liberation Sans"
 
@@ -156,6 +156,10 @@ def build(path, story, title, author, subject, footer, created, modified, margin
             sp.paragraph_format.line_spacing = Pt(max(1, fl.height))
         elif isinstance(fl, PageBreak):
             doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+        elif isinstance(fl, Image):
+            par = doc.add_paragraph()
+            par.paragraph_format.space_after = Pt(4)
+            par.add_run().add_picture(fl.filename, width=Mm(fl.drawWidth / 72.0 * 25.4))
         first = False
     fp = sec.footer.paragraphs[0]
     r = fp.add_run(footer + "\tPage ")

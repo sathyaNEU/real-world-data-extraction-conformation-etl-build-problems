@@ -1,172 +1,235 @@
-"""The golden deliverables (the committee deck and the capacity workbook), figures.json and submission.md, all from
-the golden analysis on the cut pack."""
+"""The golden deliverables (the board paper and the consultations file), figures.json and submission.md, all from the
+golden analysis on the cut pack."""
+import csv
 import datetime as dt
-import json
 import os
+import shutil
+import tempfile
 
-import analysis as A
-import pack as PK
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+from reportlab.lib import colors  # noqa: E402
+from reportlab.lib.enums import TA_LEFT  # noqa: E402
+from reportlab.lib.pagesizes import A4  # noqa: E402
+from reportlab.lib.styles import ParagraphStyle  # noqa: E402
+from reportlab.lib.units import mm  # noqa: E402
+from reportlab.platypus import Image, PageBreak, Paragraph, Spacer, Table  # noqa: E402
 
-DECK = "capital_allocation_2027.pptx"
-BOOK = "strategy_capacity_2027.xlsx"
-ORDER = ["SCM", "MCV", "LCQ"]
+import analysis as A  # noqa: E402
+import officepdf as O  # noqa: E402
+
+PAPER = "medicines_safety_review_2027.pdf"
+CSV = "pharmacist_consultations_2026.csv"
+LETTER = {"AP": "A", "BZ": "B", "GB": "C"}
+NAME = {"AP": "antipsychotics in people aged 65 and over",
+        "BZ": "benzodiazepines and Z-drugs in people aged 65 and over",
+        "GB": "gabapentinoids taken with an opioid"}
+SHORT = {"AP": "A Antipsychotics", "BZ": "B Benzodiazepines and Z-drugs", "GB": "C Gabapentinoids with an opioid"}
+TITLE = {"AP": "antipsychotic", "BZ": "benzodiazepine and Z-drug", "GB": "gabapentinoid"}
+NETS = sorted(A.NETWORKS)
+INK = colors.HexColor("#1d2b36")
 
 
-def m(x):
-    return int(round(x / 1e6))
-
-
-def figures(R):
-    g = R["priced"]["golden"]
-    fig = {"call": R["call"], "runner_up": R["runner"], "gap_gbp_m": m(g[R["call"]]["net"]) - m(g[R["runner"]]["net"]),
-           "constants": {"aum_gbp_m": 400, "pence_per_pound": 100, "adv_sessions": 20, "vol_sessions": 60},
-           "candidates": {c: dict(name=g[c]["name"], gross_gbp_m=m(g[c]["gross"]), cost_gbp_m=m(g[c]["cost"]),
-                                  net_gbp_m=m(g[c]["net"]), traded_gbp_m=m(g[c]["traded"]),
-                                  rebalances=g[c]["rebalances"]) for c in ORDER},
-           "ask_shortfall_bps": {"%s Q%d" % (n, q): round(v, 1) for (n, q), v in sorted(R["ask_a"].items())},
-           "ask_traded_gbp_m": {"%s H%d" % (n, h): m(v) for (n, h), v in sorted(R["ask_b"].items())},
-           "routes": {k: {c: round(v[c]["net"] / 1e6, 2) for c in ORDER} for k, v in R["priced"].items()},
-           "raw": {"net": {c: round(g[c]["net"] / 1e6, 3) for c in ORDER},
-                   "cost": {c: round(g[c]["cost"] / 1e6, 3) for c in ORDER},
-                   "shortfall": {"%s Q%d" % (n, q): round(v, 4) for (n, q), v in sorted(R["ask_a"].items())},
-                   "traded": {"%s H%d" % (n, h): round(v / 1e6, 4) for (n, h), v in sorted(R["ask_b"].items())}}}
+def compute(target):
+    D = A.load(target)
+    L = A.resolved_letters(D)
+    E = A.eligible(D)
+    M = A.main_call(D, E=dict(E), L=L)
+    F = A.figures_main(M)
+    R1 = A.main_call(D, how="pooled", E=dict(E), L=L)
+    six = M["six"]
+    fig = {"call": F["call"], "runner_up": F["runner_up"], "third": F["third"], "gap": F["gap"], "reviews": {},
+           "pilot": {}, "rung1": {}, "constants": {"window_days": 60, "per": 1000, "off_days": 183}}
+    for cls in A.REVIEWS:
+        e = M["res"][cls]
+        spec = float((e["prov"] == "specialist").mean())
+        fig["reviews"][cls] = {"in_scope": F[cls]["eligible"], "off_10": F[cls]["off_10"],
+                               "harms_1": F[cls]["harms_1"], "off": round(F[cls]["off"], 3),
+                               "harms": round(F[cls]["harms"], 4), "specialist_pct": int(round(100 * spec)),
+                               "specialist_share": round(spec, 4)}
+        s = six[six["cls"] == cls]
+        fig["pilot"][cls] = {}
+        for pv in ("practice", "specialist"):
+            g = s[s["prov"] == pv]
+            fig["pilot"][cls][pv] = {"off": int(g["off"].sum()), "n": int(len(g)),
+                                     "pct": int(round(100 * g["off"].mean()))}
+        fig["pilot"][cls]["all"] = {"off": int(s["off"].sum()), "n": int(len(s)),
+                                    "pct": round(100 * s["off"].mean(), 1)}
+        fig["rung1"][cls] = {"harms_1": int(round(R1["summary"][cls]["harms"])),
+                             "harms": round(R1["summary"][cls]["harms"], 3)}
+    sp = six[six["prov"] == "specialist"]
+    pr = six[six["prov"] == "practice"]
+    fig["pilot"]["specialist_all"] = {"off": int(sp["off"].sum()), "n": int(len(sp))}
+    fig["pilot"]["practice_all"] = {"off": int(pr["off"].sum()), "n": int(len(pr))}
+    LA = A.letters_received(D, L=L)
+    CB = A.consultations(D)
+    fig["letters"] = {n_: {h: {"rate": A.r1(LA[(n_, h)]["rate"]), "letters": LA[(n_, h)]["letters"],
+                               "patients": LA[(n_, h)]["patients"]} for h in ("H1", "H2")} for n_ in NETS}
+    fig["consultations"] = {n_: {q: {"rate": A.r1(CB[(n_, q)]["rate"]), "consultations": CB[(n_, q)]["consultations"],
+                                     "patients": CB[(n_, q)]["patients"]} for q in ("Q1", "Q2", "Q3", "Q4")}
+                            for n_ in NETS}
     return fig
 
 
-def workbook(path, fig):
-    c = fig["candidates"]
-    alloc = [["Strategy", "Code", "Gross alpha a year (GBP m)", "Trading cost a year at GBP 400m (GBP m)",
-              "Alpha kept a year (GBP m)", "Value traded in the twelve months (GBP m)", "Rebalances"]]
-    for k in ORDER:
-        alloc.append([c[k]["name"], k, c[k]["gross_gbp_m"], c[k]["cost_gbp_m"], c[k]["net_gbp_m"],
-                      c[k]["traded_gbp_m"], c[k]["rebalances"]])
-    alloc += [[], ["Recommended", c[fig["call"]]["name"]], ["Runner-up", c[fig["runner_up"]]["name"]],
-              ["Difference (GBP m a year)", fig["gap_gbp_m"]],
-              ["Basis", "IC-07: backtest gross alpha 2015 to 2026 less the shortfall the rebalances of December 2025 "
-                        "to November 2026 would pay at GBP 400m, priced on the desk's 2025 and 2026 orders in the "
-                        "strategy's index band"]]
-    sf = [["Live strategy", "Q1 2026", "Q2 2026", "Q3 2026", "Q4 2026 (to 30 Nov)"]]
-    for n in A.LIVE_NAMES:
-        sf.append([n] + [fig["ask_shortfall_bps"]["%s Q%d" % (n, q)] for q in (1, 2, 3, 4)])
-    sf += [[], ["Implementation shortfall, basis points, value-weighted, cost positive (TCA standard rev. 4)"]]
-    tv = [["Live strategy", "H1 2026 (GBP m)", "H2 2026 to 30 Nov (GBP m)"]]
-    for n in A.LIVE_NAMES:
-        tv.append([n] + [fig["ask_traded_gbp_m"]["%s H%d" % (n, h)] for h in (1, 2)])
-    PK.xlsx(path, [("Allocation", alloc, (34, 8, 24, 30, 22, 30, 11)), ("Shortfall 2026", sf, (26, 12, 12, 12, 20)),
-                   ("Traded 2026", tv, (26, 18, 26))], "Wealdmoor Systematic Equities",
-            dt.datetime(2026, 12, 3, 9, 20), dt.datetime(2026, 12, 4, 17, 46))
+def chart(fig, path):
+    order = ["AP", "BZ", "GB"]
+    labels = [SHORT[c] for c in order][::-1]
+    off = [fig["reviews"][c]["off_10"] for c in order][::-1]
+    harms = [fig["reviews"][c]["harms_1"] for c in order][::-1]
+    col = ["#1f4e79" if c == fig["call"] else "#a9b4bd" for c in order][::-1]
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8.5, "svg.hashsalt": "task306"})
+    f, axes = plt.subplots(1, 2, figsize=(6.6, 2.3), sharey=True, gridspec_kw={"wspace": 0.08})
+    for ax, vals, title, fmt in ((axes[0], off, "Patients off their medicine at six months", "about {:,}"),
+                                 (axes[1], harms, "Serious harms avoided a year", "{}")):
+        ax.barh(range(3), vals, color=col, height=0.56, edgecolor="white", linewidth=1.5)
+        for i, v in enumerate(vals):
+            ax.text(v + max(vals) * 0.02, i, fmt.format(v), va="center", fontsize=8, color="#1d2b36")
+        ax.set_title(title, fontsize=8.8, loc="left", color="#1d2b36")
+        ax.set_xlim(0, max(vals) * 1.32)
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.spines[["left", "bottom"]].set_color("#8a9aa6")
+        ax.tick_params(colors="#4f5f6b", length=2)
+        ax.grid(axis="x", color="#e3e7ea", linewidth=0.6)
+        ax.set_axisbelow(True)
+    axes[0].set_yticks(range(3))
+    axes[0].set_yticklabels(labels)
+    f.savefig(path, dpi=220, bbox_inches="tight", metadata={"Software": None})
+    plt.close(f)
 
 
-def deck(path, fig):
-    from pptx import Presentation
-    from pptx.chart.data import CategoryChartData
-    from pptx.dml.color import RGBColor
-    from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
-    from pptx.util import Emu, Pt
-    c = fig["candidates"]
-    prs = Presentation()
-    prs.slide_width, prs.slide_height = Emu(12192000), Emu(6858000)
-    blank = prs.slide_layouts[6]
-
-    def text(slide, x, y, w, h, s, size, bold=False, color="1D2B36"):
-        tb = slide.shapes.add_textbox(Emu(x), Emu(y), Emu(w), Emu(h))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        p = tf.paragraphs[0]
-        p.text = s
-        p.font.size = Pt(size)
-        p.font.bold = bold
-        p.font.color.rgb = RGBColor.from_string(color)
-        return tf
-    s1 = prs.slides.add_slide(blank)
-    win, run = c[fig["call"]], c[fig["runner_up"]]
-    text(s1, 457200, 380000, 11200000, 900000,
-         "%s should launch the GBP 400m mandate: it keeps GBP %dm of alpha a year" % (win["name"], win["net_gbp_m"]),
-         26, True)
-    text(s1, 457200, 1250000, 11200000, 900000,
-         "Runner-up: %s at GBP %dm a year, GBP %dm behind. Priced on the twelve months of rebalances to November "
-         "2026 at GBP 400m, each trade at the shortfall the desk's own orders paid at its share of the stock's "
-         "daily traded value." % (run["name"], run["net_gbp_m"], fig["gap_gbp_m"]), 14)
-    cd = CategoryChartData()
-    cd.categories = [c[k]["name"] for k in ORDER]
-    cd.add_series("Gross alpha a year (GBP m)", [c[k]["gross_gbp_m"] for k in ORDER])
-    cd.add_series("Alpha kept at GBP 400m (GBP m)", [c[k]["net_gbp_m"] for k in ORDER])
-    gf = s1.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Emu(457200), Emu(2300000), Emu(11200000),
-                             Emu(4200000), cd)
-    ch = gf.chart
-    ch.has_legend = True
-    ch.legend.position = XL_LEGEND_POSITION.BOTTOM
-    ch.legend.include_in_layout = False
-    plot = ch.plots[0]
-    plot.has_data_labels = True
-    plot.data_labels.font.size = Pt(11)
-    plot.data_labels.number_format = "0"
-    plot.data_labels.number_format_is_linked = False
-    for ser, col in zip(plot.series, ("9AA9B5", "1F5A85")):
-        ser.format.fill.solid()
-        ser.format.fill.fore_color.rgb = RGBColor.from_string(col)
-    ch.value_axis.has_major_gridlines = False
-    ch.value_axis.tick_labels.font.size = Pt(10)
-    ch.category_axis.tick_labels.font.size = Pt(11)
-    s2 = prs.slides.add_slide(blank)
-    text(s2, 457200, 380000, 11200000, 700000, "What each candidate keeps at GBP 400m", 24, True)
-    rows = [["Strategy", "Gross alpha", "Trading cost", "Alpha kept", "Traded in the twelve months"]]
-    for k in ORDER:
-        rows.append([c[k]["name"], "GBP %dm" % c[k]["gross_gbp_m"], "GBP %dm" % c[k]["cost_gbp_m"],
-                     "GBP %dm" % c[k]["net_gbp_m"], "GBP %dm" % c[k]["traded_gbp_m"]])
-    tbl = s2.shapes.add_table(len(rows), 5, Emu(457200), Emu(1300000), Emu(11200000), Emu(2200000)).table
-    for i, r in enumerate(rows):
-        for j, v in enumerate(r):
-            cell = tbl.cell(i, j)
-            cell.text = v
-            cell.text_frame.paragraphs[0].font.size = Pt(13)
-            cell.text_frame.paragraphs[0].font.bold = i == 0
-    text(s2, 457200, 3700000, 11200000, 1600000,
-         "The live books' 2026 shortfall by quarter and value traded by half year are in strategy_capacity_2027.xlsx.",
-         13)
-    prs.core_properties.author = "Carole Shaw"
-    prs.core_properties.last_modified_by = "Carole Shaw"
-    prs.core_properties.title = "2027 capital allocation"
-    prs.core_properties.created = dt.datetime(2026, 12, 3, 10, 2)
-    prs.core_properties.modified = dt.datetime(2026, 12, 4, 18, 11)
-    prs.core_properties.revision = 7
-    import io
-    import re
-    import zipfile
-    buf = io.BytesIO()
-    prs.save(buf)
-    src = zipfile.ZipFile(io.BytesIO(buf.getvalue()))
-    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
-        for info in sorted(src.infolist(), key=lambda i: i.filename):
-            data = src.read(info.filename)
-            if info.filename == "docProps/app.xml":
-                data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>Microsoft Office PowerPoint"
-                              b"</Application>", data)
-            if info.filename.endswith(".xlsx"):
-                # the chart's embedded workbook carries the writer's clock: give it the deck's own save time
-                inner = zipfile.ZipFile(io.BytesIO(data))
-                ob = io.BytesIO()
-                with zipfile.ZipFile(ob, "w", zipfile.ZIP_DEFLATED) as iz:
-                    for ii in sorted(inner.infolist(), key=lambda i: i.filename):
-                        d2 = inner.read(ii.filename)
-                        if ii.filename == "docProps/core.xml":
-                            d2 = re.sub(rb"(<dcterms:(?:created|modified)[^>]*>)[^<]*(</dcterms:)",
-                                        b"\\g<1>2026-12-04T18:11:00Z\\g<2>", d2)
-                        zj = zipfile.ZipInfo(ii.filename, date_time=(2026, 12, 4, 18, 11, 0))
-                        zj.compress_type = zipfile.ZIP_DEFLATED
-                        iz.writestr(zj, d2)
-                data = ob.getvalue()
-            zi = zipfile.ZipInfo(info.filename, date_time=(2026, 12, 4, 18, 11, 0))
-            zi.compress_type = zipfile.ZIP_DEFLATED
-            z.writestr(zi, data)
+def _st():
+    base = ParagraphStyle("p", fontName="Helvetica", fontSize=9.6, leading=13.2, textColor=INK, alignment=TA_LEFT,
+                          spaceAfter=5)
+    return {"t": ParagraphStyle("t", parent=base, fontName="Helvetica-Bold", fontSize=14, leading=18, spaceAfter=3),
+            "s": ParagraphStyle("s", parent=base, fontSize=8.4, leading=11, textColor=colors.HexColor("#4f5f6b")),
+            "h": ParagraphStyle("h", parent=base, fontName="Helvetica-Bold", fontSize=10.4, leading=14,
+                                spaceBefore=5),
+            "p": base,
+            "cell": ParagraphStyle("cell", parent=base, fontSize=8.6, leading=11, spaceAfter=0),
+            "head": ParagraphStyle("head", parent=base, fontName="Helvetica-Bold", fontSize=8.6, leading=11,
+                                   spaceAfter=0)}
 
 
-def write_all(target, golden, task_dir):
-    R = A.run(target)
-    fig = figures(R)
+def _table(rows, widths, st):
+    width = A4[0] - 40 * mm
+    cw = [width * x / sum(widths) for x in widths]
+    data = [[Paragraph(str(c), st["head"] if i == 0 else st["cell"]) for c in r] for i, r in enumerate(rows)]
+    return [Table(data, colWidths=cw, hAlign="LEFT"), Spacer(1, 5)]
+
+
+def paper(fig, path, png):
+    st = _st()
+    rv, pl = fig["reviews"], fig["pilot"]
+    c, r2, r3 = fig["call"], fig["runner_up"], fig["third"]
+    head = [["Meeting", "Federation board, 14 January 2027"], ["Agenda item", "6"],
+            ["Paper", "Choosing the 2027-28 deprescribing review"],
+            ["Prepared by", "Colin French, Lead Clinical Pharmacist"], ["Sponsor", "Leigh Bond, Clinical Director"],
+            ["For", "Decision"]]
+    t1 = [["Review", "Patients in scope", "Started by a specialist service", "Off their medicine at six months",
+           "Serious harms avoided a year"]]
+    for k in ("AP", "BZ", "GB"):
+        t1.append([SHORT[k], "{:,}".format(rv[k]["in_scope"]), "%d%%" % rv[k]["specialist_pct"],
+                   "about {:,}".format(rv[k]["off_10"]), str(rv[k]["harms_1"])])
+    t2 = [["Pilot, off at six months", "A Antipsychotics", "B Benzodiazepines and Z-drugs",
+           "C Gabapentinoids with an opioid"]]
+    for pv, lab in (("practice", "Medicine started by the practice"),
+                    ("specialist", "Medicine started by a specialist service")):
+        t2.append([lab] + ["%d of %d (%d%%)" % (pl[k][pv]["off"], pl[k][pv]["n"], pl[k][pv]["pct"])
+                           for k in ("AP", "BZ", "GB")])
+    t2.append(["All reviewed patients"] + ["%d of %d (%.0f%%)" % (pl[k]["all"]["off"], pl[k]["all"]["n"],
+                                                                   pl[k]["all"]["pct"]) for k in ("AP", "BZ", "GB")])
+    t3 = [["Primary care network", "January to June 2026", "July to December 2026"]]
+    for n_ in NETS:
+        t3.append([n_, "%.1f" % fig["letters"][n_]["H1"]["rate"], "%.1f" % fig["letters"][n_]["H2"]["rate"]])
+    story = []
+    story += _table(head, [22, 66], st)
+    story += [
+        Paragraph("Run the %s review in 2027-28" % TITLE[c], st["t"]),
+        Paragraph("Recommendation", st["h"]),
+        Paragraph("<b>Run review %s, %s, across the member practices outside the Clun Valley network from April 2027. "
+                  "It would take about %s patients off their medicine and avoid about %d serious harms a year, %d more "
+                  "than the runner-up, review %s (%s, about %d).</b> Review %s (%s) would avoid about %d."
+                  % (LETTER[c], NAME[c], "{:,}".format(rv[c]["off_10"]), rv[c]["harms_1"], fig["gap"], LETTER[r2],
+                     NAME[r2], rv[r2]["harms_1"], LETTER[r3], NAME[r3], rv[r3]["harms_1"]), st["p"]),
+        Paragraph("The board is asked to approve review %s for the medicines safety schedule of the 2027-28 contract "
+                  "with the integrated care board." % LETTER[c], st["p"]),
+    ]
+    story += _table(t1, [30, 14, 18, 20, 18], st)
+    story += [Paragraph("Source: the practices' issue, problem list and registration extracts at 31 December 2026; "
+                        "the trusts' medicine letters feed; the pilot outcome log. Patients are rounded to the nearest "
+                        "10 and harms to whole numbers.", st["s"]),
+              Image(png, width=160 * mm, height=160 * mm * 2.3 / 6.6 * 0.98),
+              Paragraph("Figure 1. Review %s avoids the most harm, although review %s would take more patients off "
+                        "their medicine." % (LETTER[c], LETTER[r2]), st["s"]),
+              Paragraph("How the estimate was made", st["h"]),
+              Paragraph("Patients in scope are those registered at a member practice outside the Clun Valley network "
+                        "who met the review's protocol on 31 December 2026, as the programme specification sets out "
+                        "(section 3). Each patient's chance of being off the medicine six months after review is taken "
+                        "from the Clun Valley pilot, and the harm it avoids from table 1 of the specification at their "
+                        "age on 31 December 2026.", st["p"]),
+              Paragraph("The pilot's results turn on who started the medicine. Where a hospital or mental health trust "
+                        "service started it (a trust letter naming a medicine of the review's class in the 60 days "
+                        "before the practice first issued it), our pharmacists took %d of %d patients off; where the "
+                        "practice started it, %d of %d. The Clun Valley practices are a long way from the memory and "
+                        "older adults' mental health services, so most of their antipsychotic patients were started by "
+                        "the practice. In the other networks a specialist service started %d%% of the patients in "
+                        "scope for review %s, against %d%% for review %s and %d%% for review %s. Each patient in scope "
+                        "is therefore given the pilot rate for their review and the way their medicine was started."
+                        % (pl["specialist_all"]["off"], pl["specialist_all"]["n"], pl["practice_all"]["off"],
+                           pl["practice_all"]["n"], rv["AP"]["specialist_pct"], "A", rv["BZ"]["specialist_pct"], "B",
+                           rv["GB"]["specialist_pct"], "C"), st["p"])]
+    story += _table(t2, [30, 19, 19, 19], st)
+    story += [Paragraph("Source: deprescribing pilot outcome log, six-month checks; the trusts' medicine letters "
+                        "feed.", st["s"]),
+              Paragraph("Applying each review's overall pilot rate to every patient instead would favour review A, at "
+                        "about %d harms a year, because it treats the specialist-started antipsychotic patients as if "
+                        "they would come off as readily as the pilot's." % fig["rung1"]["AP"]["harms_1"], st["p"]),
+              Paragraph("Note. Following section 3.3 of the specification, a review's patients off their medicine are "
+                        "the sum of each patient's chance, an expected number rather than a list of named patients.",
+                        st["s"]),
+              Paragraph("Hospital medicine letters", st["h"]),
+              Paragraph("Medicine letters from Wrekinside Teaching Hospitals and Marches Mental Health received by each "
+                        "network's practices, per 1,000 registered patients at the start of each half of 2026. A letter "
+                        "the mental health trust re-sent on 7 April 2026 is counted once, when it was first received.",
+                        st["p"])]
+    story += _table(t3, [40, 24, 24], st)
+    story += [Paragraph("Source: the trusts' medicine letters feed and the practices' document workflow log to 6 "
+                        "January 2027; registered list sizes on 1 January and 1 July 2026. From October the hospital "
+                        "trust's letters arrive through GP Connect and are matched to the workflow log by patient and "
+                        "the first receipt after the letter's date; a letter not received by 6 January 2027 is not "
+                        "counted.", st["s"]),
+              Paragraph("The team's patient consultations by network and quarter of 2026 are in %s." % CSV, st["p"])]
+    created = dt.datetime(2027, 1, 12, 16, 5, 0, tzinfo=dt.timezone.utc)
+    modified = dt.datetime(2027, 1, 13, 9, 48, 0, tzinfo=dt.timezone.utc)
+    assert rv[r2]["off"] > rv[c]["off"], "the caption says the runner-up takes more patients off"
+    O.build(path, story, "Run the %s review in 2027-28" % TITLE[c], "Marches Primary Care Collaborative",
+            "Board paper: the 2027-28 deprescribing review", "Federation board, 14 January 2027, item 6", created,
+            modified, margin_mm=20, top_mm=17, bottom_mm=17)
+
+
+def consultations_csv(fig, path):
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh, lineterminator="\n")
+        w.writerow(["primary_care_network", "quarter", "patient_consultations", "registered_patients_at_start",
+                    "consultations_per_1000"])
+        for n_ in NETS:
+            for q in ("Q1", "Q2", "Q3", "Q4"):
+                x = fig["consultations"][n_][q]
+                w.writerow([n_, "2026 " + q, x["consultations"], x["patients"], "%.1f" % x["rate"]])
+
+
+def write_all(target, golden, base):
+    import writeup as WU
     os.makedirs(golden, exist_ok=True)
-    workbook(os.path.join(golden, BOOK), fig)
-    deck(os.path.join(golden, DECK), fig)
-    import writeup
-    writeup.write(os.path.join(task_dir, "submission.md"), fig)
-    return R, fig
+    fig = compute(target)
+    work = tempfile.mkdtemp(prefix="t306chart-")
+    try:
+        png = os.path.join(work, "figure1.png")
+        chart(fig, png)
+        paper(fig, os.path.join(golden, PAPER), png)
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    consultations_csv(fig, os.path.join(golden, CSV))
+    WU.write(fig, os.path.join(base, "submission.md"))
+    return fig

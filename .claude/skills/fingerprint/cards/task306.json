@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "review B, benzodiazepines and Z-drugs in people aged 65 and over: 12 serious harms a year avoided; runner-up review C, gabapentinoids taken with an opioid, at 8; gap 4",
+  "answer_source": "task306/generator/figures.json: call, runner_up, gap, reviews",
   "gap": [
     "population",
     "objective"
@@ -38,21 +38,25 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:a-pilot-deprescribing-rate-carried-by-who-started-each-medicine",
   "layer1": [
-    "practice prescribing issues coded by dm+d virtual product while the specialists' letters name medicines in free text with strengths and brand names",
-    "practices merged during 2025 and 2026, their patients re-registered under the surviving practice code on a dated change",
-    "repeat and acute issues mixed, with re-authorised repeats starting a new course identifier for the same medicine",
-    "specialist letters from two trusts with different date formats and a service code list that changed in April 2026",
-    "pilot outcomes recorded at review and again at six months, a later row superseding an earlier one",
-    "patients identified by the board's linked pseudonym, with a small share of letters carrying only a hospital number resolved through a lookup"
+    "practice prescribing coded by dm+d virtual product while the trusts' letters name medicines in free text with strengths and brand names",
+    "two practices merged on 1 April 2025, their open registrations carried by the survivor and the hospitals' practice field keeping the old code for some patients",
+    "letters from two trusts in two date formats, one row per medicine line",
+    "a minority of letters carrying only the trust's hospital number, resolved through the federation's lookup",
+    "the mental health trust's April 2026 system change: an outage week's letters sent on 7 April and four weeks of letters re-sent under the new system's references",
+    "the hospital trust's documents arriving through GP Connect from October 2026 with a message id and the message's own date",
+    "letters dated over Christmas reaching the practices in January",
+    "the pilot log's six-month row beside its review row",
+    "the hub booking system stamping slots in UTC while the practices' systems record local time, and hub appointments written into shared-record practices' systems on the day or the next working day",
+    "group medicines reviews held as one hub booking with their patients in a separate register"
   ],
   "stakeholder_role": "the federation's lead clinical pharmacist, who runs the pharmacist team across the member practices and puts the 2027 review to the federation's board",
   "role_family": "field_unit_lead",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "practice_prescribing_issues_2025-2026.csv",
-    "rows": 0,
-    "entity": "one issue of a prescription item to a patient",
-    "grain": "prescription issue",
+    "file": "trust_medicine_letters_feed_2019-2026.csv",
+    "rows": 176956,
+    "entity": "one medicine line of a hospital or mental health trust letter to a member practice",
+    "grain": "letter line",
     "source": "synthetic"
   },
   "forum": "board_of_directors",
@@ -77,13 +81,13 @@
   },
   "deliverables": [
     "medicines_safety_review_2027.pdf",
-    "deprescribing_reviews_2026.csv"
+    "pharmacist_consultations_2026.csv"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "The decisive quantity is how many units a programme would move once it runs across a whole population, when its measured success rate depends on where each unit's current arrangement came from, a provenance no field records and only another body's correspondence shows; the pilot ran where nearly every arrangement came from the more movable source, so carrying its average rate to a population whose arrangements mostly came from the other source ranks first the candidate that would move least.",
   "driver_concrete": "Practice pharmacists in the 2026 pilot took about two in five reviewed patients off their antipsychotic for good, but almost none of the patients whose antipsychotic the mental health trust's memory service had started; the pilot practices' users were mostly practice-started and the federation's are mostly specialist-started, so across the federation the antipsychotic review would take far fewer patients off, and avoid less harm, than the benzodiazepine review.",
-  "stump": "A competent solver carries each review's pilot take-off rate to the federation's eligible patients, weights them by the filed harm rates and funds the antipsychotic review; the step that lands it there is carrying the pilot's average rate to every eligible patient, when practice pharmacists almost never stopped a medicine a specialist service started and most of the federation's antipsychotic users were started by one.",
+  "stump": "The default path carries each review's pilot take-off rate to the federation's patients in scope and funds the antipsychotic review at about 24 harms a year; the step that lands it there is carrying the pilot's average rate to every patient, when practice pharmacists almost never stopped a medicine a specialist service had started (4 of 96 in the pilot), the pilot's antipsychotic patients were mostly practice-started (136 of 160) and a specialist service started 86 per cent of the antipsychotic patients in scope, so the antipsychotic review would avoid about 6 harms a year against the benzodiazepine review's 12.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task258": "task258 carries a performance playbook only to page loads whose served document carries the preload, a precondition of the mechanism every past engagement met; here the review reaches every eligible patient and nothing in the mechanism is absent: what differs is how often a reviewed patient actually comes off, which depends on who started the medicine, read from the specialists' letters.",
