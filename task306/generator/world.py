@@ -1095,7 +1095,15 @@ def consultations(T):
                     q_end = dt.date(q_end.year, q_end.month, 1) - dt.timedelta(days=1)
                     nxt = next_working(day)
                     if r.random() < 0.36 and nxt <= q_end:
-                        wt = dt.datetime.combine(nxt, dt.time(int(r.integers(8, 11)), int(r.integers(0, 60))))
+                        hh2, mm2 = int(r.integers(8, 11)), int(r.integers(0, 60))
+                        wd = day + dt.timedelta(days=1)
+                        while wd.weekday() >= 5:
+                            wd = wd + dt.timedelta(days=1)
+                        if nxt == wd:
+                            wt = dt.datetime.combine(nxt, dt.time(hh2, mm2))
+                        else:
+                            # a bank holiday comes next: the pharmacist writes the appointment up before the break
+                            wt = t + dt.timedelta(minutes=dur + 5 + ((hh2 - 8) * 60 + mm2) % 146)
                     else:
                         wt = t + dt.timedelta(minutes=dur + int(r.integers(5, 150)))
                     cid += int(r.integers(1, 6))

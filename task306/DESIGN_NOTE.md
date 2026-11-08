@@ -170,6 +170,9 @@ Pins: the WHAT sits in the programme specification (the population outside the C
 | SF13 | rounding path | each figure rounded once from its unrounded sum; the gap from the rounded figures | the gap rounded from the unrounded sums | same gap (asserted) | the prompt's rounding sentence |
 | SF14 | a course's first issue | the courses extract's first_issue_date | the earliest issue in the issue extract | not a first issue: the issue extract starts on 1 July 2025 | the field's name; it equals the issue extract wherever that covers the date (asserted) |
 | SF15 | a course begun before the letters feed opened (1 October 2019) | none exists: every class course began on or after 15 November 2019 | treated as of unknown start | same call (none exists, asserted) | the courses extract |
+| SF16 | a letter sent twice (ask A) | one letter, in the half and at the practice of its first receipt | each copy a letter | the call is untouched; every first-half figure moves (asserted, K3) | specification section 4.3, which counts a letter once at its first receipt (asserted, K7); which 7 April letters are copies is left to their content |
+| SF17 | the day a hub appointment's practice record may fall on (ask B) | the appointment's day or the next working day | the next weekday, bank holidays ignored; any window of 3 to 10 days | the call is untouched; the same 20 figures (asserted, K7) | convergence: no write-up falls across a bank holiday (the pharmacists write up before the break) and no same-pharmacist record of a patient falls within 10 days of a hub appointment except its write-up (asserted, K7) |
+| SF18 | the GP Connect receipt a Wrekinside letter takes (ask A) | the first receipt for the patient carrying no letter's reference, on or within 21 days after the letter date | windows of 15 or 30 days | the call is untouched; the same 10 figures (asserted, K7) | convergence: no other Wrekinside document reaches a patient within 30 days of a medicine letter |
 
 ## Ladder
 
@@ -255,13 +258,17 @@ registered at the start of the half (10 figures, one decimal).**
 - Primary 2 (D7, the true key elsewhere): from October 2026 the hospital trust's documents arrive through GP Connect,
   and the workflow log carries the message id for a reference and the message's own date for the document date, so a
   letter's receipt is found only as the next receipt from that sender for that patient. Re-keying on patient, sender
-  and document date, or falling back to the letter date, moves every second-half figure by 1.3 to 18.
+  and document date moves every second-half figure by 12.0 to 14.5, and falling back to the letter date by 1.3 to 2.1
+  (each device's shifts printed by generator/ceiling.py).
 - Hazards: letters dated over Christmas received in January (the asking sentence's received basis), one row per
   medicine line, two date formats, hospital-number-only letters, merged practices' old codes.
 - Pin test: the sentence pins the basis (received), the population (letters its practices received; specification
-  4.3 files both trusts' letters as hospital medicine letters) and the denominator (registered at the start of the
-  half, specification 4.2); both devices sit where the pins leave open which records are one letter and which receipt
-  belongs to which letter.
+  4.3 files both trusts' letters as hospital medicine letters and counts a letter once, in the half and at the
+  practice of its first receipt) and the denominator (registered at the start of the half, specification 4.2); both
+  devices sit where the pins leave open which records are one letter and which receipt belongs to which letter. The
+  count-once sentence was filed after stage 4's first judge pass read a copy's second receipt as open (SF16): it
+  names the unit, not the 7 April batch, which copies in it are earlier letters, or how a GP Connect receipt is
+  found.
 
 **Ask B, each network's patient consultations with the team in each quarter of 2026, per 1,000 patients registered at
 the start of the quarter (20 figures, one decimal).**
@@ -278,7 +285,9 @@ the start of the quarter (20 figures, one decimal).**
   call-backs at the practice (an over-matching trap for a patient-and-day key).
 - Pin test: the sentence pins the unit (patient consultations, defined in 4.1, a patient counting towards the
   network of their practice on the day of the consultation), the denominator and the quarter; neither device's
-  handling is named.
+  handling is named. How far after an appointment its practice record may fall is closed by the data, not a sentence
+  (SF17): before a bank holiday the pharmacists write up on the day, so a weekend-only working day and any window of
+  3 to 10 days file the same 20 figures.
 
 Main population zero-counts: no device row (a 7 April letter, a GP Connect receipt, a hub record, a group booking)
 touches a protocol search, course, pilot outcome or provenance relation the call reads; dropping the whole 7 April
@@ -300,28 +309,74 @@ Measured by: generator/ceiling.py (run on the cut pack)
 
 ## Stage 4
 
-Final cut: target.zip 0bacf975 (two byte-identical builds; checks.py 99 of 99, verify PASS, figures_check 88 of 88,
+Cut judged: target.zip 0bacf975 (two byte-identical builds; checks.py 99 of 99, verify PASS, figures_check 88 of 88,
 precut 61 checks with no FAIL or WARN, voice-check PASS, container audit clean on target and golden, pair ceiling 28.5).
 
-leak.py on the final cut: REVIEW, no LEAK. Each line ruled:
+leak.py on that cut: REVIEW, no LEAK. Each line ruled:
 - Sweep 3, the protocols and the specification carry the call's wording: it is review B's own name as both file it,
   and every review's name appears alike; harmless.
 - Sweep 4, the close-out, the protocols and the specification carry four to seven stump-paragraph terms (antipsychotic,
   practice, programme, checks, outside, letter): the field's nouns, the specification's population and its section 4.3
-  reporting line; none names specialists or who started a medicine (checks.py R1, which also holds letters to that one
-  sentence); harmless.
+  reporting paragraph; none names specialists or who started a medicine (checks.py R1, which also holds letters to
+  that paragraph); harmless.
 - Sweep 4, a prompt sentence carries task nouns (practices, medicine); harmless.
 - Sweep 6, the falls admissions file names the five networks beside numbers: the networks are the asks' units, not the
   decision's candidates, and the file prices no review; a declared distractor; harmless.
 
-guard.py heart PASS and surface exit 0 on the final cut; surface promoted 8 pairs for the author's adjudicated clone
-check (task304, task305, task307, task308, task310, task467, task169, task128), each on shared card axes (population
-gap, pick_one_of_n, the pilot log as calibration) or batch-level surface; the card carries differentiation lines
-against task304 and task128. Personas in the pack: the card's three.
+guard.py heart WARN and surface exit 0. The WARN is repeat.decision (pick_one_of_n) against task118's architecture 6,
+registered at 01:45Z on 2026-11-08, after this card (00:04Z); one review of three is the programme's own decision.
+surface promoted 8 pairs for the author's adjudicated clone check (task304, task305, task307, task308, task310,
+task467, task169, task128), each on shared card axes (population gap, pick_one_of_n, the pilot log as calibration) or
+batch-level surface; the card carries differentiation lines against task304 and task128. Personas in the pack: the
+card's three.
 
-Pending: the isolated leak reader and the determinism judge (both Sonnet at medium) were not run in the building
-session, which had no Agent tool. Their briefs were written against target.zip 0bacf975; the build ships only after
-both reports are in and every finding is fixed in the generator.
+Leak reader (Sonnet, medium, prompt and pack only, on 0bacf975): no leak. Its question 6 named an analytical choice
+(which off-probability to carry to unreviewed patients, and whether the pilot's rates transfer) without naming who
+started a medicine; it read the close-out's consistency section as nudging toward one pooled rate, which is the
+default path's step 3. Its machine-made list was measured on the cut and ruled harmless (leak_check_report.md).
+
+Determinism judge pass 1 (Sonnet, medium, on 0bacf975): DETERMINISTIC, FIX_NOW (determinism_check_report_arch5.md).
+Every golden figure reproduced. Gate G decomposition_attribution, analytical_non_defect, surface_read_dependency no,
+sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical; stump power strong (the pooled carry
+files review A at 24.1 harms against B's 11.8 and C's 10.8, and A passes B only if its specialist-started take-off
+exceeded about 14 per cent against 4.2). The finding: step 6 named the GP Connect key as patient, sender and document
+date, which read literally as the letter date matched 757 of about 3,960 October to December letters and filed the
+second half at 28.8, 26.5, 27.1, 25.3 and 28.3. Two residual forks it did not count against the verdict: the 7 April
+copies counted twice (the first half at 46.8, 44.1, 46.5, 43.0 and 43.6) and a weekend-only working day (Wrekinside
+North's second quarter at 11.7 against 11.6).
+
+Fixed in the generator in one pass, the call, the stump and every graded figure unchanged: step 6 states the
+verifier's match (the first Wrekinside receipt for the patient carrying no letter's reference, received on or within
+21 days after the letter date and not taken by an earlier letter); specification 4.3 counts a letter once, in the half
+and at the practice of its first receipt (SF16); hub appointments before a bank holiday are written up on the day
+(SF17; the golden's 20 figures do not move); SF16 to SF18 and both asks' clean truth asserted
+(checks.py K7 and K8). Only the consultation extract and the specification moved in the pack.
+
+Leak reader read 2 (Sonnet, medium, on ea8155d7, after the specification's count-once sentence): no leak, no file
+that exists only to help, question 6 an analytical choice (how to estimate the chance off from the pilot), who
+started a medicine not named. Its machine-made list was ruled (leak_check_report.md); the one true tell, the ePACT2
+summary's label "0408010 Control of epilepsy (gabapentinoids)", is now the BNF's paragraph name with the substances
+the line counts ("0408010 Control of the epilepsies: gabapentin and pregabalin"), a declared distractor no figure
+reads. The golden paper's source note now says the first receipt on or after the letter's date, as step 6 does.
+
+Determinism judge pass 2, the re-judge (Sonnet, medium, on ea8155d7): DETERMINISTIC, APPROVE
+(determinism_check_report_arch5_pass2.md). Every committed answer reproduced; Gate G decomposition_attribution,
+analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass,
+decisive_step analytical; the provenance flag invariant over windows of 30 to 365 days, either date basis, Start
+letters only and the earliest or any course; the GP Connect match invariant over windows of 14 to 28 days. Two
+advisories, neither a fix: a flag from any class letter at any time files review A (15.8 harms against B's 12.0)
+but does not separate the pilot's outcomes (23 against 47 per cent in review A), which the starter flag does (4
+against 25 to 46 per cent), so the data rule it out (the ladder's any-time rung, checks.py R3); and 151 same-day
+repeat calls in the practice systems, distinct records at distinct times, count as consultations under
+specification 4.1 (each patient a pharmacist consults is one patient consultation), where collapsing them to one per
+patient per day would lower every consultation figure by 0.1 to 0.3; the judge reads row counting as the natural
+reading and advised against a further clause.
+
+Shipped cut: target.zip a915483e (sha256 a915483ef2342ec8d2c30a150f8286d30653413debbd533cd60d771d2c6fb41c), which
+differs from the re-judged ea8155d7 only in that ePACT2 label. Every free gate re-run on it: two byte-identical builds,
+checks.py 105 of 105, verify PASS, figures_check 89 of 89, precut 61 checks with no FAIL or WARN, voice-check PASS,
+leak.py REVIEW with no LEAK (the lines above), container audit clean on target and golden, guard.py heart WARN (the
+task118 decision type above) and surface exit 0, pair ceiling 28.5 with mirror leakage 0.0 (ceiling.py).
 
 ## Tried and rejected
 
@@ -379,3 +434,4 @@ both reports are in and every finding is fixed in the generator.
   start moved 7 of 20 figures (newly registered patients drop out); specification 4.1 files the day of the
   consultation. "Hospital medicine letters" could be read without the mental health trust; specification 4.3 names
   both trusts. None names a device.
+- 2026-11-08, stage 4 judge pass 1 on 0bacf975 (DETERMINISTIC, FIX_NOW): step 6 gave the GP Connect key as patient, sender and document date, which a literal reader took as the letter date (the message's own date is the day of receipt) and which filed the second-half letters 12.0 to 14.5 per 1,000 low; hub appointments written up on the next working day across a bank holiday left a weekend-only reading one figure off (Wrekinside North's second quarter, 11.7 against 11.6); and a 7 April copy's second receipt was left to the word letters. Step 6 now states the verifier's match, the pharmacists write up before a bank holiday, and specification 4.3 counts a letter once at its first receipt.

@@ -1,6 +1,7 @@
 {
  "call": "BZ",
  "constants": {
+  "gp_days": 21,
   "off_days": 183,
   "per": 1000,
   "window_days": 60

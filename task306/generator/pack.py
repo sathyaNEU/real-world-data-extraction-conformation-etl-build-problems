@@ -290,7 +290,7 @@ def write_epact(T, path):
     cc = dict(zip(T.C["cid"].values, T.C["cls"].values))
     I = T.I[(T.I["date"] >= W.di(dt.date(2025, 4, 1))) & (T.I["date"] < W.di(dt.date(2026, 10, 1)))]
     sect = {"AP": "0402010 Antipsychotic drugs", "BZ": "0401010 Hypnotics; 0401020 Anxiolytics",
-            "GB": "0408010 Control of epilepsy (gabapentinoids)", "OP": "0407020 Opioid analgesics"}
+            "GB": "0408010 Control of the epilepsies: gabapentin and pregabalin", "OP": "0407020 Opioid analgesics"}
     agg = {}
     for cid, x in zip(I["cid"].values, I["date"].values):
         d = W.dd(int(x))

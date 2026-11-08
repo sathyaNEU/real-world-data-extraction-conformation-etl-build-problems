@@ -114,7 +114,7 @@ def programme(path):
               "of the period, as published in the federation's monthly list size extract."),
         ("p", "4.3 Each half-year the team also reports the hospital medicine letters received by each network's "
               "practices, from Wrekinside Teaching Hospitals NHS Trust and Marches Mental Health NHS Trust, per 1,000 "
-              "registered patients."),
+              "registered patients. A letter counts once, in the half and at the practice of its first receipt."),
         ("h", "5. Governance"),
         ("p", "The board approves the review and the programme lead reports progress to the ICB's medicines "
               "optimisation group each quarter. Changes to this specification are agreed in writing with the ICB."),

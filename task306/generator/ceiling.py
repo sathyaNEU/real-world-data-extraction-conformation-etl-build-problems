@@ -53,7 +53,31 @@ def main(target=TARGET):
           % (crack, n, c, s))
     print("full includer (stress row): response %.1f on the call" % (38 + 7 + 55 * full))
     print("pair ceiling %.1f; mirror leakage %.1f per cent of the ask weight" % ((c + s) / 2, 100 * lc))
+    deltas(D, L, gA, gB)
     return (c + s) / 2, 100 * lc
+
+
+def deltas(D, L, gA, gB):
+    """How far each device's mishandling moves the figures it misses, per 1,000 registered patients, unrounded."""
+    def span(X, G, keys):
+        moved = [abs(X[k]["rate"] - G[k]["rate"]) for k in keys if A.r1(X[k]["rate"]) != A.r1(G[k]["rate"])]
+        return (min(moved) if moved else 0.0), (max(moved) if moved else 0.0), len(moved)
+    h1 = [k for k in gA if k[1] == "H1"]
+    h2 = [k for k in gA if k[1] == "H2"]
+    allb = list(gB)
+    routes = [
+        ("ask A, the 7 April re-sends kept", A.letters_received(D, L=L, dedupe_resend=False), gA, h1),
+        ("ask A, the whole 7 April batch dropped", A.letters_received(D, L=L, resend_mode="batch"), gA, h1),
+        ("ask A, GP Connect re-keyed on patient, sender and document date",
+         A.letters_received(D, L=L, gpconnect="exact"), gA, h2),
+        ("ask A, GP Connect receipts left on the letter date", A.letters_received(D, L=L, gpconnect="letter_date"),
+         gA, h2),
+        ("ask B, hub and practice matched on patient and day", A.consultations(D, dedupe="same_day"), gB, allb),
+        ("ask B, a group session as one consultation", A.consultations(D, groups="session"), gB, allb),
+    ]
+    for name, X, G, keys in routes:
+        lo, hi, n_ = span(X, G, keys)
+        print("%-66s moves %d of %d figures, by %.2f to %.2f" % (name, n_, len(keys), lo, hi))
 
 
 if __name__ == "__main__":

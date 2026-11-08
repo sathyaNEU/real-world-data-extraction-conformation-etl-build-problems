@@ -3,6 +3,7 @@
     python3 task306/generator/checks.py
 """
 import collections
+import datetime as dt
 import io
 import json
 import os
@@ -285,12 +286,14 @@ def main():
     check("R1 no governing document names specialists, who started a medicine or provenance",
           not any(hits.values()), str(hits))
     flat = {f: re.sub(r"\s+", " ", t) for f, t in texts.items()}
-    lets = {f: len(re.findall(r"letter", t, re.I)) for f, t in flat.items()}
-    rep43 = re.search(r"4\.3 Each half-year the team also reports the hospital medicine letters received by each "
-                      r"network's practices", flat["medicines_safety_programme_2027.pdf"])
-    check("R1 letters appear in the governing documents only in specification 4.3's reporting sentence",
-          rep43 is not None and lets["medicines_safety_programme_2027.pdf"] == 1
-          and lets["clun_valley_pilot_close_out_2026.pdf"] == 0 and lets["deprescribing_review_protocols_2026.pdf"] == 0,
+    p43 = re.search(r"4\.3 Each half-year the team also reports the hospital medicine letters received by each "
+                    r"network's practices.*?at the practice of its first receipt\.", flat["medicines_safety_programme_2027.pdf"])
+    out43 = dict(flat)
+    if p43:
+        out43["medicines_safety_programme_2027.pdf"] = flat["medicines_safety_programme_2027.pdf"].replace(p43.group(0), "")
+    lets = {f: len(re.findall(r"letter", t, re.I)) for f, t in out43.items()}
+    check("R1 letters appear in the governing documents only in specification 4.3, the reporting paragraph",
+          p43 is not None and len(re.findall(r"letter", p43.group(0), re.I)) == 2 and not any(lets.values()),
           str(lets))
     # the clean truth: eligibility, provenance and pilot outcomes straight from the generator
     tr_rates = {}
@@ -361,6 +364,68 @@ def main():
     Mn = A.main_call(D, E=dict(E), L=L_no)
     check("K6 dropping the whole 7 April batch leaves every patient's provenance and the call unchanged",
           all(Mn["prov"][c] == M["prov"][c] for c in A.REVIEWS) and rounded(Mn) == golden_r)
+
+    # the asks' forks, closed in the record or by the data (SF16 to SF18)
+    spec = " ".join(pdf_text(os.path.join(TARGET, "medicines_safety_programme_2027.pdf")).split())
+    check("K7 SF16 the specification counts a letter once, in the half and at the practice of its first receipt",
+          "A letter counts once, in the half and at the practice of its first receipt." in spec)
+    win18 = {w_: misses(A.letters_received(D, L=L, gp_window=w_), LA) for w_ in (15, 30)}
+    check("K7 SF18 GP Connect receipts matched within 15 or 30 days file the same 10 letter figures",
+          not any(win18.values()), str(win18))
+    saved_h = A.HOLIDAYS
+    A.HOLIDAYS = set()
+    wk = misses(A.consultations(D), CB)
+    A.HOLIDAYS = saved_h
+    win17 = {k_: misses(A.consultations(D, window_days=k_), CB) for k_ in (3, 4, 5, 7, 10)}
+    check("K7 SF17 weekend-only working days and windows of 3 to 10 days file the same 20 consultation figures",
+          wk == 0 and not any(win17.values()), "weekend-only %d, windows %s" % (wk, win17))
+    hub_by = {h["aid"]: h for h in hub_att}
+
+    def plain_next(d):
+        d = d + dt.timedelta(days=1)
+        while d.weekday() >= 5:
+            d = d + dt.timedelta(days=1)
+        return d
+    across = [c["hub_of"] for c in wr if c["t"].date() not in (hub_by[c["hub_of"]]["t"].date(),
+                                                              plain_next(hub_by[c["hub_of"]]["t"].date()))]
+    check("K7 SF17 every write-up falls on its appointment's day or the next weekday, none across a bank holiday",
+          not across, "%d across" % len(across))
+
+    # the clean truth for the asks: each golden count equals the world's own
+    reg_net = dict(zip(D["reg"]["ods_code"], D["reg"]["primary_care_network"]))
+    first = {}
+    for x in T.L:
+        z = x.get("recv_doc")
+        if z is None:
+            continue
+        key = x["resend_of"] or x["ref"]
+        if key not in first or z["recv"] < first[key][0]:
+            first[key] = (z["recv"], z["prac"])
+    tl = collections.Counter((reg_net[pr], "H1" if w_.month <= 6 else "H2") for w_, pr in first.values()
+                             if w_.year == 2026)
+    bad_l = {k: (LA[k]["letters"], tl.get(k, 0)) for k in LA if LA[k]["letters"] != tl.get(k, 0)}
+    check("K8 ask A: every golden letter count equals the world's letters at their first receipt", not bad_l,
+          str(bad_l))
+
+    def prac_on(p, d):
+        x = W.di(d)
+        for a, b, c, _ in T.spells_by_p.get(p, []):
+            if a <= x and (b == -1 or x < b):
+                return W.survivor(c, d)
+        return None
+    qn = lambda d: "Q%d" % ((d.month - 1) // 3 + 1)
+    tc = collections.Counter()
+    for h in hub_att:
+        tc[(reg_net[h["code"]], qn(h["t"].date()))] += 1
+    for c in T.prac_cons:
+        if not c["hub_of"]:
+            tc[(reg_net[c["code"]], qn(c["t"].date()))] += 1
+    for g in T.groups:
+        for p, a in g["attendees"]:
+            if a == "Yes":
+                tc[(reg_net[prac_on(p, g["t"].date())], qn(g["t"].date()))] += 1
+    bad_c = {k: (CB[k]["consultations"], tc.get(k, 0)) for k in CB if CB[k]["consultations"] != tc.get(k, 0)}
+    check("K8 ask B: every golden consultation count equals the world's consultations", not bad_c, str(bad_c))
 
     # ------------------------------------------------------------------------------------------------ realism
     lc = collections.Counter(v["letters"] for n_ in fig["letters"].values() for v in n_.values())

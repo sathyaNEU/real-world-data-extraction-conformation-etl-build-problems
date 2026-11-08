@@ -40,7 +40,7 @@ def compute(target):
     R1 = A.main_call(D, how="pooled", E=dict(E), L=L)
     six = M["six"]
     fig = {"call": F["call"], "runner_up": F["runner_up"], "third": F["third"], "gap": F["gap"], "reviews": {},
-           "pilot": {}, "rung1": {}, "constants": {"window_days": 60, "per": 1000, "off_days": 183}}
+           "pilot": {}, "rung1": {}, "constants": {"window_days": 60, "per": 1000, "off_days": 183, "gp_days": A.GP_WINDOW}}
     for cls in A.REVIEWS:
         e = M["res"][cls]
         spec = float((e["prov"] == "specialist").mean())
@@ -197,7 +197,7 @@ def paper(fig, path, png):
     story += [Paragraph("Source: the trusts' medicine letters feed and the practices' document workflow log to 6 "
                         "January 2027; registered list sizes on 1 January and 1 July 2026. From October the hospital "
                         "trust's letters arrive through GP Connect and are matched to the workflow log by patient and "
-                        "the first receipt after the letter's date; a letter not received by 6 January 2027 is not "
+                        "the first receipt on or after the letter's date; a letter not received by 6 January 2027 is not "
                         "counted.", st["s"]),
               Paragraph("The team's patient consultations by network and quarter of 2026 are in %s." % CSV, st["p"])]
     created = dt.datetime(2027, 1, 12, 16, 5, 0, tzinfo=dt.timezone.utc)

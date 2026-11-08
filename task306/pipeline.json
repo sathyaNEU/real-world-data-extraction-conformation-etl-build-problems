@@ -1,10 +1,10 @@
 {
  "task": "task306",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "pharmacology-pharmacoepidemiology-safety / benefit-risk-assessment (client pharmacology-pharmacoepidemiology-safety)",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-08",
  "stump": "The default path carries each review's pilot take-off rate to the federation's patients in scope and funds the antipsychotic review at about 24 harms a year; the step that lands it there is carrying the pilot's average rate to every patient, when practice pharmacists almost never stopped a medicine a specialist service had started (4 of 96 in the pilot), the pilot's antipsychotic patients were mostly practice-started (136 of 160) and a specialist service started 86 per cent of the antipsychotic patients in scope, so the antipsychotic review would avoid about 6 harms a year against the benzodiazepine review's 12.",
  "architecture": 5,
@@ -14,22 +14,39 @@
   "date": "2026-11-08"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-08 on target.zip 0bacf975, no LEAK; 7 lines ruled harmless in the design note",
-  "reader": "pending: not run in the building session (no Agent tool); brief written against target.zip 0bacf975"
+  "leak_py": "REVIEW 2026-11-08 on target.zip a915483e (--asof 2027-01-06), no LEAK; every REVIEW line ruled harmless in the design note's Stage 4",
+  "reader": "read 1 on 0bacf975 and read 2 on ea8155d7, isolated (Sonnet, medium), prompt and pack only: no leak at either; question 6 an analytical choice (which off-probability to carry to the patients not yet reviewed), who started a medicine not named at either; machine-made lists measured and ruled, the ePACT2 summary's BNF label corrected after read 2; leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "PASS 2026-11-08 on the final cut",
-  "surface": "exit 0 2026-11-08 on the final cut; 8 pairs promoted for the author's clone check (task304, task305, task307, task308, task310, task467, task169, task128)"
+  "heart": "WARN 2026-11-08 on the final cut: repeat.decision (pick_one_of_n) against task118's architecture 6, registered at 01:45Z after this card (00:04Z); one review of three is the programme's own decision",
+  "surface": "exit 0 2026-11-08 on the final cut; 8 pairs promoted for the author's clone check (task304, task305, task307, task308, task310, task467, task169, task128); personas in the pack the card's three"
  },
  "judge": {
-  "verdict": "pending",
-  "disposition": "",
-  "report": ""
+  "pass": 1,
+  "date": "2026-11-08",
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW",
+  "report": "task306/determinism_check_report_arch5.md",
+  "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "finding": "step 6 gave the GP Connect key as patient, sender and document date, which read literally as the letter date matched 757 of about 3,960 October to December letters and filed the second half at 28.8, 26.5, 27.1, 25.3 and 28.3; residuals not counted against the verdict: the 7 April copies counted twice (first half 46.8, 44.1, 46.5, 43.0, 43.6) and a weekend-only working day (Wrekinside North Q2 11.7 against 11.6)",
+  "fixed": "step 6 states the verifier's match; specification 4.3 counts a letter once, in the half and at the practice of its first receipt (SF16); hub appointments before a bank holiday written up on the day (SF17); SF16 to SF18 and both asks' clean truth asserted (checks.py K7, K8); the call, the stump and every graded figure unchanged; only the consultation extract and the specification moved in the pack (0bacf975 to ea8155d7)",
+  "re_judge": {
+   "pass": 2,
+   "date": "2026-11-08",
+   "cut": "ea8155d7",
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "report": "task306/determinism_check_report_arch5_pass2.md",
+   "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+   "gate_h": "domain pass, layers pass, decisive_step analytical",
+   "residual": "advisory only: a provenance flag from any class letter at any time files review A (15.8 against B 12.0) but does not separate the pilot's outcomes (23 against 47 per cent in A), so the data rule it out; 151 same-day repeat calls in the practice systems count as consultations under specification 4.1, collapsing them would lower each consultation figure by 0.1 to 0.3, row counting read as natural and no clause advised"
+  }
  },
  "returned": [],
- "resume": "stage 4: spawn the isolated leak reader and the determinism judge (Sonnet, medium) together on target.zip 0bacf975 (/leak-check step 4; .claude/agents/determinism-judge.md); fix every finding in the generator in one pass; re-run every gate on the final cut; then ship (target.zip and golden/ force-added, ledger row, card current)",
+ "resume": "Shipped 2026-11-08 on target.zip a915483e; waits on the portal. The shipped cut differs from the re-judged cut ea8155d7 only in the ePACT2 summary's BNF label for the gabapentinoid line, a declared distractor no figure reads (corrected after the leak reader's read 2); every free gate re-run on a915483e.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-08",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -196,7 +213,19 @@
   {
    "date": "2026-11-08",
    "event": "PAUSED at stage 4: the leak reader and the determinism judge not run (no Agent tool in the building session); briefs written"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "stage 4 on 0bacf975: the leak reader found no leak; the determinism judge returned DETERMINISTIC, FIX_NOW on step 6's GP Connect wording, with residual forks on the 7 April copies and the bank-holiday working day"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "fixed in the generator in one pass (step 6, specification 4.3, write-ups before a bank holiday, K7 and K8); target.zip ea8155d7; leak reader read 2 no leak; re-judge DETERMINISTIC, APPROVE"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "SHIPPED: run review B, benzodiazepines and Z-drugs (12 serious harms a year) over review C (8) and review A (6), gap 4; target.zip a915483e"
   }
  ],
- "zip": "0bacf975417942bda8ded8b87d3c590433362b13976eb95853d4c95eb95b59f9"
+ "zip": "a915483ef2342ec8d2c30a150f8286d30653413debbd533cd60d771d2c6fb41c"
 }

@@ -63,10 +63,13 @@ def write(fig, path):
     out.append("5. Recommended review %s, %d harms a year ahead of review %s." % (L[c], fig["gap"], L[r2]))
     out.append("6. Letters: one per letter reference in the feed, a Marches Mental Health letter dated 7 April 2026 with "
                "the same patient, service, encounter date and lines as an earlier letter counted as that letter; each "
-               "letter's half from its first receipt in practice_document_workflow_2026.csv, matched on sender "
-               "reference or, for Wrekinside documents received through GP Connect, on patient, sender and document "
-               "date, a letter with no receipt by the 6 January 2027 extract not received in 2026; the receiving "
-               "practice's network; per 1,000 on registered_list_sizes_2026.csv at 1 January and 1 July.")
+               "letter's half and practice from its first receipt in practice_document_workflow_2026.csv "
+               "(programme specification, section 4), found by its sender reference or, for a Wrekinside letter "
+               "with none there (GP Connect from October 2026), as the first Wrekinside receipt for the same patient "
+               "that carries no letter's reference, was received on or within %d days after the letter date and was "
+               "not taken by an earlier letter, a letter with no receipt by the 6 January 2027 extract not received "
+               "in 2026; the receiving practice's network; per 1,000 on registered_list_sizes_2026.csv at 1 January "
+               "and 1 July." % fig["constants"]["gp_days"])
     out.append("7. Consultations: attended one-to-one rows of pharmacist_hub_appointments_2026.csv (UTC to UK time), "
                "the rows of clinical_system_pharmacist_activity_2026.csv except each hub appointment's record by the "
                "same pharmacist for the same patient on the day or the next working day, and each attended patient in "

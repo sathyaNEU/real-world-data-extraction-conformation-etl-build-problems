@@ -29,6 +29,7 @@ EXCLUDE = {"AP": {"69322001", "58214004", "13746004", "1129481000000101"},
            "GB": {"84757009", "1129481000000101"}}
 MIN_ISSUES = {"AP": 2, "BZ": 3, "GB": 2, "OP": 2}
 MIN_AGE = {"AP": 65, "BZ": 65, "GB": 18}
+GP_WINDOW = 21   # days after a letter within which its GP Connect receipt is sought (ask A)
 
 
 def band(a):
@@ -300,12 +301,13 @@ def figures_main(M):
 # Ask A: hospital medicine letters received by each network's practices, by half of 2026
 # --------------------------------------------------------------------------------------------------------------------
 def letters_received(D, basis="received", dedupe_resend=True, gpconnect="match", resend_mode="content",
-                     network_by="receiving", L=None):
+                     network_by="receiving", L=None, gp_window=None):
     """Each network's medicine letters by the half in which its practices received them. Handling switches:
     basis 'received' or 'letter'; dedupe_resend; gpconnect 'match' (patient, sender and document date), 'drop' or
     'letter_date'; resend_mode 'content' (a 7 April copy of an earlier letter) or 'batch' (every 7 April letter);
     network_by 'receiving' (the practice that received it) or 'addressed' (the feed's practice field)."""
     net = network_of(D)
+    gp_window = GP_WINDOW if gp_window is None else gp_window
     if L is None:
         L = resolved_letters(D)
     lines = L.sort_values(["letter_reference", "line"])
@@ -338,7 +340,7 @@ def letters_received(D, basis="received", dedupe_resend=True, gpconnect="match",
             if exact:
                 rv, pr = q.pop(0)
             else:
-                cand = [j for j, (rv, pr) in enumerate(q) if k3 <= rv.normalize() <= k3 + pd.Timedelta(days=21)]
+                cand = [j for j, (rv, pr) in enumerate(q) if k3 <= rv.normalize() <= k3 + pd.Timedelta(days=gp_window)]
                 if not cand:
                     continue
                 rv, pr = q.pop(cand[0])
