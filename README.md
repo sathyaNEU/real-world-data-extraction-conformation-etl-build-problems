@@ -83,7 +83,7 @@ Every build with a fingerprint card, grouped by its client domain (the build's `
 - **Physical & Environmental Sciences:** task138, task180, task189, task204, task229, task241, task245, task247, task252, task263, task279, task452, task459, task460, task462, task474, task476, task478, task480, task484, task487
 - **Policy & Education:** task25, task37, task60, task65, task72, task73, task77, task80, task87, task98, task100, task102, task119, task126
 - **Political Science & Public Policy:** task157, task192, task199
-- **Product Analytics:** task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13, task14, task15, task19, task22, task23, task24, task26, task48, task52, task53, task56, task62, task64, task69, task74, task82, task83, task84, task85, task116, task144, task156, task166, task228, task235, task258, task305
+- **Product Analytics:** task1, task2, task3, task4, task5, task6, task7, task8, task9, task10, task11, task12, task13, task14, task15, task19, task22, task23, task24, task26, task48, task52, task53, task56, task62, task64, task69, task74, task82, task83, task84, task85, task116, task144, task166, task228, task235, task258, task305
 - **Psychology & Behavioral Science:** task237, task239, task249, task257, task270
 - **Quantitative Finance:** task135, task178, task271, task445
 - **Sociology & Demography:** task150, task176, task262, task266
