@@ -19,7 +19,7 @@ architecture), new. A task from an objective no developer owns says so.
 
 | Wave | Tasks, in order |
 |---|---|
-| 1 | task253 (resume 2: Ask A) · task254 (resume 2: architecture 3) · task120 (re-root: retired) · task121 (re-root: fresh world, Root-Cause) · task127 (re-root, Opportunity Sizing) |
+| 1 | task253 (resume 2: Ask A) · task254 (resume 2: architecture 3) · task120 (re-root: retired) · task121 (re-root: fresh world, Root-Cause) |
 | 2 | task255 (new) · task256 (new) · task257 (new) · task258 (new) · task259 (new) · task260 (new) |
 | 3 | task261 (new) · task262 (new) · task263 (new) · task264 (new) · task265 (new) · task266 (new) |
 | 4 | task267 (new) · task269 (re-root: fresh world) · task270 (re-root: fresh world) · task271 (re-root: fresh world) · task272 (re-root: fresh world) |
