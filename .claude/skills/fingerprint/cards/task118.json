@@ -1,18 +1,18 @@
 {
   "task": "task118",
-  "architecture": "v5",
-  "drawn": "2026-10-31",
+  "architecture": "v6",
+  "drawn": "2026-11-07",
   "slot_note": "",
-  "domain": "energy-systems-utilities",
-  "subdomain": "generation-capacity-planning",
-  "client_domain": "energy-systems-utilities",
-  "niche": "a city-owned electric utility's 2027 demand-response budget that can expand one program, each valued at the load it would take off the design year's system peak hour in the resource adequacy plan",
+  "domain": "urban-regional-science",
+  "subdomain": "optimization",
+  "client_domain": "urban-regional-science",
+  "niche": "a city-region rail executive siting the one platform dispatch team its 2027 rail plan funds on its suburban network, valued at the passenger lateness the team would take off the network's weekday trains",
   "objective": "opportunity-sizing-decision",
-  "shape": "other",
+  "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "expand the Home Battery Network: its 2,133 added batteries add 6 MW to the 2027 accredited capacity in the design year's system peak hour, against Peak Time Rewards 4 MW (runner-up), Cool Credit 3 MW and Business Demand Partners 2 MW",
-  "answer_source": "each programme's 18:00 MST reduction per enrolled unit averaged over the record's fourth consecutive event days (12 July 2024, 18 July 2025, 24 July 2026; the batteries on 2025 and 2026 under the 3.0 kW setting), times the whole units the cost sheet's all-in costs buy with USD 3.2 million",
+  "answer": "Site the 2027 platform dispatch team at Pellingham: it takes 4,100 passenger-minutes of lateness a weekday off the network's trains, 1,200 more than Saltgate's 2,900.",
+  "answer_source": "task118/submission.md block 1; golden/dispatch_team_siting_2027.xlsx; golden/lateness_saved_by_station.png",
   "gap": [
     "objective",
     "time"
@@ -21,76 +21,86 @@
     "none"
   ],
   "generators": [
-    "G13",
+    "G1",
     "G7",
-    "G14"
+    "G3"
   ],
-  "gate_g": "binding_constraint",
+  "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "binding_constraint",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and rule correctly takes each program's per-unit load reduction at 18:00 the way the load impact protocols do, the treatment-against-holdout difference averaged over the 2024 to 2026 events or a temperature model of it evaluated at the design hour's weather, multiplies it by the units the USD 3.2 million buys and files Cool Credit, the smart-thermostat program, at about 10 to 11 MW; the design year's peak hour falls on the fourth consecutive dispatch day, where the thermostats give about a fifth of a first day's reduction, so Cool Credit adds about 3 MW and the Home Battery Network's 6 MW is the call.",
-  "domain_test": "The deciding quantity is each demand-response program's expected load reduction in the design year's system peak hour, the capacity-accreditation quantity a resource adequacy plan prices, estimated from the programs' measurement and verification records the way a load impact evaluation estimates it; with another field's nouns (a hospital's surge beds against an escalation day) the dispatch trigger, the design-year peak hour and a holdout difference read by consecutive event day stop making sense.",
-  "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:consecutive-dispatch-depletion",
+  "analyst_test": "A strong analyst who reads every file correctly prices each station's team at the dwell overrun it would remove there, carried down the same train to each passenger's alighting stop net of the timetable's recovery allowances, and files the station whose trains carry the most passengers through the largest overruns; that route never follows a late unit into its next working and names the wrong station.",
+  "domain_test": "The deciding quantity is each siting's passenger lateness avoided across the network, which rail performance analysis builds from train running records, the working timetable's recovery allowances and turnaround slack and the units each working uses; with hospital nouns (discharge teams on wards) there is no timetable whose allowances absorb lateness, no passenger loading along a route and no unit carrying a late arrival into a full working, so the call stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:network-passenger-lateness-through-unit-turnarounds",
   "layer1": [
-    "utc-local",
-    "contract-regime-change",
-    "change-only-status-log",
-    "address-string-keys",
-    "settlement-dating",
-    "hour-convention"
+    "the running feed stamps calls on the half-minute against TIPLOC timing points while the census, the claims and the gates key stations by CRS code and name",
+    "the working timetable exports booked times to the second with bracketed allowances",
+    "a failed unit's workings pass to a spare on the day, so the record's unit changes mid-day",
+    "the passenger census counts each train's boarders and alighters on one autumn weekday",
+    "the gateline controllers log cumulative 16-bit counters every quarter-hour in UTC",
+    "the claims extract carries appeal top-ups under the original claim reference and app-entered journey dates"
   ],
-  "stakeholder_role": "the utility's resource planning manager, whose resource adequacy plan goes to the city council with the 2027 budget",
+  "stakeholder_role": "the rail executive's performance analyst, whose siting note goes with the 2027 rail plan",
   "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "mv_thermostat_panel_2024_2026.csv",
-    "rows": 504000,
-    "entity": "one row is one sampled premise's metered energy in one hour of one event day",
-    "grain": "premise x event day x hour",
+    "file": "train_running_autumn_2026.csv",
+    "rows": 363900,
+    "entity": "one row is one weekday train's call at one timing point, with the unit that worked it",
+    "grain": "date x headcode x timing point",
     "source": "synthetic"
   },
-  "forum": "council_or_assembly",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "utility_or_infrastructure",
+  "forum": "minister_or_cabinet",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "local_government",
   "world": {
-    "geography": "Arizona, United States (an invented desert city on Mountain Standard Time all year)",
-    "currency": "USD",
-    "org_type": "city-owned electric utility",
+    "geography": "England, United Kingdom (an invented city-region)",
+    "currency": "GBP",
+    "org_type": "combined authority rail executive",
     "invented_names": [
-      "Cholla Basin Municipal Utility",
-      "Cool Credit",
-      "Peak Time Rewards",
-      "Business Demand Partners",
-      "Home Battery Network",
-      "Halvern Controls",
-      "Arroyo Demand Services",
-      "Brightwell Storage",
-      "Ridgeway Analytics"
+      "Ravelstoke",
+      "Ravelstoke Rail",
+      "Ravelstoke City Region Combined Authority",
+      "Cardale Railways",
+      "Ravelstoke Central",
+      "Crossmoor line",
+      "Ambrey line",
+      "Holm Ferry line",
+      "Ostley Lane",
+      "Brathwick Road",
+      "Ambrey Parkway",
+      "Pellingham",
+      "Holcroft Green",
+      "Saltgate",
+      "Quayside"
     ],
     "people": [
-      "Corey Cox",
-      "Nina Franklin",
-      "Lisa Jennings",
-      "Kathy Gibson"
+      "Julia Clayton",
+      "Leon Ross"
     ]
   },
   "deliverables": [
-    "dr_capacity_note_2027.docx",
-    "dr_programme_audit_2026.csv"
+    "dispatch_team_siting_2027.xlsx",
+    "lateness_saved_by_station.png"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "A resource's response is measured on occasions that mostly stand alone, while the occasion the decision prices comes at the end of a run of consecutive calls that the operating rule makes out of the design conditions, and a response drawn from a buffer that refills only partly between calls falls with each consecutive call, so every average or condition-matched measure overstates exactly the resources whose buffer empties and the resource that refills between calls wins.",
-  "driver_concrete": "Each program's 2027 accreditation is its expected reduction at 18:00 on Friday 23 July 2027, the design year's system peak hour, which OP-7's weekday 110F trigger makes the fourth consecutive dispatch day; the thermostats, the rebate customers and the commercial sites each give less on every consecutive event day (on the record's fourth days about a fifth, two fifths and three tenths of a first day's reduction), while the batteries recharge from rooftop solar between events, so the batteries' 6 MW beats the Cool Credit figure every average, temperature-matched or heat-build-up model files.",
-  "stump": "The default path averages each program's 18:00 treatment-against-holdout reduction over the 2024 to 2026 events, or fits it on the day's high and reads the fit at the design hour's 117F, multiplies by the units the USD 3.2 million buys and files Cool Credit at about 10 to 11 MW; it never places the design peak hour in its run of dispatch days, so it misses that the three weekdays before it clear OP-7's trigger and that on the record's fourth consecutive event days the thermostats give about a fifth of a first day's reduction.",
+  "question_form": "where",
+  "driver": "The decisive quantity is what removing part of the delay a vehicle picks up at one point saves across a whole system, when the vehicle passes on to its next assignment whatever part of its lateness exceeds the slack before that assignment, so equal local delays cost the system very differently according to how tightly each vehicle's next assignment follows and how full it is, which only the vehicles' own sequences of assignments show.",
+  "driver_concrete": "Each shortlisted station's team is worth the passenger lateness it takes off the network's weekday trains; Pellingham's overruns fall on Ambrey line all-stations trains whose units reach Ravelstoke Central with half a minute to spare over the four minutes a unit needs to turn round and go straight out on the full outbound airport workings, while Ambrey Parkway's fall mostly on park-and-ride extras whose units do not work again until the evening, so Pellingham's minutes reach far more passengers than its own trains carry.",
+  "stump": "The default path prices each shortlisted station's team at the overrun it removes there, carried down the same train to each passenger's alighting station net of the timetable's allowances, and files Saltgate at about 2,900 passenger-minutes a weekday; the step that lands it there is stopping each train's lateness at Ravelstoke Central, when the Ambrey line's all-stations units turn round there with half a minute of slack and start their full outbound airport workings late, so Pellingham's team, 4,100, is the call.",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task184": "task184 v1 differenced a site's own filed plan against its record; nothing here is a plan differenced against a record: the saving is followed from each delayed train into its unit's next workings across the turnround slack.",
+    "task198": "task198 reads a reported value capped at what an agreement entitles; here nothing is capped and the deciding quantity is lateness a vehicle carries from one working into the next, weighted by that working's passengers.",
+    "task472": "task472's job is released only inside a schedule's windows, so shortening its own work saves only where it crosses a window; here the saving lands on other trains, the unit's next workings, which start late by the lateness beyond the layover slack and carry their own passengers.",
+    "task118": "v2 asked what share of a measured gain is new to the whole system rather than taken from the items beside it, and v4 valued a levy cut on the welfare wedge; v6 adds what the local record never shows, the lateness a delayed train's unit carries into its next working, with no displacement, price or welfare step.",
+    "task119": "task119 credits a trust's failed waits to beds its unit held empty for its own planned work, read from each allocation against its occupant's record; here nothing is held or allocated: the saving is the lateness a delayed train's unit carries across a turnround into its next working, weighted by that working's passengers."
+  },
   "lineage": [
     {
       "architecture": "v1 (loops 0 to 4, shipped 10-12, reshipped 10-27 after the portal's determinism block): the headlines each desk's own editors already test netted out of the squad's sized gain",
@@ -183,17 +193,52 @@
       "driver": "A fixed revenue envelope given to one of several levies is valued by the welfare loss it removes, which is every extra unit's full existing wedge less half the cut, on the quantity the market actually reaches within the appraisal year; a response read off the long-run or static elasticity credits the slowest-adjusting levy with demand it will not reach in the year, and the cut's own triangle alone credits the most elastic small levy, so each half of the method names a different levy and only both together name the right one.",
       "stump": "A competent analyst estimates each duty's price elasticity by a log-log fit of the Statistics Office's quarterly clearances on shelf prices, sizes each cut to the GBP 1.5 million envelope after buyers respond and values it as the cut's own Harberger triangle, filing cider at about GBP 0.2 million where the golden is spirits at about GBP 0.9 million; the step that lands them there is valuing a cut by its own triangle on a static elasticity, when every extra litre a cut buys still carries the whole of the duty and GST on it and the Budget year sees only the part of each duty's response that has arrived by then.",
       "fate": "spent 2026-10-31 at the portal: the call landed three times and the determinism block failed twice; the golden was the field's own welfare method (the existing wedge plus the cut's triangle on the year's partial-adjustment quantity), which the portal's responses applied by reflex, so the slot re-roots into a new world, dataset, decisive step and prompt shell"
+    },
+    {
+      "architecture": "v5 (Cholla Basin Municipal Utility's 2027 demand-response expansion, each programme read on the record's fourth consecutive event days)",
+      "fate": "FAILED_TO_STUMP 2026-11-07 on its first portal round: both responses filed the golden (Home Battery Network 6 MW, runner-up Peak Time Rewards 4 MW, every programme's MW) by putting a consecutive-call streak in the event regression, splitting the batteries' contract regimes and validating season-out; a named covariate the field already models is executed, so the world and the run-position driver are spent",
+      "domain": "energy-systems-utilities",
+      "subdomain": "generation-capacity-planning",
+      "objective": "opportunity-sizing-decision",
+      "gap": [
+        "objective",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G7",
+        "G14"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "pick_one_of_n",
+      "stump_strategy": "binding_constraint",
+      "driver": "A resource's response is measured on occasions that mostly stand alone, while the occasion the decision prices comes at the end of a run of consecutive calls that the operating rule makes out of the design conditions, and a response drawn from a buffer that refills only partly between calls falls with each consecutive call, so every average or condition-matched measure overstates exactly the resources whose buffer empties and the resource that refills between calls wins.",
+      "stump": "The default path averages each program's 18:00 treatment-against-holdout reduction over the 2024 to 2026 events, or fits it on the day's high and reads the fit at the design hour's 117F, multiplies by the units the USD 3.2 million buys and files Cool Credit at about 10 to 11 MW; it never places the design peak hour in its run of dispatch days, so it misses that the three weekdays before it clear OP-7's trigger and that on the record's fourth consecutive event days the thermostats give about a fifth of a first day's reduction."
     }
   ],
+  "notes": "re-root 2026-11-07 (architecture 6, urban-regional-science optimization): drawn after a screen of the untried ground and a clean-truth harness (scratch harness5.py, redraw5.py): the full replay through each unit's next working files Pellingham in 20 of 20 jittered redraws (margin min 1.26, median 1.64); train-minutes, on-board passenger-minutes, the same-train replay and the network, line and line-by-period reactionary scalings file Saltgate or Ambrey Parkway. Structural repeats (objective, G1, pick_one_of_n / decomposition_attribution) against older builds and this slot's v2 and v4 are answered in differentiation.",
   "lineage_shells": [
     {
       "question form": "how-much",
       "second-sentence opener": "put",
       "rounding opener": "give",
       "deliverable set": "docx+xlsx"
+    },
+    {
+      "question form": "what",
+      "second-sentence opener": "a",
+      "rounding opener": "megawatts",
+      "deliverable set": "csv+docx"
     }
   ],
-  "notes": "surface (2026-10-31): promoted task120 (same domain and objective, approved; a campus water system's peak draw rebuilt from storage, a different driver), task119 (gap, decision type and artifact; a public administration wait decomposition) and task462 (surface top 1 per cent; an emissions inventory); heart PASS",
-  "registered": "2026-10-31T17:17:16Z",
-  "architecture_spent": true
+  "registered": "2026-11-08T01:45:39Z",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "in",
+    "rounding opener": "passenger",
+    "deliverable set": "png+xlsx"
+  }
 }

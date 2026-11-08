@@ -1,228 +1,185 @@
 {
- "budget_usd": 3200000,
- "budget_usd_millions": 3.2,
- "hbn_incentive_usd": 15,
- "hbn_cap_usd": 255,
- "cost_usd": {
-  "Cool Credit": 260,
-  "Peak Time Rewards": 64,
-  "Business Demand Partners": 24000,
-  "Home Battery Network": 1500
- },
- "units": {
-  "Cool Credit": 12307,
-  "Peak Time Rewards": 50000,
-  "Business Demand Partners": 133,
-  "Home Battery Network": 2133
- },
- "design_peak": "2027-07-23 18:00",
- "design_peak_load_mw": 1452,
- "design_peak_temp_f": 114.6,
- "design_day_high_f": 117.5,
- "design_run_day": 4,
- "design_called_days": [
-  "2027-07-20",
-  "2027-07-21",
-  "2027-07-22",
-  "2027-07-23"
- ],
- "fourth_days": {
-  "Cool Credit": [
-   "2024-07-12",
-   "2025-07-18",
-   "2026-07-24"
+ "base_passenger_lateness": 30595,
+ "constants": {
+  "band_bounds": [
+   15,
+   29,
+   30,
+   59,
+   60
   ],
-  "Peak Time Rewards": [
-   "2024-07-12",
-   "2025-07-18",
-   "2026-07-24"
+  "census_day": "13 October 2026",
+  "counter_wrap": 65536,
+  "record": [
+   "7 September 2026",
+   "27 November 2026"
   ],
-  "Business Demand Partners": [
-   "2024-07-12",
-   "2025-07-18",
-   "2026-07-24"
-  ],
-  "Home Battery Network": [
-   "2025-07-18",
-   "2026-07-24"
+  "rounding_passenger_minutes": 100,
+  "section": 3,
+  "team_hours": [
+   "06:30",
+   "19:30"
   ]
  },
- "per_unit_kw_fourth_day": {
-  "Cool Credit": 0.2481,
-  "Peak Time Rewards": 0.0753,
-  "Business Demand Partners": 14.6042,
-  "Home Battery Network": 2.8952
- },
- "per_unit_kw_first_day": {
-  "Cool Credit": 1.1207,
-  "Peak Time Rewards": 0.1927,
-  "Business Demand Partners": 50.8253,
-  "Home Battery Network": 2.7536
- },
- "fourth_over_first": {
-  "Cool Credit": 0.221,
-  "Peak Time Rewards": 0.391,
-  "Business Demand Partners": 0.287,
-  "Home Battery Network": 1.051
- },
- "mw_exact": {
-  "Cool Credit": 3.054,
-  "Peak Time Rewards": 3.763,
-  "Business Demand Partners": 1.942,
-  "Home Battery Network": 6.176
- },
- "mw": {
-  "Cool Credit": 3,
-  "Peak Time Rewards": 4,
-  "Business Demand Partners": 2,
-  "Home Battery Network": 6
- },
- "call": "Home Battery Network",
- "runner_up": "Peak Time Rewards",
- "lead": 1.641,
- "gap_mw": 2,
- "ladder": {
-  "R0 ex post, every event": {
-   "Cool Credit": 11.38,
-   "Peak Time Rewards": 8.54,
-   "Business Demand Partners": 5.86,
-   "Home Battery Network": 5.38
+ "default_pick": "Saltgate",
+ "default_saving": 2900,
+ "gap": 1200,
+ "gap_raw": 1195.5,
+ "gates": {
+  "Ambrey Parkway": {
+   "entered": 1968,
+   "left": 2337
   },
-  "R0b ex post, rows in force": {
-   "Cool Credit": 11.38,
-   "Peak Time Rewards": 8.54,
-   "Business Demand Partners": 5.86,
-   "Home Battery Network": 5.98
+  "Brathwick Road": {
+   "entered": 1974,
+   "left": 2054
   },
-  "R1 ex ante on the day's high": {
-   "Cool Credit": 9.87,
-   "Peak Time Rewards": 7.83,
-   "Business Demand Partners": 5.13,
-   "Home Battery Network": 5.96
+  "Pellingham": {
+   "entered": 2055,
+   "left": 3757
   },
-  "R1b ex ante on the 18:00 temperature proxy (high)": {
-   "Cool Credit": 9.87,
-   "Peak Time Rewards": 7.83,
-   "Business Demand Partners": 5.13,
-   "Home Battery Network": 5.96
-  },
-  "R2 ex ante with the low and three days' heat": {
-   "Cool Credit": 9.8,
-   "Peak Time Rewards": 7.73,
-   "Business Demand Partners": 5.07,
-   "Home Battery Network": 5.83
-  },
-  "R2b ex ante with the low": {
-   "Cool Credit": 10.15,
-   "Peak Time Rewards": 7.93,
-   "Business Demand Partners": 5.2,
-   "Home Battery Network": 5.83
-  },
-  "R2c ex ante with the three days' heat": {
-   "Cool Credit": 9.31,
-   "Peak Time Rewards": 7.5,
-   "Business Demand Partners": 4.9,
-   "Home Battery Network": 5.91
-  },
-  "X hottest event days (115F and over)": {
-   "Cool Credit": 10.45,
-   "Peak Time Rewards": 8.02,
-   "Business Demand Partners": 5.37,
-   "Home Battery Network": 5.85
-  },
-  "X day after an event": {
-   "Cool Credit": 7.21,
-   "Peak Time Rewards": 6.62,
-   "Business Demand Partners": 4.15,
-   "Home Battery Network": 6.09
-  },
-  "X tenth percentile of events": {
-   "Cool Credit": 6.06,
-   "Peak Time Rewards": 5.97,
-   "Business Demand Partners": 3.83,
-   "Home Battery Network": 5.64
-  },
-  "X most recent season": {
-   "Cool Credit": 11.69,
-   "Peak Time Rewards": 8.75,
-   "Business Demand Partners": 6.02,
-   "Home Battery Network": 6.0
-  },
-  "F run day as a count": {
-   "Cool Credit": 3.04,
-   "Peak Time Rewards": 4.44,
-   "Business Demand Partners": 2.41,
-   "Home Battery Network": 6.25
-  },
-  "F run-day indicators with the high": {
-   "Cool Credit": 3.28,
-   "Peak Time Rewards": 3.92,
-   "Business Demand Partners": 2.03,
-   "Home Battery Network": 6.16
-  },
-  "F ratio model on run days": {
-   "Cool Credit": 3.09,
-   "Peak Time Rewards": 3.8,
-   "Business Demand Partners": 1.97,
-   "Home Battery Network": 6.16
-  },
-  "G fourth-day mean (golden)": {
-   "Cool Credit": 3.05,
-   "Peak Time Rewards": 3.76,
-   "Business Demand Partners": 1.94,
-   "Home Battery Network": 6.18
-  },
-  "F fourth-day mean, rows in force pooled for the batteries": {
-   "Cool Credit": 3.05,
-   "Peak Time Rewards": 3.76,
-   "Business Demand Partners": 1.94,
-   "Home Battery Network": 5.98
+  "Saltgate": {
+   "entered": 2543,
+   "left": 2633
   }
  },
- "ask_a": {
-  "2026-06-17": 8696,
-  "2026-06-23": 8743,
-  "2026-06-30": 9054,
-  "2026-07-07": 9095,
-  "2026-07-08": 9131,
-  "2026-07-13": 9247,
-  "2026-07-15": 9292,
-  "2026-07-21": 9278,
-  "2026-07-22": 9286,
-  "2026-07-23": 9305,
-  "2026-07-24": 9315,
-  "2026-07-31": 9319,
-  "2026-08-04": 9366,
-  "2026-08-05": 9400,
-  "2026-08-06": 9375,
-  "2026-08-17": 9450,
-  "2026-08-26": 9475,
-  "2026-08-31": 9514,
-  "2026-09-09": 9545
+ "min_turnround_minutes": 4.0,
+ "pellingham_knock_on": 2200,
+ "pellingham_same_train": 1900,
+ "pick": "Pellingham",
+ "pick_saving": 4100,
+ "reactionary": {
+  "line": {
+   "E": 0.1711,
+   "N": 0.1285,
+   "S": 0.0456
+  },
+  "network": 0.106
  },
- "ask_b_months": {
-  "2026-06": 132735,
-  "2026-07": 399825,
-  "2026-08": 248790,
-  "2026-09": 9480
+ "repay": {
+  "E|15 to 29": 113.68,
+  "E|30 to 59": 213.25,
+  "E|60 or more": 300.51,
+  "N|15 to 29": 109.29,
+  "N|30 to 59": 150.3,
+  "N|60 or more": 586.03,
+  "S|15 to 29": 209.44,
+  "S|30 to 59": 206.92,
+  "S|60 or more": 115.78
  },
- "ask_b_capped": 2939,
- "ask_c_months": {
-  "2026-06": 14903.1,
-  "2026-07": 16438.1,
-  "2026-08": 17324.4,
-  "2026-09": 17829.7
+ "repay_gbp": {
+  "E|15 to 29": 114,
+  "E|30 to 59": 213,
+  "E|60 or more": 301,
+  "N|15 to 29": 109,
+  "N|30 to 59": 150,
+  "N|60 or more": 586,
+  "S|15 to 29": 209,
+  "S|30 to 59": 207,
+  "S|60 or more": 116
  },
- "ask_c_months_whole": {
-  "2026-06": 14903,
-  "2026-07": 16438,
-  "2026-08": 17324,
-  "2026-09": 17830
+ "rungs": {
+  "Ambrey Parkway": {
+   "R0": 1939.9,
+   "R0b": 12.3,
+   "R1": 1593.9,
+   "R2": 1627.2,
+   "R2a": 1627.2,
+   "R2plan": 1627.2,
+   "RLF": 1866.6,
+   "RNF": 1762.8,
+   "RPF": 1884.9
+  },
+  "Brathwick Road": {
+   "R0": 4742.9,
+   "R0b": 41.1,
+   "R1": 1659.4,
+   "R2": 1669.6,
+   "R2a": 1669.6,
+   "R2plan": 1669.6,
+   "RLF": 1872.6,
+   "RNF": 1835.3,
+   "RPF": 1671.5
+  },
+  "Holcroft Green": {
+   "R0": 1009.6,
+   "R0b": 11.8,
+   "R1": 406.6,
+   "R2": 414.8,
+   "R2a": 413.1,
+   "R2plan": 414.8,
+   "RLF": 425.1,
+   "RNF": 449.7,
+   "RPF": 411.8
+  },
+  "Ostley Lane": {
+   "R0": 798.0,
+   "R0b": 9.5,
+   "R1": 404.1,
+   "R2": 406.7,
+   "R2a": 406.7,
+   "R2plan": 406.7,
+   "RLF": 456.0,
+   "RNF": 447.0,
+   "RPF": 406.1
+  },
+  "Pellingham": {
+   "R0": 2141.5,
+   "R0b": 16.5,
+   "R1": 1898.5,
+   "R2": 4107.8,
+   "R2a": 4080.3,
+   "R2plan": 4107.8,
+   "RLF": 2223.3,
+   "RNF": 2099.7,
+   "RPF": 2246.0
+  },
+  "Saltgate": {
+   "R0": 6528.0,
+   "R0b": 53.2,
+   "R1": 2886.0,
+   "R2": 2912.3,
+   "R2a": 2908.9,
+   "R2plan": 2912.3,
+   "RLF": 3017.5,
+   "RNF": 3191.9,
+   "RPF": 2928.6
+  }
  },
- "events_by_season": {
-  "2024": 18,
-  "2025": 19,
-  "2026": 19
+ "runner_up": "Saltgate",
+ "runner_up_saving": 2900,
+ "same_train": {
+  "Ambrey Parkway": 1593.9,
+  "Brathwick Road": 1659.4,
+  "Holcroft Green": 406.6,
+  "Ostley Lane": 404.1,
+  "Pellingham": 1898.5,
+  "Saltgate": 2886.0
  },
- "battery_pooled_kw": 2.8056
+ "same_train_r100": {
+  "Ambrey Parkway": 1600,
+  "Brathwick Road": 1700,
+  "Holcroft Green": 400,
+  "Ostley Lane": 400,
+  "Pellingham": 1900,
+  "Saltgate": 2900
+ },
+ "stations": {
+  "Ambrey Parkway": 1627.2,
+  "Brathwick Road": 1669.6,
+  "Holcroft Green": 414.8,
+  "Ostley Lane": 406.7,
+  "Pellingham": 4107.8,
+  "Saltgate": 2912.3
+ },
+ "stations_r100": {
+  "Ambrey Parkway": 1600,
+  "Brathwick Road": 1700,
+  "Holcroft Green": 400,
+  "Ostley Lane": 400,
+  "Pellingham": 4100,
+  "Saltgate": 2900
+ },
+ "team_share": 0.6,
+ "weekdays": 60
 }

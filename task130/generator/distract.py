@@ -36,8 +36,11 @@ def write_good_catch(S, target):
                              "Closed" if rng.random() < 0.9 else "Open"])
             d += dt.timedelta(days=1)
     rows.sort()
-    for n, r in enumerate(rows, 1):
-        r.insert(0, "GC-%05d" % (n * 3 + 1000))
+    num = 1000
+    for r in rows:
+        # the safety app numbers good catches, hazard reports and observations in one series
+        num += int(rng.integers(1, 6))
+        r.insert(0, "GC-%05d" % num)
     with open(os.path.join(target, P.FILES["nearmiss"]), "w", newline="") as f:
         w = csv.writer(f, lineterminator="\r\n")
         w.writerow(["report_no", "report_date", "crew_code", "district", "category", "status"])

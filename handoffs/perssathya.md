@@ -9,7 +9,7 @@ task307 to task312, seeds OS09 to OS14) and task307 is at intake: the installers
 rejected on paper as task302's substitution driver in reverse. Two builds are in flight (task304, task307); task307's
 draw should also avoid taking economics x Opportunity Sizing if task304 is to keep that pairing.
 
-Updated 2026-10-25 (wave 6, Opportunity Sizing, task301 to task306: task305 and task306 SHIPPED; task301 PAUSED with architecture 1 spent at stage 4 and its re-root owed; task302 and task304 parked before a draw after call-only probes landed every mechanism tried, nothing registered for them; task303 not drawn. Before wave 6, the lane was fully shipped: wave 4 task243 to task248; wave 5 task250 SHIPPED 10-20, task251 and task252 SHIPPED 10-21, task249 SHIPPED 10-23 (architecture 6)). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-25 (wave 6, Opportunity Sizing, task301 to task306: task305 and task306 SHIPPED; task301 PAUSED with architecture 1 spent at stage 4 and its re-root owed; task302 and task304 parked before a draw after call-only probes landed every mechanism tried, nothing registered for them; task303 not drawn. Before wave 6, the lane was fully shipped: wave 4 task243 to task248; wave 5 task251 and task252 SHIPPED 10-21, task249 SHIPPED 10-23 (architecture 6)). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -41,21 +41,6 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   generator's world (fleet, weather geography, site wind, environs mix, clock-change exclusion) can be kept where the
   new draw uses it.
 
-**task306: SHIPPED 2026-10-24 (architecture 1), waiting on the portal.**
-- Voltwerk Accu Revisie B.V. (Tilburg) tools its 3,000 refurbishment slots for 2027 in lots of 50 across five EV
-  platforms, in proportion to each platform's 2027 pack failures outside the OEM warranty in the Netherlands. Golden
-  Mira city car 1,450, Volta hatch 900, Plover saloon 350, Kestrel SUV 250, Tern van 50 on 3,800 failures; the
-  register of 30 June 2026 alone files Mira 1,250, Volta 1,000, Plover 350, Kestrel 300, Tern 100 and 3,400. The
-  decisive step is the fleet of 2027: the Mira's used imports keep arriving, about 116 a month at 8.1 years and past
-  its five-year warranty, and fail inside the year.
-- Stage 4: both scored readers filed the register-only split (score_reader's one call hit is Plover's 350, shared
-  by that rung); round 1 took ask C through dock 2's zero rejects, so ask C now rides the intake export's grade of 1
-  July 2026 (a core the line scrapped reads AFGEKEURD; only its MES work order shows it passed intake), and round 2
-  kept 0 of 15 ask figures. Judge DETERMINISTIC APPROVE (Gate G analytical_non_defect, Gate H pass). target.zip
-  7aa71d60, pair ceiling 32.8.
-- Next: task301 (status.py next), parked before a draw; its probes were never committed, so it restarts from its
-  seed's header and Situation.
-
 **task252: SHIPPED 2026-10-21 (architecture 2), waiting on the portal.**
 - Architecture 2 (same world and pairing): each channel's offset now includes the ammonia its own sample line takes
   before the cell. Calderwood's and Holmedale's unchlorinated filtered lines carry a nitrifying film that each monthly
@@ -82,7 +67,6 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   (momentary interruptions no poll caught) and round 2 kept 0 of 24 each. Judge DETERMINISTIC APPROVE on both packs.
   target.zip 6283c112 (the judged 20f316fe with the standard's revision table wrapped, text unchanged).
 
-**task250: SHIPPED 2026-10-20** (run the 4.0 setting, 18 drift alerts a year within the plan's 28 visits).
 
 **task249: SHIPPED 2026-10-23 (architecture 6, target.zip 535886d8, at the author's choice); waiting on the portal.**
 - Architecture 6 (Psychology & Behavioral Science, psychometric measurement x DQ): the Institute of Healthcare Coding
