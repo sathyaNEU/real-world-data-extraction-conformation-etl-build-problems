@@ -1,45 +1,71 @@
 {
   "task": "task212",
   "status": "PAUSED",
-  "domain": "general-statistics-data-science/exploratory-data-analysis-distribution-assessment (Brujula Paqueteria outbound cage audits, Spain)",
+  "domain": "",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "check",
-  "updated": "2026-11-07",
-  "stump": "A competent analyst standardises each hub's audited damage on the parcels' own weight, size, packaging, service and sender, allows for the cartons sharing each cage and books the survey to Zaragoza, never reading each parcel's crush load from the weight scanned into its cage after it, which accounts for Zaragoza and leaves Ribarroja del Turia with the damage the survey can remove.",
-  "architecture": 1,
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-11-08",
+  "stump": "",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-11-07"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK, target.zip sha256 c782cfef (md5 91591957), 2026-11-07, the same eight REVIEW lines as round 1 (the changed CS-FIN 07 raises none), answered in DESIGN_NOTE ## Leak sweep",
-    "reader": "round 1 CLEAN (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4/reader/reader_report.md); round 2 pending, a document changed (CS-FIN 07): brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4_r2/reader/BRIEF.md"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.decision against task211 only), corpus at 63753fc (every batch4 card already present, none copied), 2026-11-07",
-    "nearest": "task181 v6 driver 0.06; surface promoted task213, task453, task277 on percentile (about 0.10), answered on the card; task164 now a neighbour only"
+    "heart": "",
+    "nearest": ""
   },
   "judge": {
-    "verdict": "round 1: NOT_DETERMINISTIC with SOLUTION_WRONG, labelled SEND_BACK; read against the gate table an ask-layer repair spending no architecture (Gate A the claims counts, Gate C the hours stood at the three safety-system hubs; the main call forced, F good, G method_or_model_selection analytical_non_defect, H domain pass, layers pass, decisive step analytical)",
-    "disposition": "round 1 findings fixed in one generator pass (SF17 the flat-rate grain filed in CS-FIN 07; SF18 the safety system on the controller's clock, TRIPs only, work-order minutes inside their spell); round 2 pending: one re-judge and one re-read, and the architecture is spent unless the re-judge returns DETERMINISTIC with APPROVE or a FIX_NOW confined to wording",
-    "report": "round 1 /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4/judge/verdict.md; round 2 brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4_r2/judge/BRIEF.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "seed_screen": "AD35's world screened at stage 1 on 2026-11-04 with clean-truth prototypes, 20 redraws each, and set aside: (1) the FY2027 severity-table regroup is rule application, a lower rung at most; (2) the severity-validation family is closed (validators or the benchmark reach any plain upcoding; task190 architecture 7 measured the two-provider and look-back members dead); (3) repeated diagnoses on same-hospital readmissions read against readmissions elsewhere: naive repeat count on the golden 11 to 19 of 20 across five parameter sets while the golden held 15 to 20, and the one set that pushed the naive counts wrong (20 and 19 of 20) dropped the golden to 1 to 8 of 20; (4) admission-day occupancy setting the admission threshold: the ladder formed on one seed but over 20 redraws truth split 10/8/2 and the golden named a large cell on benchmark noise 9 of 20; (5) forward behaviour (sentinel effect, code substitution) would need a filed practice; (6) probe and close-out extrapolation is spent (task482 lineage, task190 architecture 3). Measured detail in DESIGN_NOTE.md, Tried and rejected.",
-  "draw_screens": "2026-11-07, generator/screens.py on the final world (Basauri a second carton-first hub), 20 redraws (seeds 3000 to 3019): first look Zaragoza 20/20 (lead >= 1.09); careful readers each Zaragoza 20/20: (a) field cells 1.29, (b) constructing 1.47, position bands 1.16, top third 1.12, (c) per-record 1.27, (d) mechanism-naming 1.47, (d2) declared-kg load 1.58, 2.06, 1.49, (e) literal replay 1.29; golden family Ribarroja 20/20 in every member (log 1.37 and 1.20, refuted by the fit at 66+ deviance every redraw); the programme's lowest-BIC sentence picks a supported load form naming Ribarroja 20/20 (FIT_ONLY=1 screens.py); wrong-reason reader Dos Hermanas 20/20 (>= 1.34); truth Ribarroja 20/20.",
-  "resume": "stage 4 round 2: the parent runs the judge and the reader. Spawn both together in the background, each on its own byte-identical copy of target.zip (sha256 c782cfef, md5 91591957) and prompt.txt: the determinism judge (general-purpose, sonnet, medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4_r2/judge/BRIEF.md (derivation.md before graded_blocks.md, graded/ and round1_findings.md) and the leak reader (general-purpose, sonnet, medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4_r2/reader/BRIEF.md. This is the one re-judge and the one re-read: DETERMINISTIC with APPROVE, or a FIX_NOW confined to wording, goes to ship (every gate re-run on the final cut, ledger row, card current, SHIPPED (task212) with target.zip and golden/ force-added); anything else spends architecture 1 and re-roots at stage 1 in another world.",
+  "draw_screens_a2": "2026-11-08, stage 1 on batch4-task212-a2: corpus reads done (guard.py recent, coverage, mechanisms --objective anomaly-detection, one line per spent driver in DESIGN_NOTE ## Draw; slots on mechanism and setting nouns; the task202 screened-structure table; the resume lines of task194, task198, task181, task458). Four candidates in one world (a Medicaid plan's 2027 emergency-department navigator placed by practice, each low-acuity visit read against its member's urgent-care availability) screened on clean-truth harnesses (scratch t212/a2/proto/proto1.py to proto8.py) and set aside with measurements in ## Tried and rejected: U1 open or shut from the operator's log (the true practice is the raw leader whenever the golden separates it, or shut-share and catchment readers land it), U2 demand-triggered closures at equal shut shares (the alignment moves the decoy about 3 per cent; golden 2 of 4), U3 masking (passes every coded reader on four seeds but the counterfactual estimand nets the true practice to about zero and the only estimand that picks it hands over the step), U4 a walk-in queue against a stated cap (decoy leads raw 1 of 3, golden 2 of 3; the rebuilt acceptance share is again a linear aggregate). No card registered.",
+  "lineage_v1": {
+    "architecture": 1,
+    "world": "Brujula Paqueteria's six Spanish sortation hubs; general-statistics-data-science / exploratory-data-analysis-distribution-assessment; the pre-peak sorter survey to Ribarroja del Turia, about 800 damaged parcels a week, each audited parcel's crush load rebuilt from the cage build log against the weight scanner",
+    "fate": "spent at stage 4 round 3 on 2026-11-07, the judge's SEND_BACK on the weekly figure (task212/determinism_check_report_arch1.md)",
+    "round_1": "NOT_DETERMINISTIC with SOLUTION_WRONG, SEND_BACK read as an ask repair: an unfiled flat-rate claim grain (Gate A) and a drifting safety clock (Gate C); both fixed in the generator (SF17, SF18)",
+    "round_2": "DETERMINISTIC with FIX_NOW on target.zip sha256 c782cfef: a work-order timing fork (ENG-11 precedence) and 'the 60 kg step is the lowest BIC' not reproducing (BIC flat from about 40 to 100 kg); both fixed",
+    "round_3": "NOT_DETERMINISTIC, SEND_BACK: the weekly figure turned on the family the programme's lowest-BIC sentence ranges over, never listed; adding the cage's total weight gave about 37 per 10,000 and about 600 a week against 800; filing the family would name the load, so the fork was the stump",
+    "evidence": [
+      "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4/judge/verdict.md",
+      "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4_r2/judge/verdict.md",
+      "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4_r3/judge/verdict.md"
+    ],
+    "precut": {
+      "exit": 0,
+      "date": "2026-11-07"
+    },
+    "leak": {
+      "leak_py": "REVIEW, no LEAK, target.zip sha256 c782cfef (md5 91591957), 2026-11-07, the same eight REVIEW lines as round 1 (the changed CS-FIN 07 raises none), answered in DESIGN_NOTE ## Leak sweep",
+      "reader": "round 1 CLEAN (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4/reader/reader_report.md); round 2 pending, a document changed (CS-FIN 07): brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4_r2/reader/BRIEF.md"
+    },
+    "duplicate_check": {
+      "heart": "WARN (repeat.decision against task211 only), corpus at 63753fc (every batch4 card already present, none copied), 2026-11-07",
+      "nearest": "task181 v6 driver 0.06; surface promoted task213, task453, task277 on percentile (about 0.10), answered on the card; task164 now a neighbour only"
+    },
+    "draw_screens": "2026-11-07, generator/screens.py on the final world (Basauri a second carton-first hub), 20 redraws (seeds 3000 to 3019): first look Zaragoza 20/20 (lead >= 1.09); careful readers each Zaragoza 20/20: (a) field cells 1.29, (b) constructing 1.47, position bands 1.16, top third 1.12, (c) per-record 1.27, (d) mechanism-naming 1.47, (d2) declared-kg load 1.58, 2.06, 1.49, (e) literal replay 1.29; golden family Ribarroja 20/20 in every member (log 1.37 and 1.20, refuted by the fit at 66+ deviance every redraw); the programme's lowest-BIC sentence picks a supported load form naming Ribarroja 20/20 (FIT_ONLY=1 screens.py); wrong-reason reader Dos Hermanas 20/20 (>= 1.34); truth Ribarroja 20/20.",
+    "seed_screen": "AD35's world screened at stage 1 on 2026-11-04 with clean-truth prototypes, 20 redraws each, and set aside: (1) the FY2027 severity-table regroup is rule application, a lower rung at most; (2) the severity-validation family is closed (validators or the benchmark reach any plain upcoding; task190 architecture 7 measured the two-provider and look-back members dead); (3) repeated diagnoses on same-hospital readmissions read against readmissions elsewhere: naive repeat count on the golden 11 to 19 of 20 across five parameter sets while the golden held 15 to 20, and the one set that pushed the naive counts wrong (20 and 19 of 20) dropped the golden to 1 to 8 of 20; (4) admission-day occupancy setting the admission threshold: the ladder formed on one seed but over 20 redraws truth split 10/8/2 and the golden named a large cell on benchmark noise 9 of 20; (5) forward behaviour (sentinel effect, code substitution) would need a filed practice; (6) probe and close-out extrapolation is spent (task482 lineage, task190 architecture 3). Measured detail in DESIGN_NOTE.md, Tried and rejected.",
+    "fix_pass_r1": "2026-11-07 on target.zip sha256 c782cfef / md5 91591957: two byte-identical builds (27 of 27 outputs), checks.py 233/233 with --redraws the BIC redraw file (the main-call world unmoved, every main-call file byte-identical to 7f4cee14), verify.py 68/68, figures_check 45/45, precut 61 checks 0 FAIL 0 WARN, voice-check PASS, leak.py REVIEW no LEAK, heart WARN, surface three pairs answered; ceiling.py (digest 8e3dda16f1beaea0): cracker 6/24, deep cracker 12/24, full includers A, B and C 6/24 each, no repair 0/24; pairs 42.2 one on and one off, 49.1 deep cracker on and one off, 58.8 two crackers on, 72.5 two deep crackers on; mirror 25 per cent",
+    "freeze": {
+      "snapshot": "freeze.py snapshot task212 before the first edit (on the 7f4cee14 rebuild), 2026-11-07",
+      "rubric": "freeze.py check task212 --mode rubric: PASS, the main call, the stump and every frozen figure unchanged; ask file moved hub_damage_q3_2026.xlsx, ask figures moved 2",
+      "determinism": "freeze.py check task212 --mode determinism --allow hours_ZAZ,hours_VLC: exit 1 on its unconditional 'Deliverable Answers for hub_damage_q3_2026.xlsx moved' line (--allow reaches figures.json keys only); without --allow it also lists hours_ZAZ 32.2 to 32.0 and hours_VLC 39.5 to 39.4, both accepted with their reason in DESIGN_NOTE ## Tried and rejected"
+    }
+  },
+  "resume": "stage 1, architecture 2, draw in another world. Read DESIGN_NOTE.md first (## Draw for the corpus reads and the structural lesson, ## Tried and rejected for the four urgent-care deaths U1 to U4) and do not reopen the urgent-care world: an exposure that is the state of a shared resource at each record's moment is absorbed linearly by any aggregate of that state. Before any harness, merge claude/jolly-hypatia-06c61h into the branch, copy sibling batch4 cards untracked for the guard run (batch4-task214-a2 is re-rooting and keeps clear of the domain task212 registers), rerun guard.py recent and coverage, and draw in a least-spent anomaly-detection cell outside the barred client domains (general statistics, epidemiology, banking, pharmacology, human factors, education). Look for a decisive exposure built from other records' attributes in an order relation, non-linear in its response, where the decoy and the true unit share every aggregate of its ingredients; screen it with the brief's six go/no-go screens over 20 redraws, then personas from guard.py names --geo <geo> --seed 212, check, register, check again, commit DRAWN (task212) with this spend record, and message main the hash and the draw in ten lines naming the domain.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": "",
-  "freeze": {
-    "snapshot": "freeze.py snapshot task212 before the first edit (on the 7f4cee14 rebuild), 2026-11-07",
-    "rubric": "freeze.py check task212 --mode rubric: PASS, the main call, the stump and every frozen figure unchanged; ask file moved hub_damage_q3_2026.xlsx, ask figures moved 2",
-    "determinism": "freeze.py check task212 --mode determinism --allow hours_ZAZ,hours_VLC: exit 1 on its unconditional 'Deliverable Answers for hub_damage_q3_2026.xlsx moved' line (--allow reaches figures.json keys only); without --allow it also lists hours_ZAZ 32.2 to 32.0 and hours_VLC 39.5 to 39.4, both accepted with their reason in DESIGN_NOTE ## Tried and rejected"
-  },
-  "fix_pass_r1": "2026-11-07 on target.zip sha256 c782cfef / md5 91591957: two byte-identical builds (27 of 27 outputs), checks.py 233/233 with --redraws the BIC redraw file (the main-call world unmoved, every main-call file byte-identical to 7f4cee14), verify.py 68/68, figures_check 45/45, precut 61 checks 0 FAIL 0 WARN, voice-check PASS, leak.py REVIEW no LEAK, heart WARN, surface three pairs answered; ceiling.py (digest 8e3dda16f1beaea0): cracker 6/24, deep cracker 12/24, full includers A, B and C 6/24 each, no repair 0/24; pairs 42.2 one on and one off, 49.1 deep cracker on and one off, 58.8 two crackers on, 72.5 two deep crackers on; mirror 25 per cent"
+  "portal_status_date": ""
 }
