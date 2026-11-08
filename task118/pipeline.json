@@ -1,30 +1,31 @@
 {
  "task": "task118",
- "status": "PAUSED",
- "domain": "energy-systems-utilities / generation-capacity-planning (client energy-systems-utilities)",
+ "status": "DESIGN",
+ "domain": "urban-regional-science / optimization (client urban-regional-science)",
  "objective": "opportunity-sizing-decision",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-07",
- "stump": "each programme's 18:00 reduction read on the record's fourth consecutive event days, the design peak hour being the fourth weekday OP-7 calls (default: Cool Credit about 11 MW on the average or weather-matched reduction; golden: Home Battery Network about 6 MW)",
- "architecture": 5,
+ "stump": "each shortlisted station's dispatch team valued at the passenger lateness it takes off the network's weekday trains, the late inbound Ambrey line units carrying Pellingham's overruns into their full outbound airport workings across a minute of turnround slack (default: Saltgate about 7,000 passenger-minutes a weekday on the same-train replay; golden: Pellingham about 9,000)",
+ "architecture": 6,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-31"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW on target.zip 1b48e1a3, every line ruled in the design note's Leak sweep",
-  "reader": "read 2 on 90561f0e after OP-7 section 6: no leak, question 6 analytical; the workbooks' save history fixed on 1b48e1a3"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS (2026-10-31, after the pull at 34adde5e)",
-  "surface": "exit 0; promoted task120, task119, task462 for adjudication (see the card's notes)"
+  "heart": "",
+  "surface": "",
+  "nearest": "task307 at 0.07 (guard.py check on the registered card, 2026-11-08T01:45Z)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report_pass10.md (pass 9 FIX_NOW: the ready thermostat and the commercial meters filed in OP-7 section 6)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -78,12 +79,12 @@
    "commit": ""
   }
  ],
- "resume": "Draw architecture 6 (no card registered). The 2026-11-07 search ran under two ban windows: first task165, task127 and task268 (strategies binding_constraint, causal_design, population_selection; forcing budget_or_appropriation; roles capacity_planner, portfolio_manager, other; patterns G7, E, G9), then task482, task268 and task306 (strategies composition_mix, population_selection, forecast_method_backtest; org hospital_or_health_provider; shapes 14 and other; forums committee_or_panel, executive_team, board_of_directors; forcing launch_or_rollout, budget_or_appropriation, purchase_order_or_contract; roles programme_officer, other, field_unit_lead; patterns G13, G9, G5; calibration pilot_log). Measured dead: theatre list packing (task301's probes replayed every list first), reinstatement defects (the closing sentence names the step), ED-originated pressure ulcers (the 72-hour convention lands the golden on harness_pu.py and short windows fork the grid); about fifteen more died on paper (the note's Tried and rejected). Next: the author decides between a sixth architecture and retirement; a sixth draw starts from guard.py recent and the open families (binding_constraint, causal_design, decomposition_attribution, maturity_censoring, grain_or_unit, other, classification_error, informative_censoring) in OS client domains this slot has not used (healthcare-delivery under a non-hospital org, urban-regional, actuarial, survey, quantitative finance), and kills a candidate only on a mechanical test (the seven readability tests, the anatomy, a cheap-route count on clean truth), never on a guess about the portal's models.",
+ "resume": "stage 2 (architecture 6, drawn 2026-11-07): readability screen, semantic fork table, ladder with the clean-truth numbers, closure table, literal reader, oracles and ask sheet; then the generator (world, running replay, pack, goldens, checks.py with every fork asserted, verify, ceiling) to precut.py exit 0",
  "approved": null,
  "delivered": null,
  "portal": "FAILED_TO_STUMP 2026-11-07 (architecture 5): both responses filed the golden, Home Battery Network 6 MW, runner-up Peak Time Rewards 4 MW",
  "portal_status": "FAILED_TO_STUMP",
  "portal_status_date": "2026-11-07",
  "source_note": "",
- "zip_sha256_16": "64af0836b0feec37"
+ "zip_sha256_16": ""
 }
