@@ -45,8 +45,8 @@
     "pilot outcomes recorded at review and again at six months, a later row superseding an earlier one",
     "patients identified by the board's linked pseudonym, with a small share of letters carrying only a hospital number resolved through a lookup"
   ],
-  "stakeholder_role": "the federation's medicines optimisation lead, who puts the 2027 medicines safety programme to the federation's medicines optimisation committee",
-  "role_family": "programme_officer",
+  "stakeholder_role": "the federation's lead clinical pharmacist, who runs the pharmacist team across the member practices and puts the 2027 review to the federation's board",
+  "role_family": "field_unit_lead",
   "scoring_unit": "per covered member",
   "spine": {
     "file": "practice_prescribing_issues_2025-2026.csv",
@@ -55,8 +55,8 @@
     "grain": "prescription issue",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "launch_or_rollout",
+  "forum": "board_of_directors",
+  "forcing_event": "purchase_order_or_contract",
   "org_family": "hospital_or_health_provider",
   "world": {
     "geography": "England (West Midlands)",

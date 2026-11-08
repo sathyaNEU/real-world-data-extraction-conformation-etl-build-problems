@@ -20,9 +20,9 @@ conditions of 2026-11-07 bind the design and are argued in `## Author's conditio
    piloted all three candidate reviews in the Clun Valley Primary Care Network's practices (rural, far from the
    specialist services) and followed each reviewed patient for six months. Specialist letters reach the practices
    from Wrekinside Teaching Hospitals NHS Trust and Marches Mental Health NHS Trust. People from `guard.py names --geo
-   "United Kingdom" --seed 306`: Leigh Bond (the federation's medicines optimisation lead, who puts the programme to
-   the committee), Colin French (lead clinical pharmacist, ran the pilot), Sylvia McDonald (chair of the medicines
-   optimisation committee).
+   "United Kingdom" --seed 306`: Colin French (the federation's lead clinical pharmacist, who ran the pilot, runs the
+   team across the practices and puts the 2027 review to the board), Leigh Bond (the federation's clinical director,
+   who chairs the board), Sylvia McDonald (the board's medicines optimisation pharmacist, who manages the contract).
 4. Candidates: (A) antipsychotics in people with dementia; (B) long-term benzodiazepines and Z-drugs in people aged
    65 and over; (C) gabapentinoids taken with an opioid.
 5. Quantity: for each review, the serious harms a year it would avoid if run across every member practice in 2027,
@@ -44,9 +44,13 @@ conditions of 2026-11-07 bind the design and are argued in `## Author's conditio
    nothing varies in intensity: the measured success rate depends on a provenance, who started the medicine, which
    the pilot's population nearly all shared and the federation's antipsychotic users mostly do not. The card carries
    differentiation lines against task258, task309, task124, task141, task303, task137, task128, task304 and task98.
-10. Furniture: forum committee_or_panel (the federation's medicines optimisation committee), forcing launch_or_rollout
-   (the 2027-28 programme starts in April 2027), org hospital_or_health_provider (a GP federation providing the
-   pharmacist service), role programme_officer. Redrawn at the draw: forum executive_team, forcing
+10. Furniture: forum board_of_directors (the federation's board approves its 2027 programme), forcing
+   purchase_order_or_contract (the integrated care board's 2027-28 medicines safety contract names the review in its
+   schedule), org hospital_or_health_provider (a GP federation providing the pharmacist service), role field_unit_lead
+   (the lead pharmacist runs the team across the practices). Redrawn after registration: task482's architecture 17
+   registered minutes before this card with committee_or_panel, launch_or_rollout and programme_officer, so those three
+   were redrawn to the board, the contract and the team lead, each the honester description of who decides, what
+   forces it and who asks, not merely the passing one. Redrawn at the draw: forum executive_team, forcing
    budget_or_appropriation and the stump strategy composition_mix each repeated a build in the primary checkout's
    window (task204, task142), and decomposition_attribution repeated task185 there. Two strategy keys describe this
    design honestly, composition_mix (the pooled rate does not fit this pool's mix on a property no column names) and
@@ -55,7 +59,7 @@ conditions of 2026-11-07 bind the design and are argued in `## Author's conditio
    design note's step is exactly F6's: the take-off rate is stationary only within the provenance rebuilt from the
    letters. No back-test picks it (condition 2 below).
 11. Prompt shell: a how-much question (the harm each review would avoid), the second sentence opening on the paper
-   for the committee, the rounding sentence opening "Patients"; deliverables pdf and csv. None repeats a shell in this
+   for the board, the rounding sentence opening "Patients"; deliverables pdf and csv. None repeats a shell in this
    slot's lineage. Guard on main: PASS. Guard from the primary checkout: WARN repeat.gate_g (forecasting against
    task142), answered: the forecast here is a take-off carried across provenance, task142's is a population
    projection.
