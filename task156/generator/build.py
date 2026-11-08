@@ -21,6 +21,8 @@ import world as W         # noqa: E402
 
 TASK = os.path.dirname(HERE)
 EDGE = 0.012     # every graded energy figure at least this far (MWh) from its rounding edge
+SEP_WH = 160000  # the tests' energy and the gaps' energy at least this far apart at every hub, so they never cancel,
+#                  and the tests alone carry every hub's figure across a rounding step
 
 
 def clean_asks(H, charges):
@@ -28,7 +30,7 @@ def clean_asks(H, charges):
     n = {h: 0 for h in hubs}
     e = {h: 0 for h in hubs}
     for c in charges:
-        if c["model"] != "HX150" or c["failed"] or c["m1"] <= c["m0"]:
+        if c["model"] != "HX150" or c["failed"] or c["auth"] == "test" or c["m1"] <= c["m0"]:
             continue
         if A.WIN_A <= c["start"] < A.WIN_B:
             n[c["hub"]] += 1
@@ -41,17 +43,35 @@ def edge_dist(wh):
     return 0.05 - abs(v - round(v, 1))
 
 
+def device_wh(H, charges):
+    """Per hub, January to October 2026: the energy the load bank tests put on the registers, and the energy left
+    between a dropped record's closing register and its resumption's opening one."""
+    hubs = [h["code"] for h in H["hubs"]]
+    test = {h: 0 for h in hubs}
+    gap = {h: 0 for h in hubs}
+    for c in charges:
+        if c["model"] != "HX150" or c["failed"] or not (A.WIN_A <= c["start"] < A.WIN_B):
+            continue
+        if c["auth"] == "test":
+            test[c["hub"]] += c["m1"] - c["m0"]
+        for i in range(1, len(c["recs"])):
+            gap[c["hub"]] += max(0, c["recs"][i]["m0"] - c["recs"][i - 1]["m1"])
+    return test, gap
+
+
 def charges_clear(H):
     salt = {}
-    for _ in range(12):
+    for _ in range(16):
         ch = W.charges_2026(H, salt=salt)
         n, e = clean_asks(H, ch)
-        bad = [h for h in e if edge_dist(e[h]) < EDGE]
+        test, gap = device_wh(H, ch)
+        bad = [h for h in e if edge_dist(e[h]) < EDGE or abs(test[h] - gap[h]) < SEP_WH or n[h] % 100 == 0
+               or round((e[h] + test[h]) / 1e6, 1) == round(e[h] / 1e6, 1) or edge_dist(e[h] + test[h]) < EDGE / 2]
         if not bad:
             return ch, salt
         for h in bad:
             salt[h] = salt.get(h, 0) + 1
-    raise SystemExit("energy figures not clear of their rounding edges: %s" % bad)
+    raise SystemExit("energy figures not clear of their rounding edges or their devices cancel: %s" % bad)
 
 
 def write_golden_csv(path, H, sides, n, e):
@@ -75,14 +95,14 @@ def write_letter(path, H, gold_set, F):
     for c in sorted(prog, key=lambda c: names[c]):
         rows.append([c, names[c], "RC50 removed under the programme; the HX150 units will run months between power-ups",
                      "Planned restart of each HX150 within 60 days of its last power-up"])
-    story = [P("Ardvane Charge DAC", PK.H1),
-             P("Network Operations, Unit 4 Lissane Business Park, Mullingar, Co. Westmeath", SMALL),
+    story = [P("Ardvane Charge DAC", PK.LEAF_H),
+             P("Network Operations, Unit 4 Lissane Business Park, Mullingar, Co. Westmeath  |  Registered in Ireland, no. 641127", SMALL),
              Spacer(1, 6),
              P("6 November 2026<br/>Our ref: ARV/NP/2026/114", BODY),
-             P("Bronagh Allis<br/>Concession Manager<br/>North Midlands Charging Partnership", BODY),
+             P("Ailis Fee<br/>Concession Manager<br/>North Midlands Charging Partnership", BODY),
              Spacer(1, 4),
              P("<b>Availability Plan for the 2027 Contract Year (Schedule 4, paragraph 4.6)</b>", BODY),
-             P("Dear Bronagh,", BODY),
+             P("Dear Ailis,", BODY),
              P("Please find our Availability Plan for 2027 and the Schedule 6 return attached (hub_availability_2027.csv). On the "
                "asset base the Asset Renewal Programme 2027 sets, we forecast that a high-power charge point will fall below the 99 "
                "per cent standard at the %d hubs below, and the Plan lists them under paragraph 4.6." % len(gold_set), BODY),
@@ -108,7 +128,8 @@ def write_letter(path, H, gold_set, F):
              P("Sorcha Jackman<br/>Network Performance Lead, Ardvane Charge DAC", BODY)]
     officepdf.build(path, story, "Availability Plan 2027", "Sorcha Jackman", "Availability Plan for the 2027 Contract Year",
                     "Ardvane Charge DAC, Availability Plan 2027", dt.datetime(2026, 11, 6, 15, 12, 40, tzinfo=dt.timezone.utc),
-                    dt.datetime(2026, 11, 6, 15, 31, 9, tzinfo=dt.timezone.utc), producer="LibreOffice 24.8")
+                    dt.datetime(2026, 11, 6, 15, 31, 9, tzinfo=dt.timezone.utc), producer="LibreOffice 24.8", font="Carlito",
+                    body_pt=10, page_of=True)
 
 
 def metadata(info):

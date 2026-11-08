@@ -61,28 +61,23 @@ def from_truth(H, charges=None):
         ev = H["plans"][h["code"]]
         R["visits"][h["code"]] = [(e["ws"], e["we"]) for e in ev if e["kind"] == "visit"]
         R["dso"][h["code"]] = [(e["s"], e["e"]) for e in ev if e["kind"] == "dso"]
-        R["visits27"][h["code"]] = [(W.from_local(d.year, d.month, d.day, 8, 30), W.from_local(d.year, d.month, d.day, 14, 30))
-                                    for d in W.plan_2027(h)]
+        R["visits27"][h["code"]] = [(W.from_local(d.year, d.month, d.day, *W.visit_window(h, d)[:2]),
+                                     W.from_local(d.year, d.month, d.day, *W.visit_window(h, d)[2:])) for d in W.plan_2027(h)]
         if h["prog"]:
             R["programme"][h["code"]] = dict(works=W.works_time(h["code"]), new_unit=h["kind"] in W.NEW_UNIT_KINDS)
-        rc = [u for u in H["units"] if u["hub"] == h["code"] and u["model"] == "RC50"][0]
-        for e in ev:
-            if e["kind"] in ("service", "repair", "other"):
-                R["wo"].append(dict(hub=h["code"], key=rc["new_id"], kind="rc_" + e["kind"],
-                                    logged=e.get("fault", e["arrive"]), arrive=e["arrive"], done=e["e"]))
     for u in H["units"]:
         run = H["runs"][u["uid"]]
         R["units"][u["new_id"]] = dict(hub=u["hub"], model=u["model"], start=run["start"])
         R["rows"][u["new_id"]] = rows_from_intervals(run["iv"], run["start"])
-        for t, restart, by, arrive in run["hangs"]:
-            R["wo"].append(dict(hub=u["hub"], key=u["new_id"], kind="hang", logged=t, arrive=arrive if by == "technician" else None,
-                                done=restart if by == "technician" else None))
-        for t, arrive, done in run["faults"]:
-            R["wo"].append(dict(hub=u["hub"], key=u["new_id"], kind="fault", logged=t, arrive=arrive, done=done))
+    umap = {u["uid"]: u for u in H["units"]}
+    for j in H["jobs"]:
+        R["wo"].append(dict(hub=j["hub"], key=umap[j["uid"]]["new_id"] if j["uid"] else None,
+                            kind={"rc_other": "rc_repair"}.get(j["kind"], j["kind"]), logged=j["logged"], arrive=j["arrive"],
+                            done=j["done"], full=j.get("full", True)))
     if charges is not None:
         n = {}
         for c in charges:
-            if c["model"] == "HX150" and not c["failed"]:
+            if c["model"] == "HX150" and not c["failed"] and c["auth"] != "test":
                 n[c["uid"]] = n.get(c["uid"], 0) + 1
         days = (W.HIST_END - W.S26_START) / float(DAY)
         for u in H["units"]:
@@ -137,10 +132,19 @@ def down_at(sp, starts, t):
     return i >= 0 and sp[i][1] > t and sp[i][2] in ("Offline", "Faulted")
 
 
-def classify(R, window=360):
+def comms_jobs(R):
+    out = {}
+    for w in R["wo"]:
+        if w["kind"] == "comms" and w["key"]:
+            out.setdefault(w["key"], []).append(w["logged"])
+    return out
+
+
+def classify(R, window=360, comms_as_hangs=False):
     """Per hub, the clusters of Offline rows in which every unit online at the time went Offline (a pillar power-down
     of the whole hub); per HX150, each Offline spell as pillar, repair, hang or comms, its power-ups and its hangs."""
     C = dict(clusters={}, units={})
+    cj = comms_jobs(R)
     for h in R["hubs"]:
         keys = hub_keys(R, h["code"])
         sp = {k: spells(R["rows"][k], R["end"]) for k in keys}
@@ -176,6 +180,8 @@ def classify(R, window=360):
                         kind = "repair"
                     elif pillar:
                         kind = "pillar"
+                    elif not comms_as_hangs and b - a >= 3 * 3600 and any(a - 900 <= x <= b for x in cj.get(k, [])):
+                        kind = "comms_repair"
                     elif b - a >= 3 * 3600 or (bisect.bisect_left(cl0, b) > bisect.bisect_right(cl0, a + 1800)):
                         kind = "hang"
                     else:
@@ -183,7 +189,7 @@ def classify(R, window=360):
                     kinds.append((a, b, kind))
                     if kind == "hang":
                         hangs.append((a - 750, b))
-                    if kind in ("pillar", "repair", "hang") and b < R["end"]:
+                    if kind in ("pillar", "repair", "hang", "comms_repair") and b < R["end"]:
                         ups.append(b)
                 prev = (a, b, st)
             C["units"][k] = dict(ups=sorted(ups), hangs=hangs, faults=faults, kinds=kinds)
@@ -288,14 +294,10 @@ def estimates(R, C):
     for h in R["hubs"]:
         code = h["code"]
         keys = hub_keys(R, code)
-        calls = []
-        for k in keys:
-            sp = spells(R["rows"][k], R["end"])
-            for i, (a, b, st) in enumerate(sp):
-                if st == "Faulted" and i + 1 < len(sp) and sp[i + 1][2] == "Offline" and abs(sp[i + 1][0] - b) <= 1:
-                    calls.append((b - a) / float(DAY))
+        calls = [(w["arrive"] - w["logged"]) / float(DAY) for w in R["wo"]
+                 if w["hub"] == code and w["arrive"] is not None and w["kind"] in ("fault", "comms", "hang", "rc_repair")]
         hangs = [(b - a) / float(DAY) for k in hx_keys(R, code) for a, b in C["units"][k]["hangs"]]
-        E["att"][code] = float(np.mean(calls + hangs)) if calls or hangs else 1.5
+        E["att"][code] = float(np.mean(calls)) if calls else 1.5
         E["hang_dt"][code] = float(np.mean(hangs)) if hangs else E["att"][code]
         nf, ty, reps = 0, 0.0, []
         for k in hx_keys(R, code):
@@ -342,6 +344,13 @@ def estimates(R, C):
                 if kd == "pillar" and any(abs(x - c0) <= 600 for c0 in other):
                     iso.append(y - x)
         E["other_pd"][code] = (len(other) / hy, float(np.mean(iso)) if iso else 0.0)
+    cf, cfd = 0, []
+    for k in hx_keys(R):
+        sp = [(x, y) for x, y, kd in C["units"][k]["kinds"] if kd == "comms_repair"]
+        cf += len(sp)
+        cfd += [(y - x) / float(DAY) for x, y in sp]
+    E["fleet_cf"] = cf / sum(yrs[k] for k in hx_keys(R))
+    E["cf_dt"] = float(np.mean(cfd)) if cfd else 0.0
     E["fleet_frate"] = sum(n for n, _ in all_f) / sum(t for _, t in all_f)
     E["fleet_rep"] = float(np.mean(all_rep))
     E["fleet_comms"] = (float(np.mean([r for r, _ in all_comms])), float(np.mean([d for _, d in all_comms])))
@@ -395,7 +404,7 @@ def pillar_downtime(R, C, k, a, b):
 
 
 def avail27(R, E, code, hang_rate, hang_dt, frate, rep, comms, iso_days):
-    down = hang_rate * hang_dt + frate * rep + comms[0] * comms[1] / float(DAY) + iso_days
+    down = hang_rate * hang_dt + frate * rep + comms[0] * comms[1] / float(DAY) + iso_days + E["fleet_cf"] * E["cf_dt"]
     return 1.0 - down / (365.0 - excl27_days(R, E, code))
 
 
@@ -434,17 +443,13 @@ def backtests(R, C, E):
         errs, sides = [], 0
         for k in keys:
             code = R["units"][k]["hub"]
-            ex_days = sum(1 for _ in [0])
             act = availability(R, k, a, b)
-            span = (b - a) / float(DAY)
-            exd = (1 - 0) * 0
             hdt = ur[k]["hdt"] or E["hang_dt"][code]
             down = ur[k]["h"] * hdt + ur[k]["f"] * E["rep"][code] + E["comms"][k][0] * E["comms"][k][1] / float(DAY) + \
-                pillar_downtime(R, C, k, 0, fit_b)
+                pillar_downtime(R, C, k, 0, fit_b) + E["fleet_cf"] * E["cf_dt"]
             pred = 1.0 - down / 365.0
             errs.append(abs(pred - act) * 100)
             sides += (pred < 0.99) == (act < 0.99)
-            del ex_days, span, exd
         out[label] = (float(np.mean(errs)), sides, len(keys))
     errs, sides = [], 0
     for k in keys:
@@ -454,7 +459,7 @@ def backtests(R, C, E):
         hr = sum(ur[m]["h"] * ur[m]["yrs"] for m in mates) / sum(ur[m]["yrs"] for m in mates)
         act = availability(R, k, R["units"][k]["start"], R["end"])
         down = hr * E["hang_dt"][code] + E["frate"][code] * E["rep"][code] + E["comms"][k][0] * E["comms"][k][1] / float(DAY) + \
-            pillar_downtime(R, C, k, 0, R["end"])
+            pillar_downtime(R, C, k, 0, R["end"]) + E["fleet_cf"] * E["cf_dt"]
         pred = 1.0 - down / 365.0
         errs.append(abs(pred - act) * 100)
         sides += (pred < 0.99) == (act < 0.99)
@@ -492,7 +497,7 @@ def x27(R, E, code, key, new, rows):
     mw, co, ru = site_flags(hi[code]["site"])
     hub_rows = [r for r in rows if r["hub"] == code]
     nhx = len([1 for c, k, n in units27(R) if c == code])
-    cpd = R["cpd"].get(key) if not new else float(np.mean([R["cpd"].get(k, 0.0) for k in hx_keys(R, code)]))
+    cpd = R["cpd"].get(key, 0.0) if not new else float(np.mean([R["cpd"].get(k, 0.0) for k in hx_keys(R, code)]))
     nrc = 0.0 if code in R["programme"] else float(np.mean([r["x"][8] for r in hub_rows]))
     comm = 5 if new else ((W.utc(R["units"][key]["start"]).year if R["units"][key]["start"] > 0 else 2022) - 2021)
     return [mw, co, ru, nhx, comm, cpd, float(len(R["visits27"][code])), E["dso_rate"][code], nrc]
@@ -569,14 +574,15 @@ def route_tree(R, C, E):
     return out, t
 
 
-def route_daily(R, C, E):
+def route_daily(R, C, E, only_full=False):
     """A daily model of the hangs on the RC50's work in the last 60 days and the days since its last job, beside the
     coast: each unit-day a row, collapsed to its cells, carried at the programme's no-RC50 values."""
     import statsmodels.api as sm
     hi = hubinfo(R)
     cells = {}
     for code in [h["code"] for h in R["hubs"]]:
-        jobs = sorted(w["logged"] for w in R["wo"] if w["hub"] == code and w["kind"].startswith("rc_"))
+        jobs = sorted((w["arrive"] or w["logged"]) for w in R["wo"] if w["hub"] == code and w["kind"].startswith("rc_")
+                      and (not only_full or (w["kind"] == "rc_service" and w.get("full", True))))
         co = site_flags(hi[code]["site"])[1]
         for k in hx_keys(R, code):
             hdays = set(int(t // DAY) for t, _ in C["units"][k]["hangs"])
@@ -735,7 +741,8 @@ def sim27(R, C, E, h, reps=200, seed=W.SEED, no_resets=False, unit_fault=False, 
                 cm = E["fleet_comms"] if new else E["comms"][k]
                 fr = (E["frate"][code] or E["fleet_frate"]) if (new or not unit_fault) else E["unit_frate"][k]
                 iv, _, _, _ = W.run_hx(rng, W.HIST_END, W.Y27_END, pds, t_up, E["att"][code], fr, tau_fn=tau_fn,
-                                      comms_rate=cm[0] / 365.0, comms_min=(max(16, int(cm[1] / 60 * 0.5)), max(17, int(cm[1] / 60 * 1.5))))
+                                      comms_rate=cm[0] / 365.0, comms_min=(max(16, int(cm[1] / 60 * 0.5)), max(17, int(cm[1] / 60 * 1.5))),
+                                      cfrate_yr=E["fleet_cf"])
                 acc[r, j] = W.schedule4(iv, ex, W.Y27_START, W.Y27_END)
         out[code] = list(np.median(acc, axis=0) if stat == "median" else acc.mean(axis=0))
     return out
@@ -747,16 +754,28 @@ def dp27(R, C, E, h, unit_fault=False):
     kmax = len(h) - 1
     att_j = 60
     out = {}
+    from scipy.stats import gamma as G
+    from scipy.integrate import quad
     for code, k, new in units27(R):
         att = E["att"][code]
-        j = np.arange(att_j) + 0.5
-        # the attendance as a gamma(3) release hazard by day hung
-        from scipy.stats import gamma as G
-        sf = G.sf(j, 3, scale=att / 3.0)
-        sf0 = G.sf(j - 1, 3, scale=att / 3.0)
-        rel = np.where(sf0 > 0, 1 - sf / np.maximum(sf0, 1e-12), 1.0)
+        # a hang's downtime: the callout (gamma(3) about the hub's attendance, three hours at least) and a restart of
+        # about a quarter of an hour; a hang falls at mid-day on average, so a hang of age a days at the start of a day
+        # has been down a - 0.5 days, and the day holds the part of its downtime between a - 0.5 and a + 0.5
+        lag = 15 * 60 / float(DAY)
+
+        def sf_t(t, att=att):
+            t = t - lag
+            return 1.0 if t < 0.125 else float(G.sf(t, 3, scale=att / 3.0))
+        a = np.arange(att_j) + 1.0
+        s_start = np.array([sf_t(x - 0.5) for x in a])
+        s_end = np.array([sf_t(x + 0.5) for x in a])
+        rel = np.where(s_start > 1e-12, 1 - s_end / np.maximum(s_start, 1e-12), 1.0)
+        day_dt = np.array([quad(sf_t, x - 0.5, x + 0.5, points=[0.125 + lag], limit=80)[0] for x in a])
+        day_dt = np.where(s_start > 1e-12, day_dt / np.maximum(s_start, 1e-12), 0.0)
+        rel0 = 1 - sf_t(0.5)
+        dt0 = quad(sf_t, 0.0, 0.5, points=[0.125 + lag], limit=80)[0]
         fr = (E["frate"][code] or E["fleet_frate"]) if (new or not unit_fault) else E["unit_frate"][k]
-        f = fr / 365.0
+        f = (fr + E["fleet_cf"]) / 365.0
         q = E["dso_rate"][code] / 365.0
         p = R["programme"].get(code)
         orate, odur = E["other_pd"][code]
@@ -787,16 +806,14 @@ def dp27(R, C, E, h, unit_fault=False):
             nh = (pu * h).sum()
             pu = pu * (1 - h)
             pu = np.concatenate([[0.0], pu[:-1]]) + np.concatenate([np.zeros(kmax), [pu[-1]]])
-            released = (ph * rel).sum()
-            ph = ph * (1 - rel)
-            ph = np.concatenate([[nh], ph[:-1]])
-            ph[-1] += 0.0
-            pu[0] += released
             if d >= y27:
-                hung += ph.sum()
+                hung += (ph * day_dt).sum() + nh * dt0
+            released = (ph * rel).sum() + nh * rel0
+            ph = np.concatenate([[nh * (1 - rel0)], (ph * (1 - rel))[:-1]])
+            pu[0] += released
         cm = E["fleet_comms"] if new else E["comms"][k]
         iso = 0.0 if (p or new) else (E["other_pd"][code][0] * E["other_pd"][code][1] / float(DAY))
-        down = hung + fr * E["rep"][code] + cm[0] * cm[1] / float(DAY) + iso
+        down = hung + fr * E["rep"][code] + cm[0] * cm[1] / float(DAY) + iso + E["fleet_cf"] * E["cf_dt"]
         out.setdefault(code, []).append(1.0 - down / (365.0 - excl27_days(R, E, code)))
     return out
 

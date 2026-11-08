@@ -118,9 +118,9 @@ def _table(doc, t):
     doc.add_paragraph().paragraph_format.space_after = Pt(0)
 
 
-def _page_field(par):
+def _page_field(par, field="PAGE"):
     r = par.add_run()
-    for kind, txt in (("begin", None), (None, "PAGE"), ("end", None)):
+    for kind, txt in (("begin", None), (None, field), ("end", None)):
         if kind:
             f = OxmlElement("w:fldChar")
             f.set(qn("w:fldCharType"), kind)
@@ -135,9 +135,11 @@ def _page_field(par):
 
 
 def build(path, story, title, author, subject, footer, created, modified, margin_mm=18, top_mm=17, bottom_mm=17,
-          producer=None):
+          producer=None, font="Liberation Sans", header=None, page_of=False, body_pt=9.2):
     """producer: the LibreOffice release the issuing office ran at the document's date (default: the one installed)."""
     """created and modified: aware datetimes, the document's in-fiction issue and last-saved times."""
+    global FONT
+    FONT = font
     doc = Document()
     sec = doc.sections[0]
     sec.page_width, sec.page_height = Mm(210), Mm(297)
@@ -145,7 +147,7 @@ def build(path, story, title, author, subject, footer, created, modified, margin
     sec.top_margin, sec.bottom_margin = Mm(top_mm), Mm(bottom_mm)
     normal = doc.styles["Normal"]
     normal.font.name = FONT
-    normal.font.size = Pt(9.2)
+    normal.font.size = Pt(body_pt)
     first = True
     for fl in story:
         if isinstance(fl, Paragraph):
@@ -159,12 +161,24 @@ def build(path, story, title, author, subject, footer, created, modified, margin
         elif isinstance(fl, PageBreak):
             doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
         first = False
+    if header:
+        hp = sec.header.paragraphs[0]
+        hr = hp.add_run(header)
+        hr.font.name = FONT
+        hr.font.size = Pt(7)
+        hr.font.color.rgb = RGBColor.from_string("555555")
     fp = sec.footer.paragraphs[0]
-    r = fp.add_run(footer + "\tPage ")
+    r = fp.add_run(footer + "     |     Page ")
     r.font.name = FONT
     r.font.size = Pt(7)
     r.font.color.rgb = RGBColor.from_string("555555")
     _page_field(fp)
+    if page_of:
+        r2 = fp.add_run(" of ")
+        r2.font.name = FONT
+        r2.font.size = Pt(7)
+        r2.font.color.rgb = RGBColor.from_string("555555")
+        _page_field(fp, "NUMPAGES")
     cp = doc.core_properties
     cp.title, cp.author, cp.subject = title, author, subject
     cp.last_modified_by = author

@@ -58,36 +58,36 @@ def hang_tau(E):
 # year, callout attendance (days, mean), ordinary faults a unit-year, HX150 charges a day, RC50 charges a day,
 # visit months
 HUBS = [
-    ("NM112", "Carrigvane Services", "Westmeath", "Motorway service area", "M", True, False, ["2021-05-18", "2021-05-18"], 0.6, 0.98, 0.42, 8.3, 2.1, (1, 3, 5, 7, 9, 11)),
-    ("NM127", "Lismoy Services", "Longford", "Motorway service area", "M", True, False, ["2021-08-24", "2022-03-09"], 0.5, 1.03, 0.38, 7.6, 1.9, (2, 4, 6, 8, 10, 12)),
-    ("NM104", "Ardcree Services", "Roscommon", "Motorway service area", "M", True, False, ["2021-03-02", "2021-03-02", "2022-11-15"], 0.7, 0.95, 0.44, 8.8, 2.3, (1, 3, 5, 7, 9, 11)),
-    ("NM141", "Knockvane Services", "Westmeath", "Motorway service area", "M", False, False, ["2021-10-12", "2021-10-12"], 0.5, 1.01, 0.4, 7.9, 2.0, (2, 4, 6, 8, 10, 12)),
-    ("NM133", "Drumtane Services", "Cavan", "Motorway service area", "M", False, False, ["2021-06-29", "2021-06-29", "2023-04-18"], 0.6, 0.97, 0.43, 8.1, 2.2, (1, 3, 5, 7, 9, 11)),
-    ("NM158", "Monaleen Services", "Longford", "Motorway service area", "M", False, False, ["2022-02-01", "2022-02-01"], 0.4, 1.04, 0.37, 7.2, 1.8, (2, 4, 6, 8, 10, 12)),
-    ("NM109", "Kilbeg Retail Park", "Westmeath", "Retail park", "P", True, False, ["2021-07-06"], 0.6, 2.55, 0.41, 5.6, 1.7, (3, 9)),
-    ("NM121", "Tullymore Market Square", "Cavan", "Town centre car park", "P", True, False, ["2021-09-14", "2022-06-21"], 0.7, 2.61, 0.39, 5.1, 1.6, (4, 10)),
-    ("NM117", "Clonlea Leisure Centre", "Roscommon", "Leisure centre", "P", True, False, ["2021-11-30", "2021-11-30"], 0.5, 2.52, 0.4, 4.7, 1.5, (3, 9)),
-    ("NM146", "Rathmoy Station Road", "Longford", "Railway station car park", "P", True, False, ["2022-04-26"], 0.8, 2.58, 0.43, 5.3, 1.8, (5, 11)),
-    ("NM103", "Glenfad Shopping Centre", "Sligo", "Shopping centre", "P", True, False, ["2021-04-13", "2022-09-06"], 0.6, 2.63, 0.38, 5.9, 1.9, (2, 8)),
-    ("NM138", "Ballinkeel Main Street", "Leitrim", "Town centre car park", "P", True, False, ["2022-01-18", "2022-01-18"], 0.7, 2.56, 0.42, 4.4, 1.4, (4, 10)),
-    ("NM150", "Derrylane Park and Ride", "Cavan", "Park and ride", "P", True, False, ["2022-07-12"], 0.6, 2.53, 0.4, 4.9, 1.6, (5, 11)),
-    ("NM125", "Annagh Cross", "Roscommon", "Rural crossroads", "R", True, False, ["2022-05-10", "2022-05-10"], 6.3, 1.06, 0.41, 3.1, 1.2, (3, 9)),
-    ("NM162", "Cloonfin Crossroads", "Longford", "Rural crossroads", "R", True, False, ["2021-12-07", "2021-12-07", "2023-02-21"], 6.9, 1.02, 0.39, 2.9, 1.1, (4, 10)),
-    ("NM119", "Bunacurry Pier", "Mayo", "Harbour", "C", False, True, ["2022-03-22", "2022-03-22"], 1.1, 2.12, 1.18, 3.4, 1.3, (5, 11)),
-    ("NM144", "Rossnabeg Harbour", "Donegal", "Harbour", "C", False, True, ["2021-06-08", "2022-10-04"], 0.9, 2.08, 1.24, 3.7, 1.4, (3, 9)),
-    ("NM131", "Portavaddy Seafront", "Sligo", "Seafront car park", "C", False, True, ["2021-08-03", "2021-08-03", "2022-12-13"], 1.0, 2.1, 1.21, 3.9, 1.5, (4, 10)),
-    ("NM155", "Carrowkeel Business Park", "Sligo", "Business park", "S", False, True, ["2022-08-30", "2022-08-30"], 0.6, 2.16, 0.41, 4.1, 1.5, (2, 8)),
-    ("NM166", "Tobernalt Road", "Leitrim", "Town centre car park", "S", False, True, ["2022-10-25", "2023-03-14"], 0.7, 2.14, 0.4, 3.8, 1.4, (5, 11)),
-    ("NM106", "Ballyroe Town Park", "Mayo", "Town park", "O", False, False, ["2021-05-25", "2021-05-25"], 0.6, 1.42, 0.4, 4.6, 1.6, (3, 9)),
-    ("NM129", "Corrabeg Business Park", "Cavan", "Business park", "O", False, False, ["2022-02-15"], 0.5, 1.31, 0.41, 4.2, 1.5, (4, 10)),
-    ("NM114", "Dromkeen Square", "Leitrim", "Town centre car park", "O", False, False, ["2021-10-05", "2022-08-16"], 0.7, 1.55, 0.39, 4.0, 1.4, (2, 8)),
-    ("NM137", "Eskerbrook Shopping Centre", "Westmeath", "Shopping centre", "O", False, False, ["2021-03-16", "2021-03-16", "2022-05-24"], 0.4, 1.24, 0.42, 6.2, 2.0, (5, 11)),
-    ("NM148", "Gortnaclay Leisure Park", "Roscommon", "Leisure centre", "O", False, False, ["2022-06-07"], 0.6, 1.47, 0.38, 4.4, 1.5, (3, 9)),
-    ("NM122", "Kilmeedy Church Street", "Longford", "Town centre car park", "O", False, False, ["2021-12-14", "2021-12-14"], 0.8, 1.36, 0.4, 3.9, 1.3, (4, 10)),
-    ("NM152", "Lisduff Retail Park", "Westmeath", "Retail park", "O", False, False, ["2022-03-01", "2023-05-09"], 0.5, 1.28, 0.43, 5.4, 1.8, (2, 8)),
-    ("NM135", "Moyvalley Station", "Westmeath", "Railway station car park", "O", False, False, ["2022-09-20"], 0.6, 1.51, 0.41, 4.3, 1.4, (5, 11)),
-    ("NM118", "Shanbally Community Centre", "Sligo", "Community centre", "O", False, False, ["2021-07-27", "2021-07-27"], 0.7, 1.44, 0.39, 3.6, 1.2, (3, 9)),
-    ("NM160", "Templederry Green", "Mayo", "Village green", "O", False, False, ["2022-11-08"], 0.5, 1.39, 0.4, 3.3, 1.1, (4, 10)),
+    ("NM112", "Carrigvane Services", "Westmeath", "Motorway service area", "M", True, False, ["2021-05-18", "2021-05-18"], 0.6, 1.78, 0.26, 8.3, 2.1, (1, 3, 5, 7, 9, 11)),
+    ("NM127", "Lismoy Services", "Longford", "Motorway service area", "M", True, False, ["2021-08-24", "2022-03-09"], 0.5, 1.84, 0.24, 7.6, 1.9, (2, 4, 6, 8, 10, 12)),
+    ("NM104", "Ardcree Services", "Roscommon", "Motorway service area", "M", True, False, ["2021-03-02", "2021-03-02", "2022-11-15"], 0.7, 1.74, 0.27, 8.8, 2.3, (1, 3, 5, 7, 9, 11)),
+    ("NM141", "Knockvane Services", "Westmeath", "Motorway service area", "M", False, False, ["2021-10-12", "2021-10-12"], 0.5, 1.81, 0.25, 7.9, 2.0, (2, 4, 6, 8, 10, 12)),
+    ("NM133", "Drumtane Services", "Cavan", "Motorway service area", "M", False, False, ["2021-06-29", "2021-06-29", "2023-04-18"], 0.6, 1.76, 0.26, 8.1, 2.2, (1, 3, 5, 7, 9, 11)),
+    ("NM158", "Monaleen Services", "Longford", "Motorway service area", "M", False, False, ["2022-02-01", "2022-02-01"], 0.4, 1.86, 0.23, 7.2, 1.8, (2, 4, 6, 8, 10, 12)),
+    ("NM109", "Kilbeg Retail Park", "Westmeath", "Retail park", "P", True, False, ["2021-07-06"], 0.6, 2.04, 0.26, 5.6, 1.7, (3, 9)),
+    ("NM121", "Tullymore Market Square", "Cavan", "Town centre car park", "P", True, False, ["2021-09-14", "2022-06-21"], 0.7, 2.11, 0.24, 5.1, 1.6, (4, 10)),
+    ("NM117", "Clonlea Leisure Centre", "Roscommon", "Leisure centre", "P", True, False, ["2021-11-30", "2021-11-30"], 0.5, 2.0, 0.25, 4.7, 1.5, (3, 9)),
+    ("NM146", "Rathmoy Station Road", "Longford", "Railway station car park", "P", True, False, ["2022-04-26"], 0.8, 2.07, 0.27, 5.3, 1.8, (5, 11)),
+    ("NM103", "Glenfad Shopping Centre", "Sligo", "Shopping centre", "P", True, False, ["2021-04-13", "2022-09-06"], 0.6, 2.13, 0.24, 5.9, 1.9, (2, 8)),
+    ("NM138", "Ballinkeel Main Street", "Leitrim", "Town centre car park", "P", True, False, ["2022-01-18", "2022-01-18"], 0.7, 2.03, 0.26, 4.4, 1.4, (4, 10)),
+    ("NM150", "Derrylane Park and Ride", "Cavan", "Park and ride", "P", True, False, ["2022-07-12"], 0.6, 2.01, 0.25, 4.9, 1.6, (5, 11)),
+    ("NM125", "Annagh Cross", "Roscommon", "Rural crossroads", "R", True, False, ["2022-05-10", "2022-05-10"], 9.3, 1.58, 0.22, 3.1, 1.2, (3, 9)),
+    ("NM162", "Cloonfin Crossroads", "Longford", "Rural crossroads", "R", True, False, ["2021-12-07", "2021-12-07", "2023-02-21"], 9.8, 1.63, 0.21, 2.9, 1.1, (4, 10)),
+    ("NM119", "Bunacurry Pier", "Mayo", "Harbour", "C", False, True, ["2021-04-20", "2021-04-20"], 1.1, 2.12, 1.18, 5.2, 1.3, (5, 11)),
+    ("NM144", "Rossnabeg Harbour", "Donegal", "Harbour", "C", False, True, ["2021-06-08", "2021-09-14"], 0.9, 2.08, 1.24, 4.9, 1.4, (3, 9)),
+    ("NM131", "Portavaddy Seafront", "Sligo", "Seafront car park", "C", False, True, ["2021-03-23", "2021-03-23", "2021-11-09"], 1.0, 2.1, 1.21, 5.6, 1.5, (4, 10)),
+    ("NM155", "Carrowkeel Business Park", "Sligo", "Business park", "S", False, True, ["2021-05-11", "2021-05-11"], 0.6, 2.16, 0.26, 4.8, 1.5, (2, 8)),
+    ("NM166", "Tobernalt Road", "Leitrim", "Town centre car park", "S", False, True, ["2021-07-13", "2021-10-19"], 0.7, 2.14, 0.25, 5.1, 1.4, (5, 11)),
+    ("NM106", "Ballyroe Town Park", "Mayo", "Town park", "O", False, False, ["2021-05-25", "2021-05-25"], 0.6, 1.82, 0.25, 4.6, 1.6, (3, 9)),
+    ("NM129", "Corrabeg Business Park", "Cavan", "Business park", "O", False, False, ["2022-02-15"], 0.5, 1.71, 0.26, 4.2, 1.5, (4, 10)),
+    ("NM114", "Dromkeen Square", "Leitrim", "Town centre car park", "O", False, False, ["2021-10-05", "2022-08-16"], 0.7, 1.88, 0.24, 4.0, 1.4, (2, 8)),
+    ("NM137", "Eskerbrook Shopping Centre", "Westmeath", "Shopping centre", "O", False, False, ["2021-03-16", "2021-03-16", "2022-05-24"], 0.4, 1.69, 0.26, 6.2, 2.0, (5, 11)),
+    ("NM148", "Gortnaclay Leisure Park", "Roscommon", "Leisure centre", "O", False, False, ["2022-06-07"], 0.6, 1.79, 0.23, 4.4, 1.5, (3, 9)),
+    ("NM122", "Kilmeedy Church Street", "Longford", "Town centre car park", "O", False, False, ["2021-12-14", "2021-12-14"], 0.8, 1.74, 0.25, 3.9, 1.3, (4, 10)),
+    ("NM152", "Lisduff Retail Park", "Westmeath", "Retail park", "O", False, False, ["2022-03-01", "2023-05-09"], 0.5, 1.68, 0.27, 5.4, 1.8, (2, 8)),
+    ("NM135", "Moyvalley Station", "Westmeath", "Railway station car park", "O", False, False, ["2022-09-20"], 0.6, 1.86, 0.25, 4.3, 1.4, (5, 11)),
+    ("NM118", "Shanbally Community Centre", "Sligo", "Community centre", "O", False, False, ["2021-07-27", "2021-07-27"], 0.7, 1.77, 0.24, 3.6, 1.2, (3, 9)),
+    ("NM160", "Templederry Green", "Mayo", "Village green", "O", False, False, ["2022-11-08"], 0.5, 1.83, 0.25, 3.3, 1.1, (4, 10)),
 ]
 NEW_UNIT_KINDS = ("M", "P")          # the programme puts a new HX150 at its motorway and standard hubs
 WORKS = {  # the programme's works at each hub (Irish dates): RC50 out, new unit in, the pillar isolated for both
@@ -154,13 +154,33 @@ def visit_dates(h, year, rng):
     return out
 
 
-def visit_event(d, rng, notified=None):
-    ws = from_local(d.year, d.month, d.day, 8, 30)
-    we = from_local(d.year, d.month, d.day, 14, 30)
+def visit_window(h, d):
+    """The notified window as each contractor plans it: Lissane to March 2024, then Corran, whose windows moved
+    with each year's plan; motorway sites early, rural spurs late, town centres before the shops open."""
+    kind, site = h["kind"], h["site"]
+    if d.year == 2023:
+        w = {"M": (7, 0, 13, 0), "R": (9, 30, 15, 30)}.get(kind, (8, 30, 14, 30))
+    elif d.year == 2024:
+        w = {"M": (6, 30, 12, 0), "R": (10, 0, 16, 0)}.get(kind, (9, 0, 15, 0))
+    elif d.year == 2025:
+        w = {"M": (6, 30, 12, 30), "R": (10, 0, 16, 0), "C": (10, 0, 16, 0)}.get(kind, (8, 0, 14, 0))
+    else:
+        w = {"M": (6, 0, 12, 0), "R": (9, 30, 15, 30)}.get(kind, (7, 0, 13, 0) if site == "Town centre car park" else (8, 0, 14, 0))
+    return w
+
+
+def visit_event(d, rng, notified=None, h=None):
+    w = visit_window(h, d) if h is not None else (8, 30, 14, 30)
+    ws = from_local(d.year, d.month, d.day, w[0], w[1])
+    we = from_local(d.year, d.month, d.day, w[2], w[3])
     arrive = ws + int(rng.integers(15, 75)) * 60
     s = arrive + int(rng.integers(12, 35)) * 60
+    planned = from_local(d.year, d.month, d.day, 9, 0) - int(rng.integers(6, 31)) * DAY + int(rng.integers(-60, 480)) * 60
     return dict(kind="visit", s=s, e=s + int(rng.integers(55, 150)) * 60, arrive=arrive, ws=ws, we=we, date=d,
-                notified=notified)
+                notified=notified, logged=planned)
+
+
+OUTAGES = {}
 
 
 def plan_hub(h, rng, start, end, years=(2023, 2024, 2025, 2026)):
@@ -170,7 +190,7 @@ def plan_hub(h, rng, start, end, years=(2023, 2024, 2025, 2026)):
     ev = []
     for y in years:
         for d in visit_dates(h, y, rng):
-            e = visit_event(d, rng, notified=d - dt.timedelta(days=int(rng.integers(14, 40))))
+            e = visit_event(d, rng, notified=d - dt.timedelta(days=int(rng.integers(14, 40))), h=h)
             if start <= e["ws"] < end:
                 ev.append(e)
     t = start
@@ -200,9 +220,11 @@ def plan_hub(h, rng, start, end, years=(2023, 2024, 2025, 2026)):
         s = from_local(d.year, d.month, d.day, 10, 0) + int(rng.integers(0, 270)) * 60
         if s >= end:
             break
-        if s >= start and rng.random() > 0.03:
-            ev.append(dict(kind="service", s=s, e=s + int(rng.integers(25, 46)) * 60,
-                           arrive=s - int(rng.integers(5, 20)) * 60))
+        if s >= start and rng.random() > 0.04:
+            full = rng.random() > 0.22    # about one month in five the technician only inspects the RC50 from outside
+            ev.append(dict(kind="service", s=s, e=s + (int(rng.integers(25, 46)) if full else int(rng.integers(12, 25))) * 60, full=full,
+                           arrive=s - int(rng.integers(5, 20)) * 60,
+                           logged=from_local(d.year, d.month, d.day, 9, 0) - int(rng.integers(3, 21)) * DAY + int(rng.integers(-60, 480)) * 60))
         m += 1
         if m == 13:
             y, m = y + 1, 1
@@ -217,8 +239,23 @@ def plan_hub(h, rng, start, end, years=(2023, 2024, 2025, 2026)):
             dur = int(rng.integers(40, 71)) * 60 if kind == "repair" else int(rng.integers(30, 95)) * 60
             s = arrive + int(rng.integers(5, 15)) * 60
             ev.append(dict(kind=kind, fault=t, s=s, e=s + dur, arrive=arrive))
+    out = OUTAGES.get(h["code"])
+    if out:
+        d0 = dt.date.fromisoformat(out[0])
+        t0 = from_local(d0.year, d0.month, d0.day, 7, 0) + int(rng.integers(0, 600)) * 60
+        t1 = t0 + out[1] * DAY
+        if start <= t0 < end:
+            ev = [e for e in ev if not (e["kind"] in ("service", "repair", "other") and t0 - 2 * DAY <= e["s"] <= t1 + DAY)]
+            s1 = from_local(*W_date(t1), 10, 0) + int(rng.integers(0, 240)) * 60
+            ev.append(dict(kind="repair", fault=t0, arrive=t0 + int(rng.integers(5, 30)) * 3600, s=s1,
+                           e=s1 + int(rng.integers(45, 80)) * 60, outage=True))
     ev.sort(key=lambda e: (e["s"], e["kind"]))
     return ev
+
+
+def W_date(t):
+    d = local(t)
+    return d.year, d.month, d.day
 
 
 def powerdowns_for(h, ev, model):
@@ -228,18 +265,19 @@ def powerdowns_for(h, ev, model):
     for e in ev:
         if e["kind"] in ("visit", "dso", "works"):
             out.append((e["s"], e["e"], e["kind"]))
-        elif e["kind"] in ("service", "repair"):
+        elif e["kind"] == "repair" or (e["kind"] == "service" and e.get("full", True)):
             if model == "RC50" or not h["own"]:
                 out.append((e["s"], e["e"], e["kind"]))
     return sorted(out)
 
 
 # ------------------------------------------------------------------------------------------------ the HX150 engine
-def run_hx(rng, start, end, pds, t_up, att_days, frate_yr, tau_fn=hang_tau, comms_rate=0.04, comms_min=(16, 61)):
+def run_hx(rng, start, end, pds, t_up, att_days, frate_yr, tau_fn=hang_tau, comms_rate=0.04, comms_min=(16, 61), cfrate_yr=0.10):
     """One HX150 from start to end under the pillar power-downs pds [(s, e, kind)]. Returns its non-Available
     intervals [(a, b, status, cause)] with the back office's lag applied, its power-ups, its hangs
     [(t, restart, by, arrive)] and its faults [(t, arrive, done)]."""
     frate = frate_yr / 365.0 / DAY
+    cfrate = cfrate_yr / 365.0 / DAY
     iv, ups, hangs, faults = [], [], [], []
     t = max(start, t_up)
     k = 0
@@ -250,7 +288,8 @@ def run_hx(rng, start, end, pds, t_up, att_days, frate_yr, tau_fn=hang_tau, comm
             k += 1
         pd = pds[k] if k < len(pds) else (end + 400 * DAY, end + 400 * DAY, "end")
         t_fault = t + int(rng.exponential(1.0 / frate)) if frate > 0 else end + 400 * DAY
-        nxt = min(pd[0], t_fault, t_hang)
+        t_cf = t + int(rng.exponential(1.0 / cfrate)) if cfrate > 0 else end + 400 * DAY
+        nxt = min(pd[0], t_fault, t_hang, t_cf)
         if nxt >= end:
             break
         lag = 600 + int(rng.integers(0, HB))
@@ -272,13 +311,19 @@ def run_hx(rng, start, end, pds, t_up, att_days, frate_yr, tau_fn=hang_tau, comm
             iv.append((t_hang + lag, restart + boot, "Offline", "hang"))
             hangs.append((t_hang, restart, by, arrive))
             t_up = restart
+        elif nxt == t_cf:
+            arrive = t_cf + max(3 * 3600, int(rng.gamma(3.0, att_days * DAY / 3.0)))
+            done = arrive + int(rng.integers(20, 61)) * 60
+            iv.append((t_cf + lag, done + boot, "Offline", "comms_fault"))
+            faults.append((t_cf, arrive, done, "comms"))
+            t_up = done
         else:
             arrive = t_fault + max(2 * 3600, int(rng.gamma(3.0, att_days * DAY / 3.0)))
             iso = arrive + int(rng.integers(3, 12)) * 60
             done = iso + int(rng.integers(30, 151)) * 60
             iv.append((t_fault, iso + lag, "Faulted", "fault"))
             iv.append((iso + lag, done + boot, "Offline", "repair"))
-            faults.append((t_fault, arrive, done))
+            faults.append((t_fault, arrive, done, "fault"))
             t_up = done
         ups.append(t_up)
         t = t_up + boot
@@ -309,6 +354,8 @@ def run_rc(rng, start, end, ev):
             if e["kind"] == "visit":
                 iv.append((e["s"] - int(rng.integers(5, 21)) * 60, e["s"] + lag, "Unavailable", "visit"))
             iv.append((e["s"] + lag, e["e"] + int(rng.integers(150, 361)), "Offline", e["kind"]))
+        elif e["kind"] == "service" and not e.get("full", True):
+            iv.append((e["arrive"], e["e"], "Unavailable", "inspection"))
         elif e["kind"] == "service":
             iv.append((e["arrive"], e["s"] + lag, "Unavailable", "service"))
             iv.append((e["s"] + lag, e["e"] + int(rng.integers(300, 900)), "Offline", "service"))
@@ -355,7 +402,9 @@ def history(seed=SEED):
             else:
                 iv = run_rc(ur, start, HIST_END, [e for e in ev if e["s"] >= start])
                 runs[u["uid"]] = dict(start=start, iv=iv, ups=[], hangs=[], faults=[])
-    return dict(hubs=hubs, units=units, plans=plans, runs=runs, seed=seed)
+    H = dict(hubs=hubs, units=units, plans=plans, runs=runs, seed=seed)
+    H["jobs"], H["cards"] = jobs(H, seed)
+    return H
 
 
 # ------------------------------------------------------------------------------------------------------ 2027 truth
@@ -369,7 +418,7 @@ def year27_events(h, rng, plan27):
     service and repairs where it stays, and at a programme hub the works that take it out."""
     ev = [e for e in plan_hub(h, rng, HIST_END, Y27_END, years=(2026,))]
     for d in plan27:
-        ev.append(visit_event(d, rng))
+        ev.append(visit_event(d, rng, h=h))
     if h["prog"]:
         s = works_time(h["code"])
         ev = [e for e in ev if not (e["kind"] in ("service", "repair", "other") and e["s"] > s - 3 * DAY)]
@@ -443,6 +492,89 @@ def truth_2027(H, reps=300, seed=SEED):
     return res
 
 
+# ------------------------------------------------------------------------------------------------------- the jobs
+TEST_WH = (30000, 40000)     # a load bank test's energy on one connector (a quarter of an hour at about 140 kW)
+DROPS_A_DAY = 3.0            # the back office loses an HX150 for over five minutes this often
+DROP_MIN = (6, 15)           # and for this many minutes (under the three missed heartbeats that write Offline)
+TECH_A = ["LE%02d" % k for k in range(1, 10)]
+TECH_B = ["CT%02d" % k for k in range(11, 25)]
+
+
+def jobs(H, seed=SEED):
+    """Every contractor job with its logged, attended and completed minute as the technician enters them, and the
+    load bank tests a technician runs on each HX150 connector after a planned visit or a repair (none after a power
+    cycle). Each test card belongs to one technician."""
+    rng = np.random.default_rng([seed, 4242])
+    cards = {t: "%08X" % int(x) for t, x in zip(TECH_A + TECH_B, rng.integers(0x10000000, 0xFFFFFFFF, len(TECH_A + TECH_B)))}
+    out = []
+    umap = {u["uid"]: u for u in H["units"]}
+
+    def tech(t):
+        pool = TECH_A if t < CONTRACT_B else TECH_B
+        return pool[int(rng.integers(0, len(pool)))]
+
+    def tests(uids, t0, tk):
+        lst, cur = [], t0
+        for uid in uids:
+            for con in (1, 2):
+                cur += int(rng.integers(60, 181))
+                wh = int(rng.uniform(*TEST_WH))
+                dur = int(wh / rng.uniform(138000, 148000) * 3600)
+                lst.append(dict(uid=uid, connector=con, start=cur, stop=cur + dur, wh=wh, token=cards[tk]))
+                cur += dur
+        return lst, cur
+
+    for h in H["hubs"]:
+        hx = [u["uid"] for u in H["units"] if u["hub"] == h["code"] and u["model"] == "HX150"]
+        rc = [u for u in H["units"] if u["hub"] == h["code"] and u["model"] == "RC50"][0]
+        for e in H["plans"][h["code"]]:
+            if e["kind"] == "visit":
+                tk = tech(e["arrive"])
+                live = [x for x in hx if commissioned_t(umap[x]) < e["s"]]
+                lst, cur = tests(live, e["e"] + int(rng.integers(360, 600)), tk)
+                out.append(dict(kind="visit", hub=h["code"], uid=None, logged=e["logged"], arrive=e["arrive"],
+                                done=cur + int(rng.integers(8, 26)) * 60, tech=tk, tests=lst))
+            elif e["kind"] == "service":
+                out.append(dict(kind="rc_service", hub=h["code"], uid=rc["uid"], logged=e["logged"], arrive=e["arrive"],
+                                done=e["e"] + int(rng.integers(5, 16)) * 60, tech=tech(e["arrive"]), tests=[], full=e.get("full", True)))
+            elif e["kind"] in ("repair", "other"):
+                out.append(dict(kind="rc_" + e["kind"], hub=h["code"], uid=rc["uid"], logged=e["fault"] + int(rng.integers(8, 41)) * 60,
+                                arrive=e["arrive"], done=e["e"] + int(rng.integers(3, 12)) * 60, tech=tech(e["arrive"]), tests=[],
+                                outage=bool(e.get("outage"))))
+    for uid, run in sorted(H["runs"].items()):
+        u = umap[uid]
+        if u["model"] != "HX150":
+            continue
+        for t, restart, by, arrive in run["hangs"]:
+            if by == "technician":
+                out.append(dict(kind="hang", hub=u["hub"], uid=uid, logged=t + 600 + int(rng.integers(8, 41)) * 60, arrive=arrive,
+                                done=restart + int(rng.integers(2, 9)) * 60, tech=tech(arrive), tests=[]))
+            else:
+                out.append(dict(kind="hang", hub=u["hub"], uid=uid, logged=t + 600 + int(rng.integers(8, 41)) * 60, arrive=None,
+                                done=restart + int(rng.integers(10, 90)) * 60, tech=tech(t), tests=[]))
+        for t, arrive, done, kind in run["faults"]:
+            tk = tech(arrive)
+            lst, cur = tests([uid], done + int(rng.integers(360, 540)), tk)
+            out.append(dict(kind=kind, hub=u["hub"], uid=uid, logged=t + (600 if kind == "comms" else 0) + int(rng.integers(8, 41)) * 60,
+                            arrive=arrive, done=cur + int(rng.integers(4, 13)) * 60, tech=tk, tests=lst))
+    for j in out:
+        j["arrive"] = j["arrive"] - j["arrive"] % 60 if j["arrive"] is not None else None
+        j["done"] = j["done"] - j["done"] % 60 + 60
+        j["logged"] = j["logged"] - j["logged"] % 60
+    out.sort(key=lambda j: (j["logged"], j["hub"], j["uid"] or ""))
+    return out, cards
+
+
+def blocks(J):
+    """Each HX150's attendance windows: a site visit covers every unit at the hub, a repair or power cycle its unit."""
+    out = {}
+    for j in J:
+        if j["arrive"] is None or j["kind"].startswith("rc_"):
+            continue
+        out.setdefault((j["hub"], j["uid"]), []).append((j["arrive"], j["done"]))
+    return out
+
+
 # ------------------------------------------------------------------------------------------------ 2026 charges
 def charges_2026(H, seed=SEED, salt=None):
     """Every charge begun at every unit from 1 January to 31 October 2026, as connections, each with the records
@@ -456,13 +588,19 @@ def charges_2026(H, seed=SEED, salt=None):
     prof = np.array([0.15, 0.1, 0.08, 0.08, 0.1, 0.2, 0.45, 0.8, 1.0, 1.05, 1.1, 1.15, 1.2, 1.15, 1.1, 1.15, 1.25,
                      1.35, 1.3, 1.1, 0.85, 0.6, 0.4, 0.25])
     prof = prof / prof.mean()
+    BL = blocks(H["jobs"])
     for h in H["hubs"]:
         for u in [u for u in H["units"] if u["hub"] == h["code"]]:
             rng = np.random.default_rng([seed, h["i"], 26, u["bay"], (salt or {}).get(h["code"], 0)])
             hx = u["model"] == "HX150"
             rate = (h["hx_charges"] if hx else h["rc_charges"]) / DAY
-            down = sorted((a, b) for a, b, st, cause in H["runs"][u["uid"]]["iv"]
-                          if cause != "comms" and b > S26_START - DAY and a < HIST_END)
+            down = sorted([(a, b) for a, b, st, cause in H["runs"][u["uid"]]["iv"]
+                           if cause != "comms" and b > S26_START - DAY and a < HIST_END] +
+                          ([(a, b) for a, b in BL.get((h["code"], None), []) + BL.get((h["code"], u["uid"]), [])
+                            if b > S26_START - DAY and a < HIST_END] if hx else []))
+            tq = sorted((x["start"], x["connector"], x) for j in H["jobs"] for x in j["tests"]
+                        if x["uid"] == u["uid"] and S26_START <= x["start"] and x["stop"] < HIST_END) if hx else []
+            ti = 0
             age_years = (S26_START - commissioned_t(u)) / (365.0 * DAY) if commissioned_t(u) > 0 else \
                 (dt.date(2026, 1, 1) - dt.date.fromisoformat(u["commissioned"])).days / 365.0
             reg = [int(rng.uniform(0.8, 1.2) * age_years * (h["hx_charges"] if hx else h["rc_charges"]) * 0.5 * 365 *
@@ -472,10 +610,10 @@ def charges_2026(H, seed=SEED, salt=None):
             if hx:
                 tt = S26_START
                 while True:
-                    tt += int(rng.exponential(DAY / 2.5))
+                    tt += int(rng.exponential(DAY / DROPS_A_DAY))
                     if tt >= HIST_END:
                         break
-                    drops.append((tt, tt + int(rng.integers(6 * 60, 18 * 60))))
+                    drops.append((tt, tt + int(rng.integers(DROP_MIN[0] * 60, DROP_MIN[1] * 60))))
             di = 0
             t = S26_START
             pmax = prof.max()
@@ -483,6 +621,15 @@ def charges_2026(H, seed=SEED, salt=None):
                 t += int(rng.exponential(1.0 / (rate * pmax)))
                 if t >= HIST_END - 3 * 3600:
                     break
+                while ti < len(tq) and tq[ti][0] < t:
+                    x = tq[ti][2]
+                    c0 = x["connector"] - 1
+                    out.append(dict(uid=u["uid"], hub=h["code"], model=u["model"], connector=x["connector"], start=x["start"],
+                                    stop=x["stop"], m0=reg[c0], m1=reg[c0] + x["wh"], auth="test", failed=False,
+                                    recs=[dict(start=x["start"], stop=x["stop"], m0=reg[c0], m1=reg[c0] + x["wh"], token=x["token"])]))
+                    reg[c0] += x["wh"]
+                    busy[c0] = max(busy[c0], x["stop"] + 120)
+                    ti += 1
                 if rng.random() > prof[local(t).hour] / pmax:
                     continue
                 if any(a <= t < b for a, b in down):

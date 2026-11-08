@@ -9,7 +9,8 @@ Rows: the cracker lands the call and runs the hygiene battery on the export (one
 failed starts out, records with one token on one connector less than half an hour apart merged, the energy column
 summed). The mirror files the rate route's set and handles the asks the same way, since they carry nothing from the
 call. The full includer also joins every record that opens above the last one's closing register and takes energy
-from the registers (a stress row); the register-advance row takes each unit's register advance for energy."""
+from the registers (a stress row); the register-advance row takes each unit's register advance for energy; the careful
+row joins both kinds of split record exactly as the golden does and leaves only the load bank tests in."""
 import os
 import sys
 
@@ -24,7 +25,9 @@ def main(target, quiet=False):
     cn, ce = A.cracker(target)
     fn, fe = A.full_includer(target)
     rn, re_ = A.register_advance(target)
+    kn, ke = A.careful(target)
     crack = A.kept(cn, gn) + A.kept(ce, ge)
+    care = A.kept(kn, gn) + A.kept(ke, ge)
     full = A.kept(fn, gn) + A.kept(fe, ge)
     radv = A.kept(rn, gn) + A.kept(re_, ge)
     lc = crack / float(n)
@@ -37,6 +40,9 @@ def main(target, quiet=False):
         print("full includer (register merge, register energy; stress row): keeps %d of %d (charges %d, energy %d), response %.1f"
               % (full, n, A.kept(fn, gn), A.kept(fe, ge), 38 + 7 + 55 * full / float(n)))
         print("register advance (each unit's register advance for energy; stress row): keeps %d of %d" % (radv, n))
+        print("careful register-joined analyst (both splits joined as the golden joins them, the load bank tests left in; "
+              "stress row): keeps %d of %d (charges %d, energy %d), response %.1f" % (care, n, A.kept(kn, gn), A.kept(ke, ge),
+                                                                              38 + 7 + 55 * care / float(n)))
         print("pair ceiling %.1f; mirror leakage %.1f per cent of the ask weight" % ((c + s) / 2, 100 * lc))
     return {"cracker": c, "mirror": s, "pair": (c + s) / 2, "leak": 100 * lc, "crack": crack, "full": full, "n": n}
 

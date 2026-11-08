@@ -1,6 +1,6 @@
 {
   "task": "task156",
-  "architecture": "v4 (re-root after architecture 3's portal FAILED_TO_STUMP: an Irish regional rapid-charging operator naming, for its concession's 2027 review, the hubs whose high-power charge points will fall below 99 per cent availability once the partnership's programme removes the legacy 50 kW units at some hubs; the high-power units' controller hangs run on the days since the hub was last powered down, which the legacy units' repairs at the isolator kept short)",
+  "architecture": "v4 (re-root after architecture 3's portal FAILED_TO_STUMP: an Irish regional rapid-charging operator naming, for its concession's 2027 review, the hubs whose high-power charge points will fall below 99 per cent availability once the partnership's programme removes the legacy 50 kW units at some hubs; the high-power units' controller hangs run on the days since the hub was last powered down, which the legacy unit's monthly cabinet service, isolating the supply pillar it shares with them, kept short)",
   "drawn": "2026-11-08",
   "slot_note": "re-root of task156 in the same objective (Forecasting); architectures 1, 2 and 3 in lineage, each spent on the portal",
   "domain": "energy-systems-utilities",
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who maps the re-keyed charge point IDs, converts the UTC status history and the local-time work orders, applies the concession's exclusions and reads the programme fits each high-power charge point's controller-hang rate with its model, age, usage and hub, validates it leaving each unit out and on 2025 and 2026 back-tests, carries it into 2027 with the legacy units removed and files only the hubs whose high-power units already ran below 99 per cent; the hangs follow the days since the hub was last powered down, which the legacy units' isolator repairs kept short, so at the hubs the programme strips the high-power units hang several times as often and most of those hubs fall below the standard.",
+  "analyst_test": "A strong analyst who maps the re-keyed charge point IDs, converts the UTC status history and the local-time work orders, applies the concession's exclusions and reads the programme fits each high-power charge point's controller-hang and fault rates with every covariate the pack holds (hub type, coast, unit count, commissioning year, charges a day, visits, interruptions, the legacy unit's work orders), validates them leaving each unit out and on 2025 and 2026 back-tests, carries them into 2027 with the legacy units removed and files only the five hubs whose high-power units already hang; the hangs come only after about 75 days without a power-up, which the legacy unit's monthly cabinet service, isolating the pillar it shares with them, never let happen, so at the seven standard hubs the programme strips the high-power units will hang two or three times a year and fall below the standard.",
   "domain_test": "The deciding quantity is each high-power charge point's 2027 availability, forecast the way asset condition and maintenance analysis forecasts it, from each failure mode's hazard on the clock that drives it and the maintenance and repair regime the year will run under; with another field's nouns there is no failure mode a power cycle clears and no repair that powers a whole hub down, so the forecast stops reading.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:hang-hazard-on-the-hub-power-down-clock-carried-through-a-changed-repair-regime",
@@ -50,7 +50,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "connector_status_history_2023-2026.csv",
-    "rows": 27342,
+    "rows": 26067,
     "entity": "one row is one status change a charge point reported to the operator's back office, or that the back office wrote when the charge point's heartbeats stopped",
     "grain": "charge point x status change",
     "source": "constructed for task156, no real dataset"
@@ -69,8 +69,9 @@
     ],
     "people": [
       "Sorcha Jackman",
-      "Bronagh Allis",
-      "Ailis Fee"
+      "Ailis Fee",
+      "Darcy McGlinchey",
+      "Domhnall Linehan"
     ]
   },
   "deliverables": [
@@ -78,9 +79,9 @@
     "availability_plan_2027.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "where",
   "driver": "Each unit's failures run on a clock that its site's other units' repairs reset, so its recorded failure rate is a property of how often those neighbours were repaired, and a forward plan that removes the failing neighbours stops the resets and multiplies the survivors' failures, which every route carried on each unit's own record misses while it validates on the years the resets ran.",
-  "driver_concrete": "A high-power charge point's controller hangs only after about 75 days without a power-up, and the legacy 50 kW unit's monthly cabinet service isolates the supply pillar it shares with the high-power units at most hubs, so through 2023 to 2026 only the units on a pillar of their own ever hung; the partnership's programme removes the legacy units at some hubs in December 2026, after which those hubs are powered down only for planned visits and supply faults and, where visits are twice a year, their high-power units hang three or four times a year.",
+  "driver_concrete": "A high-power charge point's controller hangs only after about 75 days without a power-up, and the legacy 50 kW unit's monthly cabinet service isolates the supply pillar it shares with the high-power units at most hubs, so through 2023 to 2026 the units on a pillar of their own carried 95 of the record's 105 hangs; the partnership's programme removes the legacy units at some hubs in December 2026, after which those hubs are powered down only for planned visits and supply faults and, where visits are twice a year, their high-power units hang two or three times a year, as often as the units on a pillar of their own already do.",
   "stump": "Carrying each high-power charge point's controller-hang and fault rates from 2023 to 2026, validated leaving each unit out and on two back-tests, files only the five hubs whose units already hang; the step that lands it there is reading each unit's hang rate as its own, when a hang comes only after about 75 days without a power-up and the legacy unit's monthly cabinet service powers down every unit on its pillar, so at the seven standard hubs the programme strips the high-power units will run months between power-ups and the set is twelve.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -88,7 +89,13 @@
     "task162": "task162 replays a valve's action against recorded inlet pressure that a distant user's draw lowers; here no device acts on a recorded variable: a unit's failure clock is reset by the repairs made to other units at its hub, and the forward plan removes those units and so the resets.",
     "task229": "task229 corrects a convex daily conversion for the intra-day swings an upstream controller imposes; here no conversion or measurement is biased: each unit's hang rate is a property of how often its hub was powered down for its neighbours' repairs, which the 2027 programme ends at some hubs.",
     "task105": "task105's new outlet misses a class of commitment agreed a season ahead of its start; here no class or agreement timing enters: an existing unit fails more because the repairs to its neighbours that used to power it down stop.",
-    "task170": "task170 forecasts moves at the first scheduled measurement over a level from each unit's own path and the record's scatter; here no measurement or threshold on a unit's own path decides: the hang hazard runs on the time since the hub's last power-down, which other units' repairs set."
+    "task170": "task170 forecasts moves at the first scheduled measurement over a level from each unit's own path and the record's scatter; here no measurement or threshold on a unit's own path decides: the hang hazard runs on the time since the hub's last power-down, which other units' repairs set.",
+    "task157": "task157 carries lateness from one bus route into another's departures through the drivers who change routes at a shared interchange; here no person or task links the units: a unit's failure clock is reset by the power-downs its site's legacy unit's servicing causes, and the forward plan removes that servicing.",
+    "task465": "task465 counts units carrying two traits no source records together by fusing surveys; here nothing is fused or counted: each unit's failure rate depends on how often its site was powered down, which the 2027 programme changes.",
+    "task488": "task488 times a substance's arrival at each outlet of a branched network by each conduit's own draws; here nothing travels: each unit's failures follow the days since its site's last power-down, which the legacy unit's monthly service set.",
+    "task265": "task265 corrects a cumulative revision share for a registry that began after many implants (left truncation); here the record holds every unit from its start, and the step is the clock the hang hazard runs on and the power-down regime the forward year keeps.",
+    "task136": "task136 reads a scheduled programme's enrolments against sites not yet reached to strip pull-forward from a forecast; here no intervention enrols units: removing a legacy unit removes the power-downs that kept its neighbours from failing.",
+    "task483": "task483 rebuilds medians from percentiles at a coarser grain to decide a designation; here no statistic is rebuilt from summaries: each unit's failure rate is a property of its site's power-down regime, forecast through the regime the programme leaves."
   },
   "lineage": [
     {
@@ -238,7 +245,7 @@
   "notes": "forcing_event audit_or_inspection: the partnership's annual concession review in December 2026, at which the operator names every hub it forecasts below the 99 per cent standard for 2027 with its remediation. Architecture 3's identity (a Victorian union branch's protected action ballots) moved into lineage with the portal's fate on 2026-11-08.",
   "registered": "2026-11-08T01:11:52Z",
   "shell": {
-    "question form": "which",
+    "question form": "where",
     "second-sentence opener": "return",
     "rounding opener": "charges",
     "deliverable set": "csv+pdf"

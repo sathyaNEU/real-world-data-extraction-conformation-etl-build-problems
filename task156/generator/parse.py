@@ -48,6 +48,42 @@ def read_register(target):
     return units, alias, serial, hl
 
 
+COMMS = re.compile(r"router|\bSIM\b|antenna|modem|comms board|\b4G\b|no signal", re.I)
+
+
+def read_jobs(target, units=None, serial=None, names=None):
+    """The two contractors' work orders as one list: kind from the job code, a no-response job read as a comms
+    repair when a comms part was replaced and as a power cycle otherwise; times in UTC."""
+    if units is None:
+        units, alias, serial, hubs = read_register(target)
+        names = {h["name"]: h["code"] for h in hubs}
+    wb = openpyxl.load_workbook(os.path.join(target, "work_orders_2023-2026.xlsx"), read_only=True)
+    out = []
+    for name in wb.sheetnames:
+        rows = list(wb[name].iter_rows(values_only=True))
+        head = rows[0]
+        for r in rows[1:]:
+            d = dict(zip(head, r))
+            if "Job ref" in d:
+                ser, hub, code, text = d["Charger serial"], names[d["Site"]], d["Job type"], d["Work done"]
+                logged = from_irish("%s %s" % (d["Date logged"], d["Time logged"]), "%d/%m/%Y %H:%M")
+                arrive = from_irish(d["Arrived"], "%d/%m/%Y %H:%M") if d["Arrived"] else None
+                done = from_irish(d["Completed"], "%d/%m/%Y %H:%M")
+                model = units[serial[ser]]["model"] if ser else None
+                kind = {"PM1": "rc_service", "PM2": "visit", "R2": "no_response"}.get(code) or ("rc_repair" if model == "RC50" else "fault")
+            else:
+                ser, hub, text = d["Asset"], d["Site code"], d["Description"]
+                logged = from_irish(d["Logged"], "%d/%m/%Y %H:%M")
+                arrive = from_irish(d["Attended"], "%d/%m/%Y %H:%M") if d["Attended"] else None
+                done = from_irish(d["Closed"], "%d/%m/%Y %H:%M")
+                kind = {"PM-SITE": "visit", "PM-RC50": "rc_service", "CM-RC50": "rc_repair", "CM-NR": "no_response", "CM-HW": "fault"}[d["Code"]]
+            if kind == "no_response":
+                kind = "comms" if COMMS.search(text or "") else "hang"
+            full = not (kind == "rc_service" and re.search(r"inspection|visual|external", text or "", re.I))
+            out.append(dict(hub=hub, key=serial.get(ser) if ser else None, kind=kind, logged=logged, arrive=arrive, done=done, full=full))
+    return out
+
+
 def read_pack(target):
     units, alias, serial, hubs = read_register(target)
     names = {h["name"]: h["code"] for h in hubs}
@@ -100,33 +136,7 @@ def read_pack(target):
         for r in csv.DictReader(f):
             R["dso"][r["hub_code"]].append((from_irish(r["interruption_start_irish_time"], "%Y-%m-%d %H:%M"),
                                             from_irish(r["supply_restored_irish_time"], "%Y-%m-%d %H:%M")))
-    wb = openpyxl.load_workbook(os.path.join(target, "work_orders_2023-2026.xlsx"), read_only=True)
-    kindA = {"PM1": "rc_service", "PM2": "visit"}
-    for name in wb.sheetnames:
-        rows = list(wb[name].iter_rows(values_only=True))
-        head = rows[0]
-        for r in rows[1:]:
-            d = dict(zip(head, r))
-            if "Job ref" in d:
-                ser, hub = d["Charger serial"], names[d["Site"]]
-                logged = from_irish("%s %s" % (d["Date logged"], d["Time logged"]), "%d/%m/%Y %H:%M")
-                code = d["Job type"]
-                arrive = from_irish(d["Arrived"], "%d/%m/%Y %H:%M") if d["Arrived"] else None
-                done = from_irish(d["Completed"], "%d/%m/%Y %H:%M")
-                model = units[serial[ser]]["model"] if ser else None
-                if code in kindA:
-                    kind = kindA[code]
-                elif code == "R2":
-                    kind = "hang"
-                else:
-                    kind = "rc_repair" if model == "RC50" else "fault"
-            else:
-                ser, hub = d["Asset"], d["Site code"]
-                logged = from_irish(d["Logged"], "%d/%m/%Y %H:%M")
-                arrive = from_irish(d["Attended"], "%d/%m/%Y %H:%M") if d["Attended"] else None
-                done = from_irish(d["Closed"], "%d/%m/%Y %H:%M")
-                kind = {"PM-SITE": "visit", "PM-RC50": "rc_service", "CM-RC50": "rc_repair", "CM-NR": "hang", "CM-HW": "fault"}[d["Code"]]
-            R["wo"].append(dict(hub=hub, key=serial.get(ser) if ser else None, kind=kind, logged=logged, arrive=arrive, done=done))
+    R["wo"] = read_jobs(target, units, serial, names)
     txt = pdf_text(os.path.join(target, "asset_renewal_programme_2027.pdf"))
     for m in re.finditer(r"^\s*(NM\d{3})\s+.+?\s+(\d{2}/\d{2}/\d{4})\s+(Yes|No)\b", txt, re.M):
         code, d, new = m.group(1), m.group(2), m.group(3)

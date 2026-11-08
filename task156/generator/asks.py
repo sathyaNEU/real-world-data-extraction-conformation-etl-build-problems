@@ -90,9 +90,33 @@ def tally(groups, units, hubs, energy="register"):
     return n, e
 
 
+def windows(target):
+    """Every attendance window a work order gives on an HX150: its own repairs and power cycles, and the site
+    visits at its hub. A session that starts inside one is the technician's load bank test, not a vehicle."""
+    units, alias, serial, hubs = PA.read_register(target)
+    out = {}
+    for w in PA.read_jobs(target):
+        if w["arrive"] is None or w["kind"] not in ("visit", "hang", "comms", "fault"):
+            continue
+        out.setdefault((w["hub"], w["key"]), []).append((w["arrive"], w["done"]))
+    return out, units
+
+
+def is_test(r, win, units):
+    u = units.get(r["cp"])
+    if u is None or u["model"] != "HX150":
+        return False
+    ws = win.get((u["hub"], None), []) + win.get((u["hub"], r["cp"]), [])
+    return any(a <= r["a"] <= b for a, b in ws)
+
+
 def golden(target):
+    """Records joined into connections first (a test sits between charges with the register running on), then every
+    connection that opens inside an attendance window dropped as a load bank test."""
     recs, units, hubs = load(target)
-    n, e = tally(connections(dedup(recs)), units, hubs)
+    win, _ = windows(target)
+    groups = [g for g in connections(dedup(recs)) if not is_test(g[0], win, units)]
+    n, e = tally(groups, units, hubs)
     return {h: n[h] for h in hubs}, {h: mwh(e[h]) for h in hubs}, e
 
 
@@ -111,6 +135,14 @@ def full_includer(target):
     recs, units, hubs = load(target)
     recs = [r for r in dedup(recs) if r["kwh"] > 0]
     n, e = tally(connections(recs, register=True, adjacency=False, token_merge=True), units, hubs)
+    return n, {h: mwh(e[h]) for h in hubs}
+
+
+def careful(target):
+    """Every split record joined as the golden joins it (the register jumps and the card continuations), the load
+    bank tests left in: what the export alone allows without the work orders' attendance windows."""
+    recs, units, hubs = load(target)
+    n, e = tally(connections(dedup(recs)), units, hubs)
     return n, {h: mwh(e[h]) for h in hubs}
 
 

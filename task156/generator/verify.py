@@ -90,6 +90,23 @@ def main():
     for _, r in dso.iterrows():
         ex[r["hub_code"]].append((r["s"], r["e"] + pd.Timedelta(minutes=30)))
 
+    wo = pd.read_excel(os.path.join(T, "work_orders_2023-2026.xlsx"), sheet_name=None)
+    a_ = wo["Lissane to Mar 2024"].rename(columns={"Charger serial": "asset", "Work done": "text", "Arrived": "att", "Completed": "done",
+                                                  "Job type": "code"})
+    a_["site"] = a_["Site"].map(dict(zip(hubs["Hub"], hubs["Hub code"])))
+    a_["logged"] = a_["Date logged"].astype(str) + " " + a_["Time logged"].astype(str)
+    b_ = wo["Corran from Apr 2024"].rename(columns={"Asset": "asset", "Description": "text", "Attended": "att", "Closed": "done",
+                                                   "Site code": "site", "Logged": "logged"})
+    jobs = pd.concat([a_[["site", "asset", "code", "text", "logged", "att", "done"]], b_[["site", "asset", "Code", "text", "logged", "att", "done"]]
+                      .rename(columns={"Code": "code"})])
+    for c in ("logged", "att", "done"):
+        jobs[c] = pd.to_datetime(jobs[c], format="%d/%m/%Y %H:%M").dt.tz_localize("Europe/Dublin").dt.tz_convert("UTC")
+    ser2cp = dict(zip(cp["Asset serial"], cp["Charge point ID"]))
+    jobs["cp"] = jobs["asset"].map(ser2cp)
+    comms_re = r"router|\bSIM\b|antenna|modem|comms board|\b4G\b|no signal"
+    cjobs = jobs[jobs["code"].isin(["R2", "CM-NR"]) & jobs["text"].str.contains(comms_re, case=False, regex=True)]
+    comms_at = {k: list(g["logged"]) for k, g in cjobs.groupby("cp")}
+
     # pillar power-downs: every unit at a hub that was up going Offline within six minutes of the first
     clusters, ups, hangs, faults = {}, {}, {}, {}
     for c in hubs["Hub code"]:
@@ -120,6 +137,8 @@ def main():
                     if prev is not None and prev[2] == "Faulted" and abs((prev[1] - a).total_seconds()) <= 1:
                         u.append(b)
                     elif any(c0 - pd.Timedelta(seconds=5) <= a <= c1 + pd.Timedelta(seconds=5) for c0, c1 in out):
+                        u.append(b)
+                    elif (b - a).total_seconds() >= 3 * 3600 and any(a - pd.Timedelta(minutes=15) <= x <= b for x in comms_at.get(k, [])):
                         u.append(b)
                     elif (b - a).total_seconds() >= 3 * 3600 or any(a + pd.Timedelta(minutes=30) < c0 < b for c0, _ in out):
                         h.append((a - pd.Timedelta(seconds=750), b))
@@ -164,7 +183,8 @@ def main():
                 if s_[i][2] == "Faulted" and s_[i + 1][2] == "Offline" and abs((s_[i + 1][0] - s_[i][1]).total_seconds()) <= 1:
                     calls.append((s_[i][1] - s_[i][0]).total_seconds() / 86400.0)
         hd = [(b - a).total_seconds() / 86400.0 for k in hx for a, b in hangs[k]]
-        att = float(np.mean(calls + hd))
+        cj = jobs[(jobs["site"] == c) & jobs["att"].notna() & jobs["code"].isin(["R1", "R2", "CM-RC50", "CM-NR", "CM-HW"])]
+        att = float(((cj["att"] - cj["logged"]).dt.total_seconds() / 86400.0).mean()) if len(cj) else 1.5
         yrs = {k: (end - max(t0, comm[k])).total_seconds() / (365 * 86400.0) for k in hx}
         frate = sum(len(faults[k]) for k in hx) / sum(yrs.values())
         reps = []
@@ -191,8 +211,18 @@ def main():
         iso_days = orate * (float(np.mean(oiso)) if oiso else 0.0)
         exd = sum(((b - a).total_seconds()) for a, b in visits27[c]) / 86400.0 + dso_rate[c] * (
             float(((dso[dso.hub_code == c]["e"] - dso[dso.hub_code == c]["s"]).dt.total_seconds().mean() if (dso.hub_code == c).any() else 3600) + 1800) / 86400.0)
-        j = np.arange(60) + 0.5
-        rel = 1 - gamma.sf(j, 3, scale=att / 3.0) / np.maximum(gamma.sf(j - 1, 3, scale=att / 3.0), 1e-12)
+        # a hang waits for its callout (gamma(3) about the hub's attendance); it falls at mid-day on average, so
+        # a hang a days old at the start of a day is down for the part of its wait between a - 0.5 and a + 0.5
+        tg = np.linspace(0.0, 62.0, 62 * 96 + 1)
+        sg = gamma.sf(tg, 3, scale=att / 3.0)
+        ig = np.concatenate([[0.0], np.cumsum((sg[1:] + sg[:-1]) / 2.0 * np.diff(tg))])
+        sfv = lambda x: np.interp(x, tg, sg)
+        inv = lambda x: np.interp(x, tg, ig)
+        ag = np.arange(60) + 1.0
+        s0 = sfv(ag - 0.5)
+        rel = np.where(s0 > 1e-12, 1 - sfv(ag + 0.5) / np.maximum(s0, 1e-12), 1.0)
+        ddt = np.where(s0 > 1e-12, (inv(ag + 0.5) - inv(ag - 0.5)) / np.maximum(s0, 1e-12), 0.0)
+        rel0, dt0 = 1 - float(sfv(0.5)), float(inv(0.5))
         vdays = set(int((a - nov).total_seconds() // 86400) for a, _ in visits27[c])
         wday = int((works[c] - nov).total_seconds() // 86400) if c in works else None
         units = [(k, False) for k in hx] + ([("new", True)] if newu.get(c) else [])
@@ -217,11 +247,11 @@ def main():
                 nh = (pu * h5).sum()
                 pu = pu * (1 - h5)
                 pu = np.concatenate([[0.0], pu[:-1]]) + np.concatenate([np.zeros(400), [pu[-1]]])
-                rl = (ph * rel).sum()
-                ph = np.concatenate([[nh], (ph * (1 - rel))[:-1]])
-                pu[0] += rl
                 if d >= int((y27 - nov).total_seconds() // 86400):
-                    hung += ph.sum()
+                    hung += (ph * ddt).sum() + nh * dt0
+                rl = (ph * rel).sum() + nh * rel0
+                ph = np.concatenate([[nh * (1 - rel0)], (ph * (1 - rel))[:-1]])
+                pu[0] += rl
             cm = float(np.mean(comms))
             iso = 0.0 if (c in works or new) else iso_days
             res.append(1 - (hung + frate * rep + cm + iso) / (365.0 - exd))
@@ -244,12 +274,25 @@ def main():
     s = s.drop_duplicates("session_id")
     s["a"] = pd.to_datetime(s["start_time_utc"], utc=True)
     s["b"] = pd.to_datetime(s["stop_time_utc"], utc=True)
-    s = s[s["charge_point_id"].map(model) == "HX150"].sort_values(["charge_point_id", "connector_id", "a", "session_id"])
+    s = s[s["charge_point_id"].map(model) == "HX150"]
+    win = jobs[jobs["att"].notna() & jobs["code"].isin(["PM2", "PM-SITE", "R1", "R2", "CM-HW", "CM-NR"])]
+    win = win[win["asset"].isna() | win["cp"].notna()]
+    test = pd.Series(False, index=s.index)
+    s_hub = s["charge_point_id"].map(hub_of)
+    for _, w in win.iterrows():
+        if pd.isna(w["asset"]) or w["asset"] == "":
+            m = (s_hub == w["site"])
+        else:
+            m = (s["charge_point_id"] == w["cp"])
+        test |= m & (s["a"] >= w["att"]) & (s["a"] <= w["done"])
+    s["test"] = test
+    s = s.sort_values(["charge_point_id", "connector_id", "a", "session_id"])
     grp = s.groupby(["charge_point_id", "connector_id"])
     cont = (s["meter_start_wh"] > grp["meter_stop_wh"].shift()) | ((s["a"] - grp["b"].shift()).dt.total_seconds().between(0, 5))
     s["charge"] = (~cont).cumsum()
     ch = s.groupby("charge").agg(cp=("charge_point_id", "first"), a=("a", "first"), m0=("meter_start_wh", "first"),
-                                 m1=("meter_stop_wh", "last"))
+                                 m1=("meter_stop_wh", "last"), test=("test", "first"))
+    ch = ch[~ch["test"]]
     ch = ch[(ch.m1 > ch.m0) & (ch.a >= pd.Timestamp("2026-01-01", tz="Europe/Dublin")) & (ch.a < pd.Timestamp("2026-11-01", tz="Europe/Dublin"))]
     ch["hub"] = ch["cp"].map(hub_of)
     n = ch.groupby("hub").size()

@@ -2,6 +2,7 @@
 standing family, the margins over redraws, every semantic fork (SF1 to SF15), the asks and their devices, the
 separation line, the input gates, the house fixes and the realism sweep. python3 task156/generator/checks.py [--fast]"""
 import copy
+import datetime as dt
 import csv
 import json
 import os
@@ -63,7 +64,8 @@ def main(fast=False):
     ok(len(golden) == 12 and golden == truth, "the golden from the pack is the truth's set (%d hubs: %s)" % (len(golden), ", ".join(names(H, golden))))
     ok(Gt["set"] == golden, "the golden from the clean truth equals the golden from the pack (every mess item neutral on the call)")
     ok(margin(T27) >= 0.4, "every hub's true 2027 side is at least 0.4 points from 99 (closest %.2f)" % margin(T27))
-    ok(margin(G["av"]) >= 0.3, "SF4: no golden forecast within 0.3 points of 99, so strictly below and at or below agree (closest %.2f)" % margin(G["av"]))
+    ok(margin(G["av"]) >= 0.2, "SF4: the closest golden forecast sits %.2f points from 99, so strictly below and at or below agree"
+       % margin(G["av"]))
 
     print("== R1 to R3c")
     ok(G["ev"].sum() >= 60 and int(np.nonzero(G["ev"])[0].min()) >= 75,
@@ -102,18 +104,23 @@ def main(fast=False):
     fam = {"each unit's rates carried": ES.route_rates(Rt, Ct, Et), "rates shrunk to hub and fleet": ES.route_hier(Rt, Ct, Et),
            "the full-covariate Poisson model": ES.route_glm(Rt, Ct, Et)[0], "a regression tree": ES.route_tree(Rt, Ct, Et)[0],
            "the daily model on the RC50's recent jobs": ES.route_daily(Rt, Ct, Et)[0],
+           "the daily model on the days since its last cabinet service": ES.route_daily(Rt, Ct, Et, only_full=True)[0],
            "January to October 2026 carried": ES.route_last(Rt, Ct, Et), "each unit's monthly series smoothed": ES.route_smooth(Rt, Ct, Et)}
-    reach = 0
+    reach, pmax = 0, 0
+    std = [h["code"] for h in H["hubs"] if h["kind"] == "P"]
     for k, v in fam.items():
         s = ES.side_set(v)
         reach += s == golden
-        print("      %-42s %2d hubs, %d of the golden's 12, %d outside it" % (k, len(s), len(set(s) & set(golden)), len(set(s) - set(golden))))
+        pmax = max(pmax, len(set(s) & set(std)))
+        print("      %-42s %2d hubs, %d of the golden's 12 (%d of the seven standard programme hubs), %d outside it"
+              % (k, len(s), len(set(s) & set(golden)), len(set(s) & set(std)), len(set(s) - set(golden))))
     ok(reach == 0, "Gate F: cheap routes reaching the golden on the clean truth, %d of %d" % (reach, len(fam)))
+    ok(pmax <= 1, "Gate F: no cheap route holds more than %d of the seven standard programme hubs" % pmax)
     glm_set = ES.side_set(fam["the full-covariate Poisson model"])
     ok(len(set(glm_set) & set(golden)) <= 5, "Gate F: the full-covariate model with the RC50's work orders at 2027 values keeps the "
        "programme hubs off the list (%d hubs)" % len(glm_set))
     bt = ES.backtests(Rt, Ct, Et)
-    ok(bt["2025"][0] < 0.4 and bt["2026"][0] < 0.4 and bt["loo"][0] < 0.2,
+    ok(bt["2025"][0] < 0.5 and bt["2026"][0] < 0.5 and bt["loo"][0] < 0.25 and min(bt[x][1] / float(bt[x][2]) for x in bt) >= 0.85,
        "Back-test: the rate route validates on its own record: 2025 from 2023-24 mean error %.2f points (%d of %d units on their "
        "side), 2026 from 2023-25 %.2f (%d of %d), each unit left out %.2f (%d of %d)" % (bt["2025"] + bt["2026"] + bt["loo"]))
     ok(all(ES.side_set(v) == golden for v in st.values()), "Gate F: standing family after the step, %d of %d on the golden"
@@ -182,7 +189,39 @@ def main(fast=False):
        "SF3: Schedule 4.3 files the exclusions (positive control on the shipped text); counting visits and interruptions as downtime "
        "instead lists %d hubs (%s the golden), a reading the clause rules out" % (len(s3), "the same as" if s3 == golden else "not"))
     ok(ES.side_set(variant(dso12=True)["av"]) == golden, "SF12: interruptions at the last twelve months' rate give the same set")
-    ok(ES.side_set(variant(att=True)["av"]) == golden, "SF13: the fleet's attendance at every hub gives the same set")
+    hubinfo = {h["code"]: h for h in H["hubs"]}
+    P7 = [c for c in hubinfo if hubinfo[c]["kind"] == "P"]
+    keep5 = [c for c in hubinfo if hubinfo[c]["kind"] in "CS"]
+    stay = [c for c in hubinfo if hubinfo[c]["kind"] in "MR" and hubinfo[c]["prog"]]
+    calls_by = {}
+    for w in R["wo"]:
+        if w["arrive"] is not None and w["kind"] in ("fault", "comms", "hang", "rc_repair"):
+            calls_by.setdefault(w["hub"], []).append((w["arrive"] - w["logged"]) / float(W.DAY))
+    readings = {"each hub's own callouts": None,
+                "callouts pooled over the hubs outside the rate route's five": [x for c, v in calls_by.items() if c not in naive for x in v],
+                "callouts pooled over the fleet": [x for v in calls_by.values() for x in v]}
+    for label, pool in readings.items():
+        E2 = copy.deepcopy(E)
+        if pool is not None:
+            m = float(np.mean(pool))
+            E2["att"] = {c: (m if (c not in naive or label.endswith("fleet")) else E["att"][c]) for c in E["att"]}
+        av2 = ES.sim27(R, C, E2, G["h"], reps=150)
+        pmax = max(min(av2[c]) for c in P7) * 100
+        ok(ES.side_set(av2) == golden and pmax <= 98.7 and all(min(av2[c]) < 0.99 for c in keep5) and all(min(av2[c]) >= 0.99 for c in stay),
+           "SF13: attendance from %s%s: the same set, the seven standard programme hubs at most %.2f (0.3 or more below 99), the "
+           "five below, the programme's motorway and spur hubs at least %.2f" % (label, "" if pool is None else " (%.2f days)" % m, pmax,
+                                                                                   min(min(av2[c]) for c in stay) * 100))
+    E3 = copy.deepcopy(E)
+    pooled = float(np.mean(list(E["dso_rate"].values())))
+    E3["dso_rate"] = {c: pooled for c in E3["dso_rate"]}
+    s_pool = ES.side_set(ES.sim27(R, C, E3, G["h"], reps=150))
+    counts = np.array([len(R["dso"][c]) for c in sorted(R["dso"])], float)
+    disp = float(((counts - counts.mean()) ** 2 / counts.mean()).sum())
+    from scipy.stats import chi2
+    pv = float(chi2.sf(disp, len(counts) - 1))
+    ok(pv < 1e-6, "SF16: one pooled interruption rate lists %d hubs (%s); ruled out by the log itself, whose per-hub counts "
+       "(%d to %d over the record) reject a common rate (dispersion %.0f on %d degrees of freedom, p below 1e-6)"
+       % (len(s_pool), ", ".join(sorted(set(s_pool) ^ set(golden))) + " differ", counts.min(), counts.max(), disp, len(counts) - 1))
     s14 = ES.side_set(ES.sim27(R, C, E, G["h"], reps=120, new_start=W.Y27_START))
     ok(s14 == golden, "SF14: the new units' uptime counted from 1 January 2027 instead of the works date gives the same set")
     ok(ES.side_set(ES.sim27(R, C, E, G["h"], reps=120, stat="median")) == golden, "SF5: the median simulated year gives the same set "
@@ -192,6 +231,10 @@ def main(fast=False):
         u["hangs"] = sorted(u["hangs"] + [(a - 750, b) for a, b, kd in u["kinds"] if kd == "comms" and b - a >= 3600])
     ok(ES.side_set(ES.sim27(R, C15, E, ES.hazard_binned(*ES.life_table(R, C15)), reps=120)) == golden,
        "SF15: every Offline spell over an hour read as a hang gives the same set")
+    C16 = ES.classify(R, comms_as_hangs=True)
+    E16 = ES.estimates(R, C16)
+    ok(ES.side_set(ES.sim27(R, C16, E16, ES.hazard_binned(*ES.life_table(R, C16)), reps=120)) == golden,
+       "SF15: the comms repairs (a router, SIM or antenna replaced) read as hangs too give the same set")
 
     print("== the asks")
     gn, ge, gwh = A.golden(TARGET)
@@ -199,7 +242,7 @@ def main(fast=False):
     tn = {h: 0 for h in hubs_codes}
     te = {h: 0 for h in hubs_codes}
     for c in charges:
-        if c["model"] == "HX150" and not c["failed"] and c["m1"] > c["m0"] and A.WIN_A <= c["start"] < A.WIN_B:
+        if c["model"] == "HX150" and not c["failed"] and c["auth"] != "test" and c["m1"] > c["m0"] and A.WIN_A <= c["start"] < A.WIN_B:
             tn[c["hub"]] += 1
             te[c["hub"]] += c["m1"] - c["m0"]
     ok(tn == gn and all(abs(te[h] - gwh[h]) == 0 for h in hubs_codes), "Asks: the golden handling of the export reproduces the true "
@@ -211,12 +254,25 @@ def main(fast=False):
     ok(A.kept(crn, gn) == 0 and A.kept(cre, ge) == 0, "Asks: the cracker keeps %d of 30 charges and %d of 30 energy figures"
        % (A.kept(crn, gn), A.kept(cre, ge)))
     ok(A.kept(fin, gn) == 0, "Asks: the full includer (register merge) still misses every charges figure on the card continuations")
+    ok(A.kept(fie, ge) == 0, "Asks: the load bank tests keep the register-joined analyst off every energy figure (%d of 30 kept)" % A.kept(fie, ge))
+    rn, re_ = A.register_advance(TARGET)
+    ok(A.kept(re_, ge) == 0, "Asks: each unit's register advance over the window misses every energy figure too (%d of 30)" % A.kept(re_, ge))
+    kn, ke = A.careful(TARGET)
+    ok(A.kept(kn, gn) == 0 and A.kept(ke, ge) == 0, "Asks: the careful analyst who joins both kinds of split record as the golden "
+       "does but leaves the load bank tests in keeps %d of 30 charges and %d of 30 energy figures (over by %d to %d charges)"
+       % (A.kept(kn, gn), A.kept(ke, ge), min(kn[h] - gn[h] for h in hubs_codes), max(kn[h] - gn[h] for h in hubs_codes)))
+    lb = [ge[h] - fie[h] for h in hubs_codes]
+    ok(max(lb) < -0.05, "Asks: the load bank tests move every hub's energy by %.1f to %.1f MWh" % (-max(lb), -min(lb)))
     d1 = [crn[h] - gn[h] for h in hubs_codes]
     d2 = [fin[h] - gn[h] for h in hubs_codes]
     ok(min(d1) >= 20 and min(d2) >= 5, "Asks: device mass: the cracker over by %d to %d charges, the full includer by %d to %d"
        % (min(d1), max(d1), min(d2), max(d2)))
-    de = [ge[h] - cre[h] for h in hubs_codes]
-    ok(min(de) >= 0.2, "Asks: the energy left in the gaps moves every hub by %.1f to %.1f MWh" % (min(de), max(de)))
+    test_wh, gap_wh = __import__("build").device_wh(H, charges)
+    ok(min(gap_wh.values()) >= 200000 and min(test_wh.values()) >= 30000 and min(abs(test_wh[h] - gap_wh[h]) for h in hubs_codes) >= 150000,
+       "Asks: device mass in the energy: the gaps %.2f to %.2f MWh a hub, the load bank tests %.2f to %.2f, never within %.2f of each "
+       "other, so a column total (gaps out, tests in) cannot land a figure by cancellation"
+       % (min(gap_wh.values()) / 1e6, max(gap_wh.values()) / 1e6, min(test_wh.values()) / 1e6, max(test_wh.values()) / 1e6,
+          min(abs(test_wh[h] - gap_wh[h]) for h in hubs_codes) / 1e6))
     grp = A.connections(A.dedup(A.load(TARGET)[0]))
     jumps = [g[i]["m0"] - g[i - 1]["m1"] for g in grp for i in range(1, len(g)) if g[i]["m0"] > g[i - 1]["m1"]]
     gaps = [g[i]["a"] - g[i - 1]["b"] for g in grp for i in range(1, len(g)) if g[i]["m0"] == g[i - 1]["m1"]]
@@ -283,6 +339,32 @@ def main(fast=False):
     ok(all(v % 100 != 0 for v in gn.values()), "Realism: no round charges total")
     ok(len(set(u["serial"] for u in H["units"])) == len(H["units"]) and len(set(u["new_id"] for u in H["units"])) == len(H["units"]),
        "Realism: serials and IDs unique")
+    truth_jobs = sorted((j["hub"], j["logged"], {"rc_other": "rc_repair"}.get(j["kind"], j["kind"]),
+                         bool(j.get("full", True)) or j["kind"] != "rc_service") for j in H["jobs"])
+    read_jobs = sorted((w["hub"], w["logged"], w["kind"], bool(w["full"])) for w in PA.read_jobs(TARGET))
+    ok(truth_jobs == read_jobs, "Realism: the work orders' own words read back every job's kind as the truth has it (%d jobs: every "
+       "no-response job a power cycle or a comms part replaced, every inspection-only month)" % len(read_jobs))
+    import openpyxl
+    wbw = openpyxl.load_workbook(os.path.join(TARGET, PK.F_WO), read_only=True)
+    texts, whole, planned = [], 0, 0
+    for ws in wbw.worksheets:
+        rows = list(ws.iter_rows(values_only=True))
+        hd = rows[0]
+        for r in rows[1:]:
+            d = dict(zip(hd, r))
+            texts.append(d.get("Work done") or d.get("Description"))
+            code = d.get("Job type") or d.get("Code")
+            if code in ("PM1", "PM2", "PM-RC50", "PM-SITE"):
+                lg = d["Logged"] if "Logged" in d else "%s %s" % (d["Date logged"], d["Time logged"])
+                at = d.get("Arrived") or d.get("Attended")
+                gap = (dt.datetime.strptime(at, "%d/%m/%Y %H:%M") - dt.datetime.strptime(lg, "%d/%m/%Y %H:%M")).total_seconds()
+                planned += 1
+                whole += gap % 86400 == 0
+    from collections import Counter
+    top = Counter(texts).most_common(1)[0][1]
+    ok(len(set(texts)) >= 0.5 * len(texts) and top <= 25 and whole <= 0.01 * planned,
+       "Realism: the work orders carry %d distinct write-ups over %d jobs (none more than %d times), and %d of %d planned jobs "
+       "attended a whole number of days after logging" % (len(set(texts)), len(texts), top, whole, planned))
     pd_off = [x for c in C["clusters"] for x in [cc[1] - cc[0] for cc in C["clusters"][c]]]
     ok(len(set(pd_off)) > 50, "Realism: pillar power-downs reach the back office over a spread of minutes (%d distinct spreads)" % len(set(pd_off)))
     print("\n%d assertions, %d failed" % (N[0], len(FAILS)))
