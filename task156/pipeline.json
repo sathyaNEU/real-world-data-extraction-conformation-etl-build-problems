@@ -1,26 +1,27 @@
 {
  "task": "task156",
- "status": "DRAWING",
+ "status": "PAUSED",
  "domain": "energy-systems-utilities/asset-condition-maintenance (client domain energy-systems-utilities; world: an Irish regional public rapid-charging operator naming, for its concession's 2027 review, the hubs whose high-power charge points will fall below 99 per cent availability once the partnership's programme removes the legacy 50 kW units at some hubs)",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-08",
- "stump": "Carrying each high-power charge point's controller-hang rate from 2023 to 2026, validated leaving each unit out and on two back-tests, files 3 hubs below 99 per cent in 2027, the three coastal hubs on their ordinary faults; the step that lands it there is reading each unit's hang rate as its own, when a hang comes only after about 75 days without a restart and the legacy unit's cabinet repairs restarted every unit at its hub every few weeks, so at the seven programme hubs with neither two-monthly visits nor frequent supply interruptions the high-power units run months between restarts, hang three or four times a year, and the set is 10.",
+ "stump": "Carrying each high-power charge point's controller-hang and fault rates from 2023 to 2026, validated leaving each unit out and on two back-tests, files 5 hubs below 99 per cent in 2027, the five whose HX150 units already hang two or three times a year; the step that lands it there is reading each unit's hang rate as its own, when a hang comes only after about 75 days without a power-up and the RC50's monthly cabinet service powers down every unit on its pillar, so only the units at those five hubs (on a pillar of their own) ever ran that long, and at the seven standard programme hubs, which keep neither two-monthly visits nor frequent supply interruptions once the RC50 goes, the HX150 units will hang three or four times a year and the set is 12.",
  "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-08",
+  "detail": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-08 (--asof 2026-11-06): sweeps 4, 6, 9 and 11, each ruled in the design note; no LEAK",
   "reader": ""
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-11-08T01:11Z on the registered card (repeat.decision against task268, repeat.question_form against task482, both answered in the design note); test.same_puzzle_older (task451) and test.same_driver_older (task105 v1, task162 v2, task170 v1, task229 v3) differentiated on the card",
-  "heart": "",
-  "surface": ""
+  "heart": "WARN 2026-11-08 (repeat.decision against task268, repeat.question_form against task482, both answered in the design note)",
+  "surface": "2026-11-08: 127 builds screened, 0 pairs promoted (extract --tasks task156 against the cached corpus; the full re-extract runs out of disk); people: no BLOCK"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "architecture 4 drawn 2026-11-08; next: stage 2 design to precut.py exit 0, then the generator",
+ "resume": "stage 4 hand-off 2026-11-08: target.zip sha256 4bf9959cafde88a50778df970ca3d9d25a9efd79d6c2ab928d872c3ab1e12a23; rebuild with python3 task156/generator/build.py then python3 task156/generator/zip_target.py (byte-identical), gates python3 task156/generator/checks.py, verify.py and ceiling.py; next: the orchestrator's leak reader and determinism judge on that pack, every finding fixed in the generator in one pass",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -193,5 +194,8 @@
    "delivered": "2026-11-07",
    "fate": "FAILED_TO_STUMP on the portal (2026-11-07): both responses landed the 11 councils with the delegate coverage covariate evaluated at the ballot close; re-rooted as architecture 4 in a new domain and world on 2026-11-08, its build outputs removed from the folder at the draw (git history keeps them)"
   }
- ]
+ ],
+ "gates_stage3": "checks.py 62 assertions 0 failed (Gate F 0 of 7 cheap routes on the golden, standing family 6 of 6, margins 20 of 20 over redraws); verify.py 0 disagreements; two builds byte-identical; figures_check.py PASS (69); precut.py exit 0; voice-check.py PASS; ceiling.py pair 28.5, mirror leakage 0.0",
+ "zip_sha256": "4bf9959cafde88a50778df970ca3d9d25a9efd79d6c2ab928d872c3ab1e12a23",
+ "answer": "List 12 hubs in the 2027 Availability Plan: Ballinkeel Main Street, Bunacurry Pier, Carrowkeel Business Park, Clonlea Leisure Centre, Derrylane Park and Ride, Glenfad Shopping Centre, Kilbeg Retail Park, Portavaddy Seafront, Rathmoy Station Road, Rossnabeg Harbour, Tobernalt Road and Tullymore Market Square."
 }

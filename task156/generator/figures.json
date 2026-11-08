@@ -1,0 +1,308 @@
+{
+ "already_codes": [
+  "NM119",
+  "NM131",
+  "NM144",
+  "NM155",
+  "NM166"
+ ],
+ "call": [
+  "Ballinkeel Main Street",
+  "Bunacurry Pier",
+  "Carrowkeel Business Park",
+  "Clonlea Leisure Centre",
+  "Derrylane Park and Ride",
+  "Glenfad Shopping Centre",
+  "Kilbeg Retail Park",
+  "Portavaddy Seafront",
+  "Rathmoy Station Road",
+  "Rossnabeg Harbour",
+  "Tobernalt Road",
+  "Tullymore Market Square"
+ ],
+ "call_codes": [
+  "NM103",
+  "NM109",
+  "NM117",
+  "NM119",
+  "NM121",
+  "NM131",
+  "NM138",
+  "NM144",
+  "NM146",
+  "NM150",
+  "NM155",
+  "NM166"
+ ],
+ "call_count": 12,
+ "charges": {
+  "Annagh Cross": 1697,
+  "Ardcree Services": 7561,
+  "Ballinkeel Main Street": 2556,
+  "Ballyroe Town Park": 2595,
+  "Bunacurry Pier": 1925,
+  "Carrigvane Services": 4788,
+  "Carrowkeel Business Park": 2398,
+  "Clonlea Leisure Centre": 2720,
+  "Cloonfin Crossroads": 2497,
+  "Corrabeg Business Park": 1211,
+  "Derrylane Park and Ride": 1399,
+  "Dromkeen Square": 2286,
+  "Drumtane Services": 6905,
+  "Eskerbrook Shopping Centre": 5396,
+  "Glenfad Shopping Centre": 3457,
+  "Gortnaclay Leisure Park": 1296,
+  "Kilbeg Retail Park": 1588,
+  "Kilmeedy Church Street": 2230,
+  "Knockvane Services": 4573,
+  "Lisduff Retail Park": 3125,
+  "Lismoy Services": 4339,
+  "Monaleen Services": 4165,
+  "Moyvalley Station": 1251,
+  "Portavaddy Seafront": 3380,
+  "Rathmoy Station Road": 1470,
+  "Rossnabeg Harbour": 2082,
+  "Shanbally Community Centre": 2041,
+  "Templederry Green": 1016,
+  "Tobernalt Road": 2190,
+  "Tullymore Market Square": 2933
+ },
+ "energy_mwh": {
+  "Annagh Cross": 55.0,
+  "Ardcree Services": 245.2,
+  "Ballinkeel Main Street": 83.4,
+  "Ballyroe Town Park": 81.9,
+  "Bunacurry Pier": 62.4,
+  "Carrigvane Services": 152.5,
+  "Carrowkeel Business Park": 78.2,
+  "Clonlea Leisure Centre": 87.6,
+  "Cloonfin Crossroads": 80.2,
+  "Corrabeg Business Park": 37.9,
+  "Derrylane Park and Ride": 45.3,
+  "Dromkeen Square": 72.3,
+  "Drumtane Services": 221.1,
+  "Eskerbrook Shopping Centre": 174.1,
+  "Glenfad Shopping Centre": 109.8,
+  "Gortnaclay Leisure Park": 41.8,
+  "Kilbeg Retail Park": 52.4,
+  "Kilmeedy Church Street": 70.8,
+  "Knockvane Services": 148.2,
+  "Lisduff Retail Park": 101.0,
+  "Lismoy Services": 140.5,
+  "Monaleen Services": 136.7,
+  "Moyvalley Station": 41.4,
+  "Portavaddy Seafront": 108.1,
+  "Rathmoy Station Road": 48.1,
+  "Rossnabeg Harbour": 67.6,
+  "Shanbally Community Centre": 66.5,
+  "Templederry Green": 32.8,
+  "Tobernalt Road": 70.3,
+  "Tullymore Market Square": 94.7
+ },
+ "first_hang_day": 76,
+ "hangs_on_record": 84,
+ "hub_rows": [
+  [
+   "NM103",
+   "Glenfad Shopping Centre"
+  ],
+  [
+   "NM104",
+   "Ardcree Services"
+  ],
+  [
+   "NM106",
+   "Ballyroe Town Park"
+  ],
+  [
+   "NM109",
+   "Kilbeg Retail Park"
+  ],
+  [
+   "NM112",
+   "Carrigvane Services"
+  ],
+  [
+   "NM114",
+   "Dromkeen Square"
+  ],
+  [
+   "NM117",
+   "Clonlea Leisure Centre"
+  ],
+  [
+   "NM118",
+   "Shanbally Community Centre"
+  ],
+  [
+   "NM119",
+   "Bunacurry Pier"
+  ],
+  [
+   "NM121",
+   "Tullymore Market Square"
+  ],
+  [
+   "NM122",
+   "Kilmeedy Church Street"
+  ],
+  [
+   "NM125",
+   "Annagh Cross"
+  ],
+  [
+   "NM127",
+   "Lismoy Services"
+  ],
+  [
+   "NM129",
+   "Corrabeg Business Park"
+  ],
+  [
+   "NM131",
+   "Portavaddy Seafront"
+  ],
+  [
+   "NM133",
+   "Drumtane Services"
+  ],
+  [
+   "NM135",
+   "Moyvalley Station"
+  ],
+  [
+   "NM137",
+   "Eskerbrook Shopping Centre"
+  ],
+  [
+   "NM138",
+   "Ballinkeel Main Street"
+  ],
+  [
+   "NM141",
+   "Knockvane Services"
+  ],
+  [
+   "NM144",
+   "Rossnabeg Harbour"
+  ],
+  [
+   "NM146",
+   "Rathmoy Station Road"
+  ],
+  [
+   "NM148",
+   "Gortnaclay Leisure Park"
+  ],
+  [
+   "NM150",
+   "Derrylane Park and Ride"
+  ],
+  [
+   "NM152",
+   "Lisduff Retail Park"
+  ],
+  [
+   "NM155",
+   "Carrowkeel Business Park"
+  ],
+  [
+   "NM158",
+   "Monaleen Services"
+  ],
+  [
+   "NM160",
+   "Templederry Green"
+  ],
+  [
+   "NM162",
+   "Cloonfin Crossroads"
+  ],
+  [
+   "NM166",
+   "Tobernalt Road"
+  ]
+ ],
+ "naive": [
+  "Bunacurry Pier",
+  "Carrowkeel Business Park",
+  "Portavaddy Seafront",
+  "Rossnabeg Harbour",
+  "Tobernalt Road"
+ ],
+ "naive_count": 5,
+ "pack": {
+  "dso_rows": 115,
+  "resent": 301,
+  "resent_hubs": [
+   "NM104",
+   "NM106",
+   "NM112",
+   "NM117",
+   "NM127",
+   "NM133",
+   "NM137",
+   "NM138",
+   "NM146",
+   "NM155",
+   "NM166"
+  ],
+  "session_rows": 106918,
+  "status_rows": 27342,
+  "survey_rows": 1262,
+  "wo_a": 1126,
+  "wo_b": 2400
+ },
+ "programme_listed": [
+  "Ballinkeel Main Street",
+  "Clonlea Leisure Centre",
+  "Derrylane Park and Ride",
+  "Glenfad Shopping Centre",
+  "Kilbeg Retail Park",
+  "Rathmoy Station Road",
+  "Tullymore Market Square"
+ ],
+ "salt": {
+  "NM117": 1,
+  "NM118": 2,
+  "NM129": 1,
+  "NM135": 1,
+  "NM146": 2,
+  "NM148": 1,
+  "NM150": 1,
+  "NM155": 1
+ },
+ "sides": {
+  "Annagh Cross": "No",
+  "Ardcree Services": "No",
+  "Ballinkeel Main Street": "Yes",
+  "Ballyroe Town Park": "No",
+  "Bunacurry Pier": "Yes",
+  "Carrigvane Services": "No",
+  "Carrowkeel Business Park": "Yes",
+  "Clonlea Leisure Centre": "Yes",
+  "Cloonfin Crossroads": "No",
+  "Corrabeg Business Park": "No",
+  "Derrylane Park and Ride": "Yes",
+  "Dromkeen Square": "No",
+  "Drumtane Services": "No",
+  "Eskerbrook Shopping Centre": "No",
+  "Glenfad Shopping Centre": "Yes",
+  "Gortnaclay Leisure Park": "No",
+  "Kilbeg Retail Park": "Yes",
+  "Kilmeedy Church Street": "No",
+  "Knockvane Services": "No",
+  "Lisduff Retail Park": "No",
+  "Lismoy Services": "No",
+  "Monaleen Services": "No",
+  "Moyvalley Station": "No",
+  "Portavaddy Seafront": "Yes",
+  "Rathmoy Station Road": "Yes",
+  "Rossnabeg Harbour": "Yes",
+  "Shanbally Community Centre": "No",
+  "Templederry Green": "No",
+  "Tobernalt Road": "Yes",
+  "Tullymore Market Square": "Yes"
+ },
+ "standard_per_cent": 99
+}

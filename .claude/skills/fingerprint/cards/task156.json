@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "List 12 hubs in the 2027 Availability Plan: Ballinkeel Main Street, Bunacurry Pier, Carrowkeel Business Park, Clonlea Leisure Centre, Derrylane Park and Ride, Glenfad Shopping Centre, Kilbeg Retail Park, Portavaddy Seafront, Rathmoy Station Road, Rossnabeg Harbour, Tobernalt Road and Tullymore Market Square.",
+  "answer_source": "task156/submission.md block 1; task156/golden/hub_availability_2027.csv and availability_plan_2027.pdf",
   "gap": [
     "time"
   ],
@@ -50,7 +50,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "connector_status_history_2023-2026.csv",
-    "rows": 0,
+    "rows": 27342,
     "entity": "one row is one status change a charge point reported to the operator's back office, or that the back office wrote when the charge point's heartbeats stopped",
     "grain": "charge point x status change",
     "source": "constructed for task156, no real dataset"
@@ -80,8 +80,8 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "Each unit's failures run on a clock that its site's other units' repairs reset, so its recorded failure rate is a property of how often those neighbours were repaired, and a forward plan that removes the failing neighbours stops the resets and multiplies the survivors' failures, which every route carried on each unit's own record misses while it validates on the years the resets ran.",
-  "driver_concrete": "A high-power charge point's controller hangs only after weeks without a power cycle, and the hub is powered down at the isolator whenever a legacy 50 kW unit beside it is repaired, so through 2023 to 2026 the high-power units hung about once a year; the partnership's programme removes the legacy units at some hubs in December 2026, after which those hubs are powered down only for planned maintenance and network faults and their high-power units hang several times a year.",
-  "stump": "Carrying each high-power charge point's controller-hang rate from 2023-26, validated leaving each unit out and on two back-tests, files only the hubs already running below 99 per cent in 2027; the step that lands it there is reading each unit's hang rate as its own, when the hangs follow the days since the hub was last powered down and the legacy units' isolator repairs powered those hubs down every few weeks, so at the hubs the programme strips the high-power units run months between power-downs and most of those hubs join the set.",
+  "driver_concrete": "A high-power charge point's controller hangs only after about 75 days without a power-up, and the legacy 50 kW unit's monthly cabinet service isolates the supply pillar it shares with the high-power units at most hubs, so through 2023 to 2026 only the units on a pillar of their own ever hung; the partnership's programme removes the legacy units at some hubs in December 2026, after which those hubs are powered down only for planned visits and supply faults and, where visits are twice a year, their high-power units hang three or four times a year.",
+  "stump": "Carrying each high-power charge point's controller-hang and fault rates from 2023 to 2026, validated leaving each unit out and on two back-tests, files only the five hubs whose units already hang; the step that lands it there is reading each unit's hang rate as its own, when a hang comes only after about 75 days without a power-up and the legacy unit's monthly cabinet service powers down every unit on its pillar, so at the seven standard hubs the programme strips the high-power units will run months between power-ups and the set is twelve.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task451": "task451 completes each partner's unobserved cost from a payment-development pattern whose handler delay collapsed mid-period; here nothing is unobserved at the cut: each high-power unit's hang hazard runs on the days since its hub was last powered down, and what changes in the forward year is how often the hub is powered down, once the programme removes the legacy units whose repairs did it.",
@@ -236,5 +236,11 @@
     }
   ],
   "notes": "forcing_event audit_or_inspection: the partnership's annual concession review in December 2026, at which the operator names every hub it forecasts below the 99 per cent standard for 2027 with its remediation. Architecture 3's identity (a Victorian union branch's protected action ballots) moved into lineage with the portal's fate on 2026-11-08.",
-  "registered": "2026-11-08T01:11:52Z"
+  "registered": "2026-11-08T01:11:52Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "return",
+    "rounding opener": "charges",
+    "deliverable set": "csv+pdf"
+  }
 }
