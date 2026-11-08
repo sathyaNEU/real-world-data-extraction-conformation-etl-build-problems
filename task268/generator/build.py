@@ -25,54 +25,44 @@ import postprocess as PP   # noqa: E402
 
 TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
-PDF_DATES = {"agreement": ("D:20260512094118+01'00'", "D:20260512094118+01'00'"),
-             "terms": ("D:20251218112730+00'00'", "D:20251218112730+00'00'"),
-             "board": ("D:20260630171544+01'00'", "D:20260630171544+01'00'")}
 
 
-def build_pack(out, w=None):
+def build_pack(out):
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
-    w, n = PK.write_pack(out, w)
+    w, n, truths = PK.write_pack(out)
     p = lambda k: os.path.join(out, K.FILES[k])
     PP.COMPANY = K.ORG_LTD
-    PP.normalize_ooxml(p("master"), "Range Data", "Katy Kinnegan", "2023-01-16T10:02:11Z", "2026-12-02T15:47:30Z",
-                       excel=True)
-    PP.normalize_ooxml(p("deals"), K.PEOPLE["buyer"], K.PEOPLE["buyer"], "2025-12-08T09:15:40Z", "2026-12-21T16:33:05Z",
-                       excel=True)
-    PP.COMPANY = "Lisnagree Research"
-    PP.normalize_ooxml(p("tracker"), "Lisnagree Research", "Lisnagree Research", "2026-05-25T13:20:00Z",
-                       "2026-12-04T11:06:52Z", excel=True)
-    PP.COMPANY = K.ORG_LTD
-    PP.normalize_ooxml(p("brief"), K.PEOPLE["brand"], K.PEOPLE["brand"], "2027-01-08T14:40:00Z", "2027-01-11T10:12:00Z",
-                       title="Roastery sampling 2027: brief")
-    for k, (c, m) in PDF_DATES.items():
-        PP.normalize_pdf(p(k), c.encode(), m.encode())
+    PP.normalize_ooxml(p("slo"), K.PEOPLE["head"], K.PEOPLE["head"], "2025-11-20T10:12:00Z", "2025-12-09T16:41:00Z",
+                       title="PR-SLO-3 Service level objectives for internal services")
+    PP.normalize_ooxml(p("catalogue"), K.PEOPLE["sre"], K.PEOPLE["sre"], "2025-02-03T09:20:00Z",
+                       "2026-12-18T11:05:00Z", excel=True)
+    PP.normalize_ooxml(p("feedback"), "Customer Communications", "Customer Communications", "2027-01-05T08:44:00Z",
+                       "2027-01-05T08:44:00Z", excel=True)
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
-    return w, n
+    return w, n, truths
 
 
-def build_golden(target, golden, gen_dir):
+def build_golden(target, golden):
     import analysis as A
     import deliver as D
     import writeup as WU
-    G = A.Golden(target)
-    R = G.run()
+    R = A.Golden(target).run()
     F = D.figures(R)
-    text, _ = WU.write(R, F)
+    text, F = WU.write(R, F)
     if os.path.exists(golden):
         shutil.rmtree(golden)
     os.makedirs(golden)
-    D.write_deck(os.path.join(golden, K.DECK), R, F)
-    D.write_csv(os.path.join(golden, K.CSV_OUT), R)
+    D.write_docx(os.path.join(golden, K.DOCX_OUT), R, F)
+    D.write_csv(os.path.join(golden, K.CSV_OUT), R, F)
     PP.COMPANY = K.ORG_LTD
-    PP.normalize_ooxml(os.path.join(golden, K.DECK), K.PEOPLE["insight"], K.PEOPLE["insight"], "2027-01-18T09:41:00Z",
-                       "2027-01-21T16:28:00Z", title="Roastery sampling 2027")
+    PP.normalize_ooxml(os.path.join(golden, K.DOCX_OUT), K.PEOPLE["sre"], K.PEOPLE["head"], "2027-01-07T09:12:00Z",
+                       "2027-01-08T15:26:00Z", title="Reliability review 2026: latency objectives")
     for f in os.listdir(golden):
         os.utime(os.path.join(golden, f), (MTIME, MTIME))
-    with open(os.path.join(gen_dir, "figures.json"), "w") as fh:
+    with open(os.path.join(HERE, "figures.json"), "w") as fh:
         json.dump(F, fh, indent=1, sort_keys=True, default=str)
         fh.write("\n")
     with open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8") as fh:
@@ -81,40 +71,41 @@ def build_golden(target, golden, gen_dir):
 
 
 def write_metadata(n, R):
-    prov = {}
-    synth = ("constructed by the task generator (seeded); Corcally's, its stores, members, suppliers, brands, Faircourt "
-             "Merchant Services, the guest roasters and every record are fictional")
+    synth = ("constructed by the task generator (seeded); Rotalinha, its services, staff, systems and every record are "
+             "fictional")
     about = {
-        "till": ("the data warehouse's coffee category till lines for 2026, one row a line", "2027-01-08"),
-        "online": ("the online shop's order history export with its coffee lines, orders placed from 1 December 2025",
-                   "2027-01-08"),
-        "register": ("the Corcally's Rewards card register extract", "2027-01-08"),
-        "settle": ("Faircourt Merchant Services' settlement detail for Corcally & Sons Limited, 2026", "2027-01-07"),
-        "agreement": ("Faircourt's merchant service agreement, Schedules 2 to 4", "2026-05-12"),
-        "master": ("the buying team's product master for the coffee range", "2026-12-02"),
-        "terms": ("the Corcally's Rewards terms and conditions, January 2026 edition", "2025-12-18"),
-        "brief": ("the Roastery team's brief for the 2027 sampling", "2027-01-11"),
-        "labels": ("the Drumsallagh coffee counter's scale label log for 2026", "2027-01-05"),
-        "board": ("the coffee counter's price board as displayed in 2026", "2026-06-30"),
-        "deals": ("the coffee buyer's multibuy deal log for 2026", "2026-12-21"),
-        "census": ("2022 census households by size for the small areas in the stores' catchment", "2023-05-30"),
-        "tracker": ("a research agency's coffee brand tracker for Corcally's, May and November 2026 waves",
-                    "2026-12-04"),
+        "spans": ("the tracing store's span export for December 2026", "2027-01-01"),
+        "lb_h1": ("the load balancer's hourly request counts by target group, January to June 2026", "2026-07-02"),
+        "lb_h2": ("the load balancer's hourly request and 5xx counts by target group, July to December 2026",
+                  "2027-01-02"),
+        "slo": ("PR-SLO-3, the platform's service level objectives standard, version 3.1", "2025-12-09"),
+        "catalogue": ("the platform's service catalogue", "2026-12-18"),
+        "incidents": ("the incident tool's export of 2026 incidents", "2027-01-04"),
+        "timeline": ("the incident tool's timeline events for 2026 incidents", "2027-01-04"),
+        "status": ("the public status page's 2026 history as its provider exports it", "2027-01-04"),
+        "billing": ("the cloud provider's 2026 billing lines", "2027-01-05"),
+        "invoices": ("the cloud provider's 2026 invoices", "2027-01-05"),
+        "resources": ("the cloud provider's inventory of resources that ran in 2026", "2027-01-05"),
+        "deploys": ("the delivery pipeline's 2026 deployment log", "2027-01-04"),
+        "rollouts": ("the production cluster's rollout history", "2027-01-04"),
+        "capacity": ("Platform Infrastructure's Q4 2026 capacity review", "2027-01-05"),
+        "feedback": ("app store reviews of the Rotalinha app, July to December 2026", "2027-01-05"),
     }
+    prov = {}
     for k, fn in K.FILES.items():
         prov[fn] = {"source": synth, "covers": about[k][0], "date": about[k][1],
                     "licence": "CC0 1.0 (constructed for this task)",
-                    "made": "generated by task268/generator (pack.py, docs.py) from world.py's seeded records"}
+                    "made": "generated by task268/generator from its seeded records"}
     m = {"task": "task268",
-         "title": "Corcally's: the rival coffee brand whose homes get the 2027 Roastery sampling",
-         "domain": "Marketing & Consumer Research",
+         "title": "Rotalinha: the internal services that ran over their 2026 latency error budget",
+         "domain": "General Statistics & Data Science",
          "objective": "Descriptive & Distribution Analysis",
-         "decision": "the rival coffee brand whose 2026 buying homes least often also bought Corcally's Roastery",
-         "answer": "%s's homes get the 2027 Roastery sampling" % K.BRAND_NAME[R["call"]],
-         "deliverables": list(K.DELIVERABLES),
+         "decision": "which internal services ran over their 2026 latency error budget and get a reliability engineer "
+                     "for the first half of 2027",
+         "answer": ", ".join(R["over"]),
+         "deliverables": [K.DOCX_OUT, K.CSV_OUT],
          "distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
-         "rows": sorted([(K.FILES["till"], n["till"]), (K.FILES["settle"], n["settle"]), (K.FILES["labels"], n["labels"]),
-                         (K.FILES["register"], n["register"])]),
+         "rows": sorted([(K.FILES["spans"], n["spans"]), (K.FILES["lb_h1"], n["lb_h1"]), (K.FILES["lb_h2"], n["lb_h2"])]),
          "provenance": prov}
     with open(os.path.join(TASK, "metadata.json"), "w") as f:
         json.dump(m, f, indent=1)
@@ -150,17 +141,13 @@ def main():
         build_pack(a.out)
         return
     target, golden = os.path.join(TASK, "target"), os.path.join(TASK, "golden")
-    w, n = build_pack(target)
-    R, F = build_golden(target, golden, HERE)
+    w, n, truths = build_pack(target)
+    R, F = build_golden(target, golden)
     write_metadata(n, R)
     import checks
-    rows = checks.run(TASK, world=w)
-    bad = [r for r in rows if not r[1]]
-    for r in rows:
-        print("%s  %-74s %s" % ("PASS" if r[1] else "FAIL", r[0], r[2]))
-    print("checks: %d assertions, %d failed" % (len(rows), len(bad)))
+    rc = checks.main(target)
     import verify
-    vbad = verify.run(target, os.path.join(HERE, "figures.json"))
+    vbad = verify.run(TASK)
     print("verify: %s" % ("PASS" if not vbad else "FAIL " + "; ".join(vbad)))
     same = True
     if not a.no_rebuild:
@@ -173,7 +160,7 @@ def main():
     cut_zip(target, os.path.join(TASK, "target.zip"))
     for k, v in sorted(digest(target).items()):
         print("  %s  %s" % (v, k))
-    sys.exit(1 if (bad or vbad or not same) else 0)
+    sys.exit(1 if (rc or vbad or not same) else 0)
 
 
 if __name__ == "__main__":

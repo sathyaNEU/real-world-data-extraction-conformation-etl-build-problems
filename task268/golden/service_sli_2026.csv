@@ -1,0 +1,11 @@
+service,latency_sli_pct,error_budget_pct,ran_over,releases_2026,rollbacks_2026,incident_minutes_h1,incident_minutes_h2,cost_eur_h1,cost_eur_h2
+journey-search,1.3,1.0,yes,47,1,293,205,80138,93336
+fares,0.6,1.0,no,40,3,59,329,46382,49856
+places,1.5,1.0,yes,31,3,755,109,55872,62482
+seat-map,1.5,1.0,yes,35,7,337,72,19292,20709
+booking,0.4,0.5,no,27,1,461,220,41796,44716
+payments,0.3,0.5,no,20,1,329,232,23584,24739
+tickets,0.6,1.0,no,23,3,218,368,16943,18862
+accounts,0.7,1.0,no,29,4,100,227,22156,23510
+partner-gateway,2.9,2.0,yes,42,9,27,152,32454,37711
+notifications,1.6,1.0,yes,26,3,401,475,18182,18612

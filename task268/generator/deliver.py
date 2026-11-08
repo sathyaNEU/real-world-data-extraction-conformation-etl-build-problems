@@ -1,199 +1,203 @@
-"""The golden deliverables: roastery_sampling_2027.pptx (the call, the overlap chart, the rival table, how the homes
-were built, the counter's loose coffee and the multibuy funding owed) and rival_home_overlap_2026.csv."""
+"""task268's golden deliverables, drawn from one figure set: reliability_review_2026.docx, the annual reliability
+review's latency note (the services that breached, every service's December SLI beside its budget, the chart of each
+SLI against its own budget line, how the SLI was read), and service_sli_2026.csv, a row per service with its SLI,
+budget, verdict, releases and rollbacks, and customer-facing incident minutes and cloud cost in each half."""
 import csv
+import io
+from decimal import Decimal, ROUND_HALF_UP
 
-import common as K
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt          # noqa: E402
+from docx import Document               # noqa: E402
+from docx.enum.text import WD_ALIGN_PARAGRAPH   # noqa: E402
+from docx.shared import Cm, Pt, RGBColor        # noqa: E402
 
-RNAME = K.BRAND_NAME
+import common as K   # noqa: E402
+
+matplotlib.rcParams["svg.hashsalt"] = "task268"
+matplotlib.rcParams["font.family"] = "DejaVu Sans"
 
 
-def pct(x):
-    return int(round(x))
+def whole(x):
+    return int(Decimal(repr(float(x))).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+
+
+def names(lst):
+    return ", ".join(lst[:-1]) + " and " + lst[-1] if len(lst) > 1 else lst[0]
 
 
 def figures(R):
-    ov = R["overlap"]
-    call, runner = R["call"], R["runner"]
-    F = {"call": RNAME[call], "runner_up": RNAME[runner],
-         "call_share": pct(ov[call][2]), "runner_share": pct(ov[runner][2]),
-         "gap_points": int(round(R["gap"])),
-         "call_homes": ov[call][0], "call_both": ov[call][1],
-         "runner_homes": ov[runner][0], "runner_both": ov[runner][1],
-         "homes_total": R["homes_n"], "receipts_matched": R["match_stats"][0],
-         "default_call": RNAME[R["default"][0]], "default_share": pct(R["default"][1]),
-         "rivals": {RNAME[b]: {"homes": ov[b][0], "both": ov[b][1], "share": pct(ov[b][2])} for b in K.RIVALS},
-         "ask_a": {"%s Q%d" % k: round(v, 1) for k, v in sorted(R["ask_a"].items())},
-         "ask_b": {"%s Q%d" % k: int(round(v)) for k, v in sorted(R["ask_b"].items())},
-         "clock_block": list(R["clock_block"][1:3]),
-         "counter_tid": K.COUNTER_TID}
+    m = R["main"]
+    F = {"over": list(R["over"]), "over_count": len(R["over"]),
+         "sli": {s: "%.1f" % m[s]["sli1"] for s in K.SVC},
+         "budget": {s: "%.1f" % K.BUDGET[s] for s in K.SVC},
+         "threshold_ms": {s: "{:,}".format(K.THRESHOLD[s]) for s in K.SVC},
+         "ran_over": {s: "yes" if m[s]["over"] else "no" for s in K.SVC},
+         "pg_service_hour": "%.1f" % K.r1(m["partner-gateway"]["by_service_hour"]),
+         "kept_share": {s: "%.1f" % K.r1(m[s]["unweighted"]) for s in K.SVC},
+         "pg_kept_mix_pct": {k: "%d" % whole(100 * v) for k, v in m["partner-gateway"]["root_mix_kept"].items() if k},
+         "pg_weighted_mix_pct": {k: "%d" % whole(100 * v) for k, v in m["partner-gateway"]["root_mix_weighted"].items()
+                                 if k},
+         "releases": {s: R["deploys"][s]["releases"] for s in K.SVC},
+         "rollbacks": {s: R["deploys"][s]["rollbacks"] for s in K.SVC},
+         "minutes": {s: [whole(v) for v in R["incidents"][s]] for s in K.SVC},
+         "cost_eur": {s: [whole(v) for v in R["costs"][s]] for s in K.SVC},
+         "cost_eur_text": {s: ["{:,}".format(whole(v)) for v in R["costs"][s]] for s in K.SVC},
+         "minutes_text": {s: ["{:,}".format(whole(v)) for v in R["incidents"][s]] for s in K.SVC}}
     return F
 
 
-def order(R):
-    ov = R["overlap"]
-    return sorted(K.RIVALS, key=lambda b: ov[b][2])
+def chart_png(F):
+    fig, ax = plt.subplots(figsize=(7.2, 4.1), dpi=150)
+    svcs = list(K.SVC)[::-1]
+    y = range(len(svcs))
+    vals = [float(F["sli"][s]) for s in svcs]
+    cols = ["#c0392b" if F["ran_over"][s] == "yes" else "#7f8c8d" for s in svcs]
+    ax.barh(list(y), vals, color=cols, height=0.62)
+    for i, s in enumerate(svcs):
+        b = float(F["budget"][s])
+        ax.plot([b, b], [i - 0.42, i + 0.42], color="#1f2d3d", linewidth=2.2)
+        ax.text(max(vals[i], b) + 0.06, i, F["sli"][s], va="center", fontsize=8.5, color="#1f2d3d")
+    ax.set_yticks(list(y))
+    ax.set_yticklabels(["%s (budget %s%%)" % (s_, F["budget"][s_]) for s_ in svcs], fontsize=8.5)
+    i_pg = svcs.index("partner-gateway")
+    ax.annotate("%s%% against %s%%" % (F["sli"]["partner-gateway"], F["budget"]["partner-gateway"]),
+                xy=(float(F["sli"]["partner-gateway"]), i_pg), xytext=(float(F["sli"]["partner-gateway"]) - 1.15, i_pg + 1.2),
+                fontsize=8, color="#c0392b", arrowprops=dict(arrowstyle="-", color="#c0392b", lw=0.8))
+    ax.set_title("%s services over their own error budget, December 2026" % ("Five" if len(F["over"]) == 5 else
+                 str(len(F["over"]))), fontsize=10, loc="left", color="#1f2d3d")
+    ax.set_xlabel("Latency SLI, December 2026 (% of requests slower than the threshold)", fontsize=8.5)
+    ax.set_xlim(0, max(vals) + 0.6)
+    ax.tick_params(axis="x", labelsize=8)
+    for sp_ in ("top", "right"):
+        ax.spines[sp_].set_visible(False)
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    ax.legend(handles=[Patch(color="#c0392b", label="over budget"), Patch(color="#7f8c8d", label="within budget"),
+                       Line2D([0], [0], color="#1f2d3d", linewidth=2.2, label="error budget")],
+              fontsize=8, frameon=False, loc="upper right")
+    fig.tight_layout()
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", metadata={"Software": None})
+    plt.close(fig)
+    return buf.getvalue()
 
 
-def write_csv(path, R):
-    ov = R["overlap"]
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f, lineterminator="\r\n")
-        w.writerow(["rival_brand", "homes_buying_2026", "homes_also_buying_roastery", "share_also_roastery_pct"])
-        for b in order(R):
-            w.writerow([RNAME[b], ov[b][0], ov[b][1], pct(ov[b][2])])
+def _p(doc, text, bold=False, size=10.5, italic=False, space=4, color=None):
+    para = doc.add_paragraph()
+    run = para.add_run(text)
+    run.bold, run.italic = bold, italic
+    run.font.size = Pt(size)
+    if color:
+        run.font.color.rgb = RGBColor(*color)
+    para.paragraph_format.space_after = Pt(space)
+    return para
 
 
-def write_deck(path, R, F):
-    from pptx import Presentation
-    from pptx.chart.data import CategoryChartData
-    from pptx.dml.color import RGBColor
-    from pptx.enum.chart import XL_CHART_TYPE, XL_LABEL_POSITION
-    from pptx.util import Emu, Pt
+def write_docx(path, R, F):
+    doc = Document()
+    st = doc.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    for sec in doc.sections:
+        sec.left_margin = sec.right_margin = Cm(2.2)
+        sec.top_margin = sec.bottom_margin = Cm(2.0)
+    _p(doc, "Rotalinha Platform Reliability", bold=True, size=9, color=(0x55, 0x55, 0x55))
+    _p(doc, "To: Engineering leadership group    From: %s, Platform Reliability    Date: 8 January 2027"
+       % K.PEOPLE["head"], size=9, space=0)
+    _p(doc, "Ref: PR-SLO-3 annual review 2026, latency objectives, read over December 2026 in Lisbon time", size=9,
+       space=10)
+    _p(doc, "%s services ran over their latency budget in 2026" % ("Five" if len(F["over"]) == 5 else
+       str(len(F["over"]))), bold=True, size=16, space=8)
+    footer = doc.sections[0].footer.paragraphs[0]
+    footer.text = "PR-SLO-3 annual review 2026    page "
+    footer.runs[0].font.size = Pt(8)
+    _page_field(footer)
+    over = F["over"]
+    _p(doc, "%s services ran over their 2026 latency error budget and get a reliability engineer for January to June "
+            "2027: %s." % ("Five" if len(over) == 5 else str(len(over)), names(over)), bold=True, size=11.5, space=8)
+    pg = "partner-gateway"
+    _p(doc, "Partner-gateway is the one a quick read misses: its SLI is %s%% against a %s%% budget, where the share "
+            "of its spans the tracing store kept would put it at %s%% and a reweighting of its own spans hour by hour "
+            "at %s%%. Journey-search, places and seat-map breach their 1.0%% budgets at %s%%, %s%% and %s%%, and "
+            "notifications at %s%%."
+       % (F["sli"][pg], F["budget"][pg], F["kept_share"][pg], F["pg_service_hour"], F["sli"]["journey-search"],
+          F["sli"]["places"], F["sli"]["seat-map"], F["sli"]["notifications"]), space=8)
 
-    BROWN, GREY, INK, PALE = RGBColor(0x6B, 0x3E, 0x1F), RGBColor(0x9A, 0xA4, 0xAB), RGBColor(0x22, 0x26, 0x2A), \
-        RGBColor(0xC9, 0xB8, 0xA6)
-    prs = Presentation()
-    prs.slide_width, prs.slide_height = Emu(12192000), Emu(6858000)
-    blank = prs.slide_layouts[6]
-    ov = R["overlap"]
-    call, runner = R["call"], R["runner"]
+    tbl = doc.add_table(rows=1, cols=5)
+    tbl.style = "Table Grid"
+    for i, h in enumerate(["Service", "Threshold (ms)", "Latency SLI (%)", "Error budget (%)", "Ran over"]):
+        c = tbl.rows[0].cells[i]
+        c.text = h
+        c.paragraphs[0].runs[0].bold = True
+        _shade(c, "DCE6F0")
+    for s in K.SVC:
+        row = tbl.add_row().cells
+        for i, v in enumerate([s, F["threshold_ms"][s], F["sli"][s], F["budget"][s], F["ran_over"][s]]):
+            row[i].text = v
+            if i:
+                row[i].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    _p(doc, "Source: trace_spans_2026-12.parquet and lb_target_group_requests_2026-H2.csv; thresholds and budgets from "
+            "PR-SLO-3 section 4.", italic=True, size=8, space=8)
+    doc.add_picture(io.BytesIO(chart_png(F)), width=Cm(16.0))
+    _p(doc, "Each bar is the service's December SLI; the dark mark on it is the service's own error budget.",
+       italic=True, size=8.5, space=10)
 
-    def text(slide, x, y, w, h, s, size=14, bold=False, color=INK):
-        tb = slide.shapes.add_textbox(Emu(x), Emu(y), Emu(w), Emu(h))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        for i, ln in enumerate(s.split("\n")):
-            p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-            p.text = ln
-            p.font.size, p.font.bold, p.font.color.rgb, p.font.name = Pt(size), bold, color, "Calibri"
-        return tb
+    _p(doc, "How the SLI was read", bold=True, size=12, space=4)
+    kept, wtd = F["pg_kept_mix_pct"], F["pg_weighted_mix_pct"]
+    _p(doc, "The tracing store keeps a trace whole or not at all, and the decision is taken where the trace starts: "
+            "each edge service keeps about the same number of traces every hour whatever its traffic, so a busy hour "
+            "is kept thinly. Each kept server span therefore counts for the requests its "
+            "trace's edge service handled that hour over the traces it kept, from the load balancer's hourly counts; "
+            "the SLI is the weighted slow spans over the service's December requests (PR-SLO-3 sections 2 and 3).")
+    _p(doc, "For an internal service the weight belongs to the edge request that started the trace, not to the "
+            "service itself. Partner-gateway's kept spans come %s%% from journey-search's traces, %s%% from "
+            "seat-map's and %s%% from booking's, while journey-search's searches make %s%% of its requests, and those "
+            "availability lookups are the slow ones; weighting its spans by its own hourly keep share under-counts "
+            "them." % (kept.get("journey-search", "0"), kept.get("seat-map", "0"), kept.get("booking", "0"),
+                       wtd.get("journey-search", "0")))
+    _p(doc, "Releases and rollbacks, customer-facing incident minutes and cloud cost by half are in "
+            "service_sli_2026.csv, under PR-SLO-3 section 5.", space=10)
+    _p(doc, "Notes: SLIs are per cents to one decimal and are compared with the budget as rounded (PR-SLO-3 3.2). "
+            "December in Lisbon time is UTC throughout. The load balancer's health probes are not requests "
+            "(PR-SLO-3 2.2) and the trace export's re-sent spans are counted once.", italic=True, size=8.5)
+    doc.save(path)
 
-    def foot(slide, n):
-        text(slide, 457200, 6380000, 9800000, 300000, "Corcally's customer insight. Rewards cards in the three stores and "
-             "online shop accounts, 1 January to 31 December 2026.", 9, color=GREY)
-        text(slide, 11200000, 6380000, 600000, 300000, str(n), 9, color=GREY)
 
-    def table(slide, x, y, w, rows, widths, size=12):
-        from pptx.enum.text import PP_ALIGN
-        shp = slide.shapes.add_table(len(rows), len(rows[0]), Emu(x), Emu(y), Emu(w), Emu(380000 * len(rows)))
-        tb = shp.table
-        tb.first_row, tb.horz_banding = True, False
-        for j, wd in enumerate(widths):
-            tb.columns[j].width = Emu(wd)
-        for i, r in enumerate(rows):
-            for j, v in enumerate(r):
-                c = tb.cell(i, j)
-                c.text = str(v)
-                c.fill.solid()
-                c.fill.fore_color.rgb = BROWN if i == 0 else (RGBColor(0xF6, 0xF1, 0xEB) if i % 2 == 0 else
-                                                              RGBColor(0xFF, 0xFF, 0xFF))
-                p = c.text_frame.paragraphs[0]
-                p.font.size, p.font.name = Pt(size), "Calibri"
-                p.font.bold = i == 0
-                p.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF) if i == 0 else INK
-                p.alignment = PP_ALIGN.LEFT if j == 0 else PP_ALIGN.RIGHT
-        return tb
+def _shade(cell, fill):
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+    tc = cell._tc.get_or_add_tcPr()
+    sh = OxmlElement("w:shd")
+    sh.set(qn("w:val"), "clear")
+    sh.set(qn("w:color"), "auto")
+    sh.set(qn("w:fill"), fill)
+    tc.append(sh)
 
-    # 1. the call
-    s = prs.slides.add_slide(blank)
-    text(s, 457200, 1500000, 11200000, 1100000, "%s's homes get the 2027 Roastery sampling" % RNAME[call]
-         if not RNAME[call].endswith("s") else "%s' homes get the 2027 Roastery sampling" % RNAME[call], 34, True, BROWN)
-    text(s, 457200, 2800000, 11000000, 1600000,
-         "Of the %s homes that bought %s in 2026, %s also bought the Roastery: %d%%, the lowest of the rivals.\n"
-         "%s is next at %d%%, %d points higher." % (
-             "{:,}".format(ov[call][0]), RNAME[call], "{:,}".format(ov[call][1]), F["call_share"], RNAME[runner],
-             F["runner_share"], F["gap_points"]), 18)
-    foot(s, 1)
-    # 2. the chart
-    s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "%s's buyers are the least likely to have the Roastery already"
-         % RNAME[call], 26, True, BROWN)
-    text(s, 457200, 950000, 11200000, 400000, "Share of each rival's 2026 buying homes that also bought the Roastery",
-         14, color=GREY)
-    cd = CategoryChartData()
-    rows = order(R)
-    cd.categories = [RNAME[b] for b in rows]
-    cd.add_series("Also bought the Roastery (%)", [pct(ov[b][2]) for b in rows])
-    gf = s.shapes.add_chart(XL_CHART_TYPE.BAR_CLUSTERED, Emu(457200), Emu(1450000), Emu(10800000), Emu(4700000), cd)
-    ch = gf.chart
-    ch.has_legend = False
-    ch.has_title = False
-    plot = ch.plots[0]
-    plot.gap_width = 60
-    plot.has_data_labels = True
-    dl = plot.data_labels
-    dl.number_format, dl.number_format_is_linked = '0"%"', False
-    dl.position = XL_LABEL_POSITION.OUTSIDE_END
-    dl.font.size = Pt(12)
-    ser = plot.series[0]
-    ser.format.fill.solid()
-    ser.format.fill.fore_color.rgb = PALE
-    pt = ser.points[0]
-    pt.format.fill.solid()
-    pt.format.fill.fore_color.rgb = BROWN
-    cat = ch.category_axis
-    cat.reverse_order = True
-    cat.tick_labels.font.size = Pt(12)
-    va = ch.value_axis
-    va.maximum_scale, va.minimum_scale = 100, 0
-    va.has_major_gridlines = False
-    va.tick_labels.font.size = Pt(10)
-    foot(s, 2)
-    # 3. the table
-    s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "%s sits %d points under the next rival" % (RNAME[call], F["gap_points"]),
-         26, True, BROWN)
-    rows_t = [["Rival", "Homes buying in 2026", "Also bought the Roastery", "Share"]]
-    for b in rows:
-        rows_t.append([RNAME[b], "{:,}".format(ov[b][0]), "{:,}".format(ov[b][1]), "%d%%" % pct(ov[b][2])])
-    table(s, 457200, 1200000, 9000000, rows_t, (3000000, 2000000, 2400000, 1600000))
-    text(s, 457200, 4500000, 11000000, 900000, "Runner-up %s at %d%%; the gap to %s is %d points." % (
-        RNAME[runner], F["runner_share"], RNAME[call], F["gap_points"]), 14)
-    text(s, 457200, 5300000, 11000000, 700000, "Homes: Rewards cards and online shop accounts that paid with the same "
-         "bank card in Faircourt's 2026 settlement. Receipts without a Rewards card and the stores' own cards are outside "
-         "the brief.", 10, color=GREY)
-    foot(s, 3)
-    # 4. how the homes were built
-    s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "Counting homes, not cards", 26, True, BROWN)
-    text(s, 457200, 1250000, 11000000, 4200000,
-         "A Rewards card belongs to one member (Rewards terms 2.1), so two people in one home carry two cards, and the "
-         "online shop keeps its own accounts.\n"
-         "Every 2026 coffee receipt paid by card was matched to its Faircourt settlement row on terminal, amount and "
-         "time (Faircourt's UTC time against the till's Irish time); every delivered online order to its row by order "
-         "number.\n"
-         "Cards and accounts that paid with the same bank card were joined into one home. The stores' own cards, swiped "
-         "for shoppers without one, were left out.\n"
-         "Card by card the picture is different: %s's capsule buyers are mostly a home's second card, and another "
-         "member of the home buys the Roastery." % RNAME[R["default"][0]], 15)
-    foot(s, 4)
-    # 5. the counter
-    s = prs.slides.add_slide(blank)
-    tot = {name: sum(R["ask_a"][(name, q)] for q in (1, 2, 3, 4)) for _, name, _ in K.ROASTERS}
-    top = max(tot, key=tot.get)
-    text(s, 457200, 300000, 11200000, 700000, "%s sold the most loose coffee at the Drumsallagh counter" % top, 26,
-         True, BROWN)
-    text(s, 457200, 950000, 11200000, 400000, "Kilograms sold by guest roaster and quarter, 2026", 14, color=GREY)
-    rows_a = [["Roaster", "Q1", "Q2", "Q3", "Q4"]]
-    for rid, name, _ in K.ROASTERS:
-        rows_a.append([name] + ["%.1f" % R["ask_a"][(name, q)] for q in (1, 2, 3, 4)])
-    table(s, 457200, 1450000, 9000000, rows_a, (3000000, 1500000, 1500000, 1500000, 1500000))
-    text(s, 457200, 3450000, 11000000, 900000, "Labels the counter's scales printed, counted when a card payment at the "
-         "counter or a counter line at a checkout paid for them.", 13, color=GREY)
-    foot(s, 5)
-    # 6. funding
-    s = prs.slides.add_slide(blank)
-    sups = sorted(set(k[0] for k in R["ask_b"]))
-    year = {sp: sum(R["ask_b"][(sp, q)] for q in (1, 2, 3, 4)) for sp in sups}
-    text(s, 457200, 300000, 11200000, 700000, "%s owes the most multibuy funding for 2026" % max(year, key=year.get),
-         26, True, BROWN)
-    text(s, 457200, 950000, 11200000, 400000, "Funding owed by supplier and quarter of sale, EUR", 14, color=GREY)
-    rows_b = [["Supplier", "Q1", "Q2", "Q3", "Q4"]]
-    for sp in sups:
-        rows_b.append([sp] + ["{:,}".format(int(round(R["ask_b"][(sp, q)]))) for q in (1, 2, 3, 4)])
-    table(s, 457200, 1450000, 10400000, rows_b, (4400000, 1500000, 1500000, 1500000, 1500000))
-    text(s, 457200, 4050000, 11000000, 900000, "Every multibuy sold in the quarter at the rate in force that day, "
-         "including multibuys the tills missed and the service desk refunded later; multibuys taken back on a refund "
-         "excluded.", 13, color=GREY)
-    foot(s, 6)
-    prs.save(path)
+
+def _page_field(par):
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+    run = par.add_run()
+    run.font.size = Pt(8)
+    for kind, text in (("begin", None), (None, "PAGE"), ("end", None)):
+        if kind:
+            fc = OxmlElement("w:fldChar")
+            fc.set(qn("w:fldCharType"), kind)
+            run._r.append(fc)
+        else:
+            it = OxmlElement("w:instrText")
+            it.set(qn("xml:space"), "preserve")
+            it.text = text
+            run._r.append(it)
+
+
+def write_csv(path, R, F):
+    with open(path, "w", newline="") as fh:
+        wr = csv.writer(fh, lineterminator="\n")
+        wr.writerow(["service", "latency_sli_pct", "error_budget_pct", "ran_over", "releases_2026", "rollbacks_2026",
+                     "incident_minutes_h1", "incident_minutes_h2", "cost_eur_h1", "cost_eur_h2"])
+        for s in K.SVC:
+            wr.writerow([s, F["sli"][s], F["budget"][s], F["ran_over"][s], F["releases"][s], F["rollbacks"][s],
+                         F["minutes"][s][0], F["minutes"][s][1], F["cost_eur"][s][0], F["cost_eur"][s][1]])

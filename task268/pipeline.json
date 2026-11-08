@@ -1,9 +1,9 @@
 {
   "task": "task268",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
+  "stage": 5,
   "stage_name": "design",
   "updated": "2026-11-07",
   "stump": "A competent analyst who sees the trace store's sample thin in the busy hours reweights each service's kept server spans hour by hour by that service's own load balancer count, which lands the edge services, and passes partner-gateway at 1.4 per cent against its 2 per cent budget, because its spans were kept with the traces journey-search, seat-map and booking started at very different keep shares; weighted by each trace's own edge keep share, partner-gateway breaches at 2.9.",
@@ -40,7 +40,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 2 on the edge-sampler draw (seed 2886, card re-registered): default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure, literal reader, oracles, asks, prompt with the asks; then precut.py",
+  "resume": "",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -50,5 +50,9 @@
   "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
   "seed_world": 273,
   "zip_md5": "f6dc0b57e6efa9a011d4e87d21613e30",
-  "zip_sha256_16": "56492de5d6701f85"
+  "zip_sha256_16": "56492de5d6701f85",
+  "precut_exit": 0,
+  "shipped": "2026-11-07",
+  "call": "Five internal services ran over their 2026 latency error budget and each gets a reliability engineer for the first half of 2027: journey-search, places, seat-map, partner-gateway and notifications.",
+  "gates_at_ship": "checks 0 failures; verify PASS; rebuild byte-identical; figures_check 117 of 117; precut 61 checks 0 FAIL; voice-check exit 0; leak.py REVIEW (ruled harmless); leak reader clean on the shipped cut; determinism judge DETERMINISTIC, APPROVE; heart exit 0 (WARN gate_g repeat and overuse); surface exit 0, no promoted pair"
 }

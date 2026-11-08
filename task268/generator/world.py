@@ -1,899 +1,332 @@
-"""The seeded world behind task268: Corcally's homes, members, Rewards cards and bank cards; every 2026 coffee purchase
-in the three stores and the online shop; the coffee counter's labels and payments; the multibuy deals, their savings,
-the missed ones and the service desk's adjustments; Faircourt's settlement of every card payment. The truth tables
-(each card's home, each label's sale) stay here; the pack writes only what each system holds."""
-import bisect
-import collections
+"""The simulated world behind task268: every hour of 2026 for each service (the load balancer's request and 5xx
+counts), and for December the traces the tracing store kept. The store's sampler sits at the edge: each edge service
+keeps a share of its requests that it resets at the top of every hour from its previous hour's traffic, and a kept
+request's whole trace is kept with it, the calls it made to the internal services included. The truth (every
+request's latency) never ships; the pack carries the kept spans and the counts."""
 import datetime as dt
-import itertools
 
 import numpy as np
+from scipy.optimize import brentq
+from scipy.stats import norm
 
 import common as K
 
-D0 = dt.date(K.YEAR, 1, 1)
-DAYS = [D0 + dt.timedelta(days=i) for i in range(365)]
-CLOSED = {dt.date(K.YEAR, 12, 25), dt.date(K.YEAR, 12, 26)}
-TRADING = [d for d in DAYS if d not in CLOSED]
-BANK_HOLIDAYS = {dt.date(2026, 1, 1), dt.date(2026, 2, 2), dt.date(2026, 3, 17), dt.date(2026, 4, 6),
-                 dt.date(2026, 5, 4), dt.date(2026, 6, 1), dt.date(2026, 8, 3), dt.date(2026, 10, 26),
-                 dt.date(2026, 12, 25), dt.date(2026, 12, 28), dt.date(2027, 1, 1)}
-BI = {b: i for i, b in enumerate(K.B)}
-
-PARAMS = dict(
-    H=3000, nonmem=0.8, alpha=0.35, occ=1.8, pres=0.92, house=0.45, cash=0.15,
-    shop=0.86, sep=0.08, ksh=0.6, kmin=3, mb=0.35, claim=0.7,
-    mix={
-        'P':   [0.33, 0.24, 0.10, 0.02, 0.05, 0.17, 0.02, 0.10],
-        'PON': [0.02, 0.17, 0.08, 0.02, 0.04, 0.10, 0.40, 0.12],
-        'Q':   [0.02, 0.12, 0.17, 0.46, 0.04, 0.07, 0.00, 0.10],
-        'QON': [0.01, 0.13, 0.18, 0.47, 0.04, 0.07, 0.00, 0.10],
-        'K':   [0.07, 0.15, 0.07, 0.16, 0.34, 0.17, 0.00, 0.04],
-        'KON': [0.01, 0.16, 0.08, 0.17, 0.35, 0.19, 0.00, 0.04],
-        'S':   [0.065, 0.24, 0.10, 0.04, 0.32, 0.13, 0.00, 0.06],
-        'ON':  [0.62, 0.15, 0.06, 0.02, 0.03, 0.08, 0.00, 0.04],
-        'N':   [0.10, 0.24, 0.12, 0.08, 0.14, 0.18, 0.04, 0.10],
-    },
-    rate={'S': 2.6, 'P': 3.6, 'Q': 3.0, 'K': 1.8},
-    online={'S': 0.07, 'C': 0.32, 'F': 0.36},
-)
+HOURS_YEAR = 365 * 24
+DEC0 = (dt.datetime(2026, 12, 1) - dt.datetime(2026, 1, 1)).days * 24        # first December hour of the year
+H = K.REVIEW_HOURS
 
 
-def next_banking_day(d, n=1):
-    while n:
-        d += dt.timedelta(days=1)
-        if d.weekday() < 5 and d not in BANK_HOLIDAYS:
-            n -= 1
-    return d
+def _diurnal(peaks):
+    h = np.full(24, 0.22)
+    for ph, w, a in peaks:
+        x = np.arange(24)
+        h += a * np.exp(-0.5 * (np.minimum(np.abs(x - ph), 24 - np.abs(x - ph)) / w) ** 2)
+    return h / h.max()
+
+
+MONTH = np.array([0.62, 0.60, 0.66, 0.72, 0.76, 0.86, 0.98, 1.0, 0.82, 0.74, 0.70, 1.0])
+
+
+def _calendar():
+    hrs = np.arange(HOURS_YEAR)
+    doy = hrs // 24
+    dates = [dt.date(2026, 1, 1) + dt.timedelta(days=int(d)) for d in range(365)]
+    month = np.array([dates[d].month for d in doy])
+    dow = np.array([dates[d].weekday() for d in doy])
+    return hrs % 24, doy, month, dow
+
+
+def edge_rate(svc):
+    """Expected requests an hour for an edge service over 2026 (no draw)."""
+    hod, doy, month, dow = _calendar()
+    peak, peaks, camp, extra = K.TRAFFIC[svc]
+    lam = peak * _diurnal(peaks)[hod] * MONTH[month - 1] * np.where(dow >= 5, 0.85, 1.0)
+    dec_day = doy - DEC0 // 24
+    dec = month == 12
+    for d, f in K.SEASON.items():
+        lam[dec & (dec_day == d)] *= f
+    if camp:
+        for d, h0, h1, f in K.CAMPAIGNS:
+            lam[DEC0 + d * 24 + h0:DEC0 + d * 24 + h1] *= f
+    for d, h0, h1, f in extra:
+        lam[DEC0 + d * 24 + h0:DEC0 + d * 24 + h1] *= f
+    return lam
+
+
+def _load(n, svc):
+    rho = np.minimum(n / K.CAP[svc], K.RHO_MAX)
+    return rho
+
+
+def _g(rho, a):
+    return 1 + a * rho / (1 - rho)
+
+
+def callers(svc):
+    return [(e, op, p) for e, (_, calls) in K.GRAPH.items() for c, op, p in calls if c == svc]
+
+
+def medians():
+    """Each operation's latency median at zero load, set so its December slow share at the expected traffic sits at
+    its target (internal operations analytically; an edge service's own work by simulation of the whole request)."""
+    lam = {s: edge_rate(s)[DEC0:DEC0 + H] for s in K.EDGE}
+    load = {}
+    for s in K.EDGE:
+        load[s] = _load(lam[s], s)
+    n_int = {c: sum(lam[e] * p * (1 + (K.ERR[c] if c in K.RETRY else 0)) for e, op, p in callers(c))
+             for c in K.INTERNAL}
+    for c in K.INTERNAL:
+        load[c] = _load(n_int[c], c)
+    base = {}
+    for (svc, op), (m, a, sig, tgt) in K.LAT.items():
+        if svc in K.INTERNAL:
+            if tgt is None:
+                base[(svc, op)] = m
+                continue
+            g = _g(load[svc], a)
+            w = sum(lam[e] * p for e, o, p in callers(svc) if o == op)
+            thr = K.THRESHOLD[svc]
+
+            def gap(lm):
+                pslow = (1 - K.ERR[svc]) * (1 - norm.cdf((np.log(thr) - lm - np.log(g)) / sig))
+                return 100 * (w * pslow).sum() / w.sum() - tgt
+            base[(svc, op)] = float(np.exp(brentq(gap, np.log(thr) - 9, np.log(thr) + 3)))
+    rng = np.random.default_rng(90210)
+    R = 1500
+    for s in K.EDGE:
+        m, a, sig, tgt = K.LAT[(s, "own")]
+        if tgt is None:
+            base[(s, "own")] = m
+            continue
+        z = rng.standard_normal((H, R))
+        extra = _call_time_mc(s, base, load, rng, R)
+
+        def gap(lm):
+            own = np.exp(lm + np.log(_g(load[s], a))[:, None] + sig * z)
+            tot = _compose(s, own, extra)
+            p = (tot > K.THRESHOLD[s]).mean(axis=1) * (1 - K.ERR[s])
+            return 100 * (lam[s] * p).sum() / lam[s].sum() - tgt
+        base[(s, "own")] = float(np.exp(brentq(gap, np.log(K.THRESHOLD[s]) - 9, np.log(K.THRESHOLD[s]) + 3)))
+    return base
+
+
+def _call_time_mc(s, base, load, rng, R):
+    """Simulated client-side durations (ms) of the calls an edge request makes, hour by hour, R draws each."""
+    if s not in K.GRAPH:
+        return None
+    mode, calls = K.GRAPH[s]
+    out = []
+    for c, op, p in calls:
+        m, a, sig, _ = K.LAT[(c, op)]
+        med = base[(c, op)] * _g(load[c], a)
+        d = np.exp(np.log(med)[:, None] + sig * rng.standard_normal((H, R))) + 2.0
+        made = rng.random((H, R)) < p
+        out.append(np.where(made, d, 0.0))
+    return mode, out
+
+
+def _compose(s, own, extra):
+    if extra is None:
+        return own
+    mode, calls = extra
+    if mode == "par":
+        return np.maximum(own, np.max(np.stack(calls), axis=0)) + 2.0
+    return own + np.sum(np.stack(calls), axis=0) + 1.5
 
 
 class World:
-    def __init__(self, seed=K.SEED, **over):
+    def __init__(self, seed=K.SEED, base=None):
         self.seed = seed
-        self.P = dict(PARAMS)
-        self.P.update(over)
         self.rng = np.random.default_rng(seed)
-        self._members()
-        self._deal_days()
-        self._store_coffee()
-        self._non_members()
-        self._online()
-        self._links()
-        self._refunds()
-        self._counter()
-        self._receipts()
-        self._settlement()
-        self._register()
+        self.base = base or medians()
+        self.N = {}            # requests each service handled, every hour of 2026
+        self.E = {}            # of which 5xx
+        self.build_edge_counts()
+        self.build_december()
+        self.build_internal_counts()
 
-    # ------------------------------------------------------------------ people, cards, bank cards
-    def _hexref(self):
-        while True:
-            v = "%016X" % int(self.rng.integers(0, 2 ** 63))
-            if v not in self.token_owner:
-                return v
+    # ---------------------------------------------------------------- edge counts
+    def build_edge_counts(self):
+        r = self.rng
+        for svc in K.EDGE:
+            lam = edge_rate(svc)
+            wob = np.repeat(r.normal(1.0, 0.04, 365), 24)          # day-to-day wobble outside December
+            hod, doy, month, dow = _calendar()
+            lam = lam * np.where(month == 12, 1.0, wob)
+            self.N[svc] = r.poisson(lam).astype(np.int64)
 
-    def _members(self):
-        P, rng = self.P, self.rng
-        self.homes, self.members, self.token_owner, self.cards = [], [], {}, {}
-        self.card_seq = 0
-        stores = [s[0] for s in K.STORES]
-        sp = np.array([s[3] for s in K.STORES])
-        for h in range(P["H"]):
-            u = rng.random()
-            t = 'S' if u < 0.52 else ('C' if u < 0.88 else 'F')
-            online = bool(rng.random() < P["online"][t])
-            roles = ['S'] if t == 'S' else (['P', 'Q'] if t == 'C' else ['P', 'Q', 'K'])
-            if len(roles) == 1:
-                habit = 'own'
-            else:
-                v = rng.random()
-                habit = 'shop' if v < P["shop"] else ('own' if v < P["shop"] + P["sep"] else 'mixed')
-            store = stores[int(rng.choice(3, p=sp / sp.sum()))]
-            home = dict(id=h, type=t, online=online, roles=roles, habit=habit, ksh=bool(rng.random() < P["ksh"]),
-                        store=store, members=[])
-            self.homes.append(home)
-            for r in roles:
-                m = dict(id=len(self.members), home=h, role=r, tokens=[], card=None, cards=[], store=store,
-                         age=self._age(r))
-                for k in range(2 if rng.random() < 0.25 else 1):
-                    tok = self._hexref()
-                    self.token_owner[tok] = m["id"]
-                    m["tokens"].append(tok)
-                if rng.random() < {'S': 1.0, 'P': 1.0, 'Q': 0.93, 'K': 0.85}[r]:
-                    m["card"] = self._new_card(m, None)
-                self.members.append(m)
-                home["members"].append(m["id"])
-        self.tok_info = {}
-        for tok in self.token_owner:
-            self._tok_info(tok)
+    # ---------------------------------------------------------------- December: the sampler and the kept traces
+    def build_december(self):
+        """Kept traces for the last hour of 30 November (its spans that started in December are exported) and every
+        December hour. Each kept span: trace, id, parent, service, operation, kind, start (s from 1 December 00:00
+        UTC), duration (ms), HTTP status."""
+        r = self.rng
+        sp = {k: [] for k in ("trace", "sid", "parent", "svc", "op", "kind", "t0", "ms", "code")}
+        self.sp = sp
+        self.K_edge = {s: np.zeros(H, dtype=np.int64) for s in K.EDGE}       # kept edge requests by hour
+        # December requests the internal services handled, built from every edge request's calls: kept + not kept
+        self.Nint = {c: np.zeros(H, dtype=np.int64) for c in K.INTERNAL}
+        self.Eint = {c: np.zeros(H, dtype=np.int64) for c in K.INTERNAL}
+        self.Edec = {s: np.zeros(H, dtype=np.int64) for s in K.EDGE}
+        self.slow_true = {s: 0.0 for s in K.SVC}                            # expected slow requests, all of them
+        self.q = {}
+        load_e = {s: _load(self.N[s][DEC0 - 1:DEC0 + H], s) for s in K.EDGE}   # index 0 is 30 November 23:00
+        n_calls = {}
+        for c in K.INTERNAL:
+            n_calls[c] = sum(self.N[e][DEC0 - 1:DEC0 + H] * p for e, op, p in callers(c))
+        load_i = {c: _load(n_calls[c], c) for c in K.INTERNAL}
+        self.load = {**load_e, **load_i}
+        tid = sid = 0
+        for s in K.EDGE:
+            n = self.N[s][DEC0 - 1:DEC0 + H]
+            prev = self.N[s][DEC0 - 2:DEC0 + H - 1]
+            q = np.minimum(1.0, K.TARGET_PER_HOUR / np.maximum(prev, 1))
+            self.q[s] = q[1:]
+            k = r.binomial(n, q)
+            self.K_edge[s][:] = k[1:]
+            m_own, a_own, sig_own, _ = K.LAT[(s, "own")]
+            med_own = self.base[(s, "own")] * _g(load_e[s], a_own)
+            mode, calls = K.GRAPH.get(s, (None, []))
+            for hh in range(H + 1):
+                h = hh - 1                                     # -1 is 30 November 23:00
+                kk, nn = int(k[hh]), int(n[hh])
+                # requests not kept still make their calls (the internal services' counts) and fail at the same rate
+                if h >= 0:
+                    self.Edec[s][h] += r.binomial(nn - kk, K.ERR[s])
+                t_start = h * 3600 + np.sort(r.uniform(0.05, 3599.95, kk))
+                own = np.exp(np.log(med_own[hh]) + sig_own * r.standard_normal(kk))
+                err = r.random(kk) < K.ERR[s]
+                own = np.where(err, r.uniform(4, 40, kk), own)
+                end_calls = np.zeros(kk)
+                cursor = t_start + own * 0.55 / 1000 if mode == "seq" else t_start + r.uniform(0.002, 0.006, kk)
+                root_ids = np.arange(sid, sid + kk)
+                sid += kk
+                child = []                                      # (trace i, client start, client ms, server rows)
+                for c, op, p in calls:
+                    made = (r.random(kk) < p) & ~err
+                    # the requests not kept make the call at the same share
+                    if h >= 0:
+                        mu = r.binomial(nn - kk, p * (1 - K.ERR[s])) if nn > kk else 0
+                    m_c, a_c, sig_c, _ = K.LAT[(c, op)]
+                    med_c = self.base[(c, op)] * _g(load_i[c][hh], a_c)
+                    pslow = (1 - K.ERR[c]) * (1 - norm.cdf((np.log(K.THRESHOLD[c]) - np.log(med_c)) / sig_c))
+                    retries_unkept = 0
+                    if h >= 0 and mu:
+                        e_un = r.binomial(mu, K.ERR[c])
+                        self.Eint[c][h] += e_un
+                        if c in K.RETRY:
+                            retries_unkept = e_un
+                            self.Eint[c][h] += r.binomial(e_un, K.ERR[c])
+                        self.Nint[c][h] += mu + retries_unkept
+                        self.slow_true[c] += (mu + retries_unkept) * pslow
+                    idx = np.nonzero(made)[0]
+                    for i in idx:
+                        tries = 1
+                        t_call = cursor[i] if mode == "seq" else t_start[i] + float(r.uniform(0.002, 0.006))
+                        total = 0.0
+                        while True:
+                            code = 500 if r.random() < K.ERR[c] else 200
+                            ms = float(r.uniform(6, 60)) if code == 500 else float(
+                                np.exp(np.log(med_c) + sig_c * r.standard_normal()))
+                            net = float(np.exp(np.log(1.8) + 0.4 * r.standard_normal()))
+                            child.append((i, t_call, ms + net, c, op, code, ms))
+                            if h >= 0 or t_call + 0.0005 >= 0:
+                                ch = int((t_call + 0.0005) // 3600)
+                                if 0 <= ch < H:
+                                    self.Nint[c][ch] += 1
+                                    self.Eint[c][ch] += code == 500
+                            total += (ms + net) / 1000 + 0.0004
+                            t_call += (ms + net) / 1000 + 0.0004
+                            if code == 500 and c in K.RETRY and tries == 1:
+                                tries += 1
+                                continue
+                            break
+                        if mode == "seq":
+                            cursor[i] = t_call + float(r.uniform(0.0003, 0.0015))
+                        end_calls[i] = max(end_calls[i], t_call)
+                # the edge request's own span covers its calls
+                if mode == "seq":
+                    end = np.where(end_calls > 0, np.maximum(end_calls, cursor) + own * 0.45 / 1000,
+                                   t_start + own / 1000)
+                elif mode == "par":
+                    end = np.maximum(t_start + own / 1000, end_calls) + 0.002
+                else:
+                    end = t_start + own / 1000
+                for j in range(kk):
+                    code = 500 if err[j] else 200
+                    sp["trace"].append(tid + j); sp["sid"].append(int(root_ids[j])); sp["parent"].append(-1)
+                    sp["svc"].append(s); sp["op"].append("own"); sp["kind"].append("SERVER")
+                    sp["t0"].append(float(t_start[j])); sp["ms"].append(float((end[j] - t_start[j]) * 1000))
+                    sp["code"].append(code)
+                    if h >= 0:
+                        self.Edec[s][h] += code == 500
+                for (i, t_call, cms, c, op, code, ms) in child:
+                    cid, srv = sid, sid + 1
+                    sid += 2
+                    sp["trace"].append(tid + i); sp["sid"].append(cid); sp["parent"].append(int(root_ids[i]))
+                    sp["svc"].append(s); sp["op"].append(c + ":" + op); sp["kind"].append("CLIENT")
+                    sp["t0"].append(float(t_call)); sp["ms"].append(float(cms)); sp["code"].append(code)
+                    sp["trace"].append(tid + i); sp["sid"].append(srv); sp["parent"].append(cid)
+                    sp["svc"].append(c); sp["op"].append(op); sp["kind"].append("SERVER")
+                    sp["t0"].append(float(t_call + 0.0005)); sp["ms"].append(float(ms)); sp["code"].append(code)
+                tid += kk
+                # the edge service's expected slow requests this hour (every request, kept or not)
+                if h >= 0:
+                    self._edge_truth(s, hh, nn, med_own[hh], sig_own)
+        for k_ in sp:
+            sp[k_] = np.array(sp[k_])
+        # the internal services' realised kept calls enter their truth at their own operation's slow probability
+        for c in K.INTERNAL:
+            for e, op, p in callers(c):
+                m_c, a_c, sig_c, _ = K.LAT[(c, op)]
+                sel = (sp["svc"] == c) & (sp["op"] == op) & (sp["kind"] == "SERVER")
+                t = sp["t0"][sel]
+                hh = np.clip((t // 3600).astype(int) + 1, 0, H)
+                med_c = self.base[(c, op)] * _g(load_i[c][hh], a_c)
+                ps = (1 - K.ERR[c]) * (1 - norm.cdf((np.log(K.THRESHOLD[c]) - np.log(med_c)) / sig_c))
+                inwin = (t >= 0) & (t < H * 3600)
+                self.slow_true[c] += float(ps[inwin].sum())
 
-    def _age(self, r):
-        rng = self.rng
-        bands = ["18-24", "25-34", "35-44", "45-54", "55-64", "65+"]
-        p = {'S': [0.10, 0.22, 0.14, 0.14, 0.16, 0.24], 'P': [0.02, 0.18, 0.26, 0.24, 0.18, 0.12],
-             'Q': [0.03, 0.19, 0.25, 0.24, 0.17, 0.12], 'K': [0.62, 0.38, 0, 0, 0, 0]}[r]
-        return bands[int(rng.choice(6, p=p))]
-
-    def _tok_info(self, tok, region=None):
-        rng = self.rng
-        u = rng.random()
-        product = 'DEBIT' if u < 0.78 else ('CREDIT' if u < 0.96 else ('PREPAID' if u < 0.99 else 'COMMERCIAL'))
-        scheme = 'VISA' if rng.random() < 0.6 else 'MASTERCARD'
-        self.tok_info[tok] = (scheme, product, region or 'DOMESTIC')
-
-    def _new_card(self, m, issued):
-        rng = self.rng
-        while True:
-            body = "2981" + "%08d" % int(rng.integers(0, 10 ** 8))
-            no = K.ean13(body)
-            if no not in self.cards:
-                break
-        if issued is None:
-            issued = dt.date(2019, 4, 1) + dt.timedelta(days=int(rng.integers(0, 2400)))
-        self.cards[no] = dict(no=no, member=m["id"], type="MEMBER", issued=issued, status="ACTIVE", status_date=None,
-                              replaced_by=None, store=m["store"])
-        m["cards"].append(no)
-        return no
-
-    # ------------------------------------------------------------------ deals: which days the tills ran them
-    def _deal_days(self):
-        rng = self.rng
-        self.deal_missed = {}
-        for d in K.DEALS:
-            # the store whose tills did not take the deal's promotion file until someone noticed
-            store = ["DRM", "LSG", "KBN"][int(rng.choice(3, p=[0.5, 0.25, 0.25]))]
-            n = int(rng.integers(7, 12)) + (3 if store != "DRM" else 0)
-            self.deal_missed[d[0]] = (store, set(d[4] + dt.timedelta(days=i) for i in range(n)))
-
-    def deal_for(self, plu, day):
-        for d in K.DEALS:
-            if plu in d[2] and d[4] <= day <= d[5]:
-                return d
-        return None
-
-    # ------------------------------------------------------------------ store coffee purchases
-    def _pick_time(self, store, day):
-        rng = self.rng
-        lo, hi = dict((s[0], s[4]) for s in K.STORES)[store]
-        prof = np.array([0.5, 0.8, 1.1, 1.3, 1.2, 1.1, 1.0, 1.0, 1.1, 1.3, 1.2, 0.9, 0.6, 0.4][: hi - lo])
-        hr = lo + int(rng.choice(len(prof), p=prof / prof.sum()))
-        return dt.datetime.combine(day, dt.time(hr, int(rng.integers(0, 60)), int(rng.integers(0, 60))))
-
-    def _payer(self, m):
-        """The bank card a member pays a store purchase with, or None for cash."""
-        rng = self.rng
-        home = self.homes[m["home"]]
-        if rng.random() < self.P["cash"]:
-            return None
-        own = m["tokens"][0] if (len(m["tokens"]) == 1 or rng.random() < 0.8) else m["tokens"][1]
-        if m["role"] in ('Q', 'K') and home["habit"] != 'own':
-            p_use = {'shop': 0.7, 'mixed': 0.3}[home["habit"]] * (1.0 if m["role"] == 'Q' else (0.5 if home["ksh"] else 0.0))
-            if rng.random() < p_use:
-                return self.members[home["members"][0]]["tokens"][0]
-        return own
-
-    def _basket(self, brands, day, store):
-        """Pack lines for the chosen brands; a deal on the pack makes a pair likelier. Returns lines and the multibuy
-        state (deal id, pairs, missed)."""
-        rng = self.rng
-        lines, mbs = [], []
-        for b in brands:
-            plus = K.SKUS_OF[b]
-            w = np.array([3.0 if K.SKU[p][7] < 6 else 1.6 for p in plus])
-            plu = plus[int(rng.choice(len(plus), p=w / w.sum()))]
-            deal = self.deal_for(plu, day)
-            qty = 1
-            if deal is not None and rng.random() < self.P["mb"]:
-                qty = 2
-                if rng.random() < 0.2:
-                    qty = 4
-            elif rng.random() < 0.06:
-                qty = 2
-            for _ in range(qty):
-                lines.append(dict(plu=plu, brand=b, qty=1, value=K.SKU[plu][7]))
-            if deal is not None and qty >= 2:
-                mbs.append((deal[0], qty // 2))
-        return lines, mbs
-
-    def _store_coffee(self):
-        P, rng = self.P, self.rng
-        self.tx = []
-        self.adj_claims = []
-        for home in self.homes:
-            for mid in home["members"]:
-                m = self.members[mid]
-                key = (m["role"] + 'ON') if (home["online"] and m["role"] in ('P', 'Q', 'K')) else m["role"]
-                pv = rng.dirichlet(P["alpha"] * np.array(P["mix"][key]) * len(K.B))
-                n = int(rng.poisson(rng.gamma(2.0, P["rate"][m["role"]]) * P["occ"]))
-                days = sorted(TRADING[int(i)] for i in rng.integers(0, len(TRADING), size=n))
-                for day in days:
-                    nb = 1 + int(rng.random() < 0.18)
-                    brands = sorted(set(K.B[j] for j in rng.choice(len(K.B), size=nb, p=pv)), key=BI.get)
-                    store = home["store"] if rng.random() < 0.95 else ["DRM", "LSG", "KBN"][int(rng.integers(0, 3))]
-                    when = self._pick_time(store, day)
-                    self._add_store_tx(m, store, when, brands)
-
-    def _add_store_tx(self, m, store, when, brands):
-        rng = self.rng
-        lines, mbs = self._basket(brands, when.date(), store)
-        if m is not None and m["card"] is not None and rng.random() < self.P["pres"]:
-            card = 'MEMBER'
+    def _edge_truth(self, s, hh, nn, med_own, sig_own):
+        """Expected slow requests of an edge service in one hour, by simulation of the whole request."""
+        if not hasattr(self, "_mc"):
+            self._mc = np.random.default_rng(self.seed + 999)
+        R = 400
+        own = np.exp(np.log(med_own) + sig_own * self._mc.standard_normal(R))
+        mode, calls = K.GRAPH.get(s, (None, []))
+        parts = []
+        for c, op, p in calls:
+            m_c, a_c, sig_c, _ = K.LAT[(c, op)]
+            med_c = self.base[(c, op)] * _g(self.load[c][hh], a_c)
+            d = np.exp(np.log(med_c) + sig_c * self._mc.standard_normal(R)) + 2.0
+            parts.append(np.where(self._mc.random(R) < p, d, 0.0))
+        if not parts:
+            tot = own
+        elif mode == "par":
+            tot = np.maximum(own, np.max(np.stack(parts), axis=0)) + 2.0
         else:
-            card = None
-        tok = self._payer(m) if m is not None else None
-        t = dict(kind='sale', store=store, when=when, member=m["id"] if m else None,
-                 home=m["home"] if m else None, card=card, tok=tok, lines=lines, saving=[])
-        for deal_id, pairs in mbs:
-            missed_store, missed_days = self.deal_missed[deal_id]
-            missed = store == missed_store and when.date() in missed_days
-            deal = K.DEAL[deal_id]
-            plus = [ln["plu"] for ln in lines if ln["plu"] in deal[2]]
-            save = K.r2(sum(K.SKU[p][7] for p in plus[:2]) - deal[3])
-            if missed:
-                if rng.random() < self.P["claim"]:
-                    self.adj_claims.append(dict(tx=t, deal=deal_id, pairs=pairs, save=save))
-            else:
-                for _ in range(pairs):
-                    t["saving"].append(dict(deal=deal_id, value=-save))
-        self.tx.append(t)
-        return t
+            tot = own + np.sum(np.stack(parts), axis=0) + 1.5
+        self.slow_true[s] += nn * (1 - K.ERR[s]) * float((tot > K.THRESHOLD[s]).mean())
 
-    def _non_members(self):
-        P, rng = self.P, self.rng
-        self.nonmem_tokens = []
-        stores = [s[0] for s in K.STORES]
-        for k in range(int(P["H"] * P["nonmem"])):
-            tok = self._hexref()
-            self.token_owner[tok] = -1 - k
-            region = 'DOMESTIC' if rng.random() < 0.93 else ('EEA' if rng.random() < 0.6 else 'INTERNATIONAL')
-            self._tok_info(tok, region)
-            self.nonmem_tokens.append(tok)
-            pv = rng.dirichlet(P["alpha"] * np.array(P["mix"]['N']) * len(K.B))
-            store = stores[int(rng.choice(3, p=[0.62, 0.2, 0.18]))]
-            n = int(rng.poisson(rng.gamma(2.0, 2.0)))
-            for i in range(n):
-                day = TRADING[int(rng.integers(0, len(TRADING)))]
-                brand = K.B[int(rng.choice(len(K.B), p=pv))]
-                when = self._pick_time(store, day)
-                lines, mbs = self._basket([brand], day, store)
-                card = 'HOUSE' if rng.random() < 0.35 else None
-                tk = None if rng.random() < 0.25 else tok
-                t = dict(kind='sale', store=store, when=when, member=None, home=None, nonmem=k, card=card, tok=tk,
-                         lines=lines, saving=[])
-                for deal_id, pairs in mbs:
-                    missed_store, missed_days = self.deal_missed[deal_id]
-                    deal = K.DEAL[deal_id]
-                    plus = [ln["plu"] for ln in lines if ln["plu"] in deal[2]]
-                    save = K.r2(sum(K.SKU[p][7] for p in plus[:2]) - deal[3])
-                    if store == missed_store and day in missed_days:
-                        if rng.random() < self.P["claim"]:
-                            self.adj_claims.append(dict(tx=t, deal=deal_id, pairs=pairs, save=save))
-                    else:
-                        for _ in range(pairs):
-                            t["saving"].append(dict(deal=deal_id, value=-save))
-                self.tx.append(t)
+    # ---------------------------------------------------------------- internal counts for the year
+    def build_internal_counts(self):
+        r = np.random.default_rng(self.seed + 17)
+        for c in K.INTERNAL:
+            n = np.zeros(HOURS_YEAR, dtype=np.int64)
+            for e, op, p in callers(c):
+                n += r.binomial(self.N[e], p)
+            if c in K.RETRY:
+                n += r.binomial(n, K.ERR[c])
+            n[DEC0:DEC0 + H] = self.Nint[c]
+            self.N[c] = n
+            ev = r.binomial(n, K.ERR[c])
+            ev[DEC0:DEC0 + H] = self.Eint[c]
+            self.E[c] = ev
+        for s in K.EDGE:
+            ev = r.binomial(self.N[s], K.ERR[s])
+            ev[DEC0:DEC0 + H] = self.Edec[s]
+            self.E[s] = ev
 
-    # ------------------------------------------------------------------ the online shop
-    def _online(self):
-        P, rng = self.P, self.rng
-        self.accounts, self.orders = {}, []
-        seq = 0
-        online_plus = {b: [p for p in K.SKUS_OF[b] if K.SKU[p][8] == "Y"] for b in K.B}
-        for home in self.homes:
-            if not home["online"]:
-                continue
-            holder = self.members[home["members"][0]]
-            acc = "CA%06d" % (104000 + int(rng.integers(0, 890000)))
-            while acc in self.accounts:
-                acc = "CA%06d" % (104000 + int(rng.integers(0, 890000)))
-            self.accounts[acc] = dict(id=acc, home=home["id"], holder=holder["id"],
-                                      opened=dt.date(2023, 5, 1) + dt.timedelta(days=int(rng.integers(0, 900))))
-            pv = rng.dirichlet(P["alpha"] * np.array(P["mix"]['ON']) * len(K.B))
-            n = int(rng.poisson(17))
-            starts = sorted(K.ONLINE_FROM + dt.timedelta(days=int(i)) for i in rng.integers(0, 395, size=n))
-            first = len(self.orders)
-            for placed_day in starts:
-                has_coffee = rng.random() < 0.40
-                nb = 1 + int(rng.random() < 0.25)
-                brands = sorted(set(K.B[j] for j in rng.choice(len(K.B), size=nb, p=pv)), key=BI.get)
-                brands = [b for b in brands if online_plus[b]]
-                seq += 1
-                if has_coffee and brands:
-                    self._add_order(acc, home, holder, placed_day, brands, online_plus, seq)
-            # an order straddling a year end carries only coffee the account also had delivered inside 2026
-            mine = self.orders[first:]
-            core = set()
-            for o in mine:
-                if o["status"] == 'delivered' and o["placed"].year == K.YEAR and o["delivery"].year == K.YEAR:
-                    core |= {K.SKU[c["plu"]][1] for c in o["versions"][-1]["coffee"]}
-            keep = []
-            for o in mine:
-                if o["placed"].year != K.YEAR or o["delivery"].year != K.YEAR:
-                    for v in o["versions"]:
-                        v["coffee"] = [c for c in v["coffee"] if K.SKU[c["plu"]][1] in core]
-                    if not o["versions"][-1]["coffee"]:
-                        continue
-                keep.append(o)
-            self.orders[first:] = keep
-        self.orders.sort(key=lambda o: (o["placed"], o["no"]))
-
-    def _order_token(self, home, holder):
-        rng = self.rng
-        if len(home["members"]) > 1 and home["habit"] != 'own' and rng.random() < 0.3:
-            return self.members[home["members"][1]]["tokens"][0]
-        return holder["tokens"][0]
-
-    def _add_order(self, acc, home, holder, placed_day, brands, online_plus, seq, cancel_ok=True):
-        rng = self.rng
-        placed = dt.datetime.combine(placed_day, dt.time(int(rng.integers(7, 23)), int(rng.integers(0, 60)),
-                                                         int(rng.integers(0, 60))))
-        delivery = placed_day + dt.timedelta(days=int(rng.integers(1, 6)))
-        if delivery in CLOSED:
-            delivery += dt.timedelta(days=2)
-        coffee = []
-        for b in brands:
-            plus = online_plus[b]
-            plu = plus[int(rng.integers(0, len(plus)))]
-            coffee.append(dict(plu=plu, qty=1 + int(rng.random() < 0.2)))
-        other = K.r2(float(rng.lognormal(4.1, 0.45)))
-        versions = [dict(coffee=[dict(c) for c in coffee], other=other)]
-        for _ in range(int(rng.poisson(0.4))):
-            last = versions[-1]
-            cv = [dict(c) for c in last["coffee"]]
-            if cv and rng.random() < 0.6:
-                c = cv[int(rng.integers(0, len(cv)))]
-                c["qty"] = max(1, c["qty"] + (1 if rng.random() < 0.6 else -1))
-            versions.append(dict(coffee=cv, other=K.r2(last["other"] * float(rng.uniform(0.85, 1.25)))))
-        status = 'cancelled' if (cancel_ok and rng.random() < 0.04) else 'delivered'
-        o = dict(no="WO%07d" % (2600000 + seq * 7 + int(rng.integers(0, 7))), account=acc, home=home["id"],
-                 placed=placed, delivery=delivery, versions=versions, status=status,
-                 tok=self._order_token(home, holder))
-        self.orders.append(o)
-        if status == 'cancelled' and brands:
-            # the order is placed again a few days later with the same coffee
-            redo = placed_day + dt.timedelta(days=int(rng.integers(1, 4)))
-            self._add_order(acc, home, holder, redo, brands, online_plus, seq + 500000, cancel_ok=False)
-        return o
-
-    # ------------------------------------------------------------------ link strength
-    def _node(self, t):
-        if t.get("kind") != 'sale' or t["card"] != 'MEMBER':
-            return None
-        return self.members[t["member"]]["card"]
-
-    def _links(self):
-        """A home's shared bank card is a habit: every card (or account) that pays with a bank card someone else's card
-        also pays with does so at least kmin times; a weaker use falls back to the member's own card (an account gets a
-        card of its own), so one, two or three shared payments build the same homes."""
-        kmin = self.P["kmin"]
-        own_of = {m["id"]: m["tokens"][0] for m in self.members}
-        owner_card = {tk: m["card"] for m in self.members for tk in m["tokens"]}
-        sales = [t for t in self.tx if self._node(t) is not None]
-        deliv = [o for o in self.orders if o["status"] == 'delivered' and o["delivery"].year == K.YEAR]
-        for it in range(200):
-            cnt = collections.Counter()
-            for t in sales:
-                if t["tok"] is not None:
-                    cnt[(t["tok"], self._node(t))] += 1
-            for o in deliv:
-                cnt[(o["tok"], o["account"])] += 1
-            nodes = collections.defaultdict(set)
-            for (tk, nd) in cnt:
-                nodes[tk].add(nd)
-            weak = sorted((tk, nd) for (tk, nd), n in cnt.items() if len(nodes[tk]) > 1 and n < kmin)
-            if not weak:
-                break
-            by_tok = collections.defaultdict(list)
-            for t in sales:
-                by_tok[t["tok"]].append(t)
-            ord_tok = collections.defaultdict(list)
-            for o in self.orders:
-                ord_tok[o["tok"]].append(o)
-            done = set()
-            for tk, nd in weak:
-                if tk in done:
-                    continue
-                done.add(tk)
-                if nd.startswith("CA"):
-                    newtok = self._fresh_token(self.accounts[nd])
-                    for o in ord_tok[tk]:
-                        if o["account"] == nd:
-                            o["tok"] = newtok
-                elif owner_card.get(tk) != nd:
-                    for t in by_tok[tk]:
-                        if self._node(t) == nd:
-                            t["tok"] = own_of[t["member"]]
-                else:
-                    for t in by_tok[tk]:
-                        if self._node(t) != nd:
-                            t["tok"] = own_of[t["member"]]
-                    fresh = {}
-                    for o in ord_tok[tk]:
-                        if o["account"] not in fresh:
-                            fresh[o["account"]] = self._fresh_token(self.accounts[o["account"]])
-                        o["tok"] = fresh[o["account"]]
-        self.link_iterations = it
-
-    def _fresh_token(self, acc):
-        holder = self.members[acc["holder"]]
-        for tk in holder["tokens"][1:]:
-            if not any(t["tok"] == tk for t in self.tx if t.get("kind") == 'sale'):
-                return tk
-        tk = self._hexref()
-        self.token_owner[tk] = holder["id"]
-        self._tok_info(tk)
-        holder["tokens"].append(tk)
-        return tk
-
-    # ------------------------------------------------------------------ refunds (a pack bought again later)
-    def _refunds(self):
-        rng = self.rng
-        by_card = collections.defaultdict(list)
-        for t in self.tx:
-            if t["card"] == 'MEMBER' and t["tok"] is not None:
-                by_card[self.members[t["member"]]["card"]].append(t)
-        self.refunds = []
-        for card, txs in sorted(by_card.items()):
-            if len(txs) < 3 or rng.random() > 0.05:
-                continue
-            txs = sorted(txs, key=lambda x: x["when"])
-            src = txs[int(rng.integers(0, len(txs) - 1))]
-            ln = src["lines"][0]
-            # only a brand the card buys again on a later receipt
-            later = [x for x in txs if x["when"] > src["when"] and any(l2["brand"] == ln["brand"] for l2 in x["lines"])]
-            if not later:
-                continue
-            when = src["when"] + dt.timedelta(days=int(rng.integers(1, 12)), minutes=int(rng.integers(5, 300)))
-            if when.year != K.YEAR or when.date() in CLOSED:
-                continue
-            when = when.replace(hour=min(max(when.hour, 9), 19))
-            rev = []
-            for s in src["saving"]:
-                if K.DEAL[s["deal"]][2] and ln["plu"] in K.DEAL[s["deal"]][2]:
-                    rev.append(dict(deal=s["deal"], value=-s["value"]))
-                    break
-            r = dict(kind='refund', store=src["store"], when=when, member=src["member"], home=src["home"],
-                     card='MEMBER', tok=src["tok"], lines=[dict(plu=ln["plu"], brand=ln["brand"], qty=-1,
-                                                                value=-ln["value"])],
-                     saving=rev, orig=src)
-            self.refunds.append(r)
-            self.tx.append(r)
-
-    # ------------------------------------------------------------------ the coffee counter
-    def _counter(self):
-        rng = self.rng
-        self.labels, self.counter_pay = [], []
-        seq = {"S1": 10418, "S2": 2276}
-        members = [m for m in self.members if m["store"] == "DRM"]
-        coffees = [(r[0], c[0], c[1], c[2]) for r in K.ROASTERS for c in r[2]]
-        rshare = {"GLN": 0.38, "ARD": 0.35, "INB": 0.27}
-        cw = np.array([rshare[c[0]] / 2 for c in coffees])
-        acc_p = [a[1] for a in K.ACCESSORIES]
-        for day in TRADING:
-            sunday = day.weekday() == 6
-            lo, hi = (12, 17) if sunday else K.COUNTER_HOURS
-            n = int(rng.poisson(24 if sunday else 38))
-            starts = sorted(dt.datetime.combine(day, dt.time(lo)) + dt.timedelta(seconds=int(s))
-                            for s in rng.integers(0, (hi - lo) * 3600 - 900, size=n))
-            for st in starts:
-                scale = "S1" if rng.random() < 0.5 else "S2"
-                u = rng.random()
-                nlab = 1 if u < 0.8 else (2 if u < 0.97 else 3)
-                same = nlab >= 2 and rng.random() < 0.35
-                chosen = []
-                for i in range(nlab):
-                    if i > 0 and same:
-                        chosen.append(chosen[0])
-                    else:
-                        chosen.append(coffees[int(rng.choice(len(coffees), p=cw / cw.sum()))])
-                t = st
-                sold = []
-                for c in chosen:
-                    nominal = float(rng.choice([0.125, 0.25, 0.5, 1.0, 0.2, 0.3], p=[0.08, 0.6, 0.2, 0.05, 0.04, 0.03]))
-                    if rng.random() < 0.11:
-                        w1 = round(nominal * float(rng.uniform(0.82, 0.95)), 3)
-                        c1 = c if rng.random() < 0.75 else coffees[int(rng.choice(len(coffees), p=cw / cw.sum()))]
-                        self._label(scale, seq, t, c1, w1, sold=False)
-                        t += dt.timedelta(seconds=int(rng.integers(40, 150)))
-                    w = round(nominal * float(rng.uniform(0.99, 1.05)), 3)
-                    sold.append(self._label(scale, seq, t, c, w, sold=True))
-                    t += dt.timedelta(seconds=int(rng.integers(30, 110)))
-                member = members[int(rng.integers(0, len(members)))] if rng.random() < 0.7 else None
-                if rng.random() < 0.72:
-                    nacc = 0 if rng.random() > 0.12 else (1 if rng.random() < 0.85 else 2)
-                    accs = [int(rng.integers(0, len(acc_p))) for _ in range(nacc)]
-                    amount = K.r2(sum(lb["price"] for lb in sold) + sum(acc_p[a] for a in accs))
-                    when = t + dt.timedelta(seconds=int(rng.integers(20, 180)))
-                    tok = (self._payer(member) if member else None) or (
-                        member["tokens"][0] if member else self.nonmem_tokens[int(rng.integers(0, len(self.nonmem_tokens)))])
-                    pay = dict(when=when, amount=amount, labels=sold, accessories=accs, tok=tok)
-                    for lb in sold:
-                        lb["paid"] = ("card", pay)
-                    self.counter_pay.append(pay)
-                else:
-                    when = t + dt.timedelta(minutes=int(rng.integers(5, 90)))
-                    if when.hour >= 22:
-                        when = when.replace(hour=21, minute=50)
-                    tx = dict(kind='counter', store="DRM", when=when, member=member["id"] if member else None,
-                              home=member["home"] if member else None,
-                              card='MEMBER' if (member and member["card"] and rng.random() < self.P["pres"]) else None,
-                              tok=None, lines=[], saving=[], counter=sold)
-                    for lb in sold:
-                        lb["paid"] = ("till", tx)
-                    self.tx.append(tx)
-        self._counter_unique()
-        self.labels.sort(key=lambda lb: (lb["scale"], lb["no"]))
-
-    COUNTER_WIN = (dt.timedelta(minutes=40), dt.timedelta(minutes=15))
-    TILL_AFTER = dt.timedelta(minutes=5)
-
-    def _counter_unique(self):
-        """Every counter card payment is the sum of one set of labels plus accessories among every label printed from
-        29 minutes before it to 7 minutes after, whichever labels other payments took, and no sum of accessories
-        alone; every counter line on a till is the price of one label printed earlier that day, to 5 minutes after the
-        line. The board files 25 minutes and the same day, so any reading near them matches the same labels. A label
-        that would allow a second reading is re-weighed by a gram and the pass repeats until none does."""
-        acc = [0.0] + [a[1] for a in K.ACCESSORIES] + \
-            [a[1] + b[1] for i, a in enumerate(K.ACCESSORIES) for b in K.ACCESSORIES[i:]]
-        accset = set(int(round(x * 100)) for x in acc)
-        till_tx = [t for t in self.tx if t["kind"] == 'counter']
-
-        step = [1]
-
-        def bump(lb):
-            # one to three grams, varied by label and pass, so two labels of one coffee and weight never move in step
-            lb["kg"] = round(lb["kg"] + 0.001 * (1 + (lb["no"] * 7 + step[0]) % 3), 3)
-            lb["price"] = K.r2(lb["kg"] * lb["ppk"])
-
-        def key(x):
-            return (x["scale"], x["no"])
-
-        for it in range(800):
-            step[0] = it
-            labs = sorted(self.labels, key=lambda x: x["when"])
-            keys = [x["when"] for x in labs]
-            by_day = collections.defaultdict(list)
-            for x in labs:
-                by_day[x["when"].date()].append(x)
-            changed = 0
-            for p in sorted(self.counter_pay, key=lambda x: x["when"]):
-                p["amount"] = K.r2(sum(lb["price"] for lb in p["labels"]) +
-                                   sum(K.ACCESSORIES[a][1] for a in p["accessories"]))
-                amt = int(round(p["amount"] * 100))
-                if amt in accset:
-                    bump(max(p["labels"], key=lambda x: x["price"]))
-                    changed += 1
-                    continue
-                lo = bisect.bisect_left(keys, p["when"] - self.COUNTER_WIN[0])
-                hi = bisect.bisect_right(keys, p["when"] + self.COUNTER_WIN[1])
-                cands = labs[lo:hi]
-                fits = []
-                for k in (1, 2, 3):
-                    for comb in itertools.combinations(cands, k):
-                        if amt - sum(int(round(x["price"] * 100)) for x in comb) in accset:
-                            fits.append(frozenset(key(x) for x in comb))
-                true = frozenset(key(x) for x in p["labels"])
-                if fits != [true]:
-                    alts = [f for f in fits if f != true]
-                    byid = {key(x): x for x in cands}
-                    if alts:
-                        pick = sorted(true - alts[0]) or sorted(alts[0] - true)
-                        bump(byid[pick[0]])
-                    else:
-                        bump(max(p["labels"], key=lambda x: x["price"]))
-                    changed += 1
-            for t in sorted(till_tx, key=lambda x: x["when"]):
-                for lb in t["counter"]:
-                    cands = [x for x in by_day[t["when"].date()] if x["when"] <= t["when"] + self.TILL_AFTER
-                             and abs(x["price"] - lb["price"]) < 0.005]
-                    if [key(x) for x in cands] != [key(lb)]:
-                        bump(lb)
-                        changed += 1
-            if not changed:
-                # the graded cells (each guest roaster's kilograms a quarter) clear of a rounding edge
-                cell = collections.defaultdict(list)
-                for x in self.labels:
-                    if x["sold"]:
-                        cell[(x["roaster"], K.quarter(x["when"].date()))].append(x)
-                for c in sorted(cell):
-                    v = sum(x["kg"] for x in cell[c])
-                    if abs((v * 10) % 1 - 0.5) < 0.04:
-                        movable = [x for x in cell[c] if not (x["scale"] == "S2" and x["shown"] != x["when"])]
-                        bump(max(movable, key=lambda x: (x["when"], x["no"])))
-                        changed += 1
-            if not changed:
-                break
-        else:
-            raise RuntimeError("the counter's labels did not settle to one reading")
-        self.counter_iterations = it
-
-    def _label(self, scale, seq, when, coffee, weight, sold):
-        seq[scale] += 1
-        rid, name, ph1, ph2 = coffee
-        ppk = ph1 if when.date() < K.PRICE_CHANGE else ph2
-        shown = when
-        if scale == "S2" and K.SCALE_RESET <= when < K.SCALE_FIXED:
-            shown = dt.datetime(K.YEAR, 1, 1) + (when - K.SCALE_RESET)
-        lb = dict(no=seq[scale], scale=scale, when=when, shown=shown, roaster=rid, coffee=name, kg=weight,
-                  ppk=ppk, price=K.r2(weight * ppk), sold=sold, paid=None)
-        self.labels.append(lb)
-        return lb
-
-    # ------------------------------------------------------------------ till receipts and the service desk
-    def _receipts(self):
-        rng = self.rng
-        # service-desk adjustments for multibuys the tills missed: cash, a later receipt, the original cited
-        for c in self.adj_claims:
-            src = c["tx"]
-            when = src["when"] + dt.timedelta(days=int(rng.integers(3, 49)), minutes=int(rng.integers(0, 240)))
-            if when.year != K.YEAR or when.date() in CLOSED:
-                continue
-            when = when.replace(hour=min(max(when.hour, 9), 20))
-            c["when"] = when
-        claims = [c for c in self.adj_claims if "when" in c]
-        # a customer missing two multibuys on one receipt gets one adjustment line for both
-        by_src = collections.defaultdict(list)
-        for c in claims:
-            by_src[id(c["tx"])].append(c)
-        self.adjust = []
-        for key, cs in by_src.items():
-            src = cs[0]["tx"]
-            total = K.r2(sum(c["save"] * c["pairs"] for c in cs))
-            a = dict(kind='adjust', store=src["store"], when=cs[0]["when"], member=src["member"], home=src["home"],
-                     card=src["card"], tok=None, lines=[], saving=[], claims=cs, value=-total, orig=src)
-            self.adjust.append(a)
-            self.tx.append(a)
-        # tills, receipt numbers, baskets and amounts
-        tills = {s[0]: [t for t in s[2] if t != K.DESK] for s in K.STORES}
-        self.tx.sort(key=lambda t: (t["when"], t["store"], t.get("member") or 0))
-        busy = collections.defaultdict(list)
-        for t in self.tx:
-            if t["kind"] in ('refund', 'adjust'):
-                t["till"] = K.DESK
-            else:
-                opts = tills[t["store"]]
-                t["till"] = opts[int(rng.integers(0, len(opts)))]
-            key = (t["store"], t["till"], t["when"].date())
-            # one receipt at a time on a till: keep sixty seconds between the extract's receipts
-            while any(abs((t["when"] - w).total_seconds()) < 60 for w in busy[key]):
-                t["when"] += dt.timedelta(seconds=61)
-            busy[key].append(t["when"])
-        self.tx.sort(key=lambda t: (t["store"], t["till"], t["when"]))
-        counter = {}
-        for t in self.tx:
-            k = (t["store"], t["till"])
-            counter.setdefault(k, int(rng.integers(1200, 9000)))
-            counter[k] += int(rng.integers(3, 40))
-            t["receipt"] = counter[k]
-            coffee = sum(ln["value"] for ln in t["lines"]) + sum(s["value"] for s in t["saving"])
-            coffee += sum(lb["price"] for lb in t.get("counter", []))
-            if t["kind"] == 'adjust':
-                coffee = t["value"]
-            if t["kind"] in ('refund', 'adjust'):
-                other = 0.0
-            else:
-                other = K.r2(float(rng.lognormal(3.2, 0.8))) if rng.random() < 0.85 else 0.0
-            t["total"] = K.r2(coffee + other)
-            if t["kind"] == 'adjust':
-                t["tok"] = None
-            if t["tok"] is None:
-                t["card_amount"] = 0.0
-            elif t["kind"] == 'sale' and t["total"] > 25 and rng.random() < 0.02:
-                cash = float(rng.choice([5, 10, 20]))
-                t["card_amount"] = K.r2(t["total"] - cash)
-            else:
-                t["card_amount"] = t["total"]
-        seen = collections.defaultdict(list)
-        for t in sorted(self.tx, key=lambda x: (x["store"], x["till"], x["when"])):
-            if t["card_amount"] == 0:
-                continue
-            if t["kind"] == 'refund':
-                continue
-            key = (t["store"], t["till"], t["when"].date())
-            while round(t["card_amount"], 2) in seen[key]:
-                t["total"] = K.r2(t["total"] + 0.37)
-                t["card_amount"] = K.r2(t["card_amount"] + 0.37)
-            seen[key].append(round(t["card_amount"], 2))
-        self.tx.sort(key=lambda t: (t["when"], t["store"], t["till"]))
-
-    # ------------------------------------------------------------------ Faircourt's settlement
-    def tid_of(self, store, till, when):
-        if (store, till) == ("LSG", 2):
-            return "41023202" if when < K.SWAP_DATE else "41023212"
-        return [tid for s, tl, tid, a, b in K.TERMINALS if s == store and tl == till][0]
-
-    def _fees(self, tok, amount, ecom=False):
-        scheme, product, region = self.tok_info[tok]
-        rate = {'DEBIT': 0.0010, 'CREDIT': 0.0030, 'PREPAID': 0.0020, 'COMMERCIAL': 0.0150}[product]
-        if region != 'DOMESTIC':
-            rate = 0.0030 if region == 'EEA' else 0.0115
-        if ecom:
-            rate += 0.0005
-        inter = K.r2(amount * rate)
-        scheme_fee = K.r2(amount * 0.0004 + 0.01)
-        service = K.r2(0.045 + amount * 0.0005)
-        return inter, scheme_fee, service
-
-    def _settlement(self):
-        rng = self.rng
-        rows = []
-        auth = [100000]
-
-        def add(mid, tid, utc, typ, amount, tok, entry, ref=""):
-            auth[0] += int(rng.integers(1, 97))
-            scheme, product, region = self.tok_info[tok]
-            inter, sf, sv = self._fees(tok, amount, ecom=(entry == 'ECOM'))
-            local = K.to_local(utc).date()
-            settle = next_banking_day(local, 1 if product == 'DEBIT' else 2)
-            net = K.r2(amount - inter - sf - sv) if typ == 'SALE' else K.r2(-(amount) - sf - sv)
-            rows.append(dict(merchant_id=mid, terminal_id=tid, txn_time_utc=utc, txn_type=typ, amount=amount,
-                             currency="EUR", card_ref=tok, scheme=scheme, card_product=product, card_region=region,
-                             entry_mode=entry, auth_code="%06d" % (auth[0] % 1000000), merchant_ref=ref,
-                             settle_date=settle, interchange=inter, scheme_fee=sf, service_charge=sv,
-                             net_settled=net))
-            return rows[-1]
-
-        self.coffee_rows = {}
-        for t in self.tx:
-            if t["tok"] is None or t["card_amount"] == 0:
-                continue
-            lag = int(rng.integers(4, 46))
-            utc = K.to_utc(t["when"] - dt.timedelta(seconds=lag))
-            tid = self.tid_of(t["store"], t["till"], t["when"])
-            typ = 'REFUND' if t["kind"] == 'refund' else 'SALE'
-            entry = 'CTLS' if (abs(t["card_amount"]) <= 100 and rng.random() < 0.82) else 'CHIP'
-            r = add(K.MID[t["store"]], tid, utc, typ, K.r2(abs(t["card_amount"])), t["tok"], entry)
-            self.coffee_rows[id(t)] = r
-        for p in self.counter_pay:
-            utc = K.to_utc(p["when"])
-            entry = 'CTLS' if (p["amount"] <= 100 and rng.random() < 0.85) else 'CHIP'
-            p["row"] = add(K.MID["DRM"], K.COUNTER_TID, utc, 'SALE', p["amount"], p["tok"], entry)
-        for o in self.orders:
-            if o["status"] != 'delivered' or o["delivery"].year != K.YEAR:
-                continue
-            fin = o["versions"][-1]
-            total = K.r2(sum(K.SKU[c["plu"]][7] * c["qty"] for c in fin["coffee"]) + fin["other"])
-            o["total"] = total
-            cap = dt.datetime.combine(o["delivery"], dt.time(6, int(rng.integers(0, 60)), int(rng.integers(0, 60))))
-            o["row"] = add(K.MID["WEB"], K.WEB_TID, K.to_utc(cap), 'SALE', total, o["tok"], 'ECOM', o["no"])
-        self._background(add)
-        rows.sort(key=lambda r: (r["txn_time_utc"], r["terminal_id"], r["amount"]))
-        self.settle = rows
-
-    def _background(self, add):
-        """Every other card payment on the tills and online: the rest of the shop, never coffee."""
-        rng = self.rng
-        pool = [tk for m in self.members for tk in m["tokens"]] + self.nonmem_tokens
-        weight = np.array([3.0 if self.token_owner[tk] >= 0 else 1.0 for tk in pool])
-        weight /= weight.sum()
-        taken = set()
-        for r in list(self.coffee_rows.values()):
-            taken.add((r["terminal_id"], K.to_local(r["txn_time_utc"]).date(), r["amount"]))
-        for p in self.counter_pay:
-            taken.add((p["row"]["terminal_id"], K.to_local(p["row"]["txn_time_utc"]).date(), p["row"]["amount"]))
-        per_day = {"DRM": 330, "LSG": 95, "KBN": 80}
-        tills = {s[0]: [t for t in s[2] if t != K.DESK] for s in K.STORES}
-        for day in TRADING:
-            for store, lam in per_day.items():
-                n = int(rng.poisson(lam * (1.15 if day.weekday() >= 4 else 0.95)))
-                toks = rng.choice(len(pool), size=n, p=weight)
-                tl = rng.integers(0, len(tills[store]), size=n)
-                amts = np.round(rng.lognormal(3.3, 0.85, size=n), 2)
-                for i in range(n):
-                    when = self._pick_time(store, day)
-                    till = tills[store][int(tl[i])]
-                    tid = self.tid_of(store, till, when)
-                    amount = K.r2(max(0.5, float(amts[i])))
-                    utc = K.to_utc(when)
-                    while (tid, day, amount) in taken:
-                        amount = K.r2(amount + 0.01)
-                    entry = 'CTLS' if (amount <= 100 and rng.random() < 0.8) else 'CHIP'
-                    add(K.MID[store], tid, utc, 'SALE', amount, pool[int(toks[i])], entry)
-        # online orders without coffee, numbered from the same series as the coffee orders
-        used = {o["no"] for o in self.orders}
-        for acc in sorted(self.accounts):
-            a = self.accounts[acc]
-            home = self.homes[a["home"]]
-            holder = self.members[a["holder"]]
-            for _ in range(int(rng.poisson(9))):
-                day = TRADING[int(rng.integers(0, len(TRADING)))]
-                cap = dt.datetime.combine(day, dt.time(6, int(rng.integers(0, 60)), int(rng.integers(0, 60))))
-                ref = "WO%07d" % (2600000 + int(rng.integers(0, 4000000)))
-                while ref in used:
-                    ref = "WO%07d" % (2600000 + int(rng.integers(0, 4000000)))
-                used.add(ref)
-                add(K.MID["WEB"], K.WEB_TID, K.to_utc(cap), 'SALE', K.r2(float(rng.lognormal(4.1, 0.45))),
-                    holder["tokens"][0], 'ECOM', ref)
-
-    # ------------------------------------------------------------------ the Rewards register
-    def _register(self):
-        rng = self.rng
-        # a lost card replaced during the year: only where each half of the year keeps every shared bank card's
-        # use at kmin or more, so a replaced card links to its successor and its home under every threshold
-        kmin = self.P["kmin"]
-        users = collections.defaultdict(set)
-        for t in self.tx:
-            if t["kind"] == 'sale' and t["card"] == 'MEMBER' and t["tok"] is not None:
-                users[t["tok"]].add(t["member"])
-        for o in self.orders:
-            users[o["tok"]].add(("acc", o["account"]))
-        pays = collections.defaultdict(list)
-        for t in self.tx:
-            if t["card"] == 'MEMBER' and t["member"] is not None:
-                pays[t["member"]].append(t)
-        self.replaced, self.cut = {}, {}
-        for mid in sorted(pays):
-            m = self.members[mid]
-            sales = sorted((t for t in pays[mid] if t["kind"] == 'sale'), key=lambda x: x["when"])
-            if len(sales) < 2 * kmin + 6 or rng.random() > 0.05:
-                continue
-            cut = sales[len(sales) // 2]["when"].date()
-            ok = True
-            for tk in set(t["tok"] for t in sales if t["tok"] is not None):
-                before = sum(1 for t in sales if t["tok"] == tk and t["when"].date() < cut)
-                after = sum(1 for t in sales if t["tok"] == tk and t["when"].date() >= cut)
-                if len(users[tk]) > 1 and (0 < before < kmin or 0 < after < kmin or before == 0 or after == 0):
-                    ok = False
-            own = m["tokens"][0]
-            if sum(1 for t in sales if t["tok"] == own and t["when"].date() < cut) < kmin or \
-                    sum(1 for t in sales if t["tok"] == own and t["when"].date() >= cut) < kmin:
-                ok = False
-            if not ok:
-                continue
-            old = m["card"]
-            new = self._new_card(m, cut)
-            self.cards[old].update(status="REPLACED", status_date=cut, replaced_by=new)
-            m["card"] = new
-            self.replaced[old] = new
-            self.cut[mid] = (cut, old, new)
-        for t in self.tx:
-            if t["card"] == 'MEMBER':
-                c = self.cut.get(t["member"])
-                if c:
-                    t["card_no"] = c[1] if t["when"].date() < c[0] else c[2]
-                else:
-                    t["card_no"] = self.members[t["member"]]["card"]
-            elif t["card"] == 'HOUSE':
-                t["card_no"] = self.house_card(t["store"])
-            else:
-                t["card_no"] = ""
-        # members who bought no coffee in 2026, and cards closed before or during it
-        for i in range(int(len(self.members) * 0.9)):
-            fake = dict(id=-10 - i, store=["DRM", "LSG", "KBN"][int(rng.choice(3, p=[0.58, 0.23, 0.19]))], cards=[])
-            no = self._new_card(fake, None)
-            if rng.random() < 0.06:
-                self.cards[no]["status"] = "CLOSED"
-                self.cards[no]["status_date"] = dt.date(2024, 1, 1) + dt.timedelta(days=int(rng.integers(0, 1000)))
-            self.cards[no]["age"] = self._age('S' if rng.random() < 0.5 else 'P')
-        for m in self.members:
-            for no in m["cards"]:
-                self.cards[no]["age"] = m["age"]
-        for code, name, *_ in K.STORES:
-            no = self.house_card(code)
-            self.cards[no] = dict(no=no, member=None, type="STORE", issued=dt.date(2019, 4, 1), status="ACTIVE",
-                                  status_date=None, replaced_by=None, store=code, age="")
-        self.member_no = {}
-        taken = set()
-        for no, c in sorted(self.cards.items()):
-            if c["type"] == "STORE":
-                continue
-            key = c["member"]
-            if key not in self.member_no:
-                while True:
-                    v = "M%07d" % int(rng.integers(1100000, 1990000))
-                    if v not in taken:
-                        break
-                taken.add(v)
-                self.member_no[key] = v
-
-    @staticmethod
-    def house_card(store):
-        return {"DRM": "2980000000017", "LSG": "2980000000024", "KBN": "2980000000031"}[store]
-
-    # ------------------------------------------------------------------ truth
-    def card_home(self):
-        out = {}
-        for m in self.members:
-            for no in m["cards"]:
-                out[no] = m["home"]
-        return out
+    # ---------------------------------------------------------------- truths the pack cannot show
+    def true_sli(self, svc):
+        return 100 * self.slow_true[svc] / self.N[svc][DEC0:DEC0 + H].sum()

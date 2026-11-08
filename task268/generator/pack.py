@@ -1,270 +1,382 @@
-"""Write the evidence pack from the seeded world: each system's file in its own format and idiom."""
+"""Write task268's evidence pack: the tracing store's December span export, the load balancer's two 2026 request
+exports, the deployment log, the cloud billing lines, invoices and resource inventory, the incident export and the
+status page history; docs.py writes the standard, the catalogue, the readme and the two context files."""
 import csv
 import datetime as dt
-import io
 import json
 import os
 
 import numpy as np
+import pyarrow as pa
+import pyarrow.parquet as pq
 
+import asks as A
 import common as K
-import docs
 import world as W
 
-
-def _f2(x):
-    return "%.2f" % x
-
-
-def till_rows(w):
-    """The coffee category's till lines as the warehouse extract holds them: one row a line, the receipt's own
-    fields on every line."""
-    out = []
-    for t in sorted(w.tx, key=lambda x: (x["when"], x["store"], x["till"], x["receipt"])):
-        tender = "CASH" if t["card_amount"] == 0 else ("CARD+CASH" if abs(t["card_amount"]) < abs(t["total"]) - 0.001
-                                                       else "CARD")
-        lines = []
-        if t["kind"] in ('sale', 'refund'):
-            merged = {}
-            for ln in t["lines"]:
-                k = ln["plu"]
-                if k not in merged:
-                    merged[k] = [0, 0.0]
-                merged[k][0] += ln["qty"]
-                merged[k][1] += ln["value"]
-            note = ""
-            if t["kind"] == 'refund':
-                o = t["orig"]
-                note = "refund rcpt %s %d %06d %s" % (o["store"], o["till"], o["receipt"], o["when"].strftime("%d/%m"))
-            for plu, (q, v) in merged.items():
-                lines.append((plu, K.SKU[plu][3], q, K.r2(v), "", note))
-            for s in t["saving"]:
-                q = 1 if s["value"] < 0 else -1
-                lines.append(("", "MULTIBUY SAVING", q, K.r2(s["value"]), s["deal"], ""))
-        elif t["kind"] == 'counter':
-            for lb in t["counter"]:
-                lines.append((K.COUNTER_PLU, "COUNTER COFFEE LOOSE", 1, lb["price"], "", ""))
-        elif t["kind"] == 'adjust':
-            o = t["orig"]
-            note = "MB missed rcpt %s %d %06d %s" % (o["store"], o["till"], o["receipt"], o["when"].strftime("%d/%m"))
-            lines.append((K.ADJ_PLU, "MULTIBUY ADJ", 1, K.r2(t["value"]), "", note))
-        for i, (plu, desc, q, v, promo, note) in enumerate(lines, 1):
-            out.append([t["store"], t["till"], "%06d" % t["receipt"], t["when"].strftime("%Y-%m-%d %H:%M:%S"), i, plu,
-                        desc, q, _f2(v), promo, t["card_no"], tender, _f2(t["card_amount"]), _f2(t["total"]), note])
-    return out
+EPOCH = dt.datetime(1970, 1, 1)
+DEC0_UTC = dt.datetime(2026, 12, 1)
 
 
-TILL_HEAD = ["store", "till", "receipt", "txn_time", "line", "plu", "description", "qty", "value", "promo",
-             "rewards_card", "tender", "card_amount", "txn_total", "note"]
+def _ns(t):
+    return int((t - EPOCH).total_seconds()) * 10 ** 9
 
 
-def write_csv(path, head, rows):
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        wr = csv.writer(f, lineterminator="\r\n")
-        wr.writerow(head)
-        wr.writerows(rows)
+def _hex(r, n):
+    return "".join("%02x" % b for b in r.integers(0, 256, n // 2, dtype=np.uint8))
 
 
-def online_json(w):
-    orders = []
-    for o in w.orders:
-        if o["delivery"] > dt.date(2027, 1, 7):
-            continue
-        vs = []
-        t = o["placed"]
-        for i, v in enumerate(o["versions"], 1):
-            if i > 1:
-                t = t + dt.timedelta(hours=int(3 + 7 * i), minutes=17 * i)
-            lines = [dict(sku=c["plu"], item=K.SKU[c["plu"]][4], qty=c["qty"], price=K.SKU[c["plu"]][7])
-                     for c in v["coffee"]]
-            total = K.r2(sum(K.SKU[c["plu"]][7] * c["qty"] for c in v["coffee"]) + v["other"])
-            vs.append(dict(version=i, saved=t.strftime("%Y-%m-%dT%H:%M:%S"), coffee_lines=lines, basket_total=total))
-        orders.append(dict(order=o["no"], account=o["account"], placed=o["placed"].strftime("%Y-%m-%dT%H:%M:%S"),
-                           slot_date=o["delivery"].strftime("%Y-%m-%d"), status=o["status"],
-                           delivered_on=o["delivery"].strftime("%Y-%m-%d") if o["status"] == 'delivered' else None,
-                           versions=vs))
-    doc = dict(export="order history, coffee lines", shop="Corcally's online shop (Drumsallagh fulfilment)",
-               exported_at=K.EXTRACT.strftime("%Y-%m-%dT%H:%M:%S"), placed_from=K.ONLINE_FROM.isoformat(),
-               timezone="Europe/Dublin", orders=orders)
-    return doc
+# the operations each edge service's own spans carry (name, share), and the internal operations by caller
+EDGE_OPS = {
+    "journey-search": [("GET /v2/journeys/search", 0.86), ("GET /v2/journeys/{id}", 0.14)],
+    "places": [("GET /places/autocomplete", 0.93), ("GET /places/{id}", 0.07)],
+    "seat-map": [("GET /seatmaps/{tripId}", 1.0)],
+    "booking": [("POST /bookings", 1.0)],
+    "accounts": [("POST /auth/token", 0.58), ("GET /me", 0.42)],
+    "tickets": [("GET /tickets/{ref}/pdf", 0.64), ("GET /tickets/{ref}", 0.36)],
+}
+INT_OPS = {("fares", "quote"): ("POST", "/fares/quote"),
+           ("partner-gateway", "availability"): ("POST", "/operators/{code}/availability"),
+           ("partner-gateway", "seats"): ("GET", "/operators/{code}/seats/{tripId}"),
+           ("partner-gateway", "reserve"): ("POST", "/operators/{code}/reservations"),
+           ("payments", "authorise"): ("POST", "/payments/authorise"),
+           ("notifications", "email"): ("POST", "/messages/email")}
 
 
-def register_rows(w):
-    rows = []
-    for no in sorted(w.cards):
-        c = w.cards[no]
-        mno = "" if c["type"] == "STORE" else w.member_no[c["member"]]
-        rows.append([no, mno, c["type"], c["issued"].isoformat(), c["status"],
-                     c["status_date"].isoformat() if c["status_date"] else "", c["replaced_by"] or "", c["store"],
-                     c.get("age", "")])
-    return rows
+class PodPool:
+    """Each service's pods through December: as many as its hourly load needs between its autoscaling bounds, named
+    for the replica set of the deployment revision running (a new one at every revision in the rollout history)."""
+
+    def __init__(self, w):
+        self.r = np.random.default_rng(K.SEED + 414)
+        _, hist, _ = A.deployments()
+        self.revs = {}
+        for s in K.SVC:
+            hs = sorted(h["changed_at"] for h in hist if h["deployment"] == K.TRACE_NAME[s])
+            before = [t for t in hs if t < DEC0_UTC]
+            during = [t for t in hs if DEC0_UTC <= t]
+            starts = before[-1:] + during
+            self.revs[s] = [((t - DEC0_UTC).total_seconds(), _hex(self.r, 10)[:10]) for t in starts]
+        self.n = {}
+        for s in K.SVC:
+            lo, hi, per = K.AUTOSCALE[s]
+            N = w.N[s][W.DEC0:W.DEC0 + K.REVIEW_HOURS]
+            self.n[s] = np.clip(np.ceil(N / per), lo, hi).astype(int)
+        self.suffix = {}
+
+    def pick(self, svc, t0):
+        rs = [h for t, h in self.revs[svc] if t <= t0][-1]
+        k = int(self.n[svc][min(max(int(t0 // 3600), 0), K.REVIEW_HOURS - 1)])
+        i = int(self.r.integers(0, k))
+        key = (svc, rs, i)
+        if key not in self.suffix:
+            self.suffix[key] = "".join(self.r.choice(list("bcdfghjklmnpqrstvwxz2456789"), 5))
+        return "%s-%s-%s" % (K.TRACE_NAME[svc], rs, self.suffix[key])
+
+    def peak(self, svc):
+        return int(self.n[svc].max())
 
 
-REG_HEAD = ["card_no", "member_no", "card_type", "issued", "status", "status_date", "replaced_by", "home_store",
-            "age_band"]
+def span_table(w):
+    """The kept spans that started in December (UTC), the load balancer's kept health probes and the exporter's
+    re-sent batches, in export order."""
+    r = np.random.default_rng(K.SEED + 404)
+    sp = w.sp
+    keep = (sp["t0"] >= 0) & (sp["t0"] < K.REVIEW_HOURS * 3600)
+    idx = np.nonzero(keep)[0]
+    pool = PodPool(w)
+    tr_hex = {}
+    sid_hex = {}
+
+    def tid_of(t):
+        if t not in tr_hex:
+            tr_hex[t] = _hex(r, 32)
+        return tr_hex[t]
+
+    def sid_of(i):
+        if i not in sid_hex:
+            sid_hex[i] = _hex(r, 16)
+        return sid_hex[i]
+
+    cols = {k: [] for k in ("trace_id", "span_id", "parent_span_id", "service_name", "span_name", "span_kind",
+                             "start_time_unix_nano", "end_time_unix_nano", "status_code", "http_status_code",
+                             "host_name")}
+    base_ns = _ns(DEC0_UTC)
+    pod_of = {}
+    for i in idx:
+        svc, op, kind, t0, ms, code = (str(sp["svc"][i]), str(sp["op"][i]), str(sp["kind"][i]), float(sp["t0"][i]),
+                                       float(sp["ms"][i]), int(sp["code"][i]))
+        tr = int(sp["trace"][i])
+        if kind == "SERVER" and op == "own":
+            names, shares = zip(*EDGE_OPS[svc])
+            name = names[int(r.choice(len(names), p=shares))]
+            if code == 200 and name.startswith("GET") and ms < K.THRESHOLD[svc] / 3 and r.random() < 0.004:
+                code = 404
+        elif kind == "SERVER":
+            meth, path = INT_OPS[(svc, op)]
+            name = meth + " " + path
+        else:
+            callee, cop = op.split(":")
+            meth, path = INT_OPS[(callee, cop)]
+            name = "%s %s %s" % (meth, K.TRACE_NAME[callee], path)
+        # a trace's spans in one service come from one pod
+        pk = (tr, svc)
+        if pk not in pod_of:
+            pod_of[pk] = pool.pick(svc, t0)
+        par = int(sp["parent"][i])
+        cols["trace_id"].append(tid_of(tr))
+        cols["span_id"].append(sid_of(int(sp["sid"][i])))
+        cols["parent_span_id"].append("" if par < 0 else sid_of(par))
+        cols["service_name"].append(K.TRACE_NAME[svc])
+        cols["span_name"].append(name)
+        cols["span_kind"].append("SPAN_KIND_" + kind)
+        s0 = base_ns + int(round(t0 * 1e9))
+        cols["start_time_unix_nano"].append(s0)
+        cols["end_time_unix_nano"].append(s0 + max(1000, int(round(ms * 1e6))))
+        cols["status_code"].append("STATUS_CODE_ERROR" if code >= 500 else "STATUS_CODE_UNSET")
+        cols["http_status_code"].append(code)
+        cols["host_name"].append(pod_of[pk])
+    # the load balancer probes /healthz on every pod every 15 seconds; the store keeps about one probe in 720
+    for svc in K.SVC:
+        for h in range(K.REVIEW_HOURS):
+            for _ in range(int(r.poisson(2))):
+                t0 = h * 3600 + float(r.uniform(0, 3599))
+                s0 = base_ns + int(round(t0 * 1e9))
+                cols["trace_id"].append(_hex(r, 32))
+                cols["span_id"].append(_hex(r, 16))
+                cols["parent_span_id"].append("")
+                cols["service_name"].append(K.TRACE_NAME[svc])
+                cols["span_name"].append("GET /healthz")
+                cols["span_kind"].append("SPAN_KIND_SERVER")
+                cols["start_time_unix_nano"].append(s0)
+                cols["end_time_unix_nano"].append(s0 + int(r.uniform(0.6, 3.2) * 1e6))
+                cols["status_code"].append("STATUS_CODE_UNSET")
+                cols["http_status_code"].append(200)
+                cols["host_name"].append(pool.pick(svc, t0))
+    n = len(cols["span_id"])
+    order = np.argsort(np.array(cols["start_time_unix_nano"]), kind="stable")
+    # the exporter re-sends about one batch in three hundred: those rows appear twice, identical
+    dup = r.random(n) < 0.003
+    out_idx = []
+    for i in order:
+        out_idx.append(i)
+        if dup[i]:
+            out_idx.append(i)
+    return {k: [v[i] for i in out_idx] for k, v in cols.items()}
 
 
-def write_settlement(path, w):
-    import pyarrow as pa
-    import pyarrow.parquet as pq
-    rows = w.settle
-    cols = {
-        "merchant_id": pa.array([r["merchant_id"] for r in rows], pa.string()),
-        "terminal_id": pa.array([r["terminal_id"] for r in rows], pa.string()),
-        "txn_time_utc": pa.array([r["txn_time_utc"] for r in rows], pa.timestamp("s", tz="UTC")),
-        "txn_type": pa.array([r["txn_type"] for r in rows], pa.string()),
-        "amount": pa.array([r["amount"] for r in rows], pa.float64()),
-        "currency": pa.array([r["currency"] for r in rows], pa.string()),
-        "card_ref": pa.array([r["card_ref"] for r in rows], pa.string()),
-        "scheme": pa.array([r["scheme"] for r in rows], pa.string()),
-        "card_product": pa.array([r["card_product"] for r in rows], pa.string()),
-        "card_region": pa.array([r["card_region"] for r in rows], pa.string()),
-        "entry_mode": pa.array([r["entry_mode"] for r in rows], pa.string()),
-        "auth_code": pa.array([r["auth_code"] for r in rows], pa.string()),
-        "merchant_ref": pa.array([r["merchant_ref"] or None for r in rows], pa.string()),
-        "settle_date": pa.array([r["settle_date"] for r in rows], pa.date32()),
-        "interchange": pa.array([r["interchange"] for r in rows], pa.float64()),
-        "scheme_fee": pa.array([r["scheme_fee"] for r in rows], pa.float64()),
-        "service_charge": pa.array([r["service_charge"] for r in rows], pa.float64()),
-        "net_settled": pa.array([r["net_settled"] for r in rows], pa.float64()),
-    }
-    table = pa.table(cols)
-    table = table.replace_schema_metadata({"source": "Faircourt Merchant Services, merchant settlement detail",
-                                           "merchant": "Corcally & Sons Limited", "period": "2026-01-01/2026-12-31",
-                                           "time_basis": "UTC"})
-    pq.write_table(table, path, compression="zstd", row_group_size=65536, use_dictionary=True,
-                   write_statistics=True)
+def write_spans(path, w):
+    c = span_table(w)
+    table = pa.table({
+        "trace_id": pa.array(c["trace_id"], pa.string()),
+        "span_id": pa.array(c["span_id"], pa.string()),
+        "parent_span_id": pa.array(c["parent_span_id"], pa.string()),
+        "service_name": pa.array(c["service_name"], pa.string()),
+        "span_name": pa.array(c["span_name"], pa.string()),
+        "span_kind": pa.array(c["span_kind"], pa.string()),
+        "start_time_unix_nano": pa.array(c["start_time_unix_nano"], pa.int64()),
+        "end_time_unix_nano": pa.array(c["end_time_unix_nano"], pa.int64()),
+        "status_code": pa.array(c["status_code"], pa.string()),
+        "http_status_code": pa.array(c["http_status_code"], pa.int32()),
+        "host_name": pa.array(c["host_name"], pa.string()),
+    })
+    pq.write_table(table, path, compression="zstd", row_group_size=131072, use_dictionary=True,
+                   store_schema=False, write_statistics=True)
+    _drop_created_by(path)
+    return table.num_rows
 
 
-def label_rows(w):
-    rows = []
-    for lb in sorted(w.labels, key=lambda x: (x["shown"], x["scale"], x["no"])):
-        weight = ("%.3f" % lb["kg"]) if lb["scale"] == "S1" else ("%d" % round(lb["kg"] * 1000))
-        rows.append([lb["scale"] + "-%06d" % lb["no"], lb["scale"], lb["shown"].strftime("%Y-%m-%d %H:%M:%S"),
-                     K.ROASTER_NAME[lb["roaster"]], lb["coffee"], weight, "%.2f" % lb["ppk"], _f2(lb["price"])])
-    return rows
+def write_lb(out, w):
+    """H1: the old billing tool's export (hour, target group, requests, processed GB); H2: the FinOps metrics export
+    from 1 July (ISO hours, target group names after the July rename, request and 5xx counts, bytes and LCUs)."""
+    r = np.random.default_rng(K.SEED + 505)
+    p1 = os.path.join(out, K.FILES["lb_h1"])
+    p2 = os.path.join(out, K.FILES["lb_h2"])
+    size_kb = {"journey-search": 14.2, "fares": 3.1, "places": 1.4, "seat-map": 22.5, "booking": 6.8, "payments": 2.9,
+               "tickets": 61.0, "accounts": 2.2, "partner-gateway": 9.4, "notifications": 4.0}
+    h1, h2 = [], []
+    for hidx in range(W.HOURS_YEAR):
+        t = dt.datetime(2026, 1, 1) + dt.timedelta(hours=hidx)
+        for svc in K.SVC:
+            n = int(w.N[svc][hidx])
+            gb = n * size_kb[svc] * r.uniform(0.9, 1.1) / 1024 / 1024
+            if t < dt.datetime(2026, 7, 1):
+                h1.append([t.strftime("%Y-%m-%d %H:%M"), K.TG_H1[svc], n, "%.3f" % gb])
+            else:
+                lcu = max(n / 25.0 / 3600 * 1.0, gb / 1.0) * 1.0
+                h2.append([t.strftime("%Y-%m-%dT%H:%M:%SZ"), K.TG_H2[svc], n, int(w.E[svc][hidx]),
+                           int(round(gb * 1024 ** 3)), "%.4f" % lcu])
+    with open(p1, "w", newline="") as fh:
+        wr = csv.writer(fh, lineterminator="\r\n")
+        wr.writerow(["hour_utc", "target_group", "requests", "processed_gb"])
+        wr.writerows(h1)
+    with open(p2, "w", newline="") as fh:
+        wr = csv.writer(fh, lineterminator="\n")
+        wr.writerow(["TimePeriodStart", "TargetGroupName", "RequestCount", "HTTPCode_Target_5XX_Count", "ProcessedBytes",
+                     "ConsumedLCUs"])
+        wr.writerows(h2)
+    return len(h1), len(h2)
 
 
-LABEL_HEAD = ["label", "scale", "printed", "roaster", "coffee", "net_weight", "price_per_kg", "label_price"]
+def _iso(t):
+    return t.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def write_master(path):
-    from openpyxl import Workbook
-    from openpyxl.styles import Font
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Coffee range"
-    ws.append(["PLU", "Description", "Brand", "Sub-category", "Pack (g)", "Shelf price (EUR)", "Supplier",
-               "Listed online"])
-    for c in ws[1]:
-        c.font = Font(bold=True)
-    for s in sorted(K.SKUS, key=lambda x: (x[5], x[2], x[0])):
-        ws.append([s[0], s[4], s[2], s[5], s[6], s[7], K.SUPPLIER[s[1]], s[8]])
-    ws.append([K.COUNTER_PLU, "Coffee counter loose beans (weighed, price embedded)", None, "Counter", None, None,
-               "Various (guest roasters)", "N"])
-    ws.append([K.ACCESSORY_PLU, "Coffee counter accessories (price embedded)", None, "Counter", None, None,
-               "Various", "N"])
-    for col, wd in zip("ABCDEFGH", (16, 52, 24, 13, 9, 16, 30, 13)):
-        ws.column_dimensions[col].width = wd
-    ws.freeze_panes = "A2"
-    wb.save(path)
-
-
-def write_deals(path):
-    from openpyxl import Workbook
-    from openpyxl.styles import Font
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Deal log 2026"
-    ws.append(["Deal", "Supplier", "Brand", "PLUs", "Mechanic", "Start", "End",
-               "Funding per multibuy sold (EUR)", "Version", "Agreed", "Effective from"])
-    for c in ws[1]:
-        c.font = Font(bold=True)
-    for d in K.DEALS:
-        deal_id, b, plus, price, start, end, fund, revs = d
-        agreed = start - dt.timedelta(days=24 + int(deal_id[-2:]) % 9)
-        ws.append([deal_id, K.SUPPLIER[b], K.BRAND_NAME[b], ", ".join(plus), "Any 2 for EUR %.2f" % price, start, end,
-                   fund, 1, agreed, start])
-        for i, (eff, f2) in enumerate(revs, 2):
-            ws.append([deal_id, K.SUPPLIER[b], K.BRAND_NAME[b], ", ".join(plus), "Any 2 for EUR %.2f" % price, start, end,
-                       f2, i, eff - dt.timedelta(days=5), eff])
-    for row in ws.iter_rows(min_row=2):
-        for c in (row[5], row[6], row[9], row[10]):
-            c.number_format = "dd/mm/yyyy"
-        row[7].number_format = "0.00"
-    for col, wd in zip("ABCDEFGHIJK", (10, 30, 14, 34, 20, 12, 12, 16, 9, 12, 14)):
-        ws.column_dimensions[col].width = wd
-    wb.save(path)
-
-
-def census_rows(w):
-    rng = np.random.default_rng(K.SEED + 77)
-    rows = []
-    eds = [("Drumsallagh Urban", 18), ("Drumsallagh Rural", 9), ("Lisgarvan", 7), ("Kilbrannagh", 6),
-           ("Cloonmore", 4), ("Ardnageeha", 4), ("Rathkeel", 3)]
-    n = 0
-    for ed, k in eds:
-        for i in range(k):
-            n += 1
-            tot = int(rng.integers(80, 260))
-            p = rng.dirichlet([2.6, 3.0, 1.7, 1.6, 1.0])
-            c = np.floor(p * tot).astype(int)
-            c[1] += tot - c.sum()
-            persons = int(c[0] + 2 * c[1] + 3 * c[2] + 4 * c[3] + 5.6 * c[4])
-            rows.append(["A%09d" % (127000000 + n * 37), ed, tot] + [int(x) for x in c] + [persons])
-    return rows
-
-
-CENSUS_HEAD = ["small_area", "electoral_division", "households", "hh_1_person", "hh_2_persons", "hh_3_persons",
-               "hh_4_persons", "hh_5_plus_persons", "persons_in_private_households"]
-
-
-def write_tracker(path):
-    from openpyxl import Workbook
-    from openpyxl.styles import Font
-    rng = np.random.default_rng(K.SEED + 91)
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Brand health"
-    ws.append(["Coffee brand tracker, Corcally's shopper panel, Midlands. Online survey of adults who buy coffee."])
-    ws.append([])
-    ws.append(["Wave", "Brand", "Prompted awareness %", "Ever bought %", "Bought in last 3 months %",
-               "Main brand at home %", "Would consider %", "Base (n)"])
-    for c in ws[3]:
-        c.font = Font(bold=True)
-    base = {"May 2026": 612, "Nov 2026": 588}
-    lvl = {"OL": (71, 44, 29, 17, 52), "HAL": (93, 78, 41, 24, 61), "BEL": (84, 57, 22, 9, 37),
-           "NOR": (66, 31, 15, 8, 26), "ROS": (58, 27, 13, 7, 30), "CAF": (91, 74, 33, 18, 44),
-           "WES": (34, 12, 6, 2, 21), "KIN": (49, 22, 11, 5, 33)}
-    for wave in ("May 2026", "Nov 2026"):
-        for b in K.B:
-            a = [int(round(v + rng.normal(0, 1.4))) for v in lvl[b]]
-            ws.append([wave, K.BRAND_NAME[b]] + a + [base[wave]])
-    ws.append([])
-    ws.append(["Fieldwork by Lisnagree Research for Corcally's. Percentages of all respondents."])
-    for col, wd in zip("ABCDEFGH", (11, 22, 21, 15, 24, 21, 17, 10)):
-        ws.column_dimensions[col].width = wd
-    wb.save(path)
+def write_asks(out):
+    rows, hist, dtruth = A.deployments()
+    with open(os.path.join(out, K.FILES["deploys"]), "w") as fh:
+        json.dump({"exported_at": "2027-01-04T08:12:44Z", "source": "Rotalinha delivery pipeline",
+                   "deployments": [{"deployment_id": x["deployment_id"], "service": x["service"],
+                                    "environment": x["environment"], "version": x["version"], "commit": x["commit"],
+                                    "started_at": _iso(x["started_at"]), "finished_at": _iso(x["finished_at"]),
+                                    "outcome": x["outcome"], "triggered_by": x["triggered_by"]} for x in rows]},
+                  fh, indent=1)
+        fh.write("\n")
+    with open(os.path.join(out, K.FILES["rollouts"]), "w", newline="") as fh:
+        wr = csv.writer(fh, lineterminator="\n")
+        wr.writerow(["deployment", "revision", "image", "changed_at_utc", "changed_by"])
+        for x in hist:
+            wr.writerow([x["deployment"], x["revision"], x["image"], x["changed_at"].strftime("%Y-%m-%d %H:%M:%S"),
+                         x["changed_by"]])
+    lines, invoices, resources, btruth, rate = A.billing()
+    with open(os.path.join(out, K.FILES["billing"]), "w", newline="") as fh:
+        wr = csv.writer(fh, lineterminator="\n")
+        wr.writerow(["usage_date", "invoice_id", "resource_id", "resource_tags", "product", "line_type", "currency",
+                     "cost", "description"])
+        for x in lines:
+            wr.writerow([x["usage_date"].isoformat(), x["invoice_id"], x["resource_id"], x["resource_tags"],
+                         x["product"], x["line_type"], x["currency"], "%.2f" % x["cost"], x["description"]])
+    with open(os.path.join(out, K.FILES["invoices"]), "w", newline="") as fh:
+        wr = csv.writer(fh, lineterminator="\n")
+        wr.writerow(["invoice_id", "billing_period", "issued_on", "invoice_currency", "usd_eur_rate"])
+        for x in invoices:
+            wr.writerow([x["invoice_id"], x["billing_period"], x["issued_on"].isoformat(), x["currency"],
+                         "%.4f" % x["usd_eur_rate"]])
+    with open(os.path.join(out, K.FILES["resources"]), "w", newline="") as fh:
+        wr = csv.writer(fh, lineterminator="\n")
+        wr.writerow(["resource_id", "kind", "created", "deleted", "replaces", "tags_now"])
+        for x in resources:
+            wr.writerow([x["resource_id"], x["kind"], x["created"].isoformat(),
+                         x["deleted"].isoformat() if x["deleted"] else "", x["replaces"], x["tags"]])
+    inc, posts, changes, timeline, itruth = A.incidents()
+    with open(os.path.join(out, K.FILES["timeline"]), "w", newline="") as fh:
+        wr = csv.writer(fh, lineterminator="\n")
+        wr.writerow(["incident_id", "at_utc", "event", "detail"])
+        for iid, at, ev, det in timeline:
+            wr.writerow([iid, at.strftime("%Y-%m-%d %H:%M:%S"), ev, det])
+    with open(os.path.join(out, K.FILES["incidents"]), "w", newline="") as fh:
+        wr = csv.writer(fh, lineterminator="\n")
+        wr.writerow(["incident_id", "declared_at_utc", "resolved_at_utc", "severity", "services", "title",
+                     "commander"])
+        for x in inc:
+            wr.writerow([x["incident_id"], x["declared_at"].strftime("%Y-%m-%d %H:%M:%S"),
+                         x["resolved_at"].strftime("%Y-%m-%d %H:%M:%S"), x["severity"], x["services"], x["title"],
+                         x["commander"]])
+    with open(os.path.join(out, K.FILES["status"]), "w") as fh:
+        json.dump({"page": "status.rotalinha.pt", "timezone": "Europe/Lisbon",
+                   "incidents": [{"id": p["post_id"], "name": p["name"], "components": p["components"],
+                                  "created_at": p["created_local"].strftime("%Y-%m-%d %H:%M"),
+                                  "resolved_at": p["resolved_local"].strftime("%Y-%m-%d %H:%M")} for p in posts],
+                   "component_status_changes": [{"component": c["component"], "status": c["status"],
+                                                 "at": c["at_local"].strftime("%Y-%m-%d %H:%M")} for c in changes]},
+                  fh, indent=1)
+        fh.write("\n")
+    return {"deploys": dtruth, "billing": btruth, "incidents": itruth, "rate": rate}
 
 
 def write_pack(out, w=None):
+    import docs as D
     w = w or W.World()
-    p = lambda k: os.path.join(out, K.FILES[k])
-    rows = till_rows(w)
-    write_csv(p("till"), TILL_HEAD, rows)
-    with open(p("online"), "w", encoding="utf-8") as f:
-        json.dump(online_json(w), f, indent=1, ensure_ascii=False)
-        f.write("\n")
-    write_csv(p("register"), REG_HEAD, register_rows(w))
-    write_settlement(p("settle"), w)
-    write_csv(p("labels"), LABEL_HEAD, label_rows(w))
-    write_master(p("master"))
-    write_deals(p("deals"))
-    write_csv(p("census"), CENSUS_HEAD, census_rows(w))
-    write_tracker(p("tracker"))
-    docs.write_agreement(p("agreement"))
-    docs.write_terms(p("terms"))
-    docs.write_board(p("board"))
-    docs.write_brief(p("brief"))
-    n = {"till": len(rows), "settle": len(w.settle), "labels": len(w.labels), "register": len(w.cards)}
-    return w, n
+    n = {"spans": write_spans(os.path.join(out, K.FILES["spans"]), w)}
+    n["lb_h1"], n["lb_h2"] = write_lb(out, w)
+    truths = write_asks(out)
+    D.write_docs(out, w)
+    return w, n, truths
+
+
+# ------------------------------------------------------------------ parquet footer without a writer name
+def _varint(b, i):
+    v = s = 0
+    while True:
+        c = b[i]; i += 1
+        v |= (c & 0x7F) << s; s += 7
+        if not c & 0x80:
+            return v, i
+
+
+def _skip(b, i, t):
+    """Skip one compact-protocol thrift value of type t starting at b[i]."""
+    if t in (1, 2):
+        return i
+    if t == 3:
+        return i + 1
+    if t in (4, 5, 6):
+        return _varint(b, i)[1]
+    if t == 7:
+        return i + 8
+    if t == 8:
+        n, i = _varint(b, i)
+        return i + n
+    if t in (9, 10):
+        h = b[i]; i += 1
+        n, et = h >> 4, h & 0x0F
+        if n == 15:
+            n, i = _varint(b, i)
+        for _ in range(n):
+            i = i + 1 if et in (1, 2) else _skip(b, i, et)
+        return i
+    if t == 11:
+        n, i = _varint(b, i)
+        if n:
+            kv = b[i]; i += 1
+            for _ in range(n):
+                i = _skip(b, i, kv >> 4)
+                i = _skip(b, i, kv & 0x0F)
+        return i
+    if t == 12:
+        while True:
+            h = b[i]; i += 1
+            if h == 0:
+                return i
+            if not h >> 4:
+                i = _varint(b, i)[1]
+            i = _skip(b, i, h & 0x0F)
+    raise ValueError("thrift type %d" % t)
+
+
+def _drop_created_by(path):
+    """The span export carries no writer name: FileMetaData field 6 (created_by) is left out of the footer,
+    as the format allows, and the next field's header is re-based on the field before it."""
+    raw = open(path, "rb").read()
+    assert raw[-4:] == b"PAR1"
+    n = int.from_bytes(raw[-8:-4], "little")
+    meta, body = raw[-8 - n:-8], raw[:-8 - n]
+    out, i, last, prev, dropped = bytearray(), 0, 0, 0, False
+    while meta[i]:
+        h, j = meta[i], i + 1
+        if h >> 4:
+            fid = last + (h >> 4)
+        else:
+            z, j = _varint(meta, j)
+            fid = (z >> 1) ^ -(z & 1)
+        t = h & 0x0F
+        end = _skip(meta, j, t)
+        if fid == 6:
+            dropped = True
+        else:
+            out += bytes([((fid - prev) << 4) | t]) if 0 < fid - prev <= 15 else bytes([t]) + _zz(fid)
+            out += meta[j:end]
+            prev = fid
+        last, i = fid, end
+    out += meta[i:]
+    assert dropped, "no created_by in the footer"
+    open(path, "wb").write(body + bytes(out) + len(out).to_bytes(4, "little") + b"PAR1")
+
+
+def _zz(v):
+    z, o = (v << 1) ^ (v >> 63), bytearray()
+    while True:
+        if z < 0x80:
+            o.append(z)
+            return bytes(o)
+        o.append((z & 0x7F) | 0x80); z >>= 7

@@ -1,32 +1,34 @@
 # leak check, task268
 
-**Verdict: REVIEW.** 13 files read, 29 golden figures and 11 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 15 files read, 49 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: online, accounts, reading, members, member, settlement, nordhavn, decisive, survey, analyst, duplication, rejected, gullhaven, method, carries, patient, wrenhaven, terminal, payments, reflex, re-root, development, fennick, nothing, estimand
+Stump terms swept: balancer, decisive, partner-gateway, december, requests, asserted, request, golden, reading, probability, counts, architecture, rejected, population, survey, sample, export, hourly, weighted, gullhaven, method, inclusion, weights, carries, pr-slo-
 
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `roastery_sampling_brief_2027.docx`: carries 4 of 5 distinctive words of the committed call: "The 2027 Roastery sampling goes to Oro Rosso's homes."
+## 1 file names (REVIEW 1)
+- **REVIEW** `capacity_review_2026-Q4.md`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `corcallys_rewards_terms_2026.pdf`: 3 of 25 stump-paragraph terms appear (online, members, member); read whether the document names the move
-- **REVIEW** `faircourt_merchant_agreement_2026.pdf`: 3 of 25 stump-paragraph terms appear (online, settlement, terminal); read whether the document names the move
+## 3 answer figures in the pack (REVIEW 4)
+- **REVIEW** `PR-SLO-3_service_level_objectives_2026.docx`: golden figure 0.5 appears: ...booking 1 3,000 0.5% payments 1 2,000...
+- **REVIEW** `PR-SLO-3_service_level_objectives_2026.docx`: golden figure 2.0 appears: ...ner-gateway 2 1,000 2.0% notifications 2...
+- **REVIEW** `PR-SLO-3_service_level_objectives_2026.docx`: golden figure 1.0 appears: ...rney-search 1 1,300 1.0% fares 1 300...
+- **REVIEW** `PR-SLO-3_service_level_objectives_2026.docx`: carries 16 of 17 distinctive words of the committed call: 'Five internal services ran over their 2026 latency error budget and each gets a reliability engineer for the first half '
 
-## 6 ranking artifacts (REVIEW 2, INFO 2)
-- **REVIEW** `multibuy_deals_2026.xlsx`: names 6 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `product_master_coffee.xlsx`: names 7 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `coffee_counter_price_board_2026.pdf`: names 3 of 11 answer-set candidates; confirm it does not rank them on the decision question
-- **INFO** `counter_scale_labels_2026.csv`: names 3 of 11 answer-set candidates; confirm it does not rank them on the decision question
+## 4 design-note vocabulary (REVIEW 1)
+- **REVIEW** `PR-SLO-3_service_level_objectives_2026.docx`: 7 of 25 stump-paragraph terms appear (balancer, partner-gateway, december, requests, request, counts); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 12 describing content (REVIEW 1)
+- **REVIEW** `PR-SLO-3_service_level_objectives_2026.docx`: names 14 column(s) of the data files verbatim (Service, Tier, commit, component, cost, deployment): confirm it is the organisation's own record and not a note written for the analyst
 
 ## 2 author vocabulary (clean)
 
 ## 5 announcements (clean)
+
+## 6 ranking artifacts (clean)
 
 ## 7 hidden content (clean)
 
@@ -35,6 +37,7 @@ Stump terms swept: online, accounts, reading, members, member, settlement, nordh
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read (architecture 5, the shipped pack)
 
@@ -59,4 +62,3 @@ Paying cash? Take your label to any checkout today. Unpaid labels are void at cl
 mild tell rather than a leak; they file the counter ask's WHAT, which its figures need. The reader's other ask readings
 (the deal revision's effective date, the gap on unrounded shares, the counter's clock) are closed by the fork table
 (SF15, SF17 to SF22) and the judge's two passes.
-

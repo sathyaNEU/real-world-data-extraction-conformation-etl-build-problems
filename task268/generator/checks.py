@@ -1,448 +1,352 @@
-"""The generator's assertions on the cut pack and the seeded world: input gates, the ladder and its margins, every
-semantic fork row, the three rules (R1 to R3c) on the clean truth, each Layer 1 item's neutrality, the separation of
-the asks from the call, both asks against the truth and their stops, the distractors, the realism sweep and the
-documents' positive controls.
+"""The generator's assertions on the cut pack and the seeded world: the input gates, the call and its ladder with
+margins, every semantic fork row (SF1 to SF14), the one-decimal corridor, the whole traces and partner-gateway's root
+mix that refutes rung 3, the back-test, the three rules on the clean truth, the shock screen, the separation of the
+asks from the call (SEP), the asks against the world's truths, the cracker sheet and the documents' controls.
 
-    python3 task268/generator/checks.py            (run by build.py)"""
-import collections
+    python3 checks.py [target_dir]            (run by build.py)"""
 import csv
 import json
 import os
-import re
+import shutil
 import sys
+import tempfile
+
+import numpy as np
+import pyarrow.parquet as pq
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import analysis as A   # noqa: E402
-import common as K     # noqa: E402
+import analysis as AN   # noqa: E402
+import asks as A        # noqa: E402
+import ceiling          # noqa: E402
+import common as K      # noqa: E402
+import world as W       # noqa: E402
 
-TASK = os.path.dirname(HERE)
+GOLD5 = ["journey-search", "places", "seat-map", "partner-gateway", "notifications"]
+FOUR = ["journey-search", "places", "seat-map", "notifications"]
+H = K.REVIEW_HOURS
+FAILS = []
+
+
+def check(name, ok, detail=""):
+    print("%s  %s%s" % ("PASS" if ok else "FAIL", name, (": " + detail) if detail else ""))
+    if not ok:
+        FAILS.append(name)
+
+
+def over(fig, bud=None):
+    bud = bud or K.BUDGET
+    return [s for s in K.SVC if K.r1(fig[s]) > bud[s]]
+
+
+# ------------------------------------------------------------------ the estimator under each reading
+class Variants:
+    """The golden's estimator re-run on the parquet under one alternative reading at a time."""
+
+    def __init__(self, target, g):
+        self.g = g
+        tb = pq.read_table(os.path.join(target, K.FILES["spans"])).to_pydict()
+        self.rows = list(zip(tb["trace_id"], tb["span_id"], tb["parent_span_id"], tb["service_name"], tb["span_name"],
+                             tb["span_kind"], tb["start_time_unix_nano"], tb["end_time_unix_nano"],
+                             tb["http_status_code"]))
+        self.N, self.E = g.counts()
+
+    def sli(self, dedupe=True, probes=False, client_internal=False, drop5xx=False, ge=False, drop404=False,
+            first_try=False):
+        g, N = self.g, self.N
+        seen, rows = set(), []
+        for tid, sid, pid, svc, name, kind, t0, t1, code in self.rows:
+            if dedupe and sid in seen:
+                continue
+            seen.add(sid)
+            if name == "GET /healthz" and not probes:
+                continue
+            rows.append((tid, sid, pid, g.by_trace[svc], name, kind, (t0 - AN.DEC0_NS) // (3600 * 10 ** 9),
+                         (t1 - t0) / 1e6, code))
+        root, kroot = {}, {e: np.zeros(H) for e in K.EDGE}
+        for r in rows:
+            if r[5] == "SPAN_KIND_SERVER" and r[2] == "":
+                if r[4] != "GET /healthz":
+                    root[r[0]] = (r[3], int(r[6]))
+                if r[3] in K.EDGE and 0 <= r[6] < H:
+                    kroot[r[3]][int(r[6])] += 1
+        tries = {}
+        out = {}
+        for s in K.SVC:
+            if client_internal and s in K.INTERNAL:
+                mine = [r for r in rows if r[5] == "SPAN_KIND_CLIENT" and r[4].split(" ")[1] == K.TRACE_NAME[s]]
+            else:
+                mine = [r for r in rows if r[5] == "SPAN_KIND_SERVER" and r[3] == s and r[4] != "GET /healthz"]
+            num = 0.0
+            for r in sorted(mine, key=lambda x: x[6]):
+                h = int(r[6])
+                if not 0 <= h < H:
+                    continue
+                if first_try:
+                    key = (r[0], r[4])
+                    tries[key] = tries.get(key, 0) + 1
+                    if tries[key] > 1:
+                        continue
+                if (drop5xx and r[8] >= 500) or (drop404 and r[8] == 404):
+                    continue
+                rt = root.get(r[0])
+                if rt is None:
+                    continue
+                e, he = rt
+                w = N[e][he] / max(kroot[e][he], 1)
+                slow = r[7] >= g.thr[s] if ge else r[7] > g.thr[s]
+                num += w * slow
+            den = N[s].sum() - (self.E[s].sum() if drop5xx else 0)
+            out[s] = 100 * num / den
+        return out
+
+
+def line_distance(x):
+    return abs((x * 10) % 1 - 0.5) / 10
+
+
+def main(target):
+    g = AN.Golden(target)
+    m = g.main()
+    sli = {s: m[s]["sli"] for s in K.SVC}
+
+    # ---------------------------------------------------------- input gates
+    files = [K.FILES[k] for k in K.FILES]
+    check("every pack file present", all(os.path.exists(os.path.join(target, f)) for f in files),
+          "%d files" % len(files))
+    fmts = {os.path.splitext(f)[1] for f in files}
+    check("three or more formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
+    n_spans = pq.ParquetFile(os.path.join(target, K.FILES["spans"])).metadata.num_rows
+    check("a file of 25,000 rows or more", n_spans >= 25000, "%d span rows" % n_spans)
+    check("two or more distractors", len(K.DISTRACTORS) >= 2, ", ".join(K.FILES[d] for d in K.DISTRACTORS))
+
+    # ---------------------------------------------------------- the call and its ladder
+    golden = over(sli)
+    check("the call: five services breach", golden == GOLD5, ", ".join(golden))
+    for s in K.SVC:
+        print("      %-16s SLI %.4f (%.1f) budget %.1f | service-hour %.3f hour-of-day %.3f day %.3f kept %.3f"
+              % (s, sli[s], K.r1(sli[s]), K.BUDGET[s], m[s]["by_service_hour"], m[s]["by_hour_of_day"],
+                 m[s]["by_day"], m[s]["unweighted"]))
+    rung = {k: over({s: m[s][k] for s in K.SVC}) for k in ("by_service_hour", "by_hour_of_day", "by_day", "unweighted")}
+    check("R3 (each service post-stratified by its own hourly count) files four", rung["by_service_hour"] == FOUR,
+          ", ".join(rung["by_service_hour"]))
+    check("R2 (hour-of-day pooling) files four", rung["by_hour_of_day"] == FOUR, ", ".join(rung["by_hour_of_day"]))
+    check("R1 (day weighting) files notifications alone", rung["by_day"] == ["notifications"], ", ".join(rung["by_day"]))
+    check("R0 (the kept share) files notifications alone", rung["unweighted"] == ["notifications"],
+          ", ".join(rung["unweighted"]))
+    gr = min(sli[s] / K.BUDGET[s] if s in GOLD5 else K.BUDGET[s] / sli[s] for s in K.SVC)
+    check("golden margin: every SLI at least a quarter from its budget", gr >= 1.25, "smallest ratio %.3f" % gr)
+    pgm = (K.BUDGET["partner-gateway"] - m["partner-gateway"]["by_service_hour"]) / K.BUDGET["partner-gateway"]
+    check("rung 3 margin: partner-gateway a fifth under its budget", pgm >= 0.2, "%.3f" % pgm)
+    m0 = min((K.BUDGET[s] - m[s]["unweighted"]) / K.BUDGET[s] for s in ("journey-search", "places", "seat-map",
+                                                                      "partner-gateway"))
+    check("rung 0 margin: the busy services 15 per cent under", m0 >= 0.15, "%.3f" % m0)
+
+    # ---------------------------------------------------------- semantic fork rows
+    v = Variants(target, g)
+    slo = text_of(os.path.join(target, K.FILES["slo"]))
+    check("SF1 the kept spans are not the requests (2.2)", "whether or not the tracing store kept a span for it" in slo
+          and rung["unweighted"] != GOLD5)
+    for sf, label, kw in (("SF2", "caller's client span for an internal service", dict(client_internal=True)),
+                          ("SF3", "kept probes counted", dict(probes=True)),
+                          ("SF4", "re-sent rows twice", dict(dedupe=False)),
+                          ("SF9", "5xx dropped from both sides", dict(drop5xx=True)),
+                          ("SF12", "at or over the threshold", dict(ge=True)),
+                          ("SF13", "404 responses dropped", dict(drop404=True)),
+                          ("SF14", "first tries only", dict(first_try=True))):
+        alt = v.sli(**kw)
+        check("%s %s: same call" % (sf, label), over(alt) == GOLD5,
+              "partner-gateway %.3f, journey-search %.3f" % (alt["partner-gateway"], alt["journey-search"]))
+    import asks as AS
+    dec_off = {AS.lisbon_offset(AS.Y0.replace(month=12) + __import__("datetime").timedelta(hours=h)) for h in range(H)}
+    check("SF5 December in Lisbon time is UTC", dec_off == {0})
+    check("SF6 a child's own hour: same figure to one decimal",
+          all(K.r1(m[s]["own_hour"]) == K.r1(sli[s]) for s in K.SVC))
+    n_orph = sum(m[s]["orphans"] for s in K.SVC)
+    check("SF7 spans whose trace began before December: either handling identical",
+          all(K.r1(m[s]["orphans_dropped"]) == K.r1(sli[s]) for s in K.SVC), "%d such spans" % n_orph)
+    check("SF8 the unrounded SLI against the budget: the same five",
+          [s for s in K.SVC if sli[s] > K.BUDGET[s]] == GOLD5)
+    check("SF10 the weighted kept count as the denominator: same figure to one decimal",
+          all(K.r1(m[s]["hajek"]) == K.r1(sli[s]) for s in K.SVC))
+    check("SF11 weights calibrated hour by hour: same figure to one decimal",
+          all(K.r1(m[s]["calibrated"]) == K.r1(sli[s]) for s in K.SVC))
+    corridor = {s: [sli[s], m[s]["hajek"], m[s]["calibrated"], m[s]["own_hour"], m[s]["orphans_dropped"]]
+                for s in K.SVC}
+    worst = min(line_distance(x) for s in K.SVC for x in corridor[s])
+    check("corridor: every standing estimator 0.008 or more from a rounding line", worst >= 0.008, "%.4f" % worst)
+
+    # ---------------------------------------------------------- the whole traces, the root mix, the back-test
+    ids = {r[1]: r for r in v.rows}
+    internal = [r for r in v.rows if r[5] == "SPAN_KIND_SERVER" and g.by_trace[r[3]] in K.INTERNAL
+                and r[4] != "GET /healthz"]
+    whole = 0
+    for r in internal:
+        c = ids.get(r[2])
+        if c is not None and c[5] == "SPAN_KIND_CLIENT":
+            rt = ids.get(c[2])
+            if rt is not None and rt[5] == "SPAN_KIND_SERVER" and rt[2] == "":
+                whole += 1
+    check("whole traces: every internal server span has its client span and its root in the export",
+          whole == len(internal) - n_orph, "%d of %d" % (whole, len(internal)))
+    mix_k, mix_w = m["partner-gateway"]["root_mix_kept"], m["partner-gateway"]["root_mix_weighted"]
+    check("partner-gateway's kept spans are a third each by edge service, its requests mostly journey-search's",
+          mix_k.get("journey-search", 0) < 0.4 and mix_w.get("journey-search", 0) > 0.75,
+          "kept %s, weighted %s" % ({k: round(x, 3) for k, x in mix_k.items()},
+                                    {k: round(x, 3) for k, x in mix_w.items()}))
+    kept5 = {}
+    for tid, sid, pid, svc, name, kind, t0, t1, code in v.rows:
+        if kind == "SPAN_KIND_SERVER" and name != "GET /healthz":
+            s = g.by_trace[svc]
+            a, b = kept5.get(s, (0, 0))
+            kept5[s] = (a + (code >= 500), b + 1)
+    gap5 = max(abs(100 * kept5[s][0] / kept5[s][1] - m[s]["lb_5xx_share"]) for s in K.SVC)
+    check("back-test: the kept 5xx share ties the balancer's 5xx counts for every service", gap5 < 0.15,
+          "largest gap %.3f points" % gap5)
+
+    # ---------------------------------------------------------- three rules on the clean truth
+    w = W.World(K.SEED)
+    sp = w.sp
+    srv = sp["kind"] == "SERVER"
+    inwin = (sp["t0"] >= 0) & (sp["t0"] < H * 3600)
+    N = {s: w.N[s][W.DEC0:W.DEC0 + H].astype(float) for s in K.SVC}
+    r3 = {}
+    for s in K.SVC:
+        sel = srv & inwin & (sp["svc"] == s)
+        hh = (sp["t0"][sel] // 3600).astype(int)
+        kh = np.bincount(hh, minlength=H).astype(float)
+        sh = np.bincount(hh, weights=(sp["ms"][sel] > K.THRESHOLD[s]).astype(float), minlength=H)
+        r3[s] = 100 * (np.where(kh > 0, N[s] / np.maximum(kh, 1), 0) * sh).sum() / N[s].sum()
+    check("analyst test on the clean truth: post-stratifying each service by its own hour files four",
+          over(r3) == FOUR, "partner-gateway %.3f" % r3["partner-gateway"])
+    cheap = [k for k in ("by_service_hour", "by_hour_of_day", "by_day", "unweighted") if rung[k] == GOLD5]
+    check("cheap routes reaching the call: none", not cheap, ", ".join(cheap) or "0 of 4")
+    truth_set = [s for s in K.SVC if w.true_sli(s) > K.BUDGET[s]]
+    check("the world's own truth breaches the same five", truth_set == GOLD5, ", ".join(truth_set))
+
+    # ---------------------------------------------------------- the shock screen
+    stats = {"December requests": {s: m[s]["requests"] for s in K.SVC},
+             "kept spans": {s: m[s]["kept"] for s in K.SVC},
+             "5xx share": {s: m[s]["lb_5xx_share"] for s in K.SVC},
+             "threshold": dict(K.THRESHOLD), "budget": dict(K.BUDGET)}
+    for label, st in stats.items():
+        order = sorted(K.SVC, key=lambda s: st[s])
+        pos = sorted(order.index(s) for s in GOLD5)
+        contiguous = pos == list(range(pos[0], pos[0] + 5))
+        ties = len(set(st.values())) < len(K.SVC)
+        check("shock: the five are not an interval on %s" % label, not contiguous or ties,
+              "positions %s" % pos)
+
+    # ---------------------------------------------------------- SEP: the call never reads an ask file
+    tmp = tempfile.mkdtemp()
+    try:
+        for k in ("spans", "lb_h2", "catalogue", "slo"):
+            shutil.copy(os.path.join(target, K.FILES[k]), tmp)
+        m2 = AN.Golden(tmp).main()
+        check("SEP the call computes from the trace export, the balancer's counts, the catalogue and the standard alone",
+              all(abs(m2[s]["sli"] - sli[s]) < 1e-12 for s in K.SVC))
+    finally:
+        shutil.rmtree(tmp)
+    full = AN.Golden(target).run()
+    for dk in K.DISTRACTORS:
+        tmp = tempfile.mkdtemp()
+        try:
+            for f in os.listdir(target):
+                if f != K.FILES[dk]:
+                    shutil.copy(os.path.join(target, f), tmp)
+            part = AN.Golden(tmp).run()
+            same = part["over"] == full["over"] and part["deploys"] == full["deploys"] and \
+                part["costs"] == full["costs"] and part["incidents"] == full["incidents"] and \
+                all(part["main"][s]["sli"] == full["main"][s]["sli"] for s in K.SVC)
+            check("distractor %s deleted: the call and every ask unchanged" % K.FILES[dk], same)
+        finally:
+            shutil.rmtree(tmp)
+    cols = pq.ParquetFile(os.path.join(target, K.FILES["spans"])).schema.names
+    check("SEP the trace export carries no version, deployment, cost or incident field",
+          not any(c for c in cols if any(x in c for x in ("version", "deploy", "cost", "incident"))), ", ".join(cols))
+
+    # ---------------------------------------------------------- the asks against the world's truths
+    _, _, dtruth = A.deployments()
+    _, _, _, btruth, _ = A.billing()
+    _, _, _, _, itruth = A.incidents()
+    gd, gc, gi = g.deploys(), g.costs(), g.incidents()
+    check("ask A releases and rollbacks match the world", gd == dtruth)
+    check("ask B costs match the world to the cent", all(gc[s] == [round(x, 2) for x in btruth[s]] for s in K.SVC))
+    check("ask C minutes match the world", all(abs(a - b) < 1e-6 for s in K.SVC for a, b in zip(gi[s], itruth[s])))
+    near = [(s, i) for s in K.SVC for i in (0, 1) if abs(gc[s][i] % 1 - 0.5) < 0.01 or abs(gi[s][i] % 1 - 0.5) < 0.01]
+    check("no euro or minute figure on a half-unit line", not near, str(near))
+    rows, L, on, off = ceiling.measure(target)
+    check("cracker sheet: every path misses", all(k < 20 for _, _, k in rows),
+          "; ".join("%s %d" % (lab.split(":")[0], k) for lab, _, k in rows))
+    check("pair ceiling at or under 60", (on + off) / 2 <= 60, "%.1f" % ((on + off) / 2))
+
+    # ---------------------------------------------------------- documents
+    names = [f.lower() for f in os.listdir(target)]
+    notes_words = ("readme", "dictionary", "notes", "manifest", "glossary", "schema", "codebook", "field_guide")
+    from openpyxl import load_workbook
+    sheets = []
+    for f in os.listdir(target):
+        if f.endswith(".xlsx"):
+            sheets += [x.lower() for x in load_workbook(os.path.join(target, f), read_only=True).sheetnames]
+    check("no readme, dictionary, notes or manifest file or sheet under target/",
+          not any(w_ in n_ for n_ in names + sheets for w_ in notes_words), ", ".join(sorted(sheets)))
+    check("PR-SLO-3 control: the filed request sentence reads back", "through its load balancer target group" in slo)
+    # realism sweep: no id column is an arithmetic sequence
+    import re as _re
+    idcols = {}
+    for row in csv.DictReader(open(os.path.join(target, K.FILES["incidents"]))):
+        idcols.setdefault("incident_id", []).append(row["incident_id"])
+    for row in csv.DictReader(open(os.path.join(target, K.FILES["resources"]))):
+        idcols.setdefault("resource_id", []).append(row["resource_id"])
+    for x in json.load(open(os.path.join(target, K.FILES["deploys"])))["deployments"]:
+        idcols.setdefault("deployment_id", []).append(x["deployment_id"])
+    flat = []
+    for col, vals in idcols.items():
+        nums = sorted({int(_re.sub(r"\D", "", v) or 0, 16 if col == "resource_id" else 10) for v in vals})
+        steps = {b_ - a_ for a_, b_ in zip(nums, nums[1:])}
+        if len(steps) <= 1:
+            flat.append(col)
+    check("realism: no id column is an arithmetic sequence", not flat, ", ".join(flat) or "%d id columns" % len(idcols))
+    import collections as _c
+    from openpyxl import load_workbook as _lw
+    rv = [r_[4] for r_ in _lw(os.path.join(target, K.FILES["feedback"]), read_only=True).active.iter_rows(min_row=2,
+                                                                                                          values_only=True)]
+    top = max((v_ for k_, v_ in _c.Counter(x for x in rv if x and len(x) > 12).items()), default=0)
+    check("realism: no review text longer than a few words recurs more than ten times", top <= 10, "most %d" % top)
+    tb_h = pq.read_table(os.path.join(target, K.FILES["spans"]), columns=["service_name", "host_name"]).to_pydict()
+    hosts = {}
+    for svc_, h_ in zip(tb_h["service_name"], tb_h["host_name"]):
+        hosts.setdefault(svc_, set()).add(h_)
+    counts = sorted(len(x) for x in hosts.values())
+    check("realism: services do not share one pod count", len(set(counts)) > 3, "distinct pods per service %s" % counts)
+    check("PR-SLO-3 files the release unit", "the code of one commit" in slo)
+    check("PR-SLO-3 counts a service's minutes while an incident named it", "named it at the time" in slo.replace("\n", " "))
+    dashes = []
+    for f in files:
+        p = os.path.join(target, f)
+        if f.endswith((".md", ".csv", ".json")):
+            if "—" in open(p, encoding="utf-8").read():
+                dashes.append(f)
+        elif f.endswith(".docx"):
+            if "—" in text_of(p):
+                dashes.append(f)
+    check("no em dash in a shipped text", not dashes, ", ".join(dashes))
+
+    print()
+    print("%s  %d failures" % ("PASS" if not FAILS else "FAIL", len(FAILS)))
+    return 1 if FAILS else 0
 
 
 def text_of(path):
-    """Text of a shipped document through the same extractors verify.py uses."""
-    if path.endswith(".pdf"):
-        from pypdf import PdfReader
-        return "\n".join((p.extract_text() or "") for p in PdfReader(path).pages)
-    if path.endswith(".docx"):
-        import docx
-        return "\n".join(p.text for p in docx.Document(path).paragraphs)
-    if path.endswith(".xlsx"):
-        from openpyxl import load_workbook
-        wb = load_workbook(path, read_only=True)
-        return "\n".join(" ".join(str(c) for c in r if c is not None) for ws in wb for r in ws.iter_rows(values_only=True))
-    if path.endswith(".parquet"):
-        import pyarrow.parquet as pq
-        t = pq.read_table(path)
-        return " ".join(t.column_names)
-    return open(path, encoding="utf-8").read()
-
-
-def same(a, b):
-    return all(a[x][:2] == b[x][:2] for x in K.RIVALS)
-
-
-def rounded(ov):
-    return {b: (ov[b][0], ov[b][1], int(round(ov[b][2]))) for b in K.RIVALS}
-
-
-def run(task=TASK, world=None):
-    T = os.path.join(task, "target")
-    rows = []
-
-    def ok(name, cond, detail=""):
-        rows.append((name, bool(cond), detail))
-
-    G = A.Golden(T)
-    R = G.run()
-    ov, call, runner = R["overlap"], R["call"], R["runner"]
-    files = sorted(os.listdir(T))
-    # ---------------------------------------------------------------- input gates
-    ok("gate files", len(files) >= 10, "%d files" % len(files))
-    fmts = sorted(set(f.rsplit(".", 1)[1] for f in files))
-    ok("gate formats", len(fmts) >= 3, ", ".join(fmts))
-    n_till = sum(1 for _ in open(os.path.join(T, K.FILES["till"]), encoding="utf-8")) - 1
-    ok("gate large file", n_till >= 25000 and len(G.rows) >= 25000, "%d till lines, %d settlement rows" % (n_till, len(G.rows)))
-    meta = json.load(open(os.path.join(task, "metadata.json")))
-    dis = meta.get("distractor_files", [])
-    ok("gate distractors", len(dis) >= 2 and all(os.path.exists(os.path.join(task, d)) for d in dis), ", ".join(dis))
-    bad = [f for f in files if re.search(r"readme|dictionary|manifest|notes|field|schema|distractor", f, re.I)]
-    sheets = []
-    from openpyxl import load_workbook
-    for f in files:
-        if f.endswith(".xlsx"):
-            for ws in load_workbook(os.path.join(T, f), read_only=True).worksheets:
-                if re.search(r"readme|notes|dictionary|about|how to|fields", ws.title, re.I):
-                    sheets.append(f + ":" + ws.title)
-    ok("gate no file or sheet describes the data", not bad and not sheets, ", ".join(bad + sheets) or "none")
-    # ---------------------------------------------------------------- the ladder
-    L = G.ladder()
-    picks = {k: G.pick(v) for k, v in L.items()}
-    for k, want, floor in (("R1 cards", "NOR", 1.15), ("R1 members", "NOR", 1.15), ("R1 members and accounts", "NOR", 1.15),
-                           ("R2 homes from store cards", "WES", 1.15), ("R2 accounts kept apart", "WES", 1.15),
-                           ("R3 homes", "ROS", 1.2)):
-        c, r, m = picks[k]
-        ok("rung %s names %s" % (k, K.BRAND_NAME[want]), c == want and m >= floor,
-           "%s %.1f, next %s %.1f, x%.2f" % (c, L[k][c][2], r, L[k][r][2], m))
-    ok("rung R0 baskets not the golden", picks["R0 baskets"][0] != "ROS", picks["R0 baskets"][0])
-    third = sorted(K.RIVALS, key=lambda b: ov[b][2])[2]
-    ok("runner-up separated from third", ov[third][2] - ov[runner][2] >= 1.0,
-       "%s %.2f, %s %.2f" % (runner, ov[runner][2], third, ov[third][2]))
-    edges = {b: abs(ov[b][2] - int(ov[b][2]) - 0.5) for b in K.RIVALS}
-    ok("every share mid-bin", min(edges.values()) >= 0.03 and edges[call] >= 0.15 and edges[runner] >= 0.15,
-       "closest %.2f; call %.2f, runner-up %.2f" % (min(edges.values()), edges[call], edges[runner]))
-    ok("gap rounds alike from unrounded and rounded shares",
-       int(round(R["gap"])) == int(round(ov[runner][2])) - int(round(ov[call][2])) and abs(R["gap"] % 1 - 0.5) >= 0.1,
-       "%.2f" % R["gap"])
-    ok("match unique", R["match_stats"][1] == 0 and R["match_stats"][2] == 0, str(R["match_stats"]))
-    # reflex sweep
-    online_only = G.overlap(_accounts(G))
-    ok("reflex online accounts alone not the golden", G.pick(online_only)[0] != "ROS", G.pick(online_only)[0])
-    heavy = G.overlap(_heavy(G))
-    ok("reflex heavy cards not the golden", G.pick(heavy)[0] != "ROS", G.pick(heavy)[0])
-    rev = G.reverse(G.units("homes"))
-    rmin = min(K.RIVALS, key=lambda b: rev[b][2])
-    ok("SF14 reverse duplication names another brand", rmin != "ROS", rmin)
-    # ---------------------------------------------------------------- semantic fork rows
-    H = G.hazards()
-    ok("SF1 a card as the home files another brand", picks["R1 cards"][0] != call, picks["R1 cards"][0])
-    ok("SF2 store-card and anonymous lines put to homes keep the call", G.pick(H["store-card lines put to homes"])[0] == call)
-    ok("SF3 the counter's PLUs map to no brand", K.COUNTER_PLU not in G.brand_of and K.ACCESSORY_PLU not in G.brand_of)
-    split = _split(G)
-    ok("SF4 spellings kept apart leave the call and its components", split[0] == call and split[1] == rounded(ov)[call]
-       and split[2] == rounded(ov)[runner], str(split))
-    ok("SF5 online orders by order date leave every figure", same(H["online by order date"], ov))
-    ok("SF6 every version and cancelled orders leave every figure",
-       same(H["every version counted"], ov) and same(H["cancelled orders counted"], ov))
-    sk = H["store cards kept"]
-    ok("SF7 store cards kept leave the call and its components", G.pick(sk)[0] == call and
-       rounded(sk)[call][2] == rounded(ov)[call][2] and rounded(sk)[runner][2] == rounded(ov)[runner][2],
-       "%s %.2f" % (G.pick(sk)[0], sk[call][2]))
-    ok("SF8 replaced cards kept apart leave every figure", same(H["replaced cards kept apart"], ov))
-    ok("SF9 two or three shared payments leave every figure",
-       same(H["two shared payments"], ov) and same(H["three shared payments"], ov))
-    ok("SF10 the settlement clock: matched on the day leaves every figure", same(H["matched on the day"], ov))
-    ok("SF10 the settlement clock read as Irish time keeps the call", G.pick(H["clock read as Irish time"])[0] == call)
-    ok("SF11 the current terminal only leaves the call", G.pick(H["current terminal only"])[0] == call)
-    ok("SF12 unlinked online accounts dropped keep the call", G.pick(H["unlinked accounts dropped"])[0] == call)
-    ok("SF13 refunded packs removed leave every figure", same(H["refunded packs removed"], ov))
-    ok("SF15 the call's share 0.15 or more from its rounding edge", edges[call] >= 0.15, "%.2f" % edges[call])
-    ok("SF16 every rung margin 1.15 or more", all(p[2] >= 1.15 for k, p in picks.items() if k != "R0 baskets"))
-    # ---------------------------------------------------------------- the three rules on the clean truth
-    from world import World
-    w = world or World(K.SEED)
-    truth = _truth(w)
-    ok("R1 no shipped column holds a home or household", not any(
-        re.search(r"^(home|household|hh|family)(_?(id|no|ref|key))?$|home_?id|household_?id", h, re.I)
-        for h in _headers(T)), "%d headers read" % len(_headers(T)))
-    ok("R1 the decisive computation reads row-level receipts and settlement rows", R["match_stats"][0] > 25000)
-    ok("R2 brand spellings: the call and its components hold when kept apart", split[0] == call)
-    ok("R2 lost-card replacements: every figure holds unfolded", same(H["replaced cards kept apart"], ov))
-    ok("R2 store cards: the call holds when kept", G.pick(sk)[0] == call)
-    ok("R2 settlement in UTC: every figure holds matched on the day", same(H["matched on the day"], ov))
-    ok("R2 the replaced Lisgarvan terminal: the call holds on the current terminal",
-       G.pick(H["current terminal only"])[0] == call)
-    ok("R2 amended and cancelled online orders: every figure holds", same(H["every version counted"], ov))
-    ok("R2 refunds: every figure holds", same(H["refunded packs removed"], ov))
-    ok("R3a the easy route on the clean truth files Nordhavn", truth["members"] == "NOR", truth["members"])
-    ok("R3b only the unit changed (true homes) files Oro Rosso", truth["homes"] == "ROS", truth["homes"])
-    ok("R3b homes from store cards alone stay wrong", picks["R2 homes from store cards"][0] not in ("ROS", "NOR"))
-    ok("R3c no duplicated till line", _no_dupes(T))
-    # ---------------------------------------------------------------- asks
-    ta = truth["ask_a"]
-    ok("ask A golden equals the truth", all(abs(R["ask_a"][k] - ta[k]) < 1e-6 for k in ta),
-       "; ".join("%s %.3f/%.3f" % (k, R["ask_a"][k], ta[k]) for k in ta if abs(R["ask_a"][k] - ta[k]) >= 1e-6))
-    ok("ask A matching unambiguous", R["counter_ambiguous"] == 0, str(R["counter_ambiguous"]))
-    _counter_forks(G, T, ok)
-    for mode in ("every", "every_fixed", "noclock", "cardonly", "overclean", "grams"):
-        m = G.ask_a(mode)
-        miss = sum(1 for k in ta if abs(round(m[k], 1) - round(ta[k], 1)) >= 0.05)
-        ok("ask A stop %s misses" % mode, miss >= 6, "%d of 12" % miss)
-    ok("ask A figures mid-bin", min(abs((v * 10) % 1 - 0.5) for v in ta.values()) >= 0.02,
-       "%.3f" % min(abs((v * 10) % 1 - 0.5) for v in ta.values()))
-    tb = truth["ask_b"]
-    gb = R["ask_b"]
-    ok("ask B golden equals the truth", all(abs(gb[k] - tb.get(k, 0.0)) < 0.005 for k in gb))
-    cr = G.ask_b("savings")
-    ok("ask B the cracker misses every cell", all(round(cr[k]) != round(gb[k]) for k in gb),
-       "%d kept" % sum(1 for k in gb if round(cr[k]) == round(gb[k])))
-    for mode in ("count_lines", "adj_own_date", "adj_one", "latest_rate"):
-        m = G.ask_b(mode)
-        miss = sum(1 for k in gb if round(m[k]) != round(gb[k]))
-        ok("ask B stop %s misses" % mode, miss >= 3, "%d of 20" % miss)
-    ok("ask B figures mid-bin", min(abs(v % 1 - 0.5) for v in gb.values()) >= 0.015,
-       "%.2f" % min(abs(v % 1 - 0.5) for v in gb.values()))
-    # ---------------------------------------------------------------- separation
-    dev = 0
-    for t in G.txs:
-        for ln in t["lines"]:
-            if ln["plu"] in (K.COUNTER_PLU, K.ACCESSORY_PLU, K.ADJ_PLU) or ln["desc"] == "MULTIBUY SAVING":
-                dev += ln["plu"] in G.brand_of
-    ok("separation: no device or hazard row is a brand pack line", dev == 0, str(dev))
-    # ---------------------------------------------------------------- distractors
-    src = open(os.path.join(HERE, "analysis.py"), encoding="utf-8").read()
-    ok("distractors unread by the golden", all(K.FILES[k] not in src and ('"%s"' % k) not in src for k in K.DISTRACTORS))
-    # ---------------------------------------------------------------- realism sweep
-    ok("realism no arithmetic id column", _no_arith(T))
-    counts = [ov[b][0] for b in K.RIVALS]
-    ok("realism distinct buying-home counts", len(set(counts)) == len(counts))
-    ok("realism no round headline", all(c % 100 for c in counts) and ov[call][1] % 10)
-    late = [r for r in G.rows if r["utc"].year != K.YEAR]
-    ok("realism settlement inside 2026", not late, "%d rows outside" % len(late))
-    ok("realism till lines inside 2026", all(t["when"].year == K.YEAR for t in G.txs))
-    em = [f for f in files if f.endswith((".csv", ".json")) and ("—" in open(os.path.join(T, f), encoding="utf-8").read()
-                                                               or "–" in open(os.path.join(T, f), encoding="utf-8").read())]
-    ok("realism no em or en dash in text files", not em, ", ".join(em))
-    # ---------------------------------------------------------------- documents: positive controls
-    brief = text_of(os.path.join(T, K.FILES["brief"]))
-    ok("doc brief carries the estimand", "if anyone in it bought a pack of that brand" in brief and
-       "An online order counts on the day it was delivered" in brief)
-    terms = text_of(os.path.join(T, K.FILES["terms"]))
-    ok("doc terms carry the personal card", "Each card is issued to one member" in terms.replace("\n", " "))
-    agr = text_of(os.path.join(T, K.FILES["agreement"]))
-    ok("doc agreement carries UTC and the replaced terminal", "UTC" in agr and "41023212" in agr and "41023202" in agr
-       and K.COUNTER_TID in agr)
-    board = text_of(os.path.join(T, K.FILES["board"]))
-    ok("doc price board carries accessories and the cash route", all("%.2f" % p in board for _, p in K.ACCESSORIES)
-       and "checkout" in board)
-    for k in ("brief", "terms", "agreement", "board"):
-        t = text_of(os.path.join(T, K.FILES[k]))
-        ok("doc %s names no payment link" % k, not re.search(r"household|same (bank )?card|shared card|link", t, re.I))
-    return rows
-
-
-def _accounts(G):
-    acc = collections.defaultdict(set)
-    for a, no, bs in G.online_purchases():
-        acc[a] |= bs
-    return list(acc.values())
-
-
-def _heavy(G):
-    sp = G.store_purchases()
-    per = collections.defaultdict(list)
-    for k, bs in sp.items():
-        c = G.tx[k]["card"]
-        if c and c not in G.store_cards:
-            per[G.fold(c)].append(bs)
-    return [set().union(*v) for v in per.values() if len(v) >= 8]
-
-
-def _split(G):
-    """The golden with each master spelling a brand of its own."""
-    from openpyxl import load_workbook
-    ws = load_workbook(os.path.join(G.t, K.FILES["master"]), read_only=True).active
-    spell = {}
-    for r in list(ws.iter_rows(values_only=True))[1:]:
-        if r[3] in A.PACK_FORMATS:
-            spell[str(r[0])] = r[2]
-    saved = dict(G.brand_of)
-    canon = {"OL": "Corcally's Roastery", "ROS": "Oro Rosso", "NOR": "Nordhavn"}
-    for plu, b in saved.items():
-        if spell[plu] != canon.get(b, spell[plu]) or (b not in canon and spell[plu] != K.BRAND_NAME[b]):
-            G.brand_of[plu] = b + "*" if b not in canon else b
-    try:
-        units = G.units("homes")
-    finally:
-        G.brand_of = saved
-    ov = G.overlap(units)
-    extra = set().union(*units) - set(K.B)
-    allb = list(K.RIVALS) + sorted(extra)
-    shares = {}
-    for b in allb:
-        buyers = [s for s in units if b in s]
-        if buyers:
-            shares[b] = 100.0 * sum(1 for s in buyers if "OL" in s) / len(buyers)
-    low = min(shares, key=shares.get)
-    return low, (ov["ROS"][0], ov["ROS"][1], int(round(ov["ROS"][2]))), (ov["NOR"][0], ov["NOR"][1], int(round(ov["NOR"][2])))
-
-
-def _truth(w):
-    """The clean truth: the easy route and the true homes on the world before any file, and both asks."""
-    out = {}
-    fold = {c: m["card"] for m in w.members for c in m["cards"]}
-    mem, home = collections.defaultdict(set), collections.defaultdict(set)
-    for t in w.tx:
-        if t["kind"] == 'sale' and t["card"] == 'MEMBER':
-            bs = {ln["brand"] for ln in t["lines"] if ln["qty"] > 0}
-            mem[fold[t["card_no"]]] |= bs
-            home[t["home"]] |= bs
-    for o in w.orders:
-        if o["status"] == 'delivered' and o["delivery"].year == K.YEAR:
-            bs = {K.SKU[c["plu"]][1] for c in o["versions"][-1]["coffee"]}
-            mem[("acc", o["account"])] |= bs
-            home[o["home"]] |= bs
-    out["members"] = A.Golden.pick(A.Golden.overlap(list(mem.values())))[0]
-    out["homes"] = A.Golden.pick(A.Golden.overlap(list(home.values())))[0]
-    ta = {(n, q): 0.0 for _, n, _ in K.ROASTERS for q in (1, 2, 3, 4)}
-    for lb in w.labels:
-        if lb["sold"]:
-            ta[(K.ROASTER_NAME[lb["roaster"]], K.quarter(lb["when"].date()))] += lb["kg"]
-    out["ask_a"] = ta
-
-    def rate(d, day):
-        r = d[6]
-        for eff, f in d[7]:
-            if eff <= day:
-                r = f
-        return r
-    tb = collections.defaultdict(float)
-    for t in w.tx:
-        if t["kind"] == 'sale':
-            for s in t["saving"]:
-                d = K.DEAL[s["deal"]]
-                tb[(K.SUPPLIER[d[1]], K.quarter(t["when"].date()))] += rate(d, t["when"].date())
-        elif t["kind"] == 'refund':
-            for s in t["saving"]:
-                d = K.DEAL[s["deal"]]
-                o = t["orig"]
-                tb[(K.SUPPLIER[d[1]], K.quarter(o["when"].date()))] -= rate(d, o["when"].date())
-    for a in w.adjust:
-        for c in a["claims"]:
-            d = K.DEAL[c["deal"]]
-            o = c["tx"]
-            tb[(K.SUPPLIER[d[1]], K.quarter(o["when"].date()))] += c["pairs"] * rate(d, o["when"].date())
-    out["ask_b"] = {k: round(v, 2) for k, v in tb.items()}
-    return out
-
-
-def _headers(T):
-    hs = []
-    for f in os.listdir(T):
-        p = os.path.join(T, f)
-        if f.endswith(".csv"):
-            hs += next(csv.reader(open(p, encoding="utf-8")))
-        elif f.endswith(".parquet"):
-            import pyarrow.parquet as pq
-            hs += pq.read_schema(p).names
-        elif f.endswith(".json"):
-            d = json.load(open(p, encoding="utf-8"))
-            hs += list(d.keys()) + list(d["orders"][0].keys())
-    return hs
-
-
-def _no_dupes(T):
-    seen = set()
-    with open(os.path.join(T, K.FILES["till"]), encoding="utf-8") as f:
-        for line in f:
-            if line in seen:
-                return False
-            seen.add(line)
-    return True
-
-
-def _no_arith(T):
-    for f, col in ((K.FILES["register"], "card_no"), (K.FILES["register"], "member_no"),
-                   (K.FILES["till"], "receipt")):
-        vals = []
-        with open(os.path.join(T, f), encoding="utf-8") as fh:
-            for r in csv.DictReader(fh):
-                v = re.sub(r"\D", "", r[col])
-                if v:
-                    vals.append(int(v))
-        vals = sorted(set(vals))
-        if len(vals) > 3 and len(set(b - a for a, b in zip(vals, vals[1:]))) == 1:
-            return False
-    return True
+    import docx
+    d = docx.Document(path)
+    parts = [p.text for p in d.paragraphs]
+    for t in d.tables:
+        for row in t.rows:
+            parts.append(" | ".join(c.text for c in row.cells))
+    return "\n".join(parts)
 
 
 if __name__ == "__main__":
-    rs = run()
-    bad = [r for r in rs if not r[1]]
-    for r in rs:
-        print("%s  %-70s %s" % ("PASS" if r[1] else "FAIL", r[0], r[2]))
-    print("checks: %d assertions, %d failed" % (len(rs), len(bad)))
-    sys.exit(1 if bad else 0)
-
-def _counter_forks(G, T, ok):
-    """SF17 to SF21 on the cut pack: the board's rules read, and every reading near them matches the same labels."""
-    import bisect
-    import itertools
-    import datetime as _dt
-    board = re.sub(r"\s+", " ", text_of(os.path.join(T, K.FILES["board"])))
-    ok("SF17 the board voids a label not paid for by closing, and files the 25 minutes and the same day",
-       "within 25 minutes of weighing" in board and "Take your label to any checkout today" in board
-       and "Unpaid labels are void at closing" in board, board[-300:])
-    labs = G.counter_labels()
-    pays = G.counter_payments()
-    acc = [0.0] + [a[1] for a in K.ACCESSORIES] + \
-        [a[1] + b[1] for i, a in enumerate(K.ACCESSORIES) for b in K.ACCESSORIES[i:]]
-    accset = set(int(round(x * 100)) for x in acc)
-    fewest = {}             # the fewest accessories making each amount, up to four
-    for n in range(5):
-        for comb in itertools.combinations_with_replacement([a[1] for a in K.ACCESSORIES], n):
-            c = int(round(sum(comb) * 100))
-            fewest[c] = min(fewest.get(c, 9), n)
-    times = sorted(labs, key=lambda x: x["when"])
-    tk = [x["when"] for x in times]
-
-    def card_readings(before, after):
-        many = only_acc = 0
-        for p in pays:
-            amt = int(round(p["amount"] * 100))
-            only_acc += amt in accset
-            lo = bisect.bisect_left(tk, p["when"] - _dt.timedelta(minutes=before))
-            hi = bisect.bisect_right(tk, p["when"] + _dt.timedelta(minutes=after))
-            n = 0
-            for k in (1, 2, 3):
-                for comb in itertools.combinations(times[lo:hi], k):
-                    n += (amt - sum(int(round(x["price"] * 100)) for x in comb)) in accset
-            many += n != 1
-        return many, only_acc
-    for b, a in ((20, 3), (25, 3), (30, 5), (35, 10)):
-        many, only_acc = card_readings(b, a)
-        ok("SF18 every counter card payment has one reading from %d minutes before to %d after, whichever labels other "
-           "payments took, and none is accessories alone" % (b, a), many == 0 and only_acc == 0, "%d, %d" % (many, only_acc))
-    wide = minimal_bad = 0
-    for p in pays:
-        amt = int(round(p["amount"] * 100))
-        lo = bisect.bisect_left(tk, p["when"] - _dt.timedelta(minutes=25))
-        hi = bisect.bisect_right(tk, p["when"] + _dt.timedelta(minutes=3))
-        reads = []
-        for k in (1, 2, 3):
-            for comb in itertools.combinations(times[lo:hi], k):
-                rest = amt - sum(int(round(x["price"] * 100)) for x in comb)
-                if rest in fewest:
-                    reads.append((fewest[rest], frozenset((x["scale"], x["no"]) for x in comb)))
-        wide += len(reads) > 1
-        least = min(r[0] for r in reads)
-        minimal_bad += sum(1 for r in reads if r[0] == least) != 1 or least > 2
-    ok("SF22 with three or four accessories allowed some payments read more ways (%d), and the reading with the fewest "
-       "accessories is one and is the golden's in every payment" % wide, minimal_bad == 0, str(minimal_bad))
-    sc0, f0, l0, _o = G.clock_block
-    n_lo, n_hi = int(f0.split("-")[1]), int(l0.split("-")[1])
-    plain = [x for x in times if not (x["scale"] == sc0 and n_lo <= x["no"] <= n_hi)]
-    pk = [x["when"] for x in plain]
-    bad0 = 0
-    for p in pays:
-        amt = int(round(p["amount"] * 100))
-        lo = bisect.bisect_left(pk, p["when"] - _dt.timedelta(minutes=25))
-        hi = bisect.bisect_right(pk, p["when"])
-        n = sum((amt - sum(int(round(x["price"] * 100)) for x in comb)) in accset
-                for k in (1, 2, 3) for comb in itertools.combinations(plain[lo:hi], k))
-        blk = any(x["scale"] == sc0 and n_lo <= x["no"] <= n_hi
-                  for x in times[bisect.bisect_left(tk, p["when"] - _dt.timedelta(minutes=25)):
-                                 bisect.bisect_right(tk, p["when"] + _dt.timedelta(minutes=3))])
-        bad0 += (n != 1) and not blk
-    ok("SF18 read strictly (labels printed in the 25 minutes up to the payment), every payment away from scale 2's "
-       "re-dated block has one reading", bad0 == 0, str(bad0))
-    lines = G.counter_till_lines()
-    for name, lo_of in (("earlier that day", lambda w: _dt.datetime.combine(w.date(), _dt.time(0))),
-                        ("in the 150 minutes before", lambda w: w - _dt.timedelta(minutes=150))):
-        bad = 0
-        for ln in lines:
-            lo = bisect.bisect_left(tk, lo_of(ln["when"]))
-            hi = bisect.bisect_right(tk, ln["when"] + _dt.timedelta(minutes=5))
-            bad += sum(1 for x in times[lo:hi] if abs(x["price"] - ln["value"]) < 0.005) != 1
-        ok("SF19 every counter till line is the price of one label printed %s" % name, bad == 0, str(bad))
-    sc, first, last, off = G.clock_block
-    n0, n1 = int(first.split("-")[1]), int(last.split("-")[1])
-    block = [x for x in labs if x["scale"] == sc and n0 <= x["no"] <= n1]
-    moved = sum(1 for x in block for d in (-600, 600)
-                if K.quarter((x["shown"] + _dt.timedelta(seconds=off + d)).date())
-                != K.quarter((x["shown"] + _dt.timedelta(seconds=off)).date()))
-    ok("SF20 scale 2's re-dated block keeps every label's quarter at any offset within ten minutes of the golden's",
-       block and moved == 0, "%d labels, %d moved" % (len(block), moved))
-    ok("SF21 scale 2 weighs in grams: its net weights run in the hundreds where scale 1's run under one",
-       min(float(x["kg"]) for x in G.counter_labels(fix_grams=False) if x["scale"] == "S2") > 50
-       and max(float(x["kg"]) for x in labs if x["scale"] == "S1") < 5)
+    tgt = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "..", "target")
+    sys.exit(main(tgt))

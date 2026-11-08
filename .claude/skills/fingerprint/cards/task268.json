@@ -11,8 +11,8 @@
   "shape": "14",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Five internal services ran over their 2026 latency error budget and each gets a reliability engineer for the first half of 2027: journey-search, places, seat-map, partner-gateway and notifications.",
+  "answer_source": "task268/submission.md block 1; golden/reliability_review_2026.docx; golden/service_sli_2026.csv",
   "gap": [
     "population"
   ],
@@ -49,11 +49,11 @@
   "role_family": "other",
   "scoring_unit": "other",
   "spine": {
-    "file": "spans_2026.parquet",
-    "rows": 0,
-    "entity": "one span the trace store kept: one call one service handled inside a sampled trace",
+    "file": "trace_spans_2026-12.parquet",
+    "rows": 379119,
+    "entity": "one span the trace store kept: a request an edge service handled or a call inside the trace it started",
     "grain": "span",
-    "source": "synthetic (the tracing backend's span export for calendar 2026)"
+    "source": "synthetic (the tracing store's span export for December 2026)"
   },
   "forum": "executive_team",
   "forcing_event": "budget_or_appropriation",
