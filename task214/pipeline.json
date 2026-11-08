@@ -1,7 +1,7 @@
 {
   "task": "task214",
   "status": "PAUSED",
-  "domain": "architecture 2 not yet drawn (Energy Systems & Utilities world spent two candidates at the prototype on 2026-11-08)",
+  "domain": "architecture 2 not yet drawn (candidates G1 to G3 screened in physical-environmental-sciences / environmental-monitoring-exceedance on 2026-11-08; the Energy world and the closed-landfill world spent)",
   "objective": "anomaly-detection",
   "stage": 1,
   "stage_name": "draw",
@@ -12,9 +12,9 @@
   "loops": 0,
   "card": {
     "registered": "",
-    "note": "architecture 1 card carries architecture_spent; the architecture 2 probe card (scratch t214/a2/probe_card.json) passed guard check at WARN in both views and was never registered"
+    "note": "architecture 1 card carries architecture_spent; architecture 2 probe cards (scratch t214/a2/probe_env.json, probe_conf.json) both legal pairings, never registered"
   },
-  "screens": "Energy hidden-load world (scratch t214/a2/proto): AMI-sum, pro-rata and naive-NTL readers wrong in every redraw; candidate 1 golden = truth 3 of 6 at best, candidate 2 golden = truth 0 to 1 of 20; both set aside after two revisions",
+  "screens": "2026-11-08, 4 seeds each (scratch t214/a2/proto): G1 world 1 (coal plant ash, US) golden 4/4, every operationalisation 4/4, died at screens 3 and 4 (true well onset: level-plus-year fit, latest-year replay, intrawell limits, counts 3 or 4 of 4); G2 world 2 (closed landfills, UK) golden 4/4, readers wrong 3 or 4 of 4, level-plus-year fit 4/4 on the true site; G3 world 2 golden 4/4 lead 4.0, defensible operationalisations 4/4, 20 readers wrong 4/4, pre-window-fit residual 1/4 on the true site, the true site topping per-borehole exceedance share and pre-window count 2 of 4; fit parity R2 0.34 against 0.34",
   "precut": {
     "exit": null,
     "date": ""
@@ -33,7 +33,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "Stage 1 (draw), architecture 2, branch batch4-task214-a2: draw a new world in an unbarred client domain (barred: Epidemiology, General Statistics, Banking, Pharmacology, Human Factors, Education, and Healthcare Delivery while task212 architecture 2 prototypes there; Energy hidden-load world spent today). Read DESIGN_NOTE ## Tried and rejected (the 2026-11-08 lines) and the scratch brief brief_task214_arch2.txt first. Prefer a golden that is a deterministic construction with no threshold (a calendar, graph, order or within-unit ranking keyed to each unit's own history across two systems). Screen it as code over 20 redraws (first look, careful readers a to e, literal WHAT, fit parity, golden variants) before any card; then the card through guard.py check in this tree and in a FINGERPRINT_CARDS shadow folder holding main's task482 architecture 17, register, check again, move architecture 1's identity into lineage, commit DRAWN with the spend record, and message main the hash and the draw.",
+  "resume": "Stage 1 (draw), architecture 2, branch batch4-task214-a2. Read DESIGN_NOTE ## Tried and rejected (the 2026-11-08 G1, G2, G3 and conflict-cell lines) first; the cells stay environmental-monitoring-exceedance and conflict-protest-event-data-analysis. World 2 (closed landfills) is spent; world 1 (a retired coal plant's ash units) may take one more candidate. Next: candidate 4 in world 1 on the arrangement-only design: draw the decoy's and the true unit's level histories from one set of annual peaks (the decoy's in rising order after its water table recovers, the true unit's with its highest year first), both exceeding in the same years with matching counts and magnitudes (the decoy's store density rising with height so its flush grows with level like a contact response), the decoy's boreholes on natural level-tracking background, so every per-unit count, share, maximum, trend and level relation ties and only the order of each unit's own peaks separates them. Screen with scratch t214/a2/proto/screens3.py (site-level picks, trend readers requiring significance) on 4 seeds, then 20, with the battery of per-unit statistics; if it fails, commit PAUSED and hand back. On a pass: personas from guard.py names, the card through guard.py check (probe_env.json passed the pairing; add a differentiation line against task270 v10), register, check again, move architecture 1 into lineage, commit DRAWN and message main.",
   "approved": null,
   "delivered": null,
   "portal": null,
