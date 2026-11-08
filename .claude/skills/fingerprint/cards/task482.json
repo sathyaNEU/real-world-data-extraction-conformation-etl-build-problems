@@ -536,7 +536,7 @@
  "shell": {
   "question form": "which",
   "second-sentence opener": "write",
-  "rounding opener": "write",
-  "deliverable set": ""
+  "rounding opener": "expected",
+  "deliverable set": "docx+png+xlsx"
  }
 }

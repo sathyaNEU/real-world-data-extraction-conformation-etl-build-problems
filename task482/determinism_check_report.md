@@ -1,64 +1,51 @@
-# determinism-check report, task482 (architecture 16), 2026-10-31
+# determinism-check report, task482 (architecture 17), 2026-11-08
 
-Target.zip sha256 433ff500dd8e84b789b2ac3f42cdb0060c6f1b351b9fce363f62eb7b8c81b6ed. One judge thread, one pass, scratch /tmp/determinism-check-task482-1793487403/ (verdict at verdict.md there). Earlier architectures' reports (determinism_check_report_arch14.md, determinism_check_report_arch15.md) are untouched.
+Target.zip sha256 02c4e9b7e51761b66b07a8348618ef419577cb04fb210d481841d7b989525203. Two judge passes, each an isolated general-purpose agent on Sonnet at medium effort that read only its own byte-identical copy of prompt.txt and the pack, wrote its derivation before opening the graded blocks, and kept that order.
 
-## Verdict
-DETERMINISTIC
-**Disposition:** APPROVE. No repair and no rerun. One optional, advisory prompt pin: state the precision of the emissions-per-tonne figures (for example "to two decimals"). It is not needed for the call.
-**Stumping type:** mechanism: method_or_model_selection (disaggregation of a metered fuel by process activity, validated by fit), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+- Round 1 (zip 3f18332c): NOT_DETERMINISTIC, FIX_NOW on one ask cell pair only (the Capital and Central mean make-up marks: one keyer's batch keyed as percentages, with no shipped file stating the make-up paper's maximum or how a cover is keyed). The main call reproduced to two decimals; Gate H analytical. Fixed in the generator: the make-up roster's header files, in the office's voice, the 50-mark maximum, the cover's two figures and one batch on one template per keyer's session; the keyed file numbers every session's batch; every alternative treatment is asserted excluded (AF1).
+- Round 2 (zip 02c4e9b7): DETERMINISTIC, APPROVE. Every main-call and ask figure reproduced exactly.
 
-## Why
-The premium turns on which families are at or under 0.235 t CO2/t. Every defensible way of attributing the metered gas to the processes gives the same split: 6063 and LM25 ingot under the limit, 6082 and the castings over it. SCR-2 s.3 and s.4 give the attribution rule, the gas energy basis and the factor; the 15-minute meter file, the invoices (calorific value per period), the process logs and the lots file supply the data. The premium is EUR 38 x (7,200 + 1,800) t = EUR 342,000. The easy route (all gas shared by tonnes) gives 0.2215 for every family, all four qualify, 12,650 t, EUR 480,700. No gate A to E failure was found for the main call or the scrap asks. Only soft spot: the unrounded emissions figures (recorded residual below).
+## Round 2 verdict (verbatim)
 
-## Recomputation ledger
-| Figure | Claimed | Judge recomputed | Reproduced |
-|---|---|---|---|
-| Gas kWh (UTC to Europe/London, hcf x 2.83 before the 14 Apr exchange, x 1.02264 x CV of invoice period) | per invoice PDF | within about 20 kWh in 11 of 13 invoices (1 to 22 kWh, rounding); first and last straddle year ends | Yes (meter csv, invoices pdf) |
-| 2026 gas total | n/a | 55.65 GWh, 10,181 t CO2 | Yes |
-| Production, last result PASS | 22,897 / 8,205 / 12,816 / 2,044 | 22,896.7 / 8,204.9 / 12,815.9 / 2,044.0 (39 re-inspected lots once each) | Yes (lots csv) |
-| H1 hours, 6082 share | 47 per cent of hours on 26 per cent of billet | 2,538 of 5,354 h (47.4%) on 26.3%; 6082 loads 15.0 h, 6063 6.0 h | Yes (H1 csv) |
-| Emissions t CO2/t, daily regression (R2 0.9985) | 0.21 / 0.26 / 0.17 / 0.50 | 0.2115 / 0.2628 / 0.1686 / 0.4999 (6063 / 6082 / LM25 / castings) | Yes to two decimals under the filed method |
-| Call-offs | 7,200 / 3,000 / 1,800 / 650 t | 4,320 + 2,880 = 7,200; 3,000; 1,800; 650 | Yes (call-off xlsx) |
-| Premium | EUR 342,000 | EUR 38 x 9,000 t | Yes |
-| Scrap by grade and quarter (CST / EXT / TRN / UBC) | Q1-Q4 as golden | exact: CST 2,186 / 2,214 / 2,121 / 2,299; EXT 2,299 / 2,110 / 1,773 / 2,041; TRN 2,024 / 1,845 / 2,200 / 2,188; UBC 2,376 / 2,521 / 2,009 / 2,020 | Yes (goods-in, weighbridge) |
-| Dross, Midland waste-out | 286 / 262 / 251 / 270 | 285.7 / 261.6 / 251.1 / 269.6 | Yes |
+# JUDGE_REPORT task482 round 2
+Order kept: derivation.md written from prompt and pack before graded/ was opened.
 
-Method variants, none flips a decision: without HDD 0.211 / 0.264 / 0.166 / 0.520; by-alloy melt coefficients 0.211 / 0.263 / 0.169 / 0.501; 6-hourly regression 0.214 / 0.265 / 0.172 / 0.441; hourly regression 0.218 / 0.271 / 0.174 / 0.356; rated kW x hours from the asset register (distractor route) 0.199 / 0.280 / 0.138 / 0.769. Margins about 0.025 on both billet alloys.
+- **Verdict:** DETERMINISTIC
+- **Disposition:** APPROVE (no repair; no rerun).
+- **Why:** Spec s4 and the prompt fix the estimand (expected mark at 0.35 logits, Nov 2027 candidate, unrounded comparison). My independent re-estimate of the 32 Term 3 (U5/U6) item difficulties on responses taken after the school finished the unit (course review Appendix B plus NZ sitting day) gives A 25.94, B 22.92, C 24.83, so Paper C. The bank as shipped gives A (24.78 / 20.64 / 21.58). All ask figures reproduce exactly.
+- **Evidence:** Residual vs U1-U4 ability: unit done +0.167, in progress or not started about -0.02 (no step before completion). Shift U5 -0.90, U6 -0.96. Stable under item-level vs unit shift, UTC vs local date, Friday handling, +3 day lag, merging dropped+resumed sessions per entry (331 repeated pairs), iterating ability on all items. Gaps: C 0.17, A 0.94, B 2.08 from 25. Asks: entered 1915/1213/1035/1289 (N/Ce/Ca/S), sat 1874/1188/1013/1261, make-up 61/37/27/45, means 28.4/25.8/23.8/25.3; all reproduced. Golden blocks, memo, workbook agree with each other and with me (small 0.05 differences in unrounded values do not change any rounded figure).
+- **Competing answers (all closed by shipped text or evidence):** (1) bank as calibrated gives Paper A; closed by "for a candidate sitting the 2027 paper" and the Nov 2027 sitting (council minute, spec s2), and by the data step at unit completion. (2) Transfer pairs (20, same name and dob, same region both times) counted twice would add 20 to entered; no region fork. (3) 14 unbooked scripts with keyed entry numbers: excluding them gives make-up 24/32/58/42 and means 24.6/24.8/28.8/25.1; the scripts are evidence of sitting, so including is the literal reading (minor residual fork, the roster is headed "Booked candidates"). (4) K047 percentage batch not halved gives Capital 27.7, Central 31.3; closed by roster header (marks out of 50, one batch per keyer session) and the batch being all even with max 80.
+- **Files/Hygiene:** PASS. 17 files; csv, xlsx, pdf, json, eml. Distractors present (bell times, survey, preliminary run, standard-setting form raw marks, 2025 run). No authoring leakage seen. No exclusion-level finding.
+- **Stump power:** Easy route reads bank difficulties straight (with correct renumbering join) and files Paper A; a strong model that notices the timing mismatch must still test it on the data. Plausibly stumps. The pre-equating framing and the sequence appendix make the mismatch discoverable but not announced.
+- **Stumping type:** mechanism: method_or_model_selection (calibration sample not representative of target sitting, re-estimated on the taught subset); stumping_family: analytical_non_defect; surface_read_dependency: no (borderline: the bank values are correct for August and the task transports them to a different exposure state); sole_data_defect: no.
+- **Three rules:** domain: pass, layers: pass (L1 renumbering, UTC/NZ time, dropped+resumed sessions, percentage keying, duplicate entries; L2 exposure-conditional recalibration), decisive_step: analytical. Field analysis: Rasch pre-equating with opportunity-to-learn adjusted difficulties; easy route takes the bank values and sets Paper A (24.78 vs 25.94 after correction).
+- **Fix:** none.
 
-Wrong routes: all gas by tonnes gives 0.2215 for every family (EUR 480,700). H1 gas shared by tonnes instead of hours gives 6063 0.2250 and 6082 0.2251, both qualify, EUR 387,600. The golden call needs the hours-based H1 attribution.
+## Round 1 verdict (verbatim)
 
-Scrap ticket join: tickets restart on 29 June; rank-matching and min-cost matching agree on all 846 two-grade drops, no ties; rejected and returned loads net about 0 kg. Dross weighing sequence data-confirmed (first less second weighing equals the declared returned-metal weight within about 110 kg).
+# Judge report, task482
 
-## Competing answers that survived
-None that change a graded figure or the call. Recorded residual, non-flipping:
-- **Emissions precision (recorded residual).** The prompt rounds tonnes and premium only, so the emissions per tonne are unrounded. The castings figure moves with the regression design (0.36 to 0.52, always over 0.235); 6063 sits at 0.21 to 0.22 and 6082 at 0.26 to 0.27, so the two-decimal values are method-dependent at the second decimal. The call is unaffected. Optional pin: "to two decimals" in the prompt.
-- Log time zone is not stated anywhere; inferable (gas pattern correlates better with logs on a local clock; SCR-2 s.6 says local). Non-flipping.
-- Toll-return sows are excluded as "not bought in"; the golden's four grades follow the prompt wording. Non-flipping.
+Order kept: yes. derivation.md was written from prompt.txt and pack/ only, before graded/ was opened.
 
-## Spec gates
-| Gate | Required | Actual | Pass |
-|---|---|---|---|
-| Files, formats | 10+ files, 3+ formats | 15 files; csv 10, xlsx 3, pdf 2, eml 1 (4 formats) | Yes |
-| Large file | 25,000+ rows | meter file 35,040 rows | Yes |
-| Distractors | 2+ in metadata.json, none named in a file name | 3 in metadata.json (electricity half-hourly, plant asset register, shift roster); the judge also names the despatch weighings and the asset register's electrical sheet as unused material; none labelled in a file name | Yes |
-| Distractors unused yet weighable | rule-out by a shipped fact | asset register rated kW x hours is a plausible wrong route (0.199 / 0.280 / 0.138 / 0.769, same split as the call) and does not answer the graded quantity | Yes |
-| Deliverables | 1 to 3, all in golden | 2 (docx, csv), both in golden/ | Yes |
-| Asks | multi-dimensional, unit and rounding stated | scrap 4 grades x 4 quarters plus dross by quarter; tonnes and euro rounding in the prompt | Yes (precision of emissions per tonne not stated; residual above) |
-| Rubric 25+ criteria | prompt shape identifiable | not checked in this pass (rubric is generated; shape is a per-family, per-quarter, per-grade grid, 36+ gradable figures) | Not verified here |
-| Reads as real | no LLM tells, goldens real | judge found no authoring or benchmark language; real-export mess present | Yes |
+- **Verdict:** NOT_DETERMINISTIC (one supplementary cell only; the main recommendation and every other graded figure are forced).
+- **Disposition:** FIX_NOW. File the keying basis of the make-up marks (which scripts were keyed as percent of 50) so one treatment is the literal one; the main call, the bank, the sessions and every other figure stay byte-identical, so only the mean-make-up-mark cells (Central, Capital) need a re-read.
+- **Why:** The mean make-up mark for Central and Capital rests on an unfiled inference: 13 scripts keyed by JT on 2 Sep (makeup_scripts_keyed.csv; 11 are C988-010 to 020, the Wednesday host batch, plus walk-in scripts C988-032 and 033) are all even, seven exceed 50, and no shipped file says they are percentages or what the M26 maximum is. Halving the batch (golden) gives Central 26.4 and Capital 24.5; other defensible treatments give different one-decimal figures (below). Gate C/E on the supplementary ask. Taxonomy: competing_defensible_answer. Fix location: input_files (or the ask).
 
-## Gate G reconciliation
-Thread's line: mechanism method_or_model_selection; stumping_family analytical_non_defect; surface_read_dependency no; sole_data_defect no. Gate H line as the thread gives it: **domain: pass, layers: pass, decisive_step: analytical.**
-Card (task482.json): stump_class analytical, analyst_test and domain_test present; the design note's Three rules lines and Stump sentence name the same decisive step (the homogenizing furnace's gas by loads' firing hours, 6082 at 47 per cent of hours on 26 per cent of billet). Match. The declared distractors (electricity, asset register, roster) are not named by the thread as the surface read carrying the task; the thread's surface-read answer is the tonnes-share route, so no "distractor too load-bearing" finding. One numeric difference to note, not a mismatch of type: the card and the design note state the default path at EUR 456,000 (billet alloys level at 0.225); the thread's recomputations give EUR 480,700 for all-gas-by-tonnes and EUR 387,600 for H1-by-tonnes with the rest regressed. The design note's EUR 456,000 was not reproduced by the thread under either route, so the stated default-path premium should be re-derived before it is quoted anywhere. It does not touch the golden.
+## Evidence (recomputed)
+Main call. Mapped cards by item_renumbering_2025.csv (all 150 map). Bank as published: A 24.78, B 20.64, C 21.58 (A, rounds 25/21/22). The bank blends taught and untaught candidates on U5/U6 (Term 3 units; "calibration ... on every online response of the August 2026 sitting"). Parsing Appendix B (48 schools) and NZ session dates: observed minus expected on U5/U6 items is about -0.02 before and during the unit and +0.17 once the unit's last week is past, a sharp step with no sessions on the boundary day. Taught-only recalibration (abilities from U1 to U4 items on bank values): A 25.88, B 23.01, C 24.80; unit-shift and untaught-plus-shift variants A 25.93, B 22.9, C 24.82; session bootstrap sd 0.11 to 0.18, C nearer 25 in 100 percent. Counting "during" as taught would dilute to A 24.83, C 21.81, but the data show no effect before completion and the spec's 2027 candidate has finished the course, so it is not licensed. Golden (A 25.89, B 23.02, C 24.80; 6/11/17 Term 3 items; 104 to 176 taught responses per item; 89 percent before completion) reproduces to two decimals. Strand limits hold for all drafts.
+Region table: entered 1035/1213/1915/1289 (Capital/Central/Northern/Southern; 96 exact duplicate rows dropped, 114 W removed, 20 moved-school pairs counted once, same region in every pair), sat online or make-up 1013/1188/1874/1261, make-up 27/37/61/45 (156 roster Yes plus 14 keyed walk-in scripts): all reproduce and match the golden. Counting both entries of moved candidates would give 1040/1217/1918/1297 (fork closed by "candidates" being people and by the same-region pairs; a weaker point but acceptable). Northern 29.0 and Southern 25.1 are forced under every treatment.
+Competing figures for mean make-up mark (Capital / Central): halve the 13-script JT 2-Sep batch 24.5 / 26.4 (golden); halve only the roster Wednesday scripts 010 to 020 and 032: 25.3 / 26.4; halve 010 to 020 only: 26.3 / 26.4; drop marks over 50: 26.0 / 27.4; drop the whole batch: 24.5 / 26.1; halve only marks over 50: 26.6 / 28.0; as keyed 29.0 / 32.3. The golden's choice is the best supported (post-halving batch mean 26.2 against 26.7 elsewhere; parity 1 in 8,192), and the memo's "keyed as percentages" appears in no shipped file, but a careful analyst could defend at least dropping the impossible marks.
 
-## Stump power (Gate F)
-Moderate to high. The trap is the attribution step: SCR-2 s.3 attributes each process the fuel it burned, but there is no sub-metering, so the single gas meter must be disaggregated by regression on process activity. The tonnes-share route files the wrong qualifiers; so does H1 by tonnes. The ETL layer (UTC to local, hcf to m3, CV per invoice period, de-duplicating heats, last-result production) adds ways to be quietly wrong. Nothing in the package pre-answers the trap. The thread did not class the decisive step analytical merely because regression is standard; it reached the golden by choosing hours for the soak furnace, which the data separate (R2 0.9985). The main thread weighs the standard-method note (library methods are textbook routes a strong solver takes, stumping 1.3) against the design note's ladder.
+## Gates
+- A: pass (all figures reproduce; golden step 4 "keep the later answer after a reconnect" matches no duplicate in the responses and moves nothing; the memo's "percentages" is an unsupported claim).
+- B: pass for the main call (0.35 and the renumbering in the standard-setting record and renumbering file, school sequences in the course review Appendix B, dates in sessions, difficulties in the bank). Make-up mark basis is the only decisive item with no stated rule.
+- C/E: fail on supplementary mean make-up mark, Central and Capital only (forks above). The main ask is pinned by "the draft whose expected mark at the Achieved standard comes closest to 25" and spec s.4 "for a candidate sitting the 2027 paper ... sum of probabilities under the Rasch model on the bank scale"; no fork found.
+- D: pass; difficulty is analysis, not wording.
+- F: stump power good. Naive route (bank as published, or the preliminary run) lands on Paper A with a clean number (24.78); getting to C needs the session-by-school timing join against Appendix B and a taught-only recalibration. Nothing in a shipped file names the opportunity-to-learn issue.
+- G: mechanism: statistical_rigor (calibration population against the target population), stumping_family: analytical_non_defect, surface_read_dependency: no (borderline: the bank figures are correct for the August 2026 population; no number is wrong, the estimand moves), sole_data_defect: no (on clean data the taught-versus-untaught blend still decides).
+- H: domain: pass (Rasch pre-equating and standard-based targeting of a draft form is the field's own work; swapping nouns does not preserve it); layers: pass (Layer 1: card renumbering, duplicate and moved-school entries, mixed date formats, tables in PDFs, UTC against NZ time, roster typed from returns; Layer 2: recalibrating on candidates who have been taught); decisive_step: analytical. The easy route a strong analyst who read everything correctly takes is the bank's final 2026 difficulties, giving Paper A (25 after rounding) when Paper C is the answer.
+- Hygiene: PASS. 17 files, formats csv, xlsx, pdf, json, eml; 258,631-row responses file; distractors candidate_survey_2026.csv, member_bell_times_2026.json, y10sci_course_review sections, standard-setting raw marks on the August forms, preliminary calibration run. No authoring leakage found; dates coherent (spec 4 Nov 2026, email 6 Nov, minute 14 Oct). Not exclusion-level.
+- Cross-batch check: not run (no other tasks available in this folder).
 
-## Findings, ranked
-1. Residual, advisory: emissions per tonne are unrounded and method-dependent at the second decimal (castings 0.36 to 0.52). Does not flip any family. Optional prompt pin.
-2. Note and card quote EUR 456,000 as the default-path premium; the thread could not reproduce it (480,700 and 387,600 are the recomputed wrong routes). Documentation only.
-3. Log time zone inferred, not stated. Non-flipping.
-4. Rubric criteria count not verified in this pass.
-
-## Next action for the author
-None required for the call. Optionally add "to two decimals" for the emissions-per-tonne figures to the prompt (a prompt change would reopen voice-check and the byte-identical rebuild) and re-derive the EUR 456,000 default-path figure in the note and card.
+## Fix
+input_files/solution: pin the make-up marks so the literal reading gives 26.4 and 24.5, for example by filing in makeup_scripts_keyed.csv or the roster which scripts were keyed as a percent of 50 (the WHAT, not the halving rule), or restate the ask as the mean of marks out of 50 and make the batch's basis explicit. Do not touch the bank, sessions or Appendix B.

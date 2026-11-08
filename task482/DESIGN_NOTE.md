@@ -377,6 +377,37 @@ sat, make-up count and mean (asserted in checks.py, measured on the cut pack by 
   and workbook carries its own created and modified stamps in order; the roster and the appendix read back whole
   under pdftotext -layout.
 
+## Pre-ship check
+
+Written at ship, 2026-11-08, on the final cut (target.zip 02c4e9b7, seed 482025; the digest is in `pipeline.json`).
+
+- Stage 4, round 1 (zip 3f18332c): the leak reader CLEAN; the judge NOT_DETERMINISTIC with FIX_NOW on the Capital and
+  Central mean make-up marks only (one keyer's batch keyed as percentages with no filed maximum or keying unit). The
+  main call reproduced to two decimals and Gate H read analytical. Fixed in the generator: the make-up roster's header
+  files the 50-mark maximum, the cover's two figures and one batch on one template per keyer's session; the keyed file
+  numbers every session's batch; every alternative treatment is asserted excluded (AF1). The four make-up means moved;
+  the main call and every count did not (freeze, rubric mode, PASS).
+- After the rebase onto main, heart blocked ban.forum and ban.org_family against newer cards from another session; the
+  world changed rather than the label (the Council sets the paper on the head of assessment's recommendation; the Trust
+  is a charitable trust), and heart reads WARN only.
+- Stage 4, round 2 (zip 02c4e9b7): the judge DETERMINISTIC, APPROVE, every figure reproduced (Gate F good; Gate G
+  analytical_non_defect, surface_read_dependency no; Gate H domain pass, layers pass, decisive step analytical); the
+  leak reader CLEAN, its two low notes ruled: the roster header reads as an office fact and nudges only the make-up
+  ask, and specification section 4 files the estimand, never a handling.
+- The 10/10 rules re-read against the built pack: the decisive step is still the taught-state recalibration no
+  sentence states (the literal execution of every filed sentence files Paper A, asserted), the history fits the bank as
+  well as the golden (fit parity, asserted), and the mess is only Layer 1.
+- Every gate re-run on the final cut: make.py (two byte-identical builds, checks.py 0 failures, verify.py from the
+  shipped files alone, ceiling.py), figures_check 31 of 31, precut 61 checks with 0 FAIL and 0 WARN, voice-check PASS
+  (a WARN on the which quota, kept because the call is a pick), leak.py REVIEW with no LEAK (each REVIEW line ruled
+  above), the five PDFs exported by LibreOffice Writer with the Trust as author and a real subject, guard heart WARN
+  (Paul in task117; the time, G13 and pick signature differentiated on the card) and surface exit 0 with two pairs
+  promoted on that signature (task194, task501), answered on the card. The other line's cards were copied untracked for
+  the guard runs and removed after.
+- Ask ceiling (ceiling.py on the cut pack): the cracker keeps 0 of 16, the full includer 4 of 16 (25 per cent), the
+  mirror 0; one top response on the call and one off 35.4, the full includer and the cracker both on 51.9, two full
+  includers on 58.8.
+
 ## Architecture 16 record (spent 2026-11-07)
 
 Brackwell Alloys' 2026 product-family direct emissions for Velden's 2027 low-carbon premium (physical-environmental-
