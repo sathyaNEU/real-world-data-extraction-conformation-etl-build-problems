@@ -568,3 +568,13 @@ Measured by: task212/generator/ceiling.py
   Ask C (failed reference controls per genotyping batch) and a freezer-hours ask were set aside on paper: the control
   file's own type column performs the layout device, and two probes per freezer fork the hours unless the monitored
   probe is filed.
+- 2026-11-08, the stage-2 resume plan, priced on paper before any generator code (paused by the author before a harness
+  ran): the freezer sweep in the resume line (Kingston 12 January to 27 February, then Thunder Bay, Peterborough, London,
+  Sudbury and Windsor in sequence from late April, Barrie late July to August) makes each middle centre's exposure a step
+  in pick date (its racks picked after its sweep are the exposed ones), a dated rise that a centre-by-pick-week failure
+  table shows; `h1.py` never modelled it, since it places each rack's multi-omics visit 5 to 40 days before or after that
+  rack's own pick with a centre-specific before-share, independent of pick date. A January and August split outside the
+  release window keeps pick date clean but makes the January phase a dated split of racks that shows the effect in every
+  centre. Ask B's D6 as filed is performed by the receiving SOP's own WHAT (group the pieces, take the latest delivery), so
+  the full includer keeps its block; ask A's D4 by box position through the location history is a walk back through a
+  change log, which the hygiene battery makes (supplemental-stumping 1.1c, 464 at 72).
