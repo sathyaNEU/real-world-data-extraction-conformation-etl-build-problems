@@ -590,21 +590,33 @@ def sweep_task_metadata(task, rep, vocab, nums, prompt_text=""):
                     "%s shares the design note's stump vocabulary (%s): say what the task decides, not how" % (path, ", ".join(words[:5])))
 
 
+ISO_DAY = re.compile(r"(?<!\d)(20\d\d)-(\d\d)-(\d\d)(?!\d)")
+DMY_DAY = re.compile(r"(?<![\d/])(\d{1,2})/(\d{1,2})/(20\d\d)(?![\d/])")
+
+
+def dates_in(text):
+    """Every date in text as ISO: ISO dates and timestamps (2026-11-08, 2026-11-08T10:48:13Z, 2026-11-08 10:48)
+    and day-first dates (08/11/2026, 8/11/2026 10:21). A word boundary after the day misses a stamp with a T."""
+    out = ["-".join(m.groups()) for m in ISO_DAY.finditer(text)]
+    for m in DMY_DAY.finditer(text):
+        day, month = int(m.group(1)), int(m.group(2))
+        if 1 <= day <= 31 and 1 <= month <= 12:
+            out.append("%s-%02d-%02d" % (m.group(3), month, day))
+    return out
+
+
 def sweep_dates(files, rep, asof, prompt_text):
     if not asof:
         rep.add("9 dates after the setting", "INFO", "-", "no --asof given, sweep skipped (pass the fiction's as-of date)")
         return
-    given = set(re.findall(r"\b(20\d\d)-(\d\d)-(\d\d)\b", prompt_text))
+    given = set(dates_in(prompt_text))
     for f in files:
         if not f["text"]:
             continue
-        late = Counter()
-        for m in re.finditer(r"\b(20\d\d)-(\d\d)-(\d\d)\b", f["text"]):
-            d = "-".join(m.groups())
-            if d > asof and m.groups() not in given:
-                late[d] += 1
+        late = Counter(d for d in dates_in(f["text"]) if d > asof and d not in given)
         if late:
-            rep.add("9 dates after the setting", "REVIEW", f["rel"], "%d ISO dates after %s, e.g. %s" % (sum(late.values()), asof, ", ".join(sorted(late)[:5])))
+            rep.add("9 dates after the setting", "REVIEW", f["rel"], "%d dates after %s (ISO, timestamps and day-first read), e.g. %s"
+                    % (sum(late.values()), asof, ", ".join(sorted(late)[:5])))
 
 
 def sweep_metadata(target, rep):

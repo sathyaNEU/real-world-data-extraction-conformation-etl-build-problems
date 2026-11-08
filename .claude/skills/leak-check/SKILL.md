@@ -48,7 +48,7 @@ python3 .claude/skills/leak-check/leak.py task100 --asof 2027-05-14
 | 6 ranking artifacts | a file naming most candidates beside numbers (Gate G); a declared wrong-basis distractor is the one exception |
 | 7 hidden content | hidden sheets, rows, columns, defined names, comments, tracked changes, hidden text, annotations, embedded files, nested zips |
 | 8 column names | `_true`, `is_`, `flag`, `seed`, `planted`, `debug`; Python nulls and booleans |
-| 9 dates | ISO dates after `--asof` that the prompt does not carry |
+| 9 dates | dates after `--asof` that the prompt does not carry: ISO dates and timestamps (`2026-11-08`, `2026-11-08T10:48:13Z`) and day-first dates (`08/11/2026`) |
 | 10 container | writer signature or out-of-band timestamp (`reduce-house-fixes` H1 script) |
 | 11 prompt gate | `voice-check.py` on `prompt.txt`: a markdown character or line break is LEAK, any other failing rule REVIEW (all REVIEW on legacy `prompt.md`) |
 | 12 describing content | a text, docx or pdf file in the pack naming eight or more of the data files' column names verbatim, or two fifths of one data file's columns, is a dictionary whatever its name (LEAK; four to seven REVIEW): the approved packs' helper documents were named by every reader as the most helper-like file, and the one that narrated process was solved the next day (task124 loop 0) |
