@@ -1,32 +1,31 @@
 {
   "task": "task214",
   "status": "PAUSED",
-  "domain": "epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (client domain itself); a fictional New Zealand district's council water supply and the regional public health service, spring 2027 cryptosporidiosis outbreak",
+  "domain": "architecture 2 not yet drawn (Energy Systems & Utilities world spent two candidates at the prototype on 2026-11-08)",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "check",
-  "updated": "2026-11-07",
-  "seed": "none (seed AD37 and the Larix world set aside 2026-11-07, DESIGN_NOTE ## Tried and rejected)",
-  "stump": "A competent solver computes attack rates by supply zone, maps them through the supply-zone register and names reservoir R4 as the asset to take out of service, never tracing the worst zones' supply through the valve operations over each case's incubation window, which puts their exposure on boundary main BM3.",
-  "architecture": 1,
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-11-08",
+  "seed": "none",
+  "stump": "",
+  "architecture": 2,
   "loops": 0,
   "card": {
-    "registered": "2026-11-07T21:42:13Z",
-    "check_after_register": "WARN only: overuse.org_family government_agency, overuse.objective, overuse.gate_g (answered in DESIGN_NOTE ## Draw)",
-    "merged_parent_at": "63753fc"
+    "registered": "",
+    "note": "architecture 1 card carries architecture_spent; the architecture 2 probe card (scratch t214/a2/probe_card.json) passed guard check at WARN in both views and was never registered"
   },
-  "screens": "new world, clean truth, seeds 1 to 40 (generator/screens.py): golden BM3 = truth 40/40, lead min 3.80 (median about 5.7); golden variants (incubation weights, window opening) 20/20 each; first look wrong 40/40; careful readers (register, onset-day path, report-day path, dated event, nearest reservoir, cluster nearest, per-record cells, literal replay) wrong 40/40 each; literal WHAT wrong 40/40",
+  "screens": "Energy hidden-load world (scratch t214/a2/proto): AMI-sum, pro-rata and naive-NTL readers wrong in every redraw; candidate 1 golden = truth 3 of 6 at best, candidate 2 golden = truth 0 to 1 of 20; both set aside after two revisions",
   "precut": {
-    "exit": 0,
-    "date": "2026-11-07"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-11-07, asof 2027-10-19): answer-word lines on the terms of reference, register and renewal plan, design-vocabulary lines on the register and terms of reference",
+    "leak_py": "",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN on overuse.org_family, overuse.objective, overuse.gate_g and repeat.deliverables, no BLOCK (2026-11-07, tree merged with claude/jolly-hypatia-06c61h at 26d4f91)",
-    "nearest": "surface 0 promoted, nearest task213 at 0.040 (pct 17); nearest driver 0.07 (task121)"
+    "heart": "",
+    "nearest": ""
   },
   "judge": {
     "verdict": "",
@@ -34,23 +33,43 @@
     "report": ""
   },
   "returned": [],
-  "resume": "Stage 4: run the leak reader (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t214/stage4/reader/BRIEF.md) and the determinism judge (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t214/stage4/judge/BRIEF.md) together, each in its own copy folder holding target.zip at sha256 3d239aab76a9954a; fix every finding in the generator in one pass, re-run the stage-3 gates (generator checks, two byte-identical builds, figures_check, precut, voice-check, leak.py --asof 2027-10-19, guard surface and heart after the sibling sync), re-judge only on FIX_NOW and re-read only if a document or the prompt changed; then ship: card current, ledger row, SHIPPED commit with target.zip and golden/ force-added.",
+  "resume": "Stage 1 (draw), architecture 2, branch batch4-task214-a2: draw a new world in an unbarred client domain (barred: Epidemiology, General Statistics, Banking, Pharmacology, Human Factors, Education, and Healthcare Delivery while task212 architecture 2 prototypes there; Energy hidden-load world spent today). Read DESIGN_NOTE ## Tried and rejected (the 2026-11-08 lines) and the scratch brief brief_task214_arch2.txt first. Prefer a golden that is a deterministic construction with no threshold (a calendar, graph, order or within-unit ranking keyed to each unit's own history across two systems). Screen it as code over 20 redraws (first look, careful readers a to e, literal WHAT, fit parity, golden variants) before any card; then the card through guard.py check in this tree and in a FINGERPRINT_CARDS shadow folder holding main's task482 architecture 17, register, check again, move architecture 1's identity into lineage, commit DRAWN with the spend record, and message main the hash and the draw.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "call": "Take boundary main WM55081 (Ferndale to Kowhai Hills) out of service before the Kowhai Hills feed main renewal: 189.5 per 100,000 resident-days against Kowhai Hills Reservoir at 10.6",
-  "cut": {
-    "target_zip_sha256": "3d239aab76a9954a016a7947e85e31e9b6954c68af72576cc125b51255679841",
-    "checks": "72 of 72",
-    "figures_check": "54 of 54",
-    "byte_identical_builds": 2,
-    "ceiling": "cracker 0 of 23, full includer 0 of 23, pair 28.5 one on and one off, 45.0 both on"
-  },
-  "stage4_briefs": {
-    "reader": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t214/stage4/reader/BRIEF.md",
-    "judge": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t214/stage4/judge/BRIEF.md"
+  "lineage_v1": {
+    "domain": "epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (client domain itself); a fictional New Zealand district's council water supply and the regional public health service, spring 2027 cryptosporidiosis outbreak",
+    "stump": "A competent solver computes attack rates by supply zone, maps them through the supply-zone register and names reservoir R4 as the asset to take out of service, never tracing the worst zones' supply through the valve operations over each case's incubation window, which puts their exposure on boundary main BM3.",
+    "call": "Take boundary main WM55081 (Ferndale to Kowhai Hills) out of service before the Kowhai Hills feed main renewal: 189.5 per 100,000 resident-days against Kowhai Hills Reservoir at 10.6",
+    "screens": "new world, clean truth, seeds 1 to 40 (generator/screens.py): golden BM3 = truth 40/40, lead min 3.80 (median about 5.7); golden variants (incubation weights, window opening) 20/20 each; first look wrong 40/40; careful readers (register, onset-day path, report-day path, dated event, nearest reservoir, cluster nearest, per-record cells, literal replay) wrong 40/40 each; literal WHAT wrong 40/40",
+    "precut": {
+      "exit": 0,
+      "date": "2026-11-07"
+    },
+    "leak": {
+      "leak_py": "REVIEW, no LEAK (2026-11-07, asof 2027-10-19): answer-word lines on the terms of reference, register and renewal plan, design-vocabulary lines on the register and terms of reference",
+      "reader": ""
+    },
+    "duplicate_check": {
+      "heart": "WARN on overuse.org_family, overuse.objective, overuse.gate_g and repeat.deliverables, no BLOCK (2026-11-07, tree merged with claude/jolly-hypatia-06c61h at 26d4f91)",
+      "nearest": "surface 0 promoted, nearest task213 at 0.040 (pct 17); nearest driver 0.07 (task121)"
+    },
+    "cut": {
+      "target_zip_sha256": "3d239aab76a9954a016a7947e85e31e9b6954c68af72576cc125b51255679841",
+      "checks": "72 of 72",
+      "figures_check": "54 of 54",
+      "byte_identical_builds": 2,
+      "ceiling": "cracker 0 of 23, full includer 0 of 23, pair 28.5 one on and one off, 45.0 both on"
+    },
+    "card": {
+      "registered": "2026-11-07T21:42:13Z",
+      "check_after_register": "WARN only: overuse.org_family government_agency, overuse.objective, overuse.gate_g (answered in DESIGN_NOTE ## Draw)",
+      "merged_parent_at": "63753fc"
+    },
+    "architecture": 1,
+    "fate": "spent 2026-11-08 at stage 4 round 1: judge NOT_DETERMINISTIC, SEND_BACK, Gate H decisive step rule_application (terms of reference section 4 filed the procedure); ask 7 and ask 8 forks; September non-urgent resolution 39.7 recomputed against 40.5 claimed"
   }
 }
