@@ -121,11 +121,12 @@ def blocks(schools, online, entries, scripts, roster, e_how, s_how, pct):
             if reg:
                 sat[reg] += 1
                 n[reg] += 1
+    wrong = {s["batch"] for s in scripts if float(s["mark"]) > 50}     # a batch keyed off the 50-mark scale
     for s, reg in zip(scripts, places):
         if not reg:
             continue
         v = float(s["mark"])
-        if (pct == "over50" and v > 50) or (pct == "batch" and s["keyed_by"] == "JT" and s["keyed_on"] == "2026-09-02"):
+        if (pct == "over50" and v > 50) or (pct == "batch" and s["batch"] in wrong):
             v /= 2
         mk[reg].append(v)
     mean = {r: (round(sum(v) / len(v), 1) if v else None) for r, v in mk.items()}
@@ -138,8 +139,8 @@ def main():
             (("entered", 0.5), ("sat", 0.5), ("makeup_candidates", 0.5), ("makeup_mean", 0.05))]
     data = load()
     paths = {"golden": ("full", "golden", "batch"),
-             "cracker": ("nsn", "keyed", "over50"),
-             "mirror": ("nsn", "keyed", "over50"),
+             "cracker": ("nsn", "keyed", "batch"),
+             "mirror": ("nsn", "keyed", "batch"),
              "full includer": ("full", "roster", "over50"),
              "full includer, unmatched at the code keyed": ("full", "roster_keyed", "over50"),
              "full includer, batch whole": ("full", "roster", "batch")}

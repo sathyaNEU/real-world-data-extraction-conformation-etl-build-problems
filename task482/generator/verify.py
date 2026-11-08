@@ -188,13 +188,17 @@ def main():
     nmk = {r: 0 for r in reg}
     mk = {r: [] for r in reg}
     with open(os.path.join(T, "makeup_scripts_keyed.csv"), newline="") as fh:
-        for s in csv.DictReader(fh):
-            home = rost.get(s["script_no"]) or sch_of_entry[s["entry_no"]]
-            r = schools[home]
-            sat[r] += 1
-            nmk[r] += 1
-            v = float(s["mark"])
-            mk[r].append(v / 2 if (s["keyed_by"] == "JT" and s["keyed_on"] == "2026-09-02") else v)
+        keyed = list(csv.DictReader(fh))
+    # the roster's header: M26 is marked out of 50, the cover carries the mark and its percentage, and a keyer's
+    # session is one batch on one template, so a batch holding values over 50 was keyed from the percentage
+    off = {s["batch"] for s in keyed if float(s["mark"]) > 50}
+    for s in keyed:
+        home = rost.get(s["script_no"]) or sch_of_entry[s["entry_no"]]
+        r = schools[home]
+        sat[r] += 1
+        nmk[r] += 1
+        v = float(s["mark"])
+        mk[r].append(v / 2 if s["batch"] in off else v)
     for r in reg:
         if entered[r] != fig["entered"][r]:
             bad.append("entered %s" % r)

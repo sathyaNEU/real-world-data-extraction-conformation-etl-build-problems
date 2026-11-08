@@ -68,3 +68,6 @@ TRANSFERS_PER_REGION = (3, 8)
 TWINS_PER_REGION = (2, 5)
 WALKINS_PER_REGION = (2, 5)
 ASK_SEED_OFFSET = 6          # the ask records (entries, make-up sitting) draw on their own stream
+CENTRAL_TO_NORTH = (1, 2, 3, 4)   # Central schools (by order in the region) whose absentees sit at the Northern host
+CAPITAL_TO_CENTRAL = 4           # the first Capital schools sit at the Central host, the rest at the Southern host
+MARK_SEED_OFFSET = 111           # make-up marks drawn per script, independent of the room

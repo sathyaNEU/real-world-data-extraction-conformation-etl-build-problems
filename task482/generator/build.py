@@ -207,10 +207,10 @@ def build(target):
     msg["Subject"] = "2027 Year 10 science paper"
     msg["Message-ID"] = "<20261106164200.4821@corlinn.org.nz>"
     msg.set_content(
-        "Hi Jeremy,\n\nThe assessment committee meets on 24 November to set the 2027 Year 10 science paper. The three "
+        "Hi Jeremy,\n\nThe Council meets on 2 December to set the 2027 Year 10 science paper. The three "
         "drafts came back from the panels last week and are in the drafts workbook, with the 2027 specification.\n\n"
-        "Could you work up the recommendation for the committee? Theo would like the working in a workbook he can "
-        "pass round. For the committee's annual report, could the same workbook carry the August sitting's entries "
+        "Could you work up the recommendation for the Council? Theo would like the working in a workbook he can "
+        "pass round. For the Council's annual report, could the same workbook carry the August sitting's entries "
         "and sittings by region, and the make-up sitting's numbers and marks?\n\nEverything from the August sitting "
         "is in the shared folder.\n\nThanks\n\nPaul Shailer\nHead of Assessment\n%s\n" % P.TRUST)
     with open(t("paper_choice_request.eml"), "wb") as fh:
@@ -244,8 +244,9 @@ def build(target):
                          "%s, %s" % (x["surname"], x["first"]), sch[x["home"]]["code"], "Yes" if x["attended"] else "No"])
         blocks.append((sch[h]["name"], sch[h]["code"], rows))
     D.roster(t("makeup_roster_aug2026.pdf"), blocks)
-    _csv(t("makeup_scripts_keyed.csv"), ["script_no", "school_code", "entry_no", "mark", "keyed_on", "keyed_by"],
-         [(x["script"], x["school"], x["entry"], x["keyed_mark"], x["keyed"].isoformat(), x["by"])
+    _csv(t("makeup_scripts_keyed.csv"), ["batch", "script_no", "school_code", "entry_no", "mark", "keyed_on",
+                                         "keyed_by"],
+         [(x["batch"], x["script"], x["school"], x["entry"], x["keyed_mark"], x["keyed"].isoformat(), x["by"])
           for x in a["scripts"]])
 
     # ---- distractors: the attitude survey and the bell times

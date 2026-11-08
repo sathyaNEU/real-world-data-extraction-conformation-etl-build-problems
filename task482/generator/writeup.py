@@ -36,11 +36,11 @@ def submission(res, path):
 4. Keep the later answer where an item was answered again after a reconnect.
 5. Estimate abilities on the Term 1 and 2 items at their bank values, then re-estimate each Term 3 item on its taught responses with those abilities fixed.
 6. Sum each draft's Rasch probabilities at 0.35 logits and set the draft nearest 25 before rounding.
-7. Entered: standing entries (status E) once per candidate on first name, surname and birth date; sat: online candidates plus each keyed script at its home school (typed roster by script number, otherwise the keyed entry number through the register); make-up marks with the JT batch keyed on 2 September halved.
+7. Entered: standing entries (status E) once per candidate on first name, surname and birth date; sat: online candidates plus each keyed script at its home school (typed roster by script number, otherwise the keyed entry number through the register); make-up marks with the one keying batch that holds values over 50 halved whole.
 
 ## 4. Deliverable Answers
 
-### committee_memo.docx
+### council_memo.docx
 
 - Set Paper C.
 - Expected marks at the Achieved standard: Paper A 26, Paper B 23, Paper C 25.
@@ -97,7 +97,7 @@ def metadata(path):
          "stated_inputs": ["the paper specification's targeting rule (nearest 25 at the Achieved standard)",
                            "the standard-setting record's Achieved standard, 0.35 logits on the bank scale",
                            "the Council's November 2027 sitting dates"],
-         "deliverables": ["committee_memo.docx", "achieved_marks.png", "paper_choice.xlsx"]}
+         "deliverables": ["council_memo.docx", "achieved_marks.png", "paper_choice.xlsx"]}
     with open(path, "w") as fh:
         json.dump(d, fh, indent=1)
         fh.write("\n")

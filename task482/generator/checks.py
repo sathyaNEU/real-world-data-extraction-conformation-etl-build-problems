@@ -216,6 +216,55 @@ def main():
           str({r: (round(v, 2) if v is not None else None) for r, v in hk_mean.items()}))
     check("P4 benign twin: the keyed file carries entry numbers on rostered scripts too",
           any(x["entry"] and not x["walkin"] for x in a["scripts"]))
+    # AF1 (ask B's keying fork, closed by the roster's header: M26 out of 50, the cover's mark and percentage, a
+    # keyer's session one batch on one template). Every treatment but the whole batch halved breaks a filed fact
+    # and moves a graded mean.
+    off = {x["batch"] for x in a["scripts"] if x["keyed_mark"] > 50}
+    check("AF1 exactly one batch holds values over 50, and it is the percentage batch",
+          len(off) == 1 and all((x["batch"] in off) == x["pct"] for x in a["scripts"]))
+    check("AF1 every value in that batch is even", all(x["keyed_mark"] % 2 == 0 for x in a["scripts"] if x["batch"] in off))
+    roster_scripts = {x["script"] for x in a["roster"] if x["script"]}
+
+    def means_under(rule):
+        vals = {r: [] for r in P.REGIONS}
+        for x in a["scripts"]:
+            v = rule(x)
+            if v is not None:
+                vals[sch[x["home"]]["region"]].append(v)
+        return {r: (round(sum(v) / len(v), 1) if v else None) for r, v in vals.items()}, vals
+    inb = lambda x: x["batch"] in off
+    treat = {
+        "halve the whole batch": (lambda x: x["keyed_mark"] / 2 if inb(x) else x["keyed_mark"], set()),
+        "halve the batch's rostered scripts only": (lambda x: x["keyed_mark"] / 2 if inb(x) and x["script"] in roster_scripts
+                                                    else x["keyed_mark"], {"one template"}),
+        "halve all but the batch's last script": (lambda x: x["keyed_mark"] / 2 if inb(x) and x["script"] != max(
+            y["script"] for y in a["scripts"] if inb(y)) else x["keyed_mark"], {"one template"}),
+        "drop marks over 50": (lambda x: None if x["keyed_mark"] > 50 else x["keyed_mark"], {"every sitter"}),
+        "drop the batch": (lambda x: None if inb(x) else x["keyed_mark"], {"every sitter"}),
+        "halve only marks over 50": (lambda x: x["keyed_mark"] / 2 if x["keyed_mark"] > 50 else x["keyed_mark"],
+                                     {"one template"}),
+        "as keyed": (lambda x: x["keyed_mark"], {"out of 50"}),
+    }
+    gold_pair = None
+    for name, (rule, broken) in treat.items():
+        m, vals = means_under(rule)
+        facts = set()
+        if any(v > 50 for vs in vals.values() for v in vs):
+            facts.add("out of 50")
+        if sum(len(v) for v in vals.values()) != len(a["scripts"]):
+            facts.add("every sitter")
+        for bt in off:
+            units = {(rule(x) == x["keyed_mark"]) for x in a["scripts"] if x["batch"] == bt and rule(x) is not None}
+            if len(units) > 1:
+                facts.add("one template")
+        pair = (m["Central"], m["Capital"])
+        if name == "halve the whole batch":
+            gold_pair = pair
+            check("AF1 the whole batch halved breaks no filed fact and gives the golden means",
+                  not facts and all(m[r] == round(a["makeup_mean"][r], 1) for r in P.REGIONS), str(m))
+        else:
+            check("AF1 %s breaks a filed fact (%s) and moves the Central or Capital mean" % (name, ", ".join(sorted(facts))),
+                  bool(facts) and broken <= facts and pair != gold_pair, str(pair))
     pct = [x for x in a["scripts"] if x["pct"]]
     check("P3 the percentage batch has rows both over and at or under 50",
           any(x["keyed_mark"] > 50 for x in pct) and any(x["keyed_mark"] <= 50 for x in pct))

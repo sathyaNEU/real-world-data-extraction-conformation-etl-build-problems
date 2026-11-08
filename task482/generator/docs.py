@@ -109,8 +109,8 @@ def minute(path):
          _p("The delivery platform contract was renewed for 2027 on the same terms."),
          _p("5. Benchmark timing", H2),
          _p("The council resolved that from 2027 the Year 10 Science Benchmark is sat from Monday 1 November to "
-            "Friday 12 November, so that results reach families with schools' end-of-year reports. The Assessment "
-            "Committee is to set the 2027 paper by the end of the year."),
+            "Friday 12 November, so that results reach families with schools' end-of-year reports. The Council "
+            "will set the 2027 paper at its meeting of 2 December, on the head of assessment's recommendation."),
          _p("6. General business", H2),
          _p("The chair thanked the make-up host schools for the August sitting.")]
     O.build(path, s, "Minutes of the Council 14 October 2026", AUTHOR, "Council minutes, 14 October 2026",
@@ -147,7 +147,10 @@ def course_review(path, sch, seq_rows):
 
 def roster(path, blocks):
     s = [_p("Year 10 Science Benchmark: make-up sitting, 25 to 27 August 2026", H1),
-         _p("Booked candidates by host centre, as typed from the host supervisors' returns. Paper form M26.", SMALL)]
+         _p("Booked candidates by host centre, as typed from the host supervisors' returns.", SMALL),
+         _p("Paper form M26 is marked out of 50 at the host centre, and the marker writes the candidate's mark on "
+            "the script cover out of 50 and as a percentage. The office keys each cover's mark out of 50, each "
+            "keyer's session as one batch on one template.", SMALL)]
     first = True
     for host_name, host_code, rows in blocks:
         if not first:

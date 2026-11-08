@@ -1,14 +1,14 @@
 # task482 design note
 
 Status lives in `pipeline.json`; this note holds the design. Architecture 17, drawn 2026-11-07 after architectures 1
-to 16 were spent: a new client domain, world, dataset and shell. The Corlinn Schools Assessment Trust, owned by its
-member independent schools across New Zealand, sets one Year 10 science paper each year (the Year 10 Science
-Benchmark) and reports every candidate against its Achieved standard. Its Rasch item bank was calibrated on the August
-2026 sitting, held in weeks 3 to 5 of Term 3, when every member school was part-way through the course outline's two
-Term 3 units (forces and motion; Earth's systems) on its own scheme of work. The Trust's council has moved the 2027
-sitting to November, after every school has finished every unit. The assessment committee must choose which of three
-draft papers to print; the paper specification files the choice: the draft whose expected mark at the Achieved
-standard sits nearest 25 of its 50 marks.
+to 16 were spent: a new client domain, world, dataset and shell. The Corlinn Schools Assessment Trust, a charitable
+trust serving member independent schools across New Zealand, sets one Year 10 science paper each year (the Year 10
+Science Benchmark) and reports every candidate against its Achieved standard. Its Rasch item bank was calibrated on the
+August 2026 sitting, held in weeks 3 to 5 of Term 3, when every member school was part-way through the course
+outline's two Term 3 units (forces and motion; Earth's systems) in its own sequence. The Trust's Council has moved the
+2027 sitting to November, after every school has finished every unit, and sets one of three draft papers at its
+December meeting; the paper specification files the choice: the draft whose expected mark at the Achieved standard sits
+nearest 25 of its 50 marks.
 
 ## Draw
 
@@ -61,12 +61,24 @@ standard sits nearest 25 of its 50 marks.
   sequences as returned, in each school's own words and term weeks); the member schools list; the request email; for
   the asks, the entries register, the make-up roster and the office's keyed make-up scripts; distractors, the 2026
   candidate survey of attitudes to science and the schools' bell schedules.
+- **Guard redraw at stage 4 (2026-11-08):** after the rebase, heart blocked ban.forum (committee_or_panel against
+  task127 v4) and ban.org_family (cooperative_or_member_body against task156 v3), both cards filed before this
+  draw's time. Redrawn with the world, not relabelled: the Council, which already fixed the sitting dates in the
+  pack, sets the paper on the head of assessment's recommendation (council_or_assembly), and the Trust is a
+  charitable trust serving its member schools, with no ownership claim anywhere in the pack (nonprofit_or_charity,
+  the label a trust carries in New Zealand's charities register). The prompt, the minute, the email and the memo
+  follow; the specification stays the Assessment Committee's. Heart then read WARN only.
+- **Gate G label:** the round-1 judge read the mechanism as statistical_rigor (calibration population against the
+  target population), analytical_non_defect, surface-read dependency no; the card keeps etl_conformance because the
+  call is read off a conformed table, each draft item's difficulty for the 2027 sitting judged against the
+  specification's targeting clause, and the re-estimation on the taught responses is how that conformation is done
+  (statistical rigor is the method inside it, and the guard refuses statistical_rigor alone as a Gate G).
 - **Shell WARN answered:** voice-check holds the which question form at 37 per cent of prompts against a 30 per cent
   cap; the decision is a pick among drafts, so the form follows the decision, and the shell is varied at the role
   level instead: the question carries the specification's rule in its own clause, and the workbook carries both asks
   beside the working, with no side table or count-once sheet.
 - **People (guard.py names, en_NZ, seed 482):** Paul Shailer, head of assessment (asks for the recommendation); Theo
-  Stevens, chair of the assessment committee; Jeremy York, the Trust's psychometrician (keeps the bank).
+  Stevens, chair of the Council; Jeremy York, the Trust's psychometrician (keeps the bank).
 
 ### The six go/no-go screens (`generator/screens.py`, 20 redraws, and `generator/checks.py` on the shipped seed)
 
@@ -136,11 +148,11 @@ seed (whole marks 25, 21, 22); the golden's, with the Term 3 items recalibrated 
 
 ## Stump sentence
 
-The default path pre-equates the three drafts from the bank's Rasch difficulties and prints Paper A, whose expected
-Achieved mark sits nearest 25 of 50; the bank set the two Term 3 units' items on the August 2026 sitting, at which most
-students' schools had not yet finished those units, which shows only when each student's sitting day is set against
-their own school's scheme of work, and with those items recalibrated on the responses of students whose school had
-finished the unit before they sat, Paper C is nearest.
+The default path pre-equates the drafts from the bank's Rasch difficulties and sets Paper A, whose expected Achieved
+mark sits nearest 25 of 50; the bank set the two Term 3 units' items on the August 2026 sitting, at which about nine in
+ten of their responses came before the candidate's own school had finished the unit, which shows only when each
+candidate's sitting day is set against their own school's sequence in the course review, and with those items
+re-estimated on the responses of candidates whose school had finished the unit before they sat, Paper C is nearest.
 
 ## Three rules
 
@@ -302,8 +314,18 @@ figures (4 regions by entered, sat, make-up candidates and mean make-up mark): 2
   - Primary 4 (D4, shared with A's sat block, block: both B figures): walk-ins counted and their marks taken only
     through the entry number keyed.
   - Primary 3, D3 (block: the Central and Capital means): one keyer keyed the Central host's second day from the
-    cover's percentage box, so that batch stands at twice its marks; only some of its rows exceed 50, and the batch is
-    identified by its keyer and keying date, not by its values.
+    cover's percentage, so that batch stands at twice its marks; only some of its rows exceed 50. The roster's header
+    files the WHAT in the office's voice (M26 is marked out of 50, the cover carries the mark out of 50 and as a
+    percentage, the office keys the mark out of 50 and each keyer's session as one batch on one template) and the
+    keyed file numbers each session's batch; the reconstruction left after noticing the impossible values is to find
+    the session they belong to and put every row of it, those under 50 included, back on the 50-mark scale.
+  - Ask fork AF1 (round 1's judge finding), closed by those filed facts and asserted in checks.py: halving the whole
+    batch breaks none and gives the golden means; halving only the batch's rostered scripts or all but its last script
+    breaks one batch on one template (Central and Capital 25.8 and 25.3, 25.8 and 24.4), dropping marks over 50 or the
+    batch drops sitters (28.1 and 25.7, 26.0 and 24.4), halving only marks over 50 breaks one template (28.6 and 26.3),
+    and the marks as keyed break the 50-mark maximum (31.3 and 27.7); the golden is 25.8 and 23.8. The make-up marks
+    are now drawn per script, so the host each school uses moves no mark; the redraw moved the four means (Northern
+    28.4, Central 25.8, Capital 23.8, Southern 25.3, each at least 0.027 inside its bin) and no count.
   - Shared hazard: Primary 1's host attribution (every region's count and mean).
 - Hazards (ask side): the re-sent entry upload (exact duplicate rows) and withdrawn entries (status W, not
   candidates), each moving entered by itself; the session log's resumed sessions and UTC times are main-path texture
@@ -317,7 +339,7 @@ figures (4 regions by entered, sat, make-up candidates and mean make-up mark): 2
 | A entered, four regions | standing entries deduplicated on NSN after dropping exact duplicates and withdrawals: office entries carry no NSN, so moved candidates count twice | first name, surname and birth date across the region's schools, twins kept apart | miss |
 | A sat, four regions | online candidates plus keyed scripts by the school code keyed: every host's scripts land in its own region | scripts placed through the roster, walk-ins through the entry number keyed and the register | miss |
 | B make-up candidates, four regions | keyed scripts by the school code keyed | as for sat | miss |
-| B mean make-up mark, four regions | keyed marks by the school code keyed, marks over 50 halved | marks by home school, the JT batch of 2 September halved whole | miss |
+| B mean make-up mark, four regions | keyed marks by the school code keyed, the batch with values over 50 halved whole | marks by home school, the batch with values over 50 halved whole | miss |
 
 The full includer, who reads the cover codes as the hosts', joins every script to the typed roster and matches entries
 on first name, surname and birth date, keeps the entered block (4 of 16, 25 per cent): with the unmatched scripts
@@ -333,23 +355,27 @@ sat, make-up count and mean (asserted in checks.py, measured on the cut pack by 
 
 ## Stage 3 record
 
-- Gates on the cut pack (seed 482025, ask stream offset 6, target.zip sha256
-  3f18332cb1b3e05ee59595f94783a7733276612a382f5b8fe4e9d9e4700c0cf5): two byte-identical builds (pack, goldens,
-  submission, figures); checks.py 0 failures; verify.py PASS from the shipped files alone (marks A 25.89, B 23.02,
-  C 24.80, bank A 24.78, B 20.64, C 21.58, every ask figure); figures_check PASS; precut exit 0; voice-check PASS
-  (the which quota WARN answered in the Draw); leak.py REVIEW with no LEAK and no date after 6 November 2026; guard
-  heart WARN; guard surface exit 0 with the three drawn personas only.
+- Gates on the final cut after the round-1 fix (seed 482025, ask stream offset 6, make-up marks drawn per script with
+  offset 111, target.zip sha256 02c4e9b7e51761b66b07a8348618ef419577cb04fb210d481841d7b989525203): two byte-identical builds (pack, goldens, submission, figures); checks.py 0
+  failures, AF1 included; verify.py PASS from the shipped files alone (marks A 25.89, B 23.02, C 24.80, bank A 24.78,
+  B 20.64, C 21.58, every ask figure); figures_check PASS; precut exit 0; voice-check PASS (the which quota WARN
+  answered in the Draw); freeze.py rubric PASS (the main call, the stump and every frozen figure unchanged, the four
+  make-up means moved); leak.py REVIEW with no LEAK and no date after 6 November 2026; guard heart WARN after the
+  axis redraw; guard surface exit 0 with the three drawn personas only; every PDF Writer and LibreOffice 24.2 with
+  the Trust as author and its own date.
 - ceiling.py on the cut pack: the golden path 16 of 16, the cracker and the mirror 0, the full includer 4 of 16 in all
   three of its variants; pairs 35.4 (one on the call, one off), 51.9 (the full includer and the cracker on it) and
   58.8 (two full includers on it).
 - leak.py REVIEW lines, each ruled harmless: the two Notes sheets are the bank's and the office's own notes (the scale
   and the run order; the status and source codes) and say nothing of teaching or of any count; the specification
   shares the question's words because it is the rule the question cites, and carries no figure of the answer; the
-  course review's shared terms are its own unit and strand names; the clone screen's two promoted pairs are the
-  time, G13 and pick signature already differentiated on the card, for the author's adjudicated read.
+  course review's shared terms are its own unit and strand names; the clone screen's two promoted pairs (task194 at
+  0.080, task501 at 0.077) are the time, G13 and pick signature already differentiated on the card, for the author's
+  adjudicated read.
 - H13: identifiers advance by random steps (entries 1 to 3, sessions 1 to 2, late and withdrawn entries 3 to 39);
-  session starts sit 0 to 6 minutes after a period start; every PDF and workbook carries its own created and modified
-  stamps in order; the roster and the appendix read back whole under pdftotext -layout.
+  each school's entries carry its own upload day; session starts sit 0 to 6 minutes after a period start; every PDF
+  and workbook carries its own created and modified stamps in order; the roster and the appendix read back whole
+  under pdftotext -layout.
 
 ## Architecture 16 record (spent 2026-11-07)
 
@@ -942,3 +968,9 @@ Architecture 11 (the contractor's plausible values drawn from a conditioning mod
   unbooked absentees who sat at a host and reach only the keyed file (D4, their home school through the entry number
   keyed and the register) put a second reconstruction on the sat block, the make-up count joined ask B by shape, and
   the full includer keeps 4 of 16.
+- Architecture 17 stage 4 round 1 (2026-11-08): the judge returned FIX_NOW on ask B alone: the batch of 13 scripts
+  keyed on one day, all even and seven over 50, could be halved whole, in part, dropped or kept, because no shipped
+  file stated the make-up paper's maximum or the keying unit; the roster's header now files both in the office's
+  voice with the batch rule, the keyed file numbers each session's batch, and the golden memo states only what the
+  files show. The reader came back clean; its one note (every early register row on one entry date) is answered by
+  each school's upload carrying its own day.

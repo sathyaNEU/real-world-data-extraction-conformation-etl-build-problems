@@ -1,6 +1,6 @@
 """task482 architecture 17: the golden deliverables, written from golden.compute() on the shipped seed.
 
-    committee_memo.docx   the recommendation to the assessment committee
+    council_memo.docx     the recommendation to the Council
     achieved_marks.png    each draft's expected Achieved mark against 25
     paper_choice.xlsx     the working, with the August 2026 regional figures
 """
@@ -60,7 +60,7 @@ def memo(res, path):
     st.font.name = "Calibri"
     st.font.size = Pt(10)
     _par(doc, "Memo", bold=True, size=14, after=2)
-    for k, v in (("To", "Assessment Committee"), ("From", "Jeremy York, Psychometrician"), ("Date", "20 November 2026"),
+    for k, v in (("To", "The Council"), ("From", "Jeremy York, Psychometrician"), ("Date", "20 November 2026"),
                  ("Subject", "Setting the 2027 Year 10 science paper")):
         p = doc.add_paragraph()
         r = p.add_run("%s: " % k)
@@ -102,8 +102,10 @@ def memo(res, path):
     _par(doc, "", after=2)
     _par(doc, "Entered counts each candidate once: candidates who moved school before the sitting appear under both "
               "schools in the register. Make-up papers are counted at the candidate's home school, including the "
-              "candidates who sat at a host without a booking, whose scripts were keyed without a roster line; the "
-              "Central host's second-day scripts were keyed as percentages and are halved.", size=9)
+              "candidates who sat at a host without a booking, whose scripts were keyed without a roster line. One keying "
+              "batch holds values above the paper's 50 marks, every one of them even; the roster's header says each "
+              "cover carries the mark out of 50 and as a percentage and that a keyer's session is keyed as one batch "
+              "on one template, so that batch's values are taken as percentages and halved.", size=9)
     _par(doc, "The working is in paper_choice.xlsx.", size=9, italic=True)
     doc.save(path)
     PP.normalize_ooxml(path, "Jeremy York", "Jeremy York", "2026-11-19T21:30:00Z", "2026-11-20T02:12:00Z",
@@ -172,6 +174,6 @@ def workbook(res, path):
 
 def write_all(res, golden_dir):
     os.makedirs(golden_dir, exist_ok=True)
-    memo(res, os.path.join(golden_dir, "committee_memo.docx"))
+    memo(res, os.path.join(golden_dir, "council_memo.docx"))
     chart(res, os.path.join(golden_dir, "achieved_marks.png"))
     workbook(res, os.path.join(golden_dir, "paper_choice.xlsx"))

@@ -375,6 +375,13 @@ def asks(rng, w):
                                 entered=dt.date(2026, 5, 18) + dt.timedelta(days=int(rng.integers(0, 40))),
                                 source="school upload", status="W", person=None))
             withdrawn.append(entries[-1]["entry"])
+    # each school uploads its entries on one day between 18 May and the close on 26 June (its own stream, so the
+    # draws above and below are untouched); the office's entries keep the days the office took them
+    up = np.random.default_rng(w["seed"] * 7 + 13)
+    upload_day = {c: dt.date(2026, 5, 18) + dt.timedelta(days=int(up.integers(0, 40))) for c in codes}
+    for e in entries:
+        if e["source"] == "school upload":
+            e["entered"] = upload_day[e["school"]]
     # one school's upload re-sent in June: the same rows again
     resend = codes[int(rng.integers(len(sch)))]
     entries += [dict(e) for e in entries if e["school"] == resend and e["source"] == "school upload"
@@ -387,10 +394,10 @@ def asks(rng, w):
     for i in by_region["Northern"]:
         host_of[i] = hN
     for k, i in enumerate(by_region["Central"]):
-        host_of[i] = hN if k in (1, 2, 3, 4) else hC
+        host_of[i] = hN if k in P.CENTRAL_TO_NORTH else hC
     cap = by_region["Capital"]
     for k, i in enumerate(cap):
-        host_of[i] = hC if k < len(cap) // 2 else hS
+        host_of[i] = hC if k < P.CAPITAL_TO_CENTRAL else hS
     for i in by_region["Southern"]:
         host_of[i] = hS
     hosts = {"Northern": hN, "Central": hC, "Southern": hS}
@@ -423,7 +430,8 @@ def asks(rng, w):
         h = x["host"]
         counter[h] = counter.get(h, 0) + 1
         x["script"] = "%s-%03d" % (codes[h], counter[h])
-        x["mark"] = int((rng.random(P.PAPER_LEN) < RA.sig(x["theta"] - w["pool"]["b_makeup"])).sum())
+        mr = np.random.default_rng([w["seed"] + P.MARK_SEED_OFFSET, int(x["entry"][3:])])     # the script, not the room
+        x["mark"] = int((mr.random(P.PAPER_LEN) < RA.sig(x["theta"] - w["pool"]["b_makeup"])).sum())
         sitters.append(x)
     pct_host, pct_day = hosts["Central"], P.MAKEUP_DAYS[1]
     for x in sitters:
@@ -442,6 +450,14 @@ def asks(rng, w):
                             keyed_mark=x["mark"] * 2 if pct else x["mark"], mark=x["mark"], keyed=keyed, by=by,
                             pct=pct, home=x["home"], walkin=x["walkin"]))
     scripts.sort(key=lambda s: (s["keyed"], s["script"]))
+    # the office numbers each keyer's session as one batch
+    bno, batch_of = 40, {}
+    for x in sorted(scripts, key=lambda s: (s["keyed"], s["by"], s["script"])):
+        k = (x["keyed"], x["by"])
+        if k not in batch_of:
+            bno += 1
+            batch_of[k] = "K%03d" % bno
+        x["batch"] = batch_of[k]
     # the figures
     person_region = {}
     for e in entries:

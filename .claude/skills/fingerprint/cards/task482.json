@@ -44,7 +44,7 @@
   "late sitters and make-up sessions recorded under the make-up centre's code",
   "a preliminary and a final calibration run of the bank overlapping in the bank history"
  ],
- "stakeholder_role": "the trust's head of assessment, who recommends the 2027 paper to the assessment committee",
+ "stakeholder_role": "the trust's head of assessment, who recommends the 2027 paper to the Council",
  "role_family": "programme_officer",
  "scoring_unit": "other",
  "spine": {
@@ -54,13 +54,13 @@
   "grain": "candidate x item (a re-answered item after a reconnect has two rows)",
   "source": "synthetic"
  },
- "forum": "committee_or_panel",
+ "forum": "council_or_assembly",
  "forcing_event": "launch_or_rollout",
- "org_family": "cooperative_or_member_body",
+ "org_family": "nonprofit_or_charity",
  "world": {
-  "geography": "New Zealand (a fictional trust owned by its member independent schools; schools and people fictional)",
+  "geography": "New Zealand (a fictional charitable trust that runs the benchmark for its member independent schools; schools and people fictional)",
   "currency": "NZD",
-  "org_type": "an independent schools' assessment trust running an annual Year 10 science paper for its member schools",
+  "org_type": "a charitable schools' assessment trust running an annual Year 10 science paper for its member independent schools, its Council setting the paper",
   "invented_nouns": [],
   "people": [
    "Paul Shailer",
@@ -69,7 +69,7 @@
   ]
  },
  "deliverables": [
-  "committee_memo.docx",
+  "council_memo.docx",
   "achieved_marks.png",
   "paper_choice.xlsx"
  ],
@@ -531,7 +531,7 @@
    "deliverable set": "csv+docx"
   }
  ],
- "notes": "re-rooted 2026-11-07 after architecture 16's portal return; new client domain, world, dataset, generator and shell (which | docx+png+xlsx); stump_strategy composition_mix: the bank's difficulties are a mix of taught and untaught responses, the coming sitting all taught, the property rebuilt from each school's calendar against each student's sitting day",
+ "notes": "re-rooted 2026-11-07 after architecture 16's portal return; new client domain, world, dataset, generator and shell (which | docx+png+xlsx); stump_strategy composition_mix: the bank's difficulties are a mix of taught and untaught responses, the coming sitting all taught, the property rebuilt from each school's calendar against each student's sitting day | 2026-11-08 stage 4 round 1: heart after the rebase blocked ban.forum (committee_or_panel, task127 v4) and ban.org_family (cooperative_or_member_body, task156 v3), both cards filed before this one's draw time; redrawn, not relabelled: the Council already fixed the sitting dates in the pack and now sets the paper on the head of assessment's recommendation (council_or_assembly), and the trust is a charitable trust serving its member schools, with no ownership claim anywhere in the pack (nonprofit_or_charity); the prompt, the minute, the email and the memo follow the world.",
  "registered": "2026-11-07T22:59:25Z",
  "shell": {
   "question form": "which",
