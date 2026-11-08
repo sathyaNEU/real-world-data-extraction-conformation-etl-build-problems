@@ -307,7 +307,6 @@ Regenerate with `python3 analytical_tasks/make_index.py`; numbers never move.
 | Task | Seed | Call | Domain |
 |---|---|---|---|
 | task397 | RC03 | [How many delay minutes a period the junction signalling renewal will take off the operator's trains](analytical_tasks/06_root_cause/RC03_junction-renewal-in-scope-delay-share.md) | Supply Chain & Logistics · rail operations performance |
-| task398 | RC04 | [Which of five delay causes on the commuter line gets this winter's one fix, when the cause that loses the most time is mostly recovered before the terminal](analytical_tasks/06_root_cause/RC04_commuter-peak-fix-path-counterfactual.md) | Supply Chain & Logistics · commuter rail timetable performance |
 | task399 | RC05 | [Which outage cause gets the distributor's one reliability programme, when the costliest cause leaves no fault record](analytical_tasks/06_root_cause/RC05_power-outage-customer-minutes-planned-interruptions.md) | Supply Chain & Logistics · electricity distribution network operations |
 | task400 | RC06 | [How the performance plan should characterise a summer of tripled en-route delay, when every regulation's reason code is right](analytical_tasks/06_root_cause/RC06_atc-delay-shortfall-queue-replay-at-scheme.md) | Supply Chain & Logistics · air traffic flow management |
 | task401 | RC07 | [How much of January's tripled imbalance bill the plant trips caused, filed for the board's outage-cover decision](analytical_tasks/06_root_cause/RC07_imbalance-cost-trips-settlement-period-energy.md) | Economics · electricity market risk |

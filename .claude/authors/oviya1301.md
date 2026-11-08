@@ -41,7 +41,7 @@ the call), determinism fix, prompt repair, re-check (the new gates), resume (a p
 | 7 | task240 (re-check) · task241 (re-check) · task260 (re-check) · task307 (re-check) |
 | 8 | task461 (re-check) · task462 (re-check) · task487 (re-check) · task488 (re-check) |
 | 9 | task173 (resume: new draw) · task194 (resume: new draw) · task200 (resume: new draw) · task276 (resume: new draw) |
-| 10 | task313 (new) · task398 (new) · task210 (new) · task285 (new) |
+| 10 | task313 (new) · task210 (new) · task285 (new) |
 | 11 | task489 (new) · task314 (new) · task399 (new) · task211 (new) |
 | 12 | task286 (new) · task490 (new) · task315 (new) · task400 (new) |
 | 13 | task212 (new) · task287 (new) · task491 (new) · task316 (new) |
