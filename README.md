@@ -64,7 +64,7 @@ Every build with a fingerprint card, grouped by its client domain (the build's `
 - **Actuarial Science & Insurance:** task130, task139, task255, task309
 - **Banking, Credit & Financial Risk:** task128, task133, task177, task196, task446
 - **Biology, Biostatistics, Epidemiology & Bioinformatics:** task33
-- **Biomedical & Clinical Research:** task122, task195, task260, task265, task267, task268
+- **Biomedical & Clinical Research:** task122, task195, task260, task265, task267
 - **Business & Operations Analytics:** task109, task111, task114
 - **Criminology & Justice:** task141, task169, task179
 - **Data Quality Monitoring & Alerting:** task104
