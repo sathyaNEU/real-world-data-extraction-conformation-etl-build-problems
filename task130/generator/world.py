@@ -88,6 +88,11 @@ SUPPORT = [(dt.date(2023, 1, 9), dt.date(2023, 1, 18), "Blue Ridge", ("Piedmont"
 # the 2027 work plan: hours by district, crew type and quarter, Pinewater's 2027 release
 PLAN_GROWTH = {"Blue Ridge": 1.02, "Piedmont": 1.00, "Lakes": 1.04, "Coastal": 1.03}
 QUARTER_SHARE = (0.236, 0.258, 0.262, 0.244)
+# each unit type's own season on the 2027 plan (per cent of its year by quarter), and each district's small lean
+QUARTER_PROFILE = {"OH": (23.4, 25.6, 26.9, 24.1), "UG": (22.1, 26.4, 27.6, 23.9), "SUB": (24.6, 26.3, 22.7, 26.4),
+                   "VEG": (20.4, 27.6, 29.1, 22.9), "MTR": (24.7, 25.1, 25.3, 24.9), "LOC": (21.6, 26.9, 28.1, 23.4)}
+DISTRICT_LEAN = {"Blue Ridge": (-0.6, 0.2, 0.7, -0.3), "Piedmont": (0.0, 0.1, -0.2, 0.1),
+                 "Lakes": (-0.4, 0.5, 0.3, -0.4), "Coastal": (0.5, -0.3, -0.5, 0.3)}
 
 LIMIT = 3.0                        # the standard's ceiling on the contract year's recordable rate
 RATE_BASE = 200000

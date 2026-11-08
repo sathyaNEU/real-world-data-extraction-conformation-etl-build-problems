@@ -236,9 +236,9 @@ that pairs the nurse line's cases with a window of three days or more keeps ever
   figures.json, runs `checks.py` (65 assertions) and `verify.py` (an independent pandas recomputation of the forecast
   and the sixteen first-aid cells, its own seven-day pairing), builds a second time into a scratch folder, compares
   target/ and golden/ byte for byte, and cuts target.zip. Rebuild: `python3 task130/generator/make.py`.
-- Pack: 12 files in four formats (CSV, XLSX, PDF, DOCX); the timesheet is the largest file (152,804 rows);
+- Pack: 12 files in three formats (CSV, XLSX, DOCX); the timesheet is the largest file (152,804 rows);
   distractors `good_catch_reports_2025-2026.csv` and `subcontractor_monthly_safety_2026.csv`, named in metadata.json;
-  every workbook, PDF and document carries its own created and modified stamps.
+  every workbook and document carries its own created and modified stamps.
 - target.zip: 12 members, 1,850,230 bytes, sha256 325d048a28a5d9eec3ef0ef13e370214e64c415754c9d36fe456bd5a2d5f7bdf.
 - Gates on the final cut: precut.py exit 0 (61 checks, 0 WARN); figures_check.py PASS (80 figures); voice-check.py
   PASS (659 characters); leak.py REVIEW, no LEAK (two lines, ruled below); `guard.py surface` exit 0 (four pairs
@@ -250,7 +250,7 @@ that pairs the nurse line's cases with a window of three days or more keeps ever
 
 ## Leak sweep
 
-- Sweep 3, `pinewater_contractor_safety_standard_cs4.pdf` carries most of the call's distinctive words: harmless.
+- Sweep 3, `pinewater_contractor_safety_standard_cs4.docx` carries most of the call's distinctive words: harmless.
   The standard is the governing document and defines every term the call uses (recordable injury, field employee,
   Pinewater work, the rate per 200,000 hours, the 3.0 limit); it states no figure, no forecast and no method.
 - Sweep 9, `payroll_calendar_2021-2027.csv` carries pay periods after the setting: harmless. A payroll calendar is
@@ -661,3 +661,16 @@ Architecture 6 (2026-11-01):
 - The payroll extract as the counts' anchors: dropped with the awards ask, since a file read by the decisive step alone announces it (readability test 7); every count now runs from HR-14 Revision 2's start on 11 January 2021, which the programme document files.
 - A payroll crew code that is the member's current crew (an awards device): rejected earlier in this architecture, it planted false anchors on the members' new crews and moved the call to 2.85.
 - Each recurrence's outcome and days carried onto its original case (29 CFR 1904.6) as the ask device: rejected, eight recurrences of 2026-window cases leave whole districts' cells unmoved.
+- Library-written PDF inputs (architecture 6 as built 2026-11-01, found at the 2026-11-07 resume): `leak.py`'s
+  container sweep refuses a PDF whose Producer and Creator name the issuing organisation and whose Subject is the
+  library's placeholder, and the house rule wants a PDF input exported from Word by LibreOffice, which this machine
+  does not have; CS-4 and HR-14 ship as the Word documents their issuers keep (`docs.py`, same text, each issuer and
+  its original dates in the document properties), no figure moved.
+- Architecture 6 spent at stage 4 (2026-11-07): the determinism judge returned NOT_DETERMINISTIC, SEND_BACK, Gate G
+  planted_defect_flip, Gate H decisive step planted (`determinism_check_report_pass1.md`). The golden's 255 rests on
+  injuries the crews kept off the log as each count neared its award, a third of the generator's injuries never
+  written to any file, and no shipped file evidences the concealment; carrying the full 2021 to 2026 record forward
+  under CS-4 3.1 and section 5 files 176 at 2.46, inside the limit, a licensed competing answer. Re-root in a new
+  world on honest complete records. The leak reader on the same cut found no decisive-step sentence and three
+  realism tells (good-catch numbers in steps of three, one seasonal curve across the plan, near-uniform injury
+  categories), moot with the architecture.

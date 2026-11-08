@@ -19,10 +19,10 @@
 1. Stacked ehs_case_log_2021-2024.csv and the Cases sheet of case_management_export_2024-2026.xlsx, kept each case's latest revision and the new system's copy of each migrated case, and dropped first aid, linked recurrences and mutual-aid (MA-) work.
 2. Placed each case on the worker's crew or team on its injury date from crew_assignments_2020-2026.csv, with the crews recoded in March 2025 carried under their new codes (crew_register_2026.xlsx).
 3. Took hours worked from timesheet_hours_by_pay_period_2021-2026.csv as regular plus overtime hours, each prior-period adjustment in the pay period it corrects, and spread each pay period's crew hours over its working days.
-4. Rebuilt each crew's HR-14 count day by day from 11 January 2021, restarting it the day after a recordable injury to any member and the day after each 90th day (crew_safety_recognition_programme.pdf), and computed the crews' recordables per 200,000 hours by day of the count.
+4. Rebuilt each crew's HR-14 count day by day from 11 January 2021, restarting it the day after a recordable injury to any member and the day after each 90th day (crew_safety_recognition_programme.docx), and computed the crews' recordables per 200,000 hours by day of the count.
 5. Applied the crews' rate in days 0 to 34 of their counts and the technicians' recorded rate to the crew and technician hours of work_plan_hours_2027.xlsx, quarter by quarter.
 6. For the first-aid cases, counted each injury once: a Nurse line case is the injury of the Supervisor case for the same worker dated up to three days before its call, and a Nurse line case with none is an injury of its own; counted first-aid injuries on Pinewater work from 5 January to 27 September 2026 by the calendar quarter of the injury date and the district of the worker's crew or team on that day.
-7. Compared the 2027 rate with the limit of 3.0 in pinewater_contractor_safety_standard_cs4.pdf.
+7. Compared the 2027 rate with the limit of 3.0 in pinewater_contractor_safety_standard_cs4.docx.
 
 ## 4. Deliverable Answers
 
