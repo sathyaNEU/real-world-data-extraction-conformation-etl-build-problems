@@ -1,6 +1,6 @@
 {
   "task": "task212",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "biomedical-clinical-research",
   "objective": "anomaly-detection",
   "stage": 2,
@@ -10,8 +10,9 @@
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 1,
+    "date": "2026-11-08",
+    "detail": "61 checks, 1 FAIL (ceiling measured by a script: task212/generator/ceiling.py not written) and 1 WARN (semantic forks asserted: generator/checks.py not written); every note section, the three rules, the survivor anatomy, the readability screen, the fork table, the ladder, the 22-axis closure, the literal reader, the oracles and the prompt gate pass"
   },
   "leak": {
     "leak_py": "",
@@ -61,7 +62,7 @@
       "determinism": "freeze.py check task212 --mode determinism --allow hours_ZAZ,hours_VLC: exit 1 on its unconditional 'Deliverable Answers for hub_damage_q3_2026.xlsx moved' line (--allow reaches figures.json keys only); without --allow it also lists hours_ZAZ 32.2 to 32.0 and hours_VLC 39.5 to 39.4, both accepted with their reason in DESIGN_NOTE ## Tried and rejected"
     }
   },
-  "resume": "stage 2, architecture 2 (biobank genotyping release, DRAWN). Write the design note's remaining sections (Default path, Stump sentence, Three rules, Survivor anatomy, Readability screen, Semantic fork table, Ladder, Closure table, Literal reader, Oracles, Ask sheet), the generator under task212/generator with checks.py asserting the six screens on the shipped seed and the fork rows, a ceiling.py sharing no code with the generator, and prompt.txt (US spelling, question form where, not pdf plus xlsx); leave stage 2 only on precut.py exit 0. Before every guard run merge claude/jolly-hypatia-06c61h and copy any missing batch4 card untracked.",
+  "resume": "stage 2, architecture 2 (DRAWN at 40c09f8; card v2 registered; prompt.txt drafted, voice-check PASS). Next, in order: (1) re-price the ask devices against the full includer (at most two fifths kept): ask A's D7 (study identifiers re-issued to 2025 enrolments after the 2024 re-keying, remedy by accession date against enrolment date through previous_study_id) and D4 (the 2025 inventory audit's exceptions by box position, resolved to barcodes through the location history across the 2024 re-rack), and re-site ask B's D8 onto a recorded-date pair the asking sentence can name without naming the handling (DESIGN_NOTE ## Ask sheet and the last Tried and rejected line); (2) write task212/generator: params; world from the truth model of scratch t212/a2/b1/h1.py with the freezer sweep (Kingston F01-F02 swept 12 Jan to 27 Feb, then after the lab pause Thunder Bay F03-F04, Peterborough F05-F06, London F07-F08, Sudbury F09-F10, Windsor F11-F12 from late April, Barrie F13-F14 late July to August, hitting pulled-before-pick shares 0.50, 0.30, 0.90, 0.40, 0.25, 0.05, 0.45 for TBY, SUD, KGN, LDN, WSR, BAR, PTB), the release picking each rack once (uniform February to July, plates balanced by centre), four or more trolley sessions per rack, no pull within a day of its pick, damage H 1.6 above 40 cumulative minutes (tau 15), Barrie's own odds 1.8, base 2.5 per cent, the LIMS counter on 8 per cent with its own effect; pack (release1_sample_qc.parquet, cohort_participants.csv, lims_aliquot_inventory.parquet, custody_events_2026.parquet, the release close-out, the retrieval SOP BR-07 and handling_audit_terms_2027 as LibreOffice Writer PDFs through officepdf.py copied from scratch t212/r3/officepdf_with_images.py, the ask files, two distractors, metadata.json, target.zip cut by the generator); golden handling_audit_briefing.pptx and release_accounting_2026.xlsx; figures.json; writeup; checks.py asserting the six screens on the shipped seed, SF1 to SF8 and the separation counts; verify.py; ceiling.py sharing no code; (3) precut exit 0, then message main the ladder, the screens' numbers, the literal-execution rows and the cracker table; (4) stage 3 gates and the stage-4 briefs as scratch brief_task212_arch2_resume.txt describes. Before every guard run merge claude/jolly-hypatia-06c61h and copy any missing batch4 card untracked.",
   "approved": null,
   "delivered": null,
   "portal": null,
