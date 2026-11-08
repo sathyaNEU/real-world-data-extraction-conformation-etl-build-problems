@@ -4,15 +4,135 @@ Status lives in `pipeline.json`; this note holds the design. Architecture 1 (Bru
 sortation hubs, the pre-peak sorter survey read from each audited parcel's crush load) was spent at stage 4 round 3 on
 2026-11-07: the judge's SEND_BACK on the weekly figure, because the family the programme's lowest-BIC sentence ranges
 over was never listed and filing it would have named the load (`determinism_check_report_arch1.md`). Architecture 2
-is a re-root in another client domain with a new world, dataset, generator and prompt shell. It is at stage 1: no
-card is registered for it, and the session that screened it paused before a draw (the resume line in `pipeline.json`
-names the next action). The sections of architecture 1's design were removed with its generator; git holds them.
+is a re-root into biomedical-clinical-research with a new world, dataset, generator and prompt shell: the Silverbirch
+Health Cohort's 2026 genotyping release, read for the assessment centre whose own blood handling fails DNA. Its card
+is registered (v2, v1's identity in `lineage`). The sections of architecture 1's design were removed with its
+generator; git holds them.
 
 ## Draw
 
-Architecture 2, stage 1 screening, 2026-11-07 and 2026-11-08, on branch batch4-task212-a2 from 26d4f91.
+Architecture 2, drawn 2026-11-08 on branch batch4-task212-a2 at 5ca7a19 after the urgent-care screens below.
 
-**The window and the bars.** Barred by client domain for this draw: general-statistics-data-science (architecture
+**The draw.** biomedical-clinical-research, task type `genomics-gwas-high-dimensional-association` (it serves
+anomaly detection in the client taxonomy), objective anomaly-detection, shape 09 (the release's funnel per assessment
+centre carries the asks; the call, runner-up and the decisive contrast carry the recommendation side), decision
+pick_one_of_n, strategy composition_mix, Gate G decomposition_attribution, gap objective, generators G12 then G3,
+layer 2 estimand_identification (`own:rack-pulls-before-each-aliquots-own-pick`). The world: the Silverbirch Health
+Cohort, a fictional university-hosted Ontario population cohort whose seven assessment centres (Thunder Bay, Sudbury,
+Kingston, London, Windsor, Barrie, Peterborough) collected blood from 2016 to 2020, and whose biorepository keeps every
+participant's plasma, serum and buffy-coat aliquots in -80 C upright freezers, boxes of one aliquot type stacked in
+racks that hold a participant range. In 2026 the cohort's first genotyping release took one buffy-coat aliquot for
+47,800 participants (picked February to July, in participant order) while the cohort's plasma multi-omics study took
+plasma aliquots from the same participants in four assay campaigns, sweeping the freezers in location order: the two
+freezers that hold Kingston in January and February, then, after its lab paused, every other freezer from June to
+September. The biorepository's ISO 20387 surveillance assessment in February 2027 asks for the corrective action on
+the release's failures, collections restart for the follow-up visit in March 2027, and the biorepository director sends
+one handling audit to the centre whose own blood handling is failing DNA. Personas from `guard.py names --geo Canada
+--seed 212`: Valerie Boyd (biorepository director) and Brandon Summers (biorepository operations manager); the card is
+`task212.json`, architecture v2, with v1's identity in `lineage`.
+
+**The call.** Barrie. Kingston leads every reading of the release that takes each aliquot's recorded handling at face
+value (its failure rate about 8.5 per cent against 4.4 to 6.0 elsewhere); Barrie sits third to fifth there. Read
+within the structure that damages DNA after collection, Kingston's excess is the warming its buffy coats took when
+the multi-omics pickers pulled their racks onto a trolley before the release reached them, and Barrie, whose racks
+were pulled only after its picks, fails DNA at about 1.8 times the others' rate from its own handling.
+
+**Data-native sentence.** Every pick from any box pulls the whole rack onto a trolley, so a buffy-coat aliquot carries
+the warming of every plasma pick made from its rack before its own pick, which no record attributes to it: the LIMS
+counts only the aliquot's own thaws, the custody log records each tube's own check-out, and the freezer map holds the
+rack only as part of a location string.
+
+**Abstraction sentence** (what a reviewer holding this build and its nearest approved build would say is the same):
+units are compared on outcomes after removing an exposure each case inherits from other cases' handling events in a
+shared storage unit before its own retrieval. It cannot be written against an approved build: task181's steriliser
+added risk to the cases a shared resource handled (membership in its faulty cycles, no order and no inheritance), and
+this slot's v1 (the load on each case from cases placed on top of it) never shipped and differs in the event (a
+placement after it against a retrieval before it), the container (one cage against a rack of boxes no case shares) and
+the world.
+
+**Corpus reads, rerun on 5ca7a19.** `guard.py recent` holds task211, task213 and task214 as the last three live cards
+(strategies causal_design, population_selection, decomposition_attribution; forums committee_or_panel,
+line_manager_or_team, regulator_or_inspector; forcing events purchase_order_or_contract, period_close,
+incident_or_complaint; orgs hospital_or_health_provider, software_or_platform, government_agency; artifacts include
+task214's operations_log). `coverage` on anomaly detection by client domain: criminology 1, survey research 1,
+biomedical 1 (task195), political science 2, healthcare delivery 3, physical and environmental 3, energy 4.
+`mechanisms --objective anomaly-detection` returns the 39 drivers listed below, unchanged. The coordinator's
+partition (2026-11-08) gives this slot genomics-gwas and healthcare delivery's payment-claims and provider-quality
+cells, and task214's re-root environmental monitoring and conflict-protest; crime hotspots (dead four times in
+task200's note) and survey anomaly detection (dead at task125, task202 and task228) are not drawn.
+
+**Slot screens for this candidate** (`guard.py slots`, before the first harness). Mechanism words (freeze, thaw,
+warming, retrieval, check-out, rack, excursion, time out, aliquot) returned task228 (soil-probe frost cycles and
+fare-validator check-outs, another mechanism), task401 (weekly retrieval practice), task170, task134, task171, task190
+and others on generic words only. Setting words (biobank, genotyping, call rate, GWAS, buffy coat, DNA extraction,
+assessment centre, cohort, freezer) returned task195 (a Norwegian genomics core's contamination-screen cutoff on a
+paired comparison, this cell's one card) and task200's third pass on this cell (one architecture measured dead,
+eleven directions closed: selection corrections for discovery effects, nuisance variance out of signal mass, a shared
+control panel, linkage-covariate regression, imputation weights, exact conditional nulls, averaging over discovery
+uncertainty, transported allele frequencies, differential call rate as a data defect, pooled signal mass, latent
+counts). None is pre-analytical storage exposure; task200's line on differential call rate (a data defect that
+cleaning removes, so Layer 1) is answered here because nothing is cleaned away: every aliquot's record is correct and
+the exposure is constructed. The `resume` lines of task195, task200, task146, task172, task260, task265 and task267
+(every biomedical slot) were read; none touches storage handling.
+
+**Screens, clean truth, 20 redraws (seeds 200 to 219)**, harness scratch `t212/a2/b1/h1.py` (summary
+`summ.py h1_out_200_20.json`): seven centres sized 5,100 to 8,700 aliquots, the release's pick day uniform over
+February to July in every centre, every rack pulled by the multi-omics study in four to eight trolley sessions of
+about 12 minutes, the share of each centre's racks pulled before its picks fixed by the sweep order (Thunder Bay
+0.50, Sudbury 0.30, Kingston 0.90, London 0.40, Windsor 0.25, Barrie 0.05, Peterborough 0.45), damage a saturating
+step in cumulative trolley minutes above about three sessions' worth (odds about 4 at full exposure), Barrie's own
+handling odds 1.8, base failure 2.5 per cent, the LIMS freeze-thaw counter set on 8 per cent of aliquots with its own
+effect.
+1. Levels and the lever: the golden (each centre's failure rate among aliquots whose rack the multi-omics study had
+   not pulled before their pick) names Barrie 20 of 20, lead at least 1.37, none under 1.2.
+2. The golden's own method: every member names Barrie 20 of 20 (strata at 0, at most 1, 2 or 3 prior pulls, cumulative
+   minutes under 10, 20 or 40, no prior multi-omics pull; logistic in pull count, minutes, log minutes, minute bins,
+   any pull), minimum leads 1.20 (any pull) to 1.37.
+3. The first look (each centre's failure rate): Kingston 20 of 20, lead at least 1.14.
+4. The careful readers, each Kingston 20 of 20: (a) direct standardisation over storage-year band, sex and age band;
+   (b) the constructing reader (storage years, the LIMS counter, each box's and rack's lifetime openings and minutes
+   out, multi-omics pulls ever and their count, pick date); (c) per-record cells (lifetime openings by pick month by
+   storage band) and main effects with interactions (pulls by pick date, minutes by storage years, month dummies);
+   (d) the mechanism-naming readers (freeze-thaw read off the LIMS counter; lifetime rack openings; openings of the
+   aliquot's own box before its pick, zero for every released aliquot because only the release opens buffy-coat boxes;
+   racks never touched by the multi-omics study, an empty stratum because the study needed every rack); (e) the
+   literal replay of the filed comparison (storage years and the LIMS counter).
+5. Literal execution of the filed WHAT (each centre's release failures, with the filed adjustments): Kingston 20 of 20.
+6. Fit parity: the easy route's AUC 0.596 to 0.622 against the golden's 0.674 to 0.695; neither is near-perfect, and
+   no back-test, reconciliation or published figure in the pack touches the exposure.
+Barrie's place on the raw rate: 5th in 11, 4th in 3 and 3rd in 6 of 20 (never 2nd). `corr(golden excess, centre
+size)` is near zero (Barrie is mid-sized); Kingston, the largest centre, also leads the raw counts.
+
+**Levels, cited.** Sample call-rate thresholds of 0.97 to 0.98 and exclusions of a few per cent per study (Anderson et
+al. 2010, Nature Protocols 5:1564-1573; Turner et al. 2011, Current Protocols in Human Genetics 1.19); the world's base
+2.5 per cent and centres' release failures 4.4 to 8.6 per cent sit at the high end for six- to ten-year-old frozen
+buffy coats. Genomic DNA degrades with repeated freeze-thaw (Shao, Khin and Kopp 2012, Biopreservation and Biobanking
+10:4-11; Ross, Haites and Kelly 1990, Journal of Medical Genetics 27:569-570), and warming above the glass transition
+during retrieval is a recognised storage risk (Hubel, Spindler and Skubitz 2014, Biopreservation and Biobanking
+12:165-175; ISBER Best Practices, 4th edition, 2018); the odds of about 4 after four to eight trolley sessions is a
+design value at the upper end of that record. Participant-level aliquoting into -80 C storage and assessment-centre
+collection follow UK Biobank's protocol (Elliott and Peakman 2008, International Journal of Epidemiology 37:234-244),
+which genotyped 488,377 participants from 22 centres (Bycroft et al. 2018, Nature 562:203-209); pre-analytical
+variables are coded as in SPREC (Betsou et al. 2010, Cancer Epidemiology, Biomarkers and Prevention 19:1004-1011).
+
+**Guard.** `guard.py check` on the probe card: one BLOCK, ban.artifact (operations_log repeats task214), redrawn to
+close_out_summary, the honest label for the release's QC close-out the quality lead works from; Kenneth Pierce (a first
+name in task93) redrawn to Brandon Summers from the same draw; the deliverable set moved off docx plus xlsx (task211,
+task214). WARNs answered: driver.near 0.17 against this slot's v1 and 0.12 against task181 (differentiation lines on
+the card, the abstraction sentence above); overuse.objective (the slot's number fixes it); repeat.gate_g and
+overuse.gate_g (decomposition_attribution is the honest label: a correctly reported excess assigned to storage warming
+rather than to the centre; task214's v1 decomposed an outbreak's source through a water network and is spent);
+repeat.decision (the slot audits one site). After the parent branch moved to bea2a97 (task214's card marked spent, so
+the live window became task210, task211 and task213), the re-check raised ban.role (compliance_or_audit) and
+ban.forcing_event (launch_or_rollout), both against task210; redrawn to the biorepository director (operations_director,
+the honest owner of where the audit goes) and the accreditation surveillance visit that asks for the corrective action
+(audit_or_inspection), with the March restart kept as the call's forward window. The re-check then gave WARN only:
+overuse.objective, repeat.gate_g and overuse.gate_g, answered above.
+
+**Earlier screens in this architecture (urgent care, set aside).** The corpus reads and slot screens of that pass
+follow unchanged.
+
+**The window and the bars (urgent-care pass).** Barred by client domain for this draw: general-statistics-data-science (architecture
 1), epidemiology-public-health (task214, re-rooting on batch4-task214-a2), banking-credit-financial-risk (task213),
 pharmacology-pharmacoepidemiology-safety (task211), human-factors-ergonomics (task210), education-learning-sciences
 (task482). `guard.py recent` holds task211, task213 and task214 as the last three live cards (strategies
@@ -92,10 +212,6 @@ unit either becomes the raw leader or is masked in a way the counterfactual esti
 needs the property architecture 1 had: the exposure comes from other records' attributes in an order relation, its
 response is non-linear in it, and the decoy and the true unit share every aggregate of its ingredients while
 differing only in how the records are arranged.
-
-**Next step.** Draw architecture 2 in another world, preferring a least-spent cell (crime hotspot, survey anomaly
-detection, genomics, payment claims), and screen the next candidate against the four urgent-care deaths before any
-harness.
 
 ## Tried and rejected
 
@@ -228,3 +344,16 @@ harness.
   the same range of acceptance, the decoy led the raw ranking in only 1 of 3, and the golden picked the true practice
   in 2 of 3; the acceptance share, once rebuilt, is again a linear aggregate of the exposure. Two candidates in the
   urgent-care world failing their screens moves the next draw to another world.
+- 2026-11-08, architecture 2 candidate B1 with box-level exposure and the multi-omics study touching 85 per cent of
+  boxes (scratch `t212/a2/b1/h1.py`, runs 1 to 8): set aside on paper before the 20 redraws, because a reader comparing
+  centres among the boxes the study never touched (a lifetime stratum, no order relation) reaches the golden: both
+  strata are unexposed. Moved to rack pulls with every rack pulled (the study takes plasma for the same participants),
+  which empties that stratum, and to plasma and buffy coat in separate boxes, which puts every own-box count at zero.
+- 2026-11-08, B1 with single-session visits and background openings at 0.15 a box: the at-most-one and at-most-two
+  prior-opening tolerances landed Kingston 4 of 4 (single sessions inside the tolerance), and a model on "any prior
+  opening" was diluted by harmless background openings (Kingston 1 of 4). Moved to visits of four or more sessions,
+  each inside any stated time limit, damage above about three sessions' worth, background openings at 0.06 a box.
+- 2026-11-08, B1 with the other centres' exposure redrawn every seed (0.35 to 0.60, then 0.05 to 0.25, then 0.25 to
+  0.55): the first look landed on other exposed centres in 3 of 4 at the widest setting, and Barrie's raw place swung
+  from 2nd to 7th; the shares are a property of the world (the study's sweep order), fixed at design values, after
+  which Barrie sits 3rd to 5th and the first look lands Kingston 20 of 20.

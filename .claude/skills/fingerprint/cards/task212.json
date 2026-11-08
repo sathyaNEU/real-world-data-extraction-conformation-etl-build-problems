@@ -1,101 +1,124 @@
 {
   "task": "task212",
-  "architecture": "v1",
-  "drawn": "2026-11-04",
+  "architecture": "v2",
+  "drawn": "2026-11-08",
   "slot_note": "task212/DESIGN_NOTE.md",
-  "domain": "general-statistics-data-science",
-  "subdomain": "exploratory-data-analysis-distribution-assessment",
-  "client_domain": "general-statistics-data-science",
-  "niche": "a Spanish parcel carrier's outbound cage audits read for the sortation hub whose own equipment damages parcels, against the crush each audited parcel took from the weight loaded on top of it in its cage",
+  "domain": "biomedical-clinical-research",
+  "subdomain": "genomics-gwas-high-dimensional-association",
+  "client_domain": "biomedical-clinical-research",
+  "niche": "a university population cohort's 2026 genotyping release read for the assessment centre whose own blood handling fails DNA, against each buffy-coat aliquot's rack pulls by the cohort's multi-omics pickers before its own pick",
   "objective": "anomaly-detection",
-  "shape": "07",
+  "shape": "09",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Ribarroja del Turia; its repairs stop about 800 damaged parcels a week over peak weeks 48 to 52",
+  "answer": "Barrie (provisional at the draw)",
   "answer_source": "task212/submission.md, 1. Final Recommendation",
   "gap": [
-    "objective",
-    "population"
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G6",
+    "G12",
     "G3"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "decomposition_attribution",
   "calibration_form": "none",
   "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
+  "context_artifact": "close_out_summary",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the audits and reads every rule correctly compares each hub's damaged parcels against what the parcels' own weight, size, packaging, service and sender predict, allows for the heavy cartons sharing each cage, finds Zaragoza furthest above and books the survey there, while at equal weight loaded on top of each parcel the excess the survey can remove is Ribarroja's.",
-  "domain_test": "The deciding quantity is each hub's damage excess read within the structure that generates the damage, each audited parcel's crush load from the weight scanned into its cage after it, which is this task type's own object (stratify within the generating structure before reading a comparison); with the pooled or attribute-adjusted rate in its place the call moves to Zaragoza.",
+  "analyst_test": "A strong analyst who cleans the release and reads every rule correctly risk-adjusts each assessment centre's genotyping failures on storage time, the LIMS freeze-thaw count, the recorded processing codes, sex and age, finds Kingston furthest above expectation and sends the handling audit there, while Kingston's excess is the warming its buffy coats took from the multi-omics study's rack pulls before the release picked them and Barrie's excess is its own.",
+  "domain_test": "The deciding quantity is each centre's genotyping failure rate read within the structure that damages DNA after collection, each aliquot's cumulative exposure to rack pulls before its own pick (the time-out-of-storage exposure biospecimen science tracks as a pre-analytical variable), which is this task type's own sample-QC object; with another field's nouns the custody log, the freezer map and the call-rate QC lose their meaning and nothing decides.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:crush-load-from-each-parcels-place-in-its-cage-load-order",
+  "layer2_pattern": "own:rack-pulls-before-each-aliquots-own-pick",
   "layer1": [
-    "cage build log stamped in UTC against the audit app and the DWS in Spanish summer time, a sorting night across local midnight",
-    "DWS weights in grams and dimensions in millimetres against declared kilograms",
-    "no-reads re-scanned by handheld and parcels scanned twice into the same cage",
-    "re-weighs at the DWS",
-    "a damage code list replaced on 1 August with two depots' handhelds still keying old codes",
-    "hub numbers in the sorter export against hub names in the audit app, customer-service areas and maintenance sites",
-    "supervisors' check audits and NOT FOUND lines",
-    "sender-declared weights as account defaults"
+    "custody log stamped in UTC against the LIMS and the genotyping lab in Eastern time",
+    "freezer location strings re-formatted when two freezers were re-racked",
+    "duplicate scanner reads of one tube at check-out",
+    "call rates exported as fractions by one genotyping batch and as per cents by another",
+    "re-genotyped aliquots with two QC rows",
+    "participant identifiers against aliquot barcodes across the manifest and the LIMS"
   ],
-  "stakeholder_role": "head of hub engineering",
+  "stakeholder_role": "biorepository director",
   "role_family": "operations_director",
   "scoring_unit": "per accepted item",
   "spine": {
-    "file": "audit_findings_q3_2026.parquet",
-    "rows": 165744,
-    "entity": "one audited parcel",
-    "grain": "parcel x cage audit",
+    "file": "release_qc_2026.parquet",
+    "rows": 47800,
+    "entity": "one released buffy-coat aliquot",
+    "grain": "aliquot",
     "source": "synthetic"
   },
   "forum": "executive_team",
-  "forcing_event": "season_or_peak",
-  "org_family": "logistics_or_3pl",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "university_or_school",
   "world": {
-    "geography": "Spain (a fictional parcel carrier's six sortation hubs at Zaragoza, Ribarroja del Turia, Dos Hermanas, San Fernando de Henares, El Prat de Llobregat and Basauri)",
-    "currency": "EUR",
-    "org_type": "parcel carrier",
+    "geography": "Canada (a fictional Ontario population cohort's seven assessment centres at Thunder Bay, Sudbury, Kingston, London, Windsor, Barrie and Peterborough, and its biorepository)",
+    "currency": "CAD",
+    "org_type": "university-hosted population cohort and biorepository",
     "invented_names": [
-      "Brújula Paquetería"
+      "Silverbirch Health Cohort"
     ],
     "people": [
-      "Julieta Barranco",
-      "Marcelo Castrillo",
-      "María Vélez"
+      "Valerie Boyd",
+      "Brandon Summers"
     ]
   },
   "deliverables": [
-    "survey_case_note.pdf",
-    "hub_damage_q3_2026.xlsx"
+    "handling_audit_briefing.pptx",
+    "release_accounting_2026.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is the load each case carries from the cases placed on top of it in its container, an order relation between the container's load scans and a separate weighing record, so comparing units on their cases' own attributes, on what shared their container or on where they sat in it books that load to the unit that loads its heaviest cases last and hides the excess of the unit that loads them first.",
-  "driver_concrete": "An audited parcel is crushed by the weight of the parcels scanned into its cage after it, which only the sortation load scans set against the DWS weights show; Zaragoza's auto-parts cartons arrive on the last trunk and go on top of every cage while Ribarroja's tile cartons arrive first and sit at the bottom, so Zaragoza's light parcels carry the cartons and Ribarroja's sorter damage is hidden by its favourable loading.",
-  "stump": "A competent analyst nets the re-audits and re-scans, joins the audits to the DWS, risk-adjusts each hub's damaged parcels on weight, size, packaging, service and sender, allows for the cartons sharing each cage and sends the survey to Zaragoza; the step that lands them there is never reading each parcel's crush load from the weight scanned into its cage after it, which accounts for Zaragoza and leaves Ribarroja with the excess the survey can remove.",
+  "question_form": "where",
+  "driver": "The decisive quantity is the exposure each case inherits from the handling events of other cases sharing its storage unit before its own retrieval, an order relation between a custody log and a location map that no record attributes to the case, so comparing units on their cases' recorded handling, on how often their storage was touched, or on what happened to each case's own container files the unit whose cases were touched first.",
+  "driver_concrete": "Every pick from any box pulls the whole rack onto a trolley, so a buffy-coat aliquot carries the warming of every plasma pick the multi-omics study made from its rack before the release picked it; the study swept Kingston's freezers in January and February and the other centres' from June, while the release picked in participant order from February to July, so Kingston's buffy coats were warmed before their pick and Barrie's after, with equal pulls on every rack.",
+  "stump": "A competent analyst joins the release QC to the manifest and the LIMS, risk-adjusts each centre's failures on storage time, the recorded freeze-thaw count and the processing codes, and sends the audit to Kingston; the step that lands them there is never rebuilding each aliquot's rack pulls before its own pick from the custody log against the freezer map, under which Kingston's excess is storage warming and Barrie fails DNA at about twice the other centres' rate from its own handling.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task213": "surface pair, back to back in the wave: a stablecoin marketplace's rating-ring sweep counted in expunged ratings (banking fraud), against which hub's own sorter damages parcels; no shared domain, data, decision or driver",
-    "task453": "surface pair: a labour force survey's rate restated across a questionnaire redesign (ETL); 'survey' here is a sortation engineering survey; different objective, data and driver",
-    "task164": "surface pair: a utility's transformer replacements allocated to districts (forecasting); shares peak-plan vocabulary only; different domain, objective and driver",
-    "task277": "surface pair, the nearest setting (warehouse operations): a contract-logistics site's pick-accuracy forecast; no cage, load order, audit or hub comparison, a forecast and not a diagnosis"
+    "task212": "this slot's v1 read each audited parcel's load from the parcels scanned after it into its cage (a sum of later placements' weights in one container, a parcel carrier's hubs, general statistics, which hub, a pdf and an xlsx); v2 reads each buffy-coat aliquot's warming from other projects' trolley pulls of its rack before its own pick (a count of earlier retrievals across boxes no case shares, a biobank's genotyping release, biomedical genomics, where, a pptx and an xlsx); v1 never shipped",
+    "task181": "task181's shared steriliser added risk to the cases its faulty cycles handled, a membership in a resource's state with no order; v2's exposure is ordered per case (only the rack pulls before each aliquot's own pick count) and every rack is pulled equally often, so no membership or share separates the centres"
   },
   "lineage": [
     {
       "architecture": "v0 (seed AD35, screened only, never registered)",
       "fate": "spent at stage 1 on 2026-11-04 before any card: a prepayment review's deniable payment is a hidden share only the medical record decides; every golden was as noisy as its signal and the records-fixed alternatives were rule application (task212 DESIGN_NOTE.md, Tried and rejected)",
       "driver": "screened candidates only: repeated diagnoses on same-hospital readmissions against readmissions elsewhere; admission-day occupancy setting the admission threshold; the coming severity regroup"
+    },
+    {
+      "architecture": "v1 (architecture 1, Brujula Paqueteria's six Spanish sortation hubs)",
+      "fate": "spent at stage 4 round 3 on 2026-11-07: the judge's SEND_BACK on the weekly figure, because the family the programme's lowest-BIC sentence ranges over was never listed and filing it would have named the load (task212/determinism_check_report_arch1.md); every round forced the hub and every judge filed Zaragoza blind",
+      "domain": "general-statistics-data-science",
+      "subdomain": "exploratory-data-analysis-distribution-assessment",
+      "niche": "a Spanish parcel carrier's outbound cage audits read for the sortation hub whose own equipment damages parcels, against the crush each audited parcel took from the weight loaded on top of it in its cage",
+      "driver": "The decisive quantity is the load each case carries from the cases placed on top of it in its container, an order relation between the container's load scans and a separate weighing record, so comparing units on their cases' own attributes, on what shared their container or on where they sat in it books that load to the unit that loads its heaviest cases last and hides the excess of the unit that loads them first.",
+      "stump": "A competent analyst nets the re-audits and re-scans, joins the audits to the DWS, risk-adjusts each hub's damaged parcels on weight, size, packaging, service and sender, allows for the cartons sharing each cage and sends the survey to Zaragoza; the step that lands them there is never reading each parcel's crush load from the weight scanned into its cage after it, which accounts for Zaragoza and leaves Ribarroja with the excess the survey can remove.",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G3"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "composition_mix",
+      "question_form": "which",
+      "deliverables": [
+        "survey_case_note.pdf",
+        "hub_damage_q3_2026.xlsx"
+      ],
+      "forum": "executive_team",
+      "forcing_event": "season_or_peak",
+      "org_family": "logistics_or_3pl"
     }
   ],
-  "notes": "Re-root of task212 into general-statistics-data-science after the seed's payment-claims world was screened dead at stage 1. composition_mix chosen because the decisive step is a Simpson's reversal across a constructed stratum (each parcel's crush load), not a grouping of shipped columns. Architecture 1 spent at stage 4 round 3 on 2026-11-07: the judge's SEND_BACK on the weekly figure, because the family the programme's lowest-BIC sentence ranges over was never listed (adding the cage's total weight gave about 600 parcels a week against the golden's 800) and filing it would have named the load, so the fork was the stump (task212/determinism_check_report_arch1.md). Architecture 2 is undrawn: the session that screened it paused at stage 1 after four urgent-care candidates failed (task212/DESIGN_NOTE.md, Tried and rejected); this identity moves into lineage when architecture 2's card registers.",
-  "registered": "2026-11-04T23:27:00Z",
-  "architecture_spent": true
+  "notes": "Re-root of task212 (architecture 2) into biomedical-clinical-research after architecture 1 (general-statistics-data-science, a parcel carrier's sortation hubs) was spent at stage 4 round 3. composition_mix because the decisive step is a reversal across a constructed stratum (each aliquot's rack pulls before its own pick), not a grouping of shipped columns.",
+  "registered": "2026-11-08T01:59:53Z"
 }
