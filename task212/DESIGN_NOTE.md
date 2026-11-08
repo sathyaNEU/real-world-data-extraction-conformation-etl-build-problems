@@ -213,6 +213,205 @@ needs the property architecture 1 had: the exposure comes from other records' at
 response is non-linear in it, and the decoy and the true unit share every aggregate of its ingredients while
 differing only in how the records are arranged.
 
+## Default path
+
+The field's method for a centre's sample-quality excess, as a careful GWAS QC analyst runs it on the pack:
+1. Take each genotyped buffy-coat aliquot's final run from `release1_sample_qc.parquet` and mark a DNA failure as the
+   close-out defines it (quantity not sufficient, or a call rate under 0.97 on the final run).
+2. Join the aliquot to its participant and enrolment centre (`lims_aliquot_inventory.parquet`, then
+   `cohort_participants.csv`), with the recorded pre-analytical variables: storage years from accession to pick, the
+   LIMS freeze-thaw counter, the collection's processing codes, sex and age band.
+3. Risk-adjust each centre's failures on those variables (indirect standardisation, or a logistic model with the
+   centre left out and observed over expected by centre), check plate and batch (balanced by centre) and the re-runs.
+4. Read the custody log for the storage side the way the field reads it: the aliquot's own thaws (the counter), the
+   box's and the rack's openings in 2026, whether the multi-omics study touched the rack; none separates the centres.
+5. Send the audit to the centre furthest above expectation.
+
+Ends on: Kingston.
+
+Golden: Barrie.
+
+Kingston sits at about 1.4 times expectation on the default path, its lead over the next centre at least 1.14 in 20 of
+20 redraws; on the golden Barrie's first-opening failure rate is about 1.8 times the other centres' pooled rate and
+Kingston's sits at their level.
+
+## Stump sentence
+
+A competent analyst risk-adjusts each centre's Release 1 DNA failures on storage time, the LIMS freeze-thaw count,
+the processing codes, sex and age, reads the custody log for each aliquot's own thaws and its rack's 2026 openings,
+finds Kingston furthest above expectation and sends the audit there; the step that lands them on Kingston is never
+rebuilding, from the custody log against the freezer map, how many trolley pulls each aliquot's rack took before the
+aliquot's own pick, under which Kingston's excess is the warming its racks took when the multi-omics study swept them
+first and Barrie fails DNA at about 1.8 times the others' rate from its own handling.
+
+## Three rules
+
+Task type: genomics-gwas-high-dimensional-association, the anomaly-detection flavour of GWAS sample QC: which
+centre's genotyped samples carry a real handling defect, separated from an artefact of the samples' storage.
+Domain test: the quantity that decides is each centre's DNA-failure rate on the Release 1 genotyping run read within
+the pre-analytical exposure that damages DNA after receipt (cumulative time out of storage, SPREC's long-term storage
+axis), estimated by standardising or modelling failures on the samples' pre-analytical variables.
+Swap: "the biorepository sends its handling audit to Barrie, whose buffy coats fail genotyping beyond what each
+aliquot's rack pulls before its pick explain" with a warehouse's nouns keeps the arithmetic and loses the reason a pull
+of the rack harms a tube that was never picked, which is the thaw physics of frozen leukocytes and DNA call rates.
+Layer 1: the custody log in UTC against the LIMS and the lab in Eastern time; location strings in two formats after a
+2024 re-rack; duplicate scanner reads at check-out; one genotyping batch exporting call rates as per cents; re-run
+aliquots with two QC rows; participant study identifiers against aliquot barcodes; each produced by the system named.
+Layer 2: estimand_identification; the centre comparison is confounded by a storage exposure no record attributes to
+the aliquot, so the comparison must be read within the exposure each aliquot inherited before its own pick.
+Decisive step: rebuild each aliquot's exposure from the trolley pulls its rack took before its own pick (other
+aliquots' check-outs from any box in the same rack, ordered against the aliquot's own check-out) and compare centres
+within it.
+Not semantics: every field is read at its filed meaning (the counter counts the aliquot's own thaws, the custody log
+records each tube's own check-out, the location string names the rack) and the easy route still files Kingston,
+because no field holds the exposure; it is a relation between other rows ordered against this one.
+Not rule application: no filed rule or procedure computes the exposure or tells the reader to; executing every filed
+sentence (the close-out's failure definition, the SOP's 20-minute limit, the terms' comparison) files Kingston. The
+enumerated family (raw, standardised, counter-adjusted, lifetime-openings, ever-touched, own-box, the field's
+pre-analytical model) names Kingston 20 of 20 each; the standing family (every construction of pulls before the pick:
+any pull, multi-omics pulls, counts or minutes, linear, log, bins, strata at 0 to 3 pulls) names Barrie 20 of 20,
+leads 1.20 to 1.37 at their weakest, so its spread on the call is zero and the ruling-out is the data's within-centre
+contrast (aliquots picked after their rack's pulls fail at about three times those picked before, in every centre).
+Analyst test: the strong analyst who cleans the release and reads every rule correctly risk-adjusts the centres on the
+recorded pre-analytical variables and the custody log's own-thaw and opening counts, and files Kingston.
+Estimand: the handling audit's terms of reference (`handling_audit_terms_2027.pdf`) file the population (each
+participant's buffy-coat aliquot genotyped in Release 1, final run), the outcome (a DNA failure as the close-out
+defines it), the window (Release 1), the unit (the enrolment centre) and the comparison (the centre's own handling from
+the draw to receipt, against the other centres).
+No decoy: nothing is planted to be caught; no memo, draft, briefing or stakeholder figure carries Kingston, and no
+document ranks the centres.
+No certified replay: no certified or published figure is reproduced to recover the method; the close-out's totals tie
+under every basis.
+Lesson: a centre comparison on samples is confounded by what happened to each sample after it left the centre, and the
+exposure has to be rebuilt per sample from other samples' handling in the same storage unit, ordered against the
+sample's own retrieval; no build on file teaches an exposure inherited from other records' retrievals.
+
+## Survivor anatomy
+
+Actor: the exposure (trolley pulls of the aliquot's rack before its own pick) has no column in any file; the counter
+holds the aliquot's own thaws, the custody log one row per tube moved, the location string the rack only as a prefix.
+Link: the signal is read through the rack prefix of other tubes' locations (plasma boxes the release never opened)
+ordered against this tube's own check-out, a cross-row comparison the field's per-aliquot freeze-thaw bookkeeping
+never asks for; no key joins a buffy coat to the plasma picks that warmed it.
+Reflex: the field's method (standardised or modelled failures on recorded pre-analytical variables, the LIMS counter
+included) sits at rung 0 and files Kingston.
+Back-test: the easy route validates: the counter's own effect shows (aliquots thawed once before fail more), the
+model's fit is ordinary (AUC about 0.61) and the close-out's totals reconcile; nothing in the pack refutes it.
+Second use: the custody log is the release's chain-of-custody record (pick dates reconcile the plate runs) and the
+inventory's location strings carry ask A; deleting the decisive step leaves both files in the pack.
+Shock: Kingston's excess reads as an ordinary centre effect and Barrie is third to fifth on raw failure rate; Barrie
+tops no shipped statistic and the answer is not an interval of any sort.
+Pins: the terms file the WHAT (population, outcome, window, unit, comparison) in the biorepository's own genre; no
+filed sentence names racks, pulls, the custody log, an exposure or a time window, and deleting any filed sentence leaves
+the construction equally forced.
+
+## Readability screen
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 0 raw and standardised centre rates | fires (close-out) | fires | fires | no | no | fires | no | readable |
+| 1 plate, batch and re-run handling | no | fires (plate ids) | fires | no | fires | no | no | readable |
+| 2 counter, lifetime openings, ever touched | no | fires (counter column) | fires | no | no | fires | no | readable |
+| 3 pulls before each aliquot's own pick (decisive) | no | no | no | no | no | no | no | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | DNA failure | quantity not sufficient or call rate under 0.97 | identity failures (sex mismatch, unexpected duplicate) included | same call | close-out section 3 defines DNA failures; asserted inert |
+| SF2 | final run | the aliquot's last QC row | first row, or failed on any run | same call | close-out: "the final run stands"; asserted inert |
+| SF3 | centre | the participant's enrolment centre | the accessioning centre on the aliquot | same call | identical for every release aliquot (C1), asserted |
+| SF4 | genotyped aliquot | every release buffy coat with a QC row, QNS included | QNS aliquots left out of the base | same call | terms: every aliquot sent for genotyping; asserted inert |
+| SF5 | own handling | from the draw to receipt at the biorepository | every failure charged to the centre | Kingston | terms: "from the draw to its receipt"; storage after receipt is the biorepository's |
+| SF6 | rate | failures per genotyped aliquot | failures per participant | same call | one aliquot per participant in Release 1 (C1) |
+| SF7 | clock | custody log in UTC, LIMS and lab in Eastern time | either clock for both | same call | no rack pull within a day of its pick (C1), asserted |
+| SF8 | a pull | a check-out session on any box of the rack | each tube row a pull; multi-omics sessions only | same call | every construction names Barrie (C1 on the call), asserted |
+
+## Ladder
+
+| Rung | Construction | Names | Lead (min over 20) |
+|---|---|---|---|
+| 0 | raw failure rate; standardised on storage years, sex, age | Kingston | 1.14 |
+| 1 | plus plate, batch, re-run handling | Kingston | 1.14 |
+| 2 | plus the counter, lifetime box and rack openings and minutes, multi-omics ever and count, pick date | Kingston | 1.15 |
+| 3 | pulls before each aliquot's own pick (decisive), any form | Barrie | 1.37 (stratum) |
+
+Position: Barrie third to fifth on rung 0 (5th in 11, 4th in 3, 3rd in 6 of 20). Dominance: every wrong rung's top
+(Kingston) clears its runner-up by at least 1.14; the golden clears its runner-up by at least 1.37. Worth: the decisive
+step moves Kingston from about 1.4 times expectation to about 1.0 and Barrie from about 1.15 to about 1.8.
+Pricing sequence: (1) the residue the filed WHAT leaves is a construction, not a knob; (2) the move needed (Kingston's
+excess, about 3 points of failure rate) against the ceiling (its exposed share, 0.9, at about 6 points each) is
+reachable; (3) the one-group-by route (rates by centre by rack) is not affine in any shipped column; (4) the
+standard error of Barrie's first-opening rate is about 0.3 points against a 2-point excess; (5) the lever (exposure)
+and the ranked quantity's noise are different variances; (7) no subset of rows prints the exposure; (8) the reflex sweep
+runs as code (`generator/checks.py`, screens block).
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | Release 1's genotyped buffy coats, final run | filed in the terms; C1 on the call across SF2 and SF4 |
+| 2 Unit of account | the enrolment centre | filed; SF3 C1 |
+| 3 Attribution window | Release 1 picks, February to July 2026 | filed; every pick inside it |
+| 4 As-of dating | the custody log as exported on 2026-10-30 | stated on the export; nothing after it is read |
+| 5 Version basis | the close-out's final run | filed (SF2), asserted inert |
+| 6 Denominator | genotyped aliquots, QNS included | filed (SF4), asserted inert |
+| 7 Weighting | per aliquot | one aliquot per participant (SF6) |
+| 8 Window length | pulls before the aliquot's own pick, any lookback | C1: every pull of 2026 precedes or follows by more than a day |
+| 9 Boundary inclusivity | a pull on the pick day | none occurs (SF7), asserted |
+| 10 Rounding path | rates computed on counts, rounded once | asserted on every graded figure |
+| 11 Tie-break | none needed | the call's lead at least 1.37 |
+| 12 Maturity and censoring | none: every pick is complete | asserted |
+| 13 Order of operations | final run, then failure, then centre | asserted inert |
+| 14 Row order | none | assertions run on shuffled rows |
+| 15 Duplicate resolution | duplicate scanner reads collapse to one session | SF8 C1 |
+| 16 Identity normalisation | barcode to study identifier through the inventory | C4: every release aliquot resolves |
+| 17 Netting against gross | none | no offsetting rows |
+| 18 Dimensional units | call rate as a fraction; one batch in per cents | converted (Layer 1), asserted |
+| 19 Code and status semantics | close-out status codes at their filed meaning | filed codes, asserted |
+| 20 Integerisation | counts are whole aliquots | by construction |
+| 21 Clause scope | the terms' comparison covers every centre | filed |
+| 22 Forward window contents | the March 2027 restart; the call is a site, not a forecast | no forward figure is graded on the call |
+
+## Literal reader
+
+Executed word for word, the terms name the centre whose own handling from the draw to receipt accounts for the highest
+DNA-failure rate; a literal reader who charges every failure to the centre files Kingston (SF5, ruled out by "from the
+draw to its receipt"), and one who nets out what happened after receipt files Barrie under every construction of the
+rack's pulls before each pick; no filed sentence reads to a third answer.
+
+## Oracles
+
+none: the close-out's totals tie under every basis, the counter's effect is the same on both routes, and no control,
+published figure or corpus ties only under the golden or only on the wrong read.
+
+## Ask sheet
+
+Stage 2, in progress (devices re-priced against the full includer; built in the generator and measured on the cut pack
+by `generator/ceiling.py`, which shares no code with the generator). The prompt draft asks two blocks beside the call.
+- Ask A, the 2027 pool per centre (seven counts and their total): participants not genotyped in Release 1 whose BC1
+  aliquot is in storage and usable and whose consent is in force. Primary D7: study identifiers freed by the 2024
+  re-keying re-issued to 2025 enrolments, so every key matches and the habitual join hangs an old aliquot on the new
+  holder (consent in force) while the old participant's withdrawal sits under their new identifier; the remedy is
+  identity by accession date against enrolment date through `previous_study_id`. Primary D4: the 2025 inventory audit's
+  exceptions (empty or cracked tubes) listed by box position, resolved to barcodes only through the location history
+  across the 2024 re-rack. Hazards: duplicate consent rows; re-consent after a withdrawal (latest event rules).
+- Ask B, late shipments per centre (seven whole per cents and the overall, 2016 to 2020): shipments that reached the
+  biorepository more than 24 hours after the earliest draw they carried. Primary D6: multi-box shipments, one row per
+  box in the courier file and one shipment in the receiving manifest, received when its last box is delivered (filed in
+  the receiving SOP as the WHAT). Primary D8: to be re-sited onto a recorded-date pair the asking sentence can name
+  without naming the handling. Hazard: courier scans in UTC.
+Separation: zero device rows in Release 1's genotyped aliquots, the 2026 custody log or the audit terms (asserted by
+count in `generator/checks.py`).
+Pair ceiling: 52 (paper; the script measures it on the cut pack)
+Mirror leakage: 35
+Measured by: task212/generator/ceiling.py
+
+| Ask | Cracker (lands the call, runs the battery, executes every filed rule) | Verdict |
+|---|---|---|
+| A pool | joins aliquots to participants on the study identifier as stored, reads the audit exceptions by current position | miss |
+| B late share | counts courier rows, dates arrival from the field the manifest names | miss |
+
 ## Tried and rejected
 
 - 2026-11-04, the seed's title mechanism (the FY2027 final rule's severity tables remove the largest excess by
@@ -357,3 +556,15 @@ differing only in how the records are arranged.
   0.55): the first look landed on other exposed centres in 3 of 4 at the widest setting, and Barrie's raw place swung
   from 2nd to 7th; the shares are a property of the world (the study's sweep order), fixed at design values, after
   which Barrie sits 3rd to 5th and the first look lands Kingston 20 of 20.
+- 2026-11-08, the first ask draft's two weak devices, priced against the full includer before any data is cut (stage 2,
+  this session): ask A's D4 as a consumption list (the 2023 DNA pilot's samples named as used up) is a stated record a
+  full includer executes on reading it, so it keeps the figure; ask B's D8 (the LIMS accession time against the
+  courier's delivery scan) forks unless the arrival is filed, and filing "the courier's delivery to the dock" performs
+  the remedy. Replacements to price next: D7 with study identifiers re-issued to 2025 enrolments after the 2024
+  re-keying (every key matches, the habitual join attaches an old aliquot to the new holder, the remedy is identity by
+  accession date against enrolment date through `previous_study_id`); D4 with the 2025 inventory audit's exceptions
+  listed by box position (empty or cracked tubes), resolved to barcodes only through the location history across the
+  2024 re-rack; D8 re-sited onto a clock or recorded-date pair the asking sentence can name without naming the handling.
+  Ask C (failed reference controls per genotyping batch) and a freezer-hours ask were set aside on paper: the control
+  file's own type column performs the layout device, and two probes per freezer fork the hours unless the monitored
+  probe is filed.
