@@ -30,7 +30,7 @@ architecture), new. A task from an objective no developer owns says so.
 | 2 | task448 (new) · task449 (new) · task450 (new) · task451 (new) · task452 (new) · task453 (new) |
 | 3 | task454 (new) · task455 (new) · task456 (new) · task457 (new) · task458 (new) · task459 (new) |
 | 4 | task460 (new) · task461 (new) · task462 (new) · task463 (new) · task464 (new) · task465 (new) |
-| 5 | task466 (new) · task467 (new) · task468 (re-root: fresh architecture 4) · task469 (new) · task470 (new) · task471 (re-root: fresh architecture 2) |
+| 5 | task466 (new) · task467 (new) · task468 (re-root: fresh architecture 4) · task469 (new) · task471 (re-root: fresh architecture 2) |
 | 6 | task472 (new) · task473 (new) · task474 (new) · task475 (new) · task476 (new) · task477 (new) |
 | 7 | task478 (new) · task479 (new) · task480 (new) · task481 (new) · task482 (new) · task483 (new) |
 | 8 | task484 (new) · task485 (new) · task486 (new) · task487 (new) · task488 (new) · task489 (new) |
