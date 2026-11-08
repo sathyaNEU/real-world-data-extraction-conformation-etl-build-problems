@@ -1,10 +1,10 @@
 {
  "task": "task118",
- "status": "FAILED_TO_STUMP",
+ "status": "PAUSED",
  "domain": "energy-systems-utilities / generation-capacity-planning (client energy-systems-utilities)",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-11-07",
  "stump": "each programme's 18:00 reduction read on the record's fourth consecutive event days, the design peak hour being the fourth weekday OP-7 calls (default: Cool Credit about 11 MW on the average or weather-matched reduction; golden: Home Battery Network about 6 MW)",
  "architecture": 5,
@@ -78,7 +78,7 @@
    "commit": ""
   }
  ],
- "resume": "re-root at stage 1: architecture 6 in another client domain, world, dataset, generator and prompt shell under opportunity-sizing-decision (architecture 5 spent on its first portal round, see the note's Tried and rejected)",
+ "resume": "Draw architecture 6 (no card registered). The 2026-11-07 search ran under two ban windows: first task165, task127 and task268 (strategies binding_constraint, causal_design, population_selection; forcing budget_or_appropriation; roles capacity_planner, portfolio_manager, other; patterns G7, E, G9), then task482, task268 and task306 (strategies composition_mix, population_selection, forecast_method_backtest; org hospital_or_health_provider; shapes 14 and other; forums committee_or_panel, executive_team, board_of_directors; forcing launch_or_rollout, budget_or_appropriation, purchase_order_or_contract; roles programme_officer, other, field_unit_lead; patterns G13, G9, G5; calibration pilot_log). Measured dead: theatre list packing (task301's probes replayed every list first), reinstatement defects (the closing sentence names the step), ED-originated pressure ulcers (the 72-hour convention lands the golden on harness_pu.py and short windows fork the grid); about fifteen more died on paper (the note's Tried and rejected). Next: the author decides between a sixth architecture and retirement; a sixth draw starts from guard.py recent and the open families (binding_constraint, causal_design, decomposition_attribution, maturity_censoring, grain_or_unit, other, classification_error, informative_censoring) in OS client domains this slot has not used (healthcare-delivery under a non-hospital org, urban-regional, actuarial, survey, quantitative finance), and kills a candidate only on a mechanical test (the seven readability tests, the anatomy, a cheap-route count on clean truth), never on a guess about the portal's models.",
  "approved": null,
  "delivered": null,
  "portal": "FAILED_TO_STUMP 2026-11-07 (architecture 5): both responses filed the golden, Home Battery Network 6 MW, runner-up Peak Time Rewards 4 MW",

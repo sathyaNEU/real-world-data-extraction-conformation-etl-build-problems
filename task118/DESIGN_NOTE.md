@@ -542,3 +542,34 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip 90561f0e)
   reflex once the design hour's place in its heat spell is visible, splits the batteries' contract regimes on the
   amendment, and validates season-out; a named covariate the field already models (fatigue, streak, regime) is executed,
   so the energy demand-response world and the run-position driver are spent.
+- Architecture 6 draw screen (2026-11-07), a theatre productivity team placed with one specialty, sized by the extra
+  patients its lists can operate on once recovered late-start and turnaround minutes are packed list by list against
+  the waiting cases (healthcare-delivery x OS, patient-flow): task301's note already measured the per-list replay as
+  both call-only probes' first construction, so the step is a reflex; dropped before a card.
+- Architecture 6 draw screen (2026-11-07), a highway authority's preventive surfacing placed in one district, its
+  defects split by whether they fall inside a recent utility reinstatement's footprint (urban x OS, municipal
+  service): whether surfacing prevents failures of existing reinstatements turns on old against new openings and a
+  failure-lag model, and the only sentence that closes it names reinstatements, so the fork is the stump; dropped
+  before a harness.
+- Architecture 6 draw screen (2026-11-07), a pressure ulcer prevention bundle placed on one of four wards, each
+  ward's recorded ulcers split by whether the damage began on an ED trolley before arrival (healthcare-delivery x OS,
+  patient-flow): on the harness (scratch harness_pu.py, three seeds) the textbook count files the medical admissions
+  ward and the trolley-exposure attribution files the orthogeriatric ward, but the 72-hour inherited convention, a
+  tissue-viability reflex, files the golden too, and short attribution windows flip the standing family (10 to 12 of
+  32 grid cells); dropped.
+- Architecture 6 paper screens (2026-11-07), each dead before a harness: step-free station lifts valued by journeys
+  made possible (the end-to-end step-free journey is the field's own method; the interchange-path version forks on
+  route choice); added GP appointments credited only with ED attendances after the practice's slots ran out (the
+  condition has to be filed, so the step is rule application); TB contact tracing placed by genomic cluster (the
+  field's own method is the golden); a 3T scanner's throughput capped by each patient's implant conditionality
+  (task117's chain form, and the effect is small); agency shifts matched to same-shift redeployments and sickness (the
+  step is a three-file reconciliation, Layer 1); household secondary cases credited to the vaccinated group (the
+  counterfactual forks unless the estimand files the method); dialysis admissions after the long interdialytic gap
+  (readable: days since the last session is one join and one subtraction, and the gap is a named clinical
+  covariate); GP list inflation against the outreach pool (population_selection is banned against task268, and the
+  register-against-resident step leans on reading the register); a low-traffic neighbourhood or bus lane valued on
+  through-traffic or mid-block delay (the scheme's own specification names the mechanism, readability test 1); once
+  binding_constraint and causal_design reopened, freed capacity credited only in saturated periods (task162's
+  hour-by-hour threshold form), a pilot hospital's ED fall net of displacement to its neighbour (v2's displacement
+  abstraction, this slot's own lineage), the on-call rota as an instrument (a named judge design on eight clusters)
+  and a fast-track priority netted through queueing conservation (a replay of a filed priority rule, task301's kill).
