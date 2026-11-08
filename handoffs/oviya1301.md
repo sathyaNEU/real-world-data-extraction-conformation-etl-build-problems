@@ -154,10 +154,6 @@ The ask designer's brief, in short:
 - Solver sandboxes go under `/sbx/`, never the scratchpad, which builders fill with their own scripts.
 - Leak readers have twice claimed that task445's CUSIP 359Y60106 fails its check digit. It passes.
 
-## task482
-
-Shipped 2026-10-25 (architecture 14, zip 2c0f8d35); waiting for the author's portal list.
-
 ## task485
 
 Architecture 1 (a boundary commission's 2032 electorate forecast, each dwelling's electors aged to its canvasses on the
