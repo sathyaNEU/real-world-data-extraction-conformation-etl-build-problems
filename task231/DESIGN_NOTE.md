@@ -32,7 +32,7 @@ set now, in May 2027, from winter 2026/27's record.
   review panel (`committee_or_panel`) ahead of the season's configuration freeze (`season_or_peak`); organisation
   `government_agency`.
 - **People:** drawn with `guard.py names --geo US --seed 231` and `--seed 2310`: Melissa Hayden, Lynn Dalton, Robyn
-  Reeves; the pre-season technicians Kathy Phillips and David Glenn from the same draw.
+  Reeves; the pre-season technicians Kathy Phillips and Joshua Howard from the same draw.
 - **Data-native sentence:** on still clear winter nights the district's enclosed basins fill with cold air under an
   inversion, each basin to its own depth and strength and some of them for days under a winter high, so a basin-floor
   station's air matches only the other stations inside its own basin's pool, while the spatial test's neighbours within
@@ -83,7 +83,7 @@ withheld.
 3. A withheld reading within 5 C of that background is a false rejection; anything further off was rightly withheld.
 4. Each station's share is its false-rejection hours over the winter's 5,088 hours; re-tune above 2 per cent.
 
-Ends on: SD-147, SD-226, SD-318 (Kimball Grade, Echo Grade and Ptarmigan Grade only)
+Ends on: SD-147, SD-226, SD-318 (Larkspur Grade, Antimony Grade and Ptarmigan Grade only)
 Golden: SD-118, SD-122, SD-131, SD-147, SD-204, SD-211, SD-226, SD-318
 
 ## Stump sentence
@@ -117,7 +117,7 @@ Link: the pool's membership is read through the co-movement of the stations' nig
 Reflex: the field's background check for a spatial flag, the hour's lapse refit or the HRRR forecast, sits at rung 2 and files SD-147, SD-226, SD-318.
 Back-test: the vendor's acceptance record (summer 2024, every injected fault withheld, 0.3 per cent of clean observations withheld) and the October pre-season checks (every probe within 0.3 C of the reference) both validate the textbook routes of trusting the test or the probes.
 Second use: every file the decisive step reads has its own use: the ESS export and the QC log are the review's record, the register is the network's inventory and carries the pavement sensors the asks read, and the standard governs the asks' indicators too.
-Shock: the pooled floors' withheld hours read as ordinary cold nights in a mountain winter; sorted by withheld hours the faulted plateau and passes interleave with the floors (Big Prairie 349 sits between Teller Junction and Ransom Creek), so the golden set is not an interval of any single sorted statistic.
+Shock: the pooled floors' withheld hours read as ordinary cold nights in a mountain winter; sorted by withheld hours the faulted plateau and passes interleave with the floors (Big Prairie's 335 sits between Ransom Creek's 406 and Cutler Meadow's 250), so the golden set is not an interval of any single sorted statistic.
 Pins: the standard files the WHAT (population, outcome, window, unit, comparison) in the district's own genre; no filed sentence names a pool, a co-movement, a grouping, a tolerance or a reference station, and deleting any one filed sentence leaves the call forced by the readings.
 
 ## Readability screen
@@ -144,8 +144,8 @@ on the golden.
 |---|---|---|---|---|---|
 | SF1 | winter | 1 October 00:00 to 1 May 00:00 Mountain time, 5,088 hours | the window from UTC midnight | same call | standard s2; checks.py SF1 |
 | SF2 | share | false-rejection hours over the hours of the winter | over the hours the station delivered | same call | standard s3 "as a percentage of the hours of the winter"; checks.py SF2 |
-| SF3 | above 2 per cent | strictly above | at or above | same call | standard s3; no share within a point of the line, checks.py SF3 |
-| SF4 | right | within 0.3 C of the air at the station that hour | 0.3 C as the tolerance between stations | drops SD-118 and others | standard s2 (the probe's accuracy against its own air); stations sharing a pool differ by more than 0.3 C on 59 per cent of the hours the QC passed, which the October checks contradict; checks.py SF4 |
+| SF3 | above 2 per cent | strictly above | at or above | same call | standard s3; no share within half a point of the line, checks.py SF3 |
+| SF4 | right | within 0.3 C of the air at the station that hour | 0.3 C as the tolerance between stations | drops SD-118 and others | standard s2 (the probe's accuracy against its own air); stations sharing a pool differ by more than 0.3 C on 53 per cent of the hours the QC passed, which the October checks contradict; checks.py SF4 |
 | SF5 | the stations sharing its air | the median of the pool mates | any one pool mate within the tolerance | same hours | checks.py SF5 and G7 |
 | SF6 | withheld by that test | the spatial test's rows | every air temperature row (the step test too) | same call | standard s3 "by that test"; checks.py SF6 and R2 |
 | SF7 | the test | configuration 4.3 under both releases | 4.3.0 and 4.3.2 as two tests | same call | QC configuration s4 (air temperature tests unchanged); checks.py SF7 |
@@ -165,8 +165,12 @@ on the golden.
 | R8 | HRRR forecast within 5 C | SD-147, SD-226, SD-318 | misses the five floors |
 | R5 | pool mates by co-movement, others against the free air (golden) | the eight | |
 
-Margins: the lowest re-tuned share is 3.83 per cent (SD-226) and the highest other 0.45 (SD-307), so the line sits in
-a gap and no rung's error is a rounding.
+Margins: the lowest re-tuned share is 2.83 per cent (SD-318, 144 hours, 42 hours above the line) and the highest other
+0.14 (SD-307), so the line sits in a gap and no rung's error is a rounding. Graded at whole per cents, every station's
+share is the same under each of 17 defensible variants (tolerance 1.5 to 4.5 C, six groupings, three radii, any pool
+mate, a mean of the stations sharing the air, each hour's fitted lapse), and every re-tuned station's hours sit 12.8
+hours or more from a whole-per-cent edge (checks.py G9); one decimal is not graded, because the fitted lapse moves
+SD-318 by 9 hours.
 
 ## Closure table
 
@@ -181,7 +185,7 @@ a gap and no rung's error is a rounding.
 | 7 Weighting | none: an hour count per station | C1 |
 | 8 Window length | the one winter | filed |
 | 9 Boundary inclusivity | above 2 per cent | filed; C1, nothing near the edge (SF3) |
-| 10 Rounding path | hours counted, the share rounded once to one decimal | filed in the prompt |
+| 10 Rounding path | hours counted, the share rounded once to a whole per cent | filed in the prompt; C3 across 17 variants (G9) |
 | 11 Tie-break | none arises | C1 |
 | 12 Maturity and censoring | the winter is closed | C1 |
 | 13 Order of operations | judge each withheld reading, then count | C1 |
@@ -212,23 +216,48 @@ the generator; checks.py G1 asserts the golden reproduces it hour for hour.
 
 ## Ask sheet
 
-Asks as built: each station's unavailable hours under Schedule B (31 figures), and its travel-lane freezing hours and
-ice hours (62 figures). Devices: the modem register's removed rows and the shop spare's messages placed only through
-the ESS export (D7), server times in local civil time with their zone (D8), a message's several hours (D6), re-sent
-pavement rows (D1), each sensor's own units and a replaced sensor under an old serial (D3, D7), the firmware code
-table switch per serial (D2), bridge-deck ports (D5).
+Asks, each summed over a maintenance section's stations and over the network (15 figures): the unavailable hours
+under Schedule B, and the travel-lane freezing hours and ice hours under the standard's section 4. Named use: the
+contract file's section summary and the section supervisors' winter reports, in the program manager's own words
+(the review request). The main call reads none of their files (checks.py R2).
 
-Pair ceiling: 82.9, measured on the cut pack: over the 60 ceiling; the asks are executable from what the register,
-Schedule B and the standard file, and must be reworked before stage 4's judge (resume step in pipeline.json).
-Mirror leakage: 98.9 per cent of ask weight kept by the default-path response (the asks are decoupled, so the mirror
-keeps what the cracker keeps).
+- **Unavailable hours.** Primary: four shop-spare spells (D7, the true key elsewhere). The modem register keeps each
+  spare's row with no site, so a spare's messages place at a station only through the ESS export: the one station
+  whose readings the export holds for those hours while no registered modem of its brought them (one spell in each
+  section, checks.py A3, A6). Hazards: removed modems kept in the register (D7), server times in local civil time
+  with their zone (D8), a backlog message's several hours with the one on time last (D6), notified outages (D5).
+- **Freezing and ice hours.** Primary: the heads that came out during the winter (D7 with D3). The register is kept
+  by sensor in service, so a replaced head's serial is in no sheet; its readings sit on the same RPU and port up to
+  the new head's first reading, in its own units (an IRS-31 in whole tenths of a degree C, a SCAN-16 in degrees F to
+  a tenth), and the standard counts the hours each sensor reported (one in each section, checks.py B4, B5). Hazards:
+  the firmware 4.1 code table from each serial's applied time (D2), bridge-deck ports (D5), re-sent rows (D1).
+- **Clocks.** Every local stamp carries its zone and no planned outage starts or ends in a repeated or skipped hour,
+  so the time arithmetic is one reading (checks.py B6, B7).
+
+Pair ceiling: 28.5, measured on the cut pack: the cracker drops what no key places (the spares' messages and the
+replaced heads' rows) and so misses every section and network figure; the response that places both keeps the asks,
+which puts the pair at 83.5 if it also lands the call, the residual risk recorded here.
+Mirror leakage: 0.0 per cent of ask weight kept by the default-path response, which works the asks as the cracker does.
 Measured by: generator/ceiling.py
 
-| Ask | Cracker (lands the call, executes every filed rule, runs the hygiene battery) | Mirror (stops at R2) | Verdict |
+| Ask figure | Golden | Cracker (lands the call, executes every filed rule, runs the hygiene battery) | Verdict |
 |---|---|---|---|
-| A unavailable hours (31) | keeps 30 (drops the unregistered spare at SD-171) | keeps 30 | keeps |
-| B freezing hours (31) | keeps 31 | keeps 31 | keeps |
-| B ice hours (31) | keeps 31 | keeps 31 | keeps |
+| Unavailable hours, each section and the network (5) | 851 to 1,391 by section, 4,572 network | 81 to 113 more by section | misses |
+| Freezing hours, each section and the network (5) | 21,386 to 33,118 by section, 108,859 network | 1,140 to 2,326 fewer by section | misses |
+| Ice hours, each section and the network (5) | 4,644 to 7,186 by section, 23,442 network | 251 to 496 fewer by section | misses |
+
+## Leak sweep rulings
+
+leak.py on the final cut (target.zip e7332860), verdict REVIEW, no LEAK; the main thread's rulings:
+
+- Answer figures in `sdhd_ess_atmospheric_2026_27.csv` (two lines): harmless; each is two adjacent export fields read
+  across a comma (a wind speed in tenths of a metre a second beside a wind direction), not a figure the export states.
+- Design-note vocabulary in the QC configuration, Schedule B and the standard (three lines): harmless; the shared words
+  are reading, district, network, vendor and October, and none of the three documents names a pool, a co-movement, a
+  pool mate or any reference a withheld reading is judged against.
+- Ranking artifacts, the pre-season checks and the site register (two lines): harmless on the main thread's read; the
+  checks list each probe's October difference from the reference thermometer and the register each site's place and
+  sensors, neither on the re-tune question. Left to the stage 4 reader to confirm cold.
 
 ## Architecture 1 record (spent 2026-10-31)
 
@@ -298,3 +327,6 @@ Measured by: generator/ceiling.py
 - 2026-11-01, architecture 2 build: the spatial test first ran on every reading the export eventually held. A real QC run at 20 minutes past the hour sees only what the server holds, and with that change every withheld floor reading has a delivered mate in the export (checks.py G13). Planned work was booked at the mountain sites, and the long telemetry dropouts were kept inside the RPU's 96-hour buffer.
 - 2026-11-01, architecture 2 build: two-decimal shares were dropped for one decimal. Across the median-based family the hours are identical; a mean of the stations sharing the air, or each hour's fitted lapse, moves a few hours at named stations (checks.py G7, G8) and never the set.
 - 2026-11-01, architecture 2 asks: the Schedule B unavailable hours and the pavement freezing and ice hours, as built, measured a pair ceiling of 82.9 (generator/ceiling.py). Every device except the shop spare is executed from a filed rule or a register sheet. The asks return to stage 2 (supplemental-stumping) before stage 4's judge; the main call and its pack stay as built.
+- 2026-11-01, architecture 2 asks: per-station Schedule B, freezing and ice hours measured a pair ceiling of 82.9: every device except the shop spare was executed from a filed rule or a register sheet, and a device at a handful of stations leaves the other per-station figures to the cracker. The asks became section and network totals on two reconstructions, a shop spare in every section and a replaced head in every section, measured at 28.5.
+- 2026-11-01, architecture 2 build: shares at one decimal were dropped for whole per cents, because each hour's fitted lapse moves SD-318 by 9 hours and a mean of the stations sharing the air moves four stations. The station air's noise key was drawn (key 35) so that no re-tuned station sits within 12.8 hours of a whole-per-cent edge.
+- 2026-11-01, architecture 2 build: the pavement export's MST clock was dropped for local civil time with the zone. Read as civil time, the MST stamps put the winter's first hour outside it, so the freezing and ice hours did not agree under every clock reading.

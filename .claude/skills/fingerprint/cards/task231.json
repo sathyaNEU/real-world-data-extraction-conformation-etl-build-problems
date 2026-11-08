@@ -71,7 +71,7 @@
    "Lynn Dalton",
    "Robyn Reeves",
    "Kathy Phillips",
-   "David Glenn"
+   "Joshua Howard"
   ]
  },
  "deliverables": [
@@ -85,7 +85,9 @@
  "stump": "A competent analyst judges each withheld air-temperature reading against the hour's elevation-adjusted neighbours, the lapse rate refitted across the network each hour, counts a reading as right only where it sits within the check's tolerance of that line, and re-tunes only the deepest-pooling basin floors; the step that lands there is reading a basin floor against stations outside its own basin's cold pool, so the floors of the shallower basins, whose still-night readings agree with the other stations in their own pool, keep withholding more than 2 per cent of their winter hours unremarked.",
  "mechanism_source": "design_note",
  "differentiation": {
-  "task309": "task309 reads an intervention's effect class by class of event intensity under a filed criterion that the carried effect reproduce the record; this build judges a quality check's rejections against the units sharing the reading's own still-air pool, the pool found from how the units' records move together, with no effect, intensity scale or filed reproduction criterion"
+  "task309": "task309 reads an intervention's effect class by class of event intensity under a filed criterion that the carried effect reproduce the record; this build judges a quality check's rejections against the units sharing the reading's own still-air pool, the pool found from how the units' records move together, with no effect, intensity scale or filed reproduction criterion",
+  "task229": "task229 recovers the bias a convex conversion puts into a published daily value when an upstream controller cycles the input inside each day, a date called by forecasting; this build judges a quality check's withheld readings against the stations sharing each reading's air, a station set under a monitoring standard. Both carry a physical verification record, and here it only confirms the probes in October (the back-test the textbook route passes) and decides nothing",
+  "task245": "task245 counts the exceedance periods a recorder loses in its own heaviest periods, attributing a count to the shared driver behind the gaps; this build has no recorder gap and no exceedance count: each withheld reading is right or wrong by the air the stations sharing its cold pool measured that hour, the pool read from how their records move together"
  },
  "lineage": [
   {
@@ -139,7 +141,7 @@
   }
  ],
  "lineage_shells": [],
- "notes": "architecture 2 re-root at batch 1; architecture 1 moved to the lineage as spent",
+ "notes": "architecture 2 re-root at batch 1; architecture 1 moved to the lineage as spent Surface 2026-11-01 promoted task229 (pairing and calibration form), task245 (pairing and decision type) and task309 (gap, pattern and Gate G); each answered under differentiation.",
  "registered": "2026-11-01T00:33:44Z",
  "shell": {
   "question form": "which",

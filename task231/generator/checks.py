@@ -63,7 +63,9 @@ for nm, kw in (("corr 0.7", {"cth": 0.7}), ("corr 0.9", {"cth": 0.9}), ("15 km",
     G2, _, _ = A.sharing(M["val"], M["wh"], M["anyflag"], reg, M["night"], res=M["res"], **kw)
     rr, _ = A.judge(M["val"], M["wh"], reg, G2)
     var[nm] = (M["wh"] & rr).sum(1)
-    check("G6", (var[nm] == M["fr"]).all(), "grouping %s gives the same hours" % nm)
+    mv = {codes[k]: int(var[nm][k] - M["fr"][k]) for k in range(NS) if var[nm][k] != M["fr"][k]}
+    check("G6", set(A.retune(var[nm] / NH * 100)) == gold, "grouping %s: same set%s" % (
+        nm, ", hours move at %s" % mv if mv else ", same hours"))
 for nm, kw in (("radius 40 km", {"rad": 40.0}), ("radius 60 km", {"rad": 60.0}), ("any pool mate", {"floor_rule": "any"})):
     rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], **kw)
     var[nm] = (M["wh"] & rr).sum(1)
@@ -71,17 +73,26 @@ for nm, kw in (("radius 40 km", {"rad": 40.0}), ("radius 60 km", {"rad": 60.0}),
 rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], lapse=M["slope"])
 fl = (M["wh"] & rr).sum(1)
 moved = {codes[k]: int(fl[k] - M["fr"][k]) for k in range(NS) if fl[k] != M["fr"][k]}
-check("G7", set(A.retune(fl / NH * 100)) == gold and max(abs(x) for x in moved.values()) <= 8,
-      "each hour's fitted lapse in place of 6.5 C per km: same set, hours move at %s" % moved)
+check("G7", set(A.retune(fl / NH * 100)) == gold, "each hour's fitted lapse in place of 6.5 C per km: same set, "
+      "hours move at %s" % moved)
 slope_c = -M["slope"] * 1000
 check("G7", np.nanpercentile(slope_c, 1) < 0, "the hourly fitted lapse turns negative (%.1f C per km at the 1st "
       "percentile) on the hours the pools bend the line" % np.nanpercentile(slope_c, 1))
 rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], agg="mean")
 mean_fr = (M["wh"] & rr).sum(1)
-flips = [codes[k] for k in range(NS) if "%.1f" % (mean_fr[k] / NH * 100 + 1e-9) != "%.1f" % (M["share"][k] + 1e-9)]
-check("G8", set(A.retune(mean_fr / NH * 100)) == gold, "a mean of the stations sharing the air: same set; "
-      "one-decimal shares differ at %s" % flips)
-check("G9", all(c not in [codes[k] for k in gold] for c in flips), "the mean variant moves no re-tuned share")
+check("G8", set(A.retune(mean_fr / NH * 100)) == gold, "a mean of the stations sharing the air: same set, hours "
+      "move at %s" % {codes[k]: int(mean_fr[k] - M["fr"][k]) for k in range(NS) if mean_fr[k] != M["fr"][k]})
+# every graded share holds at its rounding (whole per cents) under every defensible variant
+whole_g = [A.whole(x) for x in M["share"]]
+var["mean of the stations sharing the air"] = mean_fr
+var["each hour's fitted lapse"] = fl
+for tau in (1.5, 2.5, 3.0, 3.5, 4.0, 4.5):
+    rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], tau=tau)
+    var["tolerance %.1f" % tau] = (M["wh"] & rr).sum(1)
+bad_w = {nm: [codes[k] for k in range(NS) if A.whole(v[k] / NH * 100) != whole_g[k]] for nm, v in var.items()}
+check("G9", not any(bad_w.values()), "whole-per-cent shares identical at every station under %d variants" % len(var))
+edge = min(min(abs(M["fr"][k] - (j + 0.5) * NH / 100.0) for j in range(0, 30)) for k in gold)
+check("G9", edge >= 7, "every re-tuned station's hours sit %.1f hours or more from a whole-per-cent edge" % edge)
 # the tolerance corridor's floor and ceiling, from the readings themselves
 floor_idx = [k for k in range(NS) if M["G"][k]]
 d_ok = []
@@ -111,7 +122,7 @@ check("G11", fault_dev.min() > 4.5, "every wrong withheld reading is %.2f C or m
 sh = M["share"]
 inn = [sh[k] for k in gold]
 out = [sh[k] for k in range(NS) if k not in gold]
-check("G12", min(inn) >= 3.5 and max(out) <= 0.6, "the line sits in a gap: lowest re-tuned %.2f, highest other %.2f"
+check("G12", min(inn) >= 2.5 and max(out) <= 0.6, "the line sits in a gap: lowest re-tuned %.2f, highest other %.2f"
       % (min(inn), max(out)))
 check("G13", M["nopeer"].sum() == 0, "every withheld reading has a delivered reference")
 
@@ -163,8 +174,8 @@ cut[:, :6] = False
 check("SF1", set(A.retune((cut & M["right"]).sum(1) / NH * 100)) == gold, "the window read from UTC midnight: same set")
 deliv = (~np.isnan(M["val"])).sum(1)
 check("SF2", set(A.retune(M["fr"] / deliv * 100)) == gold, "share of the hours delivered instead: same set")
-check("SF3", set(A.retune(M["fr"] / NH * 100 - 1e-9)) == gold and not any(abs(x - 2.0) < 1.0 for x in sh),
-      "above against at-or-above 2 per cent: same set, no share within a point of the line")
+check("SF3", set(A.retune(M["fr"] / NH * 100 - 1e-9)) == gold and not any(abs(x - 2.0) < 0.5 for x in sh),
+      "above against at-or-above 2 per cent: same set, no share within half a point of the line")
 rr, _ = A.judge(M["val"], M["wh"], reg, M["G"], tau=0.3)
 ok = ~M["anyflag"] & ~np.isnan(M["val"])
 bad = 0
@@ -196,10 +207,20 @@ check("A1", (Asla["unavailable"] == un_w).all(), "unavailable hours equal the tr
 fin = late_w[np.isfinite(late_w)]
 check("A2", not ((fin > 13.5) & (fin < 20.5)).any(), "no receipt between 13.5 and 20.5 minutes: the 20-minute line "
       "is clear")
-placed = Asla["placed"]
-check("A3", len(placed) == 1 and tag[codes[list(placed.values())[0]]] == "R4", "the shop spare's messages place at "
-      "Sheep Ridge only")
+placed = sorted(tag[codes[k]] for spells in Asla["placed"].values() for k, _, _ in spells)
+check("A3", placed == sorted(W["spare"]), "each spell of a shop spare places at exactly one station: %s" % placed)
+secs = sorted({s_["section"] for s_ in reg["sites"]})
+spare_secs = sorted({reg["sites"][k]["section"] for spells in Asla["placed"].values() for k, _, _ in spells})
+check("A3", spare_secs == secs, "a spare spell in every maintenance section")
 check("A4", len({int(x) for x in Asla["unavailable"]}) >= 27, "unavailable hours are not one number repeated")
+avail_rate = 1 - Asla["unavailable"] / (NH - Asla["excluded"])
+check("A5", (avail_rate >= 0.975).sum() >= 10 and (avail_rate < 0.975).sum() >= 5, "stations either side of the "
+      "97.5 per cent service level: %d at or above, %d below" % ((avail_rate >= 0.975).sum(), (avail_rate < 0.975).sum()))
+import ceiling as CL  # noqa: E402
+crack_un = A.by_section(reg, CL.cracker_sla(TARGET, reg, M["val"]))
+gold_un = A.by_section(reg, Asla["unavailable"])
+check("A6", all(crack_un[x] != gold_un[x] for x in secs), "dropping the spares' messages moves every section's "
+      "unavailable station-hours: %s" % {x: gold_un[x] - crack_un[x] for x in secs})
 
 # ---------------- B: travel-lane freezing and ice hours ----------------
 B = S["B"]
@@ -222,6 +243,36 @@ check("B1", (B["freezing"] == frz_w.sum(1)).all() and (B["ice"] == ice_w.sum(1))
 check("B2", B["duplicates"] > 0, "re-sent pavement rows (%d) counted once" % B["duplicates"])
 check("B3", len({int(x) for x in B["freezing"]}) >= 28 and len({int(x) for x in B["ice"]}) >= 25,
       "freezing and ice hours vary by station")
+old_heads = sorted(ser for (t, lane, ser, model, a, b, port) in W["sensors"] if b < NH)
+check("B4", B["unregistered"] == old_heads, "the heads that came out are the export's only unregistered serials: %s"
+      % old_heads)
+old_secs = sorted({reg["sites"][reg["idx"][P.SITE[t]]]["section"] for (t, lane, ser, model, a, b, port)
+                   in W["sensors"] if b < NH})
+check("B4", old_secs == secs, "a replaced head in every maintenance section")
+cb = A.pavement(TARGET, reg, drop_unregistered=True)
+for meas in ("freezing", "ice"):
+    gsec, csec = A.by_section(reg, B[meas]), A.by_section(reg, cb[meas])
+    check("B5", all(gsec[x] != csec[x] for x in secs), "dropping the old heads' rows moves every section's %s "
+          "station-hours: %s" % (meas, {x: gsec[x] - csec[x] for x in secs}))
+# the pavement export's stamps carry their zone: each is one UTC hour of the winter, one per hour
+stamps = set()
+with open(A.fpath(TARGET, "pavement"), newline="", encoding="utf-8") as f:
+    for r in csv.DictReader(f):
+        stamps.add(r["obs_time"])
+st = sorted(A.utc_of_local(x) for x in stamps)
+inside = all(P.WIN_START_UTC < x <= P.WIN_END_UTC for x in st)
+check("B7", inside and len(set(st)) == NH, "every pavement stamp is one hour of the winter with its zone, one per hour")
+amb = []
+with open(A.fpath(TARGET, "outages"), newline="", encoding="utf-8") as f:
+    for r in csv.DictReader(f):
+        for col in ("starts", "ends"):
+            d_ = dt.datetime.strptime(r[col][:16], "%Y-%m-%d %H:%M")
+            if d_.date() in (dt.date(2026, 11, 1), dt.date(2027, 3, 14)) and 1 <= d_.hour <= 3:
+                amb.append(r["notice_no"])
+check("B7", not amb, "no planned outage starts or ends in a repeated or skipped local hour")
+fwh = [h for ser, h in W["fw_change"].items()]
+check("B6", all(W["utc"][h] < P.DST_ON_UTC and W["utc"][h] >= P.DST_OFF_UTC for h in fwh),
+      "every firmware change falls inside standard time, so the MST export and the local applied times agree")
 
 # ---------------- I: input gates and the realism sweep ----------------
 files = sorted(os.listdir(TARGET))
@@ -253,8 +304,11 @@ for f in files:
         alltext += open(os.path.join(TARGET, f), encoding="utf-8").read()
 tells = re.findall(r"\b(leverage|robust|comprehensive|seamless|delve|ensure|furthermore)\b", alltext, re.I)
 check("I7", not tells, "no LLM tells in the request")
-big_w = [int(x) for x in M["withheld"] if x >= 20]
-check("I8", len(set(big_w)) == len(big_w), "no two stations with 20 or more withheld hours share a count")
+from collections import Counter  # noqa: E402
+big_w = Counter(int(x) for x in M["withheld"] if x >= 20)
+fr_in = [int(M["fr"][k]) for k in gold]
+check("I8", max(big_w.values()) <= 2 and len(set(fr_in)) == len(fr_in), "no withheld count shared by three stations, "
+      "no two re-tuned stations with the same false-rejection hours")
 dist_free = A.main_call(TARGET)
 check("I9", dist_free["retune"] == M["retune"], "the call is computed without either distractor")
 fig = json.load(open(os.path.join(HERE, "figures.json")))

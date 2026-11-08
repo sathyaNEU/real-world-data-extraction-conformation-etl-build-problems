@@ -1,147 +1,290 @@
 {
- "ask_shortfall_bps": {
-  "UK Dynamic Q1": 38.8,
-  "UK Dynamic Q2": 35.4,
-  "UK Dynamic Q3": 32.1,
-  "UK Dynamic Q4": 32.7,
-  "UK Equity Income Q1": 29.3,
-  "UK Equity Income Q2": 35.1,
-  "UK Equity Income Q3": 19.2,
-  "UK Equity Income Q4": 15.1,
-  "UK Mid Cap Growth Q1": 30.0,
-  "UK Mid Cap Growth Q2": 31.0,
-  "UK Mid Cap Growth Q3": 31.3,
-  "UK Mid Cap Growth Q4": 32.5,
-  "UK Smaller Companies Q1": 59.0,
-  "UK Smaller Companies Q2": 61.4,
-  "UK Smaller Companies Q3": 59.8,
-  "UK Smaller Companies Q4": 59.7
- },
- "ask_traded_gbp_m": {
-  "UK Dynamic H1": 620,
-  "UK Dynamic H2": 514,
-  "UK Equity Income H1": 815,
-  "UK Equity Income H2": 463,
-  "UK Mid Cap Growth H1": 171,
-  "UK Mid Cap Growth H2": 147,
-  "UK Smaller Companies H1": 69,
-  "UK Smaller Companies H2": 62
- },
- "call": "MCV",
- "candidates": {
-  "LCQ": {
-   "cost_gbp_m": 1,
-   "gross_gbp_m": 7,
-   "name": "UK Large Cap Quality",
-   "net_gbp_m": 6,
-   "rebalances": 4,
-   "traded_gbp_m": 485
-  },
-  "MCV": {
-   "cost_gbp_m": 4,
-   "gross_gbp_m": 12,
-   "name": "UK Mid Cap Value",
-   "net_gbp_m": 8,
-   "rebalances": 4,
-   "traded_gbp_m": 524
-  },
-  "SCM": {
-   "cost_gbp_m": 15,
-   "gross_gbp_m": 20,
-   "name": "UK Smaller Companies Momentum",
-   "net_gbp_m": 5,
-   "rebalances": 12,
-   "traded_gbp_m": 1211
-  }
- },
+ "call": "BZ",
  "constants": {
-  "adv_sessions": 20,
-  "aum_gbp_m": 400,
-  "pence_per_pound": 100,
-  "vol_sessions": 60
+  "gp_days": 21,
+  "off_days": 183,
+  "per": 1000,
+  "window_days": 60
  },
- "gap_gbp_m": 2,
- "raw": {
-  "cost": {
-   "LCQ": 1.457,
-   "MCV": 4.094,
-   "SCM": 15.298
+ "consultations": {
+  "Clun Valley PCN": {
+   "Q1": {
+    "consultations": 534,
+    "patients": 41601,
+    "rate": 12.8
+   },
+   "Q2": {
+    "consultations": 553,
+    "patients": 41669,
+    "rate": 13.3
+   },
+   "Q3": {
+    "consultations": 560,
+    "patients": 41738,
+    "rate": 13.4
+   },
+   "Q4": {
+    "consultations": 563,
+    "patients": 41883,
+    "rate": 13.4
+   }
   },
-  "net": {
-   "LCQ": 5.903,
-   "MCV": 7.986,
-   "SCM": 4.902
+  "Severn Gorge PCN": {
+   "Q1": {
+    "consultations": 430,
+    "patients": 36023,
+    "rate": 11.9
+   },
+   "Q2": {
+    "consultations": 359,
+    "patients": 36073,
+    "rate": 10.0
+   },
+   "Q3": {
+    "consultations": 469,
+    "patients": 36120,
+    "rate": 13.0
+   },
+   "Q4": {
+    "consultations": 430,
+    "patients": 36252,
+    "rate": 11.9
+   }
   },
-  "shortfall": {
-   "UK Dynamic Q1": 38.7758,
-   "UK Dynamic Q2": 35.4357,
-   "UK Dynamic Q3": 32.0554,
-   "UK Dynamic Q4": 32.7086,
-   "UK Equity Income Q1": 29.3418,
-   "UK Equity Income Q2": 35.0797,
-   "UK Equity Income Q3": 19.188,
-   "UK Equity Income Q4": 15.1446,
-   "UK Mid Cap Growth Q1": 29.9713,
-   "UK Mid Cap Growth Q2": 30.955,
-   "UK Mid Cap Growth Q3": 31.3471,
-   "UK Mid Cap Growth Q4": 32.4793,
-   "UK Smaller Companies Q1": 58.9987,
-   "UK Smaller Companies Q2": 61.3851,
-   "UK Smaller Companies Q3": 59.7861,
-   "UK Smaller Companies Q4": 59.7199
+  "Teme Valley PCN": {
+   "Q1": {
+    "consultations": 541,
+    "patients": 39262,
+    "rate": 13.8
+   },
+   "Q2": {
+    "consultations": 503,
+    "patients": 39225,
+    "rate": 12.8
+   },
+   "Q3": {
+    "consultations": 538,
+    "patients": 39228,
+    "rate": 13.7
+   },
+   "Q4": {
+    "consultations": 483,
+    "patients": 39315,
+    "rate": 12.3
+   }
   },
-  "traded": {
-   "UK Dynamic H1": 620.4346,
-   "UK Dynamic H2": 513.8157,
-   "UK Equity Income H1": 814.9527,
-   "UK Equity Income H2": 462.5127,
-   "UK Mid Cap Growth H1": 170.614,
-   "UK Mid Cap Growth H2": 146.8319,
-   "UK Smaller Companies H1": 69.3466,
-   "UK Smaller Companies H2": 61.9108
+  "Wrekinside Central PCN": {
+   "Q1": {
+    "consultations": 680,
+    "patients": 60695,
+    "rate": 11.2
+   },
+   "Q2": {
+    "consultations": 632,
+    "patients": 60697,
+    "rate": 10.4
+   },
+   "Q3": {
+    "consultations": 643,
+    "patients": 60811,
+    "rate": 10.6
+   },
+   "Q4": {
+    "consultations": 632,
+    "patients": 60933,
+    "rate": 10.4
+   }
+  },
+  "Wrekinside North PCN": {
+   "Q1": {
+    "consultations": 545,
+    "patients": 43594,
+    "rate": 12.5
+   },
+   "Q2": {
+    "consultations": 509,
+    "patients": 43712,
+    "rate": 11.6
+   },
+   "Q3": {
+    "consultations": 513,
+    "patients": 43812,
+    "rate": 11.7
+   },
+   "Q4": {
+    "consultations": 499,
+    "patients": 43907,
+    "rate": 11.4
+   }
   }
  },
- "routes": {
-  "band average (orders)": {
-   "LCQ": 6.86,
-   "MCV": 10.51,
-   "SCM": 12.89
+ "gap": 4,
+ "letters": {
+  "Clun Valley PCN": {
+   "H1": {
+    "letters": 1915,
+    "patients": 41601,
+    "rate": 46.0
+   },
+   "H2": {
+    "letters": 1808,
+    "patients": 41738,
+    "rate": 43.3
+   }
   },
-  "band average (value)": {
-   "LCQ": 5.76,
-   "MCV": 10.13,
-   "SCM": 12.87
+  "Severn Gorge PCN": {
+   "H1": {
+    "letters": 1566,
+    "patients": 36023,
+    "rate": 43.5
+   },
+   "H2": {
+    "letters": 1459,
+    "patients": 36120,
+    "rate": 40.4
+   }
   },
-  "binned": {
-   "LCQ": 5.92,
-   "MCV": 8.04,
-   "SCM": 5.04
+  "Teme Valley PCN": {
+   "H1": {
+    "letters": 1796,
+    "patients": 39262,
+    "rate": 45.7
+   },
+   "H2": {
+    "letters": 1592,
+    "patients": 39228,
+    "rate": 40.6
+   }
   },
-  "flat 10 bps": {
-   "LCQ": 6.88,
-   "MCV": 11.56,
-   "SCM": 18.99
+  "Wrekinside Central PCN": {
+   "H1": {
+    "letters": 2565,
+    "patients": 60695,
+    "rate": 42.3
+   },
+   "H2": {
+    "letters": 2273,
+    "patients": 60811,
+    "rate": 37.4
+   }
   },
-  "golden": {
-   "LCQ": 5.9,
-   "MCV": 7.99,
-   "SCM": 4.9
-  },
-  "pooled with band terms": {
-   "LCQ": 5.92,
-   "MCV": 7.98,
-   "SCM": 4.9
-  },
-  "power by band": {
-   "LCQ": 5.93,
-   "MCV": 8.01,
-   "SCM": 4.97
-  },
-  "sqrt by band": {
-   "LCQ": 5.93,
-   "MCV": 8.01,
-   "SCM": 4.91
+  "Wrekinside North PCN": {
+   "H1": {
+    "letters": 1873,
+    "patients": 43594,
+    "rate": 43.0
+   },
+   "H2": {
+    "letters": 1827,
+    "patients": 43812,
+    "rate": 41.7
+   }
   }
  },
- "runner_up": "LCQ"
+ "pilot": {
+  "AP": {
+   "all": {
+    "n": 160,
+    "off": 64,
+    "pct": 40.0
+   },
+   "practice": {
+    "n": 136,
+    "off": 63,
+    "pct": 46
+   },
+   "specialist": {
+    "n": 24,
+    "off": 1,
+    "pct": 4
+   }
+  },
+  "BZ": {
+   "all": {
+    "n": 300,
+    "off": 69,
+    "pct": 23.0
+   },
+   "practice": {
+    "n": 276,
+    "off": 68,
+    "pct": 25
+   },
+   "specialist": {
+    "n": 24,
+    "off": 1,
+    "pct": 4
+   }
+  },
+  "GB": {
+   "all": {
+    "n": 240,
+    "off": 67,
+    "pct": 27.9
+   },
+   "practice": {
+    "n": 192,
+    "off": 65,
+    "pct": 34
+   },
+   "specialist": {
+    "n": 48,
+    "off": 2,
+    "pct": 4
+   }
+  },
+  "practice_all": {
+   "n": 604,
+   "off": 196
+  },
+  "specialist_all": {
+   "n": 96,
+   "off": 4
+  }
+ },
+ "reviews": {
+  "AP": {
+   "harms": 6.1544,
+   "harms_1": 6,
+   "in_scope": 612,
+   "off": 62.176,
+   "off_10": 60,
+   "specialist_pct": 86,
+   "specialist_share": 0.8578
+  },
+  "BZ": {
+   "harms": 11.9913,
+   "harms_1": 12,
+   "in_scope": 1239,
+   "off": 289.703,
+   "off_10": 290,
+   "specialist_pct": 6,
+   "specialist_share": 0.0613
+  },
+  "GB": {
+   "harms": 8.0961,
+   "harms_1": 8,
+   "in_scope": 1636,
+   "off": 340.698,
+   "off_10": 340,
+   "specialist_pct": 44,
+   "specialist_share": 0.4389
+  }
+ },
+ "rung1": {
+  "AP": {
+   "harms": 24.136,
+   "harms_1": 24
+  },
+  "BZ": {
+   "harms": 11.759,
+   "harms_1": 12
+  },
+  "GB": {
+   "harms": 10.827,
+   "harms_1": 11
+  }
+ },
+ "runner_up": "GB",
+ "third": "AP"
 }

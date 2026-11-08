@@ -48,20 +48,33 @@ def cracker_sla(target, reg, val):
 def main():
     S = A.solve(TARGET)
     M, reg = S["M"], S["reg"]
-    n = len(reg["sites"])
-    gold_a, gold_f, gold_i = S["A"]["unavailable"], S["B"]["freezing"], S["B"]["ice"]
-    ca = cracker_sla(TARGET, reg, M["val"])
-    hits_c = int((ca == gold_a).sum() + (S["B"]["freezing"] == gold_f).sum() + (S["B"]["ice"] == gold_i).sum())
-    total = 3 * n
-    Lc = hits_c / total
+    gold = {"unavailable": A.by_section(reg, S["A"]["unavailable"]),
+            "freezing": A.by_section(reg, S["B"]["freezing"]), "ice": A.by_section(reg, S["B"]["ice"])}
+    cb = A.pavement(TARGET, reg, drop_unregistered=True)
+    crack = {"unavailable": A.by_section(reg, cracker_sla(TARGET, reg, M["val"])),
+             "freezing": A.by_section(reg, cb["freezing"]), "ice": A.by_section(reg, cb["ice"])}
+    hits = total = 0
+    rows = []
+    for k in gold:
+        for sec in gold[k]:
+            total += 1
+            hit = crack[k][sec] == gold[k][sec]
+            hits += hit
+            rows.append((k, sec, gold[k][sec], crack[k][sec], "keeps" if hit else "misses"))
+        total += 1
+        hit = sum(crack[k].values()) == sum(gold[k].values())
+        hits += hit
+        rows.append((k, "network", sum(gold[k].values()), sum(crack[k].values()), "keeps" if hit else "misses"))
+    for r in rows:
+        print("  %-12s %-9s golden %6d cracker %6d %s" % r)
+    Lc = hits / total
     Ls = Lc                                  # the asks are decoupled: the mirror works them as the cracker does
     r = 5.0
     C = 38 + 7 + 55 * Lc
     Sx = r + 7 + 55 * Ls
     pair = (C + Sx) / 2
-    print("ask figures %d; cracker keeps %d (%.1f per cent); mirror keeps %.1f per cent" % (total, hits_c,
+    print("ask figures %d; cracker keeps %d (%.1f per cent); mirror keeps %.1f per cent" % (total, hits,
                                                                                           100 * Lc, 100 * Ls))
-    print("unavailable hours: cracker misses %s" % [reg["sites"][k]["site"] for k in range(n) if ca[k] != gold_a[k]])
     print("landed call %.1f, best miss %.1f, pair ceiling %.1f" % (C, Sx, pair))
     return pair, 100 * Ls
 

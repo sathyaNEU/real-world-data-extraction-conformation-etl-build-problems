@@ -1,59 +1,137 @@
-"""The governing documents: Pinewater EMC's Contractor Safety Performance Standard CS-4, Redbud's Crew Safety
-Recognition Programme (HR-14) and the notice ending it on 31 December 2026."""
-import io
-
-from reportlab import rl_config
-
-rl_config.invariant = 1
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import inch
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+"""The governing documents, as their issuers keep them in Word: Pinewater EMC's Contractor Safety Performance
+Standard CS-4, Redbud's Crew Safety Recognition Programme (HR-14) and the notice ending it on 31 December 2026."""
+import os
+import re
 
 import postprocess as PP
 import world as W
 
-PINE = colors.HexColor("#1B4D3E")
-RED = colors.HexColor("#7A2E1F")
+PINE = "1B4D3E"
+RED = "7A2E1F"
+inch = 1.0
+
+
+class Paragraph:
+    """One paragraph of a document's story: its text (with <b> runs) and its style."""
+
+    def __init__(self, text, style):
+        self.text, self.style = text, style
+
+
+class Table:
+    def __init__(self, rows, colWidths=None):
+        self.rows, self.widths = rows, colWidths or []
+
+    def setStyle(self, *_):
+        pass
+
+
+class TableStyle:
+    def __init__(self, *_):
+        pass
+
+
+class Spacer:
+    def __init__(self, *_):
+        pass
+
+
+class _Colors:
+    @staticmethod
+    def HexColor(h):
+        return h.lstrip("#")
+
+
+colors = _Colors()
 
 
 def _styles(accent):
-    ss = getSampleStyleSheet()
-    return dict(
-        body=ParagraphStyle("b", parent=ss["Normal"], fontName="Helvetica", fontSize=9.8, leading=13.2, spaceAfter=6),
-        head=ParagraphStyle("h", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=10.4, leading=14,
-                            spaceBefore=7, spaceAfter=3, textColor=accent),
-        title=ParagraphStyle("t", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=14.5, leading=18,
-                             spaceAfter=3),
-        small=ParagraphStyle("s", parent=ss["Normal"], fontName="Helvetica-Oblique", fontSize=8.6, leading=11,
-                             spaceAfter=10),
-        cell=ParagraphStyle("c", parent=ss["Normal"], fontName="Helvetica", fontSize=8.8, leading=11),
-    )
+    # size, bold, italic, colour, space before, space after (points)
+    return dict(body=(9.8, False, False, None, 0, 6), head=(10.4, True, False, accent, 7, 3),
+                title=(14.5, True, False, None, 0, 3), small=(8.6, False, True, None, 0, 10),
+                cell=(8.8, False, False, None, 0, 0))
 
 
-def _footer(text):
-    def draw(canvas, doc):
-        canvas.saveState()
-        canvas.setFont("Helvetica", 7.4)
-        canvas.setFillColor(colors.HexColor("#555555"))
-        canvas.drawString(0.9 * inch, 0.6 * inch, text)
-        canvas.drawRightString(letter[0] - 0.9 * inch, 0.6 * inch, "Page %d" % doc.page)
-        canvas.restoreState()
-    return draw
+def _runs(par, text, size, bold, italic, colour):
+    from docx.shared import Pt, RGBColor
+    for i, part in enumerate(re.split(r"</?b>", text)):
+        if not part:
+            continue
+        run = par.add_run(part.replace("&amp;", "&"))
+        run.bold = bold or i % 2 == 1
+        run.italic = italic
+        run.font.size = Pt(size)
+        if colour:
+            run.font.color.rgb = RGBColor.from_string(colour)
 
 
-def _build(path, title, author, story, foot, created, modified):
-    buf = io.BytesIO()
-    doc = SimpleDocTemplate(buf, pagesize=letter, leftMargin=0.9 * inch, rightMargin=0.9 * inch,
-                            topMargin=0.75 * inch, bottomMargin=0.9 * inch, title=title, author=author,
-                            creator=author, producer=author)
-    doc.build(story, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
-    open(path, "wb").write(buf.getvalue())
-    PP.normalize_pdf(path, created, modified)
+def _page_field(par, size):
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+    from docx.shared import Pt
+    run = par.add_run()
+    run.font.size = Pt(size)
+    for kind, text in (("begin", None), (None, "PAGE"), ("end", None)):
+        if kind:
+            fc = OxmlElement("w:fldChar")
+            fc.set(qn("w:fldCharType"), kind)
+            run._r.append(fc)
+        else:
+            it = OxmlElement("w:instrText")
+            it.set(qn("xml:space"), "preserve")
+            it.text = text
+            run._r.append(it)
 
 
-def standard_pdf(path):
+def _build(path, title, author, story, foot, created, modified, revision, minutes, key):
+    """The document as its issuer keeps it in Word: letter page, the story's paragraphs and table, the footer line."""
+    import docx
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+    from docx.shared import Inches, Pt
+    d = docx.Document()
+    st = d.styles["Normal"]
+    st.font.name = "Arial"
+    st.font.size = Pt(9.8)
+    sec = d.sections[0]
+    sec.page_width, sec.page_height = Inches(8.5), Inches(11)
+    sec.left_margin = sec.right_margin = Inches(0.9)
+    sec.top_margin, sec.bottom_margin = Inches(0.75), Inches(0.9)
+    for item in story:
+        if isinstance(item, Paragraph):
+            size, bold, italic, colour, before, after = item.style
+            par = d.add_paragraph()
+            par.paragraph_format.space_before = Pt(before)
+            par.paragraph_format.space_after = Pt(after)
+            _runs(par, item.text, size, bold, italic, colour)
+        elif isinstance(item, Table):
+            t = d.add_table(rows=len(item.rows), cols=len(item.rows[0]))
+            t.style = "Table Grid"
+            for i, row in enumerate(item.rows):
+                for j, cell in enumerate(row):
+                    c = t.rows[i].cells[j]
+                    c.paragraphs[0].text = ""
+                    size, bold, italic, colour, _, _ = cell.style
+                    _runs(c.paragraphs[0], cell.text, size, bold or i == 0, italic, colour)
+                    if i == 0:
+                        sh = OxmlElement("w:shd")
+                        sh.set(qn("w:val"), "clear")
+                        sh.set(qn("w:color"), "auto")
+                        sh.set(qn("w:fill"), "EFE3DF")
+                        c._tc.get_or_add_tcPr().append(sh)
+            for j, w in enumerate(item.widths):
+                for row in t.rows:
+                    row.cells[j].width = Inches(w)
+        elif isinstance(item, Spacer):
+            d.add_paragraph().paragraph_format.space_after = Pt(2)
+    fp = sec.footer.paragraphs[0]
+    _runs(fp, foot + "    Page ", 7.4, False, False, "555555")
+    _page_field(fp, 7.4)
+    d.save(path)
+    PP.normalize_docx(path, author, author, created, modified, revision, minutes, key, title=title, company=author)
+
+
+def standard_doc(path):
     st = _styles(PINE)
     P = lambda t, s="body": Paragraph(t, st[s])
     story = [
@@ -114,10 +192,10 @@ def standard_pdf(path):
     ]
     _build(path, "Contractor Safety Performance Standard CS-4", "Pinewater EMC", story,
            "Pinewater EMC  |  CS-4 Contractor Safety Performance Standard, Revision 3",
-           b"D:20251119143000-05'00'", b"D:20251208091500-05'00'")
+           "2025-11-19T19:30:00Z", "2025-12-08T14:15:00Z", 7, 186, "t130-cs4")
 
 
-def programme_pdf(path):
+def programme_doc(path):
     st = _styles(RED)
     P = lambda t, s="body": Paragraph(t, st[s])
     rows = [["Crew type", "In the programme"], ["Overhead line crews", "Yes"], ["Underground distribution crews", "Yes"],
@@ -156,7 +234,7 @@ def programme_pdf(path):
     ]
     _build(path, "HR-14 Crew Safety Recognition Programme", "Redbud Line Services", story,
            "Redbud Line Services  |  HR-14 Crew Safety Recognition Programme, Revision 2",
-           b"D:20201207101500-05'00'", b"D:20210104163000-05'00'")
+           "2020-12-07T15:15:00Z", "2021-01-04T21:30:00Z", 4, 95, "t130-hr14")
 
 
 def notice_docx(path):

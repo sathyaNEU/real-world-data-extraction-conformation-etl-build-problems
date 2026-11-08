@@ -34,7 +34,8 @@ def table_rows(S):
     out = []
     for k, s in enumerate(reg["sites"]):
         out.append({"site": s["site"], "name": s["name"], "z": int(s["z"]), "withheld": int(M["withheld"][k]),
-                    "fr": int(M["fr"][k]), "share": r1(M["share"][k]), "retune": k in M["retune"],
+                    "fr": int(M["fr"][k]), "share": A.whole(M["share"][k]), "retune": k in M["retune"],
+                    "section": s["section"],
                     "unavailable": int(Asla["unavailable"][k]), "excluded": int(Asla["excluded"][k]),
                     "freezing": int(B["freezing"][k]), "ice": int(B["ice"][k])})
     return out
@@ -54,7 +55,7 @@ def workbook(rows, path):
         c.alignment = Alignment(wrap_text=True, vertical="top")
     for row in ws.iter_rows(min_row=2, min_col=6, max_col=6):
         for c in row:
-            c.number_format = "0.0"
+            c.number_format = "0"
     n = len(rows) + 1
     ws.cell(row=n + 2, column=1, value="Winter 1 October 2026 00:00 to 1 May 2027 00:00 Mountain time (%s hours). "
                                        "A station is re-tuned where its share is above 2 per cent (Data Quality "
@@ -64,19 +65,23 @@ def workbook(rows, path):
     ws.row_dimensions[1].height = 45
     ws.freeze_panes = "A2"
     ws2 = wb.create_sheet("Service and pavement")
-    hdr2 = ["Site code", "Site name", "Unavailable hours (Schedule B)", "Excluded hours (planned outages)",
-            "Freezing hours (travel lane)", "Ice hours (travel lane)"]
+    hdr2 = ["Maintenance section", "Stations", "Unavailable station-hours (Schedule B)",
+            "Excluded station-hours (planned outages)", "Freezing station-hours (travel lane)",
+            "Ice station-hours (travel lane)"]
     ws2.append(hdr2)
-    for r in rows:
-        ws2.append([r["site"], r["name"], r["unavailable"], r["excluded"], r["freezing"], r["ice"]])
+    secs = sorted({r["section"] for r in rows})
+    for sec in secs:
+        rr = [r for r in rows if r["section"] == sec]
+        ws2.append([sec, len(rr), sum(r["unavailable"] for r in rr), sum(r["excluded"] for r in rr),
+                    sum(r["freezing"] for r in rr), sum(r["ice"] for r in rr)])
     for c in ws2[1]:
         c.font = Font(bold=True)
         c.alignment = Alignment(wrap_text=True, vertical="top")
-    ws2.append(["Total", None, sum(r["unavailable"] for r in rows), sum(r["excluded"] for r in rows),
+    ws2.append(["Network", len(rows), sum(r["unavailable"] for r in rows), sum(r["excluded"] for r in rows),
                 sum(r["freezing"] for r in rows), sum(r["ice"] for r in rows)])
     for c in ws2[ws2.max_row]:
         c.font = Font(bold=True)
-    for i, w in enumerate([10, 22, 15, 15, 14, 12]):
+    for i, w in enumerate([20, 10, 18, 18, 18, 16]):
         ws2.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = w
     ws2.row_dimensions[1].height = 45
     ws2.freeze_panes = "A2"
@@ -97,7 +102,7 @@ def chart(rows):
     ax.text(P.RETUNE_LINE_PCT + 0.15, 1.0, "re-tune line, 2 per cent", fontsize=7.5, color="#333333")
     for yy, r in zip(y, order):
         if r["share"] > 0:
-            ax.text(r["share"] + 0.12, yy, "%.1f" % r["share"], va="center", fontsize=7)
+            ax.text(r["share"] + 0.12, yy, "%d" % r["share"], va="center", fontsize=7)
     ax.set_yticks(y)
     ax.set_yticklabels(["%s %s" % (r["site"], r["name"]) for r in order], fontsize=7)
     ax.set_xlim(0, max(vals) * 1.12)
@@ -155,13 +160,13 @@ def memo(rows, S, path):
     doc.add_paragraph(
         "Under section 3 of the data quality standard a station goes on the list when the spatial test withheld a "
         "right air temperature in more than 2 per cent of the winter's hours. These stations were at %s per cent; "
-        "the highest of the other stations was %.1f per cent, so none is close to the line." % (
-            ", ".join("%.1f" % x["share"] for x in sorted(ret, key=lambda x: x["site"])), below[0]["share"]))
+        "every other station rounds to %d per cent, so none is close to the line." % (
+            ", ".join("%d" % x["share"] for x in sorted(ret, key=lambda x: x["site"])), below[0]["share"]))
     doc.add_paragraph(
         "Most of what the test withheld at these stations was the basins' cold air on still nights. Halvorsen "
         "Meadow, Teller Junction and Bitterbrush Flat read together, as do Cutler Meadow and Ransom Creek, and "
         "their cold readings were the air: each withheld reading agrees with the other floor stations of its "
-        "basin that hour. Kimball Grade, Echo Grade and Ptarmigan Grade sit above those pools; the test's estimate "
+        "basin that hour. Larkspur Grade, Antimony Grade and Ptarmigan Grade sit above those pools; the test's estimate "
         "for them leans on the cold floor stations close by, and their withheld readings agree with the passes "
         "and benches around them carried to their elevation. A check against the regional lapse line, or "
         "against the HRRR forecast, calls the floor readings wrong, because neither has the pools in it.")
@@ -179,7 +184,7 @@ def memo(rows, S, path):
         cells = t.add_row().cells
         for k, (c, v) in enumerate(zip(cells, ["%s %s" % (x["site"], x["name"]), "{:,}".format(x["z"]),
                                                "{:,}".format(x["withheld"]), "{:,}".format(x["fr"]),
-                                               "%.1f" % x["share"]])):
+                                               "%d" % x["share"]])):
             _cell(c, v, right=k > 0)
     p = doc.add_paragraph()
     r = p.add_run("Share: winter hours with a false rejection by the spatial test, as a percentage of the %s hours "
@@ -188,8 +193,9 @@ def memo(rows, S, path):
     doc.add_picture(chart(rows), width=Cm(15.5))
     tot_un = sum(x["unavailable"] for x in rows)
     doc.add_paragraph(
-        "The workbook has every station's review line, its Schedule B unavailable hours (%s across the network) "
-        "and its travel-lane freezing and ice hours for the section reports." % format(tot_un, ","))
+        "The workbook has every station's review line, and each maintenance section's Schedule B unavailable "
+        "hours (%s station-hours across the network) and its travel-lane freezing and ice hours for the section "
+        "reports." % format(tot_un, ","))
     p = doc.add_paragraph()
     r = p.add_run("Sources: ESS atmospheric export and Quillan QC withheld log, winter 2026/27; RWIS site register; "
                   "central server message log, modem register and planned outage notices; pavement sensor "
@@ -204,13 +210,17 @@ def figures(rows, S):
     ret = [r for r in rows if r["retune"]]
     below = sorted([r for r in rows if not r["retune"]], key=lambda r: -r["share"])
     f = {"retune_sites": [r["site"] for r in ret], "retune_count": len(ret), "winter_hours": P.NH,
-         "winter_hours_s": format(P.NH, ","), "highest_below": "%.1f" % below[0]["share"],
-         "line": "2", "stations": {}}
+         "winter_hours_s": format(P.NH, ","), "highest_below": "%d" % below[0]["share"],
+         "line": "2", "stations": {}, "sections": {}}
     for r in rows:
-        f["stations"][r["site"]] = {"share": "%.1f" % r["share"], "withheld": r["withheld"], "fr": r["fr"],
-                                    "unavailable": r["unavailable"], "excluded": r["excluded"],
-                                    "freezing": "{:,}".format(r["freezing"]), "ice": r["ice"],
+        f["stations"][r["site"]] = {"share": "%d" % r["share"], "withheld": r["withheld"], "fr": r["fr"],
                                     "z": "{:,}".format(r["z"])}
+    for sec in sorted({r["section"] for r in rows}):
+        rr = [r for r in rows if r["section"] == sec]
+        f["sections"][sec] = {"unavailable": "{:,}".format(sum(r["unavailable"] for r in rr)),
+                              "excluded": sum(r["excluded"] for r in rr),
+                              "freezing": "{:,}".format(sum(r["freezing"] for r in rr)),
+                              "ice": "{:,}".format(sum(r["ice"] for r in rr))}
     f["total_unavailable"] = format(sum(r["unavailable"] for r in rows), ",")
     f["total_freezing"] = format(sum(r["freezing"] for r in rows), ",")
     f["total_ice"] = format(sum(r["ice"] for r in rows), ",")

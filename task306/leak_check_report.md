@@ -1,31 +1,31 @@
 # leak check, task306
 
-**Verdict: REVIEW.** 13 files read, 20 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 18 files read, 30 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: orders, momentum, participation, average, candidate, executions, trades, sentence, decisive, golden, warranty, market, rebalances, export, pounds, smaller, standard, population, candidates, carries, turnover, determinism, carried, register, storms
+Stump terms swept: letter, take-off, sentence, started, provenance, carried, carries, specification, antipsychotic, golden, practice, architecture, population, second, checks, specialist, programme, decisive, million, outside, product, antipsychotics, reflex, receipt, orders
 
-## 1 file names (REVIEW 1)
-- **REVIEW** `research_backtests_2027_candidates.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `deprescribing_review_protocols_2026.pdf`: carries 12 of 17 distinctive words of the committed call: 'Run review B, benzodiazepines and Z-drugs in people aged 65 and over: it would take about 290 patients off their medicin'
+- **REVIEW** `medicines_safety_programme_2027.pdf`: carries 15 of 17 distinctive words of the committed call: 'Run review B, benzodiazepines and Z-drugs in people aged 65 and over: it would take about 290 patients off their medicin'
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `ic_capital_allocation_policy_2026.pdf`: 5 of 25 stump-paragraph terms appear (candidate, executions, trades, rebalances, standard); read whether the document names the move
-- **REVIEW** `tca_standard_rev4.pdf`: 6 of 25 stump-paragraph terms appear (orders, participation, average, pounds, standard, register); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 4)
+- **REVIEW** `clun_valley_pilot_close_out_2026.pdf`: 4 of 25 stump-paragraph terms appear (antipsychotic, practice, checks, antipsychotics); read whether the document names the move
+- **REVIEW** `deprescribing_review_protocols_2026.pdf`: 5 of 25 stump-paragraph terms appear (antipsychotic, practice, checks, programme, antipsychotics); read whether the document names the move
+- **REVIEW** `medicines_safety_programme_2027.pdf`: 8 of 25 stump-paragraph terms appear (letter, specification, antipsychotic, practice, programme, outside); read whether the document names the move
+- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "A short paper for the federation's board, medicines_safety_review_2027.pdf, should recommend the review to run, name the runner-up and the gap, chart for each review the patients it would take off their medicine beside t"
 
 ## 6 ranking artifacts (REVIEW 1, INFO 1)
-- **REVIEW** `research_backtests_2027_candidates.xlsx`: names 4 of 7 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `trading_account_register.csv`: names 3 of 7 answer-set candidates; confirm it does not rank them on the decision question
+- **REVIEW** `emergency_admissions_falls_65plus_2025-2026.csv`: names 5 of 5 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `member_practice_register_2026.csv`: names 5 of 5 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 11 prompt gate (REVIEW 1)
-- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 37% of 196 prompts (cap 30%); reword at the role level, not the verb
+## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
-
-## 3 answer figures in the pack (clean)
 
 ## 5 announcements (clean)
 
@@ -35,44 +35,84 @@ Stump terms swept: orders, momentum, participation, average, candidate, executio
 
 ## 9 dates after the setting (clean)
 
+## 11 prompt gate (clean)
 
 ## Solver's-eye read
 
-Architecture 4, read 1 on target.zip 2ac88df8 (isolated Sonnet reader, a fresh copy of prompt.txt and target/ only),
-before the FIX_NOW repair.
+One isolated reader (Sonnet, medium effort), prompt.txt and the unzipped target.zip 0bacf975 only, 2026-11-08. It read the
+prompt, the three PDFs and the three small CSVs in full and sampled the large files. Verdict: no leak.
 
-1. Decisive step: no sentence announces it; the nearest is IC-07 section 2's estimand (a candidate's expected alpha at
-   a size is its gross alpha less the expected cost a year of trading its rebalances at that size), which gives no
-   method.
-2. Ranking file: none; the research workbook carries gross alpha, tracking error and information ratio only, before
-   cost.
-3. Helping file: none; the TCA standard's term table is a standard's glossary and the security master's corporate
-   action notes are data.
-4. Answer figure or name: none; the gross alphas are context.
-5. Population sentences: IC-07 section 2 files the rebalances of the twelve months to 30 November 2026, scaled to the
-   capital and traded in full on the rebalance day, costed at the TCA standard's shortfall from the desk's own
-   executions; their literal result is the golden's population.
-6. What decides: an analytical choice, the cost of trading GBP 400 million estimated from the desk's much smaller
-   executions, which needs a size-dependent cost model the pack does not prescribe; the re-created orders, the block
-   allocations, pence against pounds and the account mapping are Layer 1.
+1. Decisive step named: none. It quoted the specification's 3.3 (each patient's chance of being off the medicine six
+   months after review times the table 1 rate, summed over the patients in scope) and 3.2 (the population), and said
+   nothing filed says which off-rate to carry to patients not yet reviewed. It read the close-out's section 3 (no
+   practice, age group or sex differed from its review's overall rate by more than chance) as nudging toward one pooled
+   rate per review: that is the pilot's own measured result and the default path's step 3, not the decisive step.
+2. A file ranking the candidates: none. The close-out's 40.0, 23.0 and 27.9 per cent are the pilot's own six-month
+   rates and rank no review by harm avoided across the federation.
+3. A file existing only to help the analyst: it named the protocols, the specification and the close-out. Ruled
+   harmless: each is a document the federation keeps for its own work (the searches, the schedule agreed with the
+   ICB, the pilot's report to the board), and none describes a column or how the files join.
+4. A figure or name reading as the answer: none.
+5. The literal reading: the patients registered outside Clun Valley who meet the protocol on 31 December 2026, every
+   one reviewed; the first year from April 2027 at rates per 100 patient-years; expected patients off and expected
+   serious harms, summed over patients; reviews A, B and C compared on harm avoided; left open, how to estimate the
+   off-probability for unreviewed patients. This is the design note's estimand row.
+6. The deciding kind: an analytical choice, which off-probability to carry to unreviewed patients and whether the
+   pilot's rates transfer. It did not name who started the medicine. It called the close-out's sentence on the 53
+   re-issued patients a mild pointer to the definition of off, which the specification's 3.4 files.
 
-Read 2 on target.zip 7f2aba02, after the repair changed IC-07 section 2, the TCA standard's section 3, the ESG list
-and the data.
+The three REVIEW lines: all harmless, the same rulings as the design note's Stage 4 section.
 
-1. Decisive step: none; IC-07 section 2 states the comparison, not the step.
-2. Ranking file: none (gross alpha only: momentum 5.05, mid-cap value 3.02, large-cap quality 1.84 per cent).
-3. Helping file: none.
-4. Answer figure or name: none.
-5. Population sentences: IC-07 section 2 as in read 1, the cost source narrowed to the desk's executions in stocks of
-   the candidate's index band; literal execution gives the golden's population.
-6. What decides: an analytical choice, the participation-dependent cost within each band carried to GBP 400 million;
-   an analyst who applies the desk's average shortfall files momentum, and no sentence announces the step.
+Machine-generated tells it listed, each measured on the cut and ruled:
+- Practice codes M80 to M89, two practices closed on 1 April 2025: the register's merger (Layer 1), dated at the
+  financial year's start; harmless.
+- Invented trust, ICB and place names: the fiction; harmless.
+- Clinical-system consultation times on a 15-minute grid, ids prefixed by the practice code: 7,482 of 9,301 times sit
+  on the quarter hour (booked slots) and 1,819 do not; ids within a practice step by 1 to 978 (median 54), the
+  practice system numbering every consultation and the extract keeping the pharmacists', and do not follow date
+  order; harmless.
+- Hub slot starts on the quarter hour: a booking system's slots; harmless.
+- Smooth list growth: monthly changes run from minus 35 to plus 36 patients and 26 per cent of them are falls;
+  harmless. The first-quarter falls peak is winter's and is not in every network (Wrekinside Central's 2026 Q1 sits
+  below its Q2); harmless.
+- PDFs without a logo or reference: the specification carries its version, date and owner and the close-out its
+  date and author; harmless.
+- The close-out's "No serious incidents were reported": a pilot report's patient-safety line; harmless.
+- The group session register lists every attendee per session: what an attendance register is; harmless.
 
-Sweep lines: the research workbook's Notes sheet is Research's own methodology note, harmless; IC-07 and the TCA
-standard name the estimand and define shortfall, participation and volatility without a cost-versus-size method,
-harmless; the workbook ranks on gross alpha only, harmless. The TCA standard's consolidation-day and 60-session rules
-read as the desk's own measurement convention in the standard's definitional voice (mild, not a leak).
+### Read 2, after the stage 4 fix
 
-Realism: the email's header and quoted-printable wrapping, the GBX and GBP units, the BACKUP-RECOVERY orders, the block
-allocations and the re-used account code read as the organisation's own systems; the mild tells (one-per-row tenfold
-consolidations, synthetic-sounding issuer names on the ESG list, tidy commission tiers) give nothing away.
+One isolated reader (Sonnet, medium effort), prompt.txt and the unzipped target.zip ea8155d7 only, 2026-11-08, after
+the specification's section 4.3 gained its count-once sentence. Verdict: no leak.
+
+1. Decisive step named: none. It quoted the specification's 3.3 and said no filed sentence says how to estimate the
+   chance off from the pilot; it read the close-out's sections 2 and 3 as nudging toward the overall pilot rates (the
+   default path).
+2. A file ranking the candidates: none.
+3. A file existing only to help the analyst: none; the close-out and the protocols read as ordinary organisational
+   documents.
+4. A figure or name reading as the answer: none.
+5. The literal reading: the specification's 3.2 and 3.3 with the protocols; not filed, how to estimate the
+   probability of being off. This is the design note's estimand row.
+6. The deciding kind: mostly an analytical choice, how to estimate the probability of being off from the pilot. It
+   did not name who started the medicine. It noted that the scope and the 3.3 sum are stated rules, which they are:
+   the stump sits in the estimate they leave open.
+
+The three REVIEW lines: all harmless, as in read 1.
+
+Machine-generated tells it listed, ruled:
+- Pseudonyms as 10-character hexadecimal in every file, and system ids with prefixes: a linkage service's pseudonyms
+  and each system's own numbering, which steps by varying gaps (consultations 1 to 978 apart within a practice);
+  harmless.
+- One postcode district per network and 5 to 7 practices per network: a rural federation's networks are drawn by
+  geography; harmless.
+- The falls extract rectangular with smooth list sizes: a quarterly extract by network; harmless.
+- The ePACT2 summary's label "0408010 Control of epilepsy (gabapentinoids)" is not the BNF's wording: corrected in
+  the generator to "0408010 Control of the epilepsies: gabapentin and pregabalin", the paragraph's BNF name with the
+  substances the line counts. A declared distractor that no figure reads.
+- The close-out's tables sum and its "smallest p-value was 0.21": counts add up, and the sentence reports the tests
+  the table rests on; harmless.
+- Three one-page PDFs from LibreOffice Writer with one author and footer style: the federation's own template;
+  harmless.
+- dm+d codes such as 39778911000001102: the UK drug extension's form (namespace 1000001, partition 10, check digit);
+  harmless.

@@ -1,96 +1,93 @@
-"""task118 submission.md, written from figures.json (every figure emitted, none typed)."""
-import datetime as dt
+"""submission.md, every figure from figures.json."""
+import params as P
 
-ORDER = ("Home Battery Network", "Peak Time Rewards", "Cool Credit", "Business Demand Partners")
-MONTH = {"2026-06": "June", "2026-07": "July", "2026-08": "August", "2026-09": "September"}
-
-
-def _day(s):
-    d = dt.date.fromisoformat(s)
-    return "%d %s %d" % (d.day, d.strftime("%B"), d.year)
+LN = {"N": "Crossmoor line", "E": "Ambrey line", "S": "Holm Ferry line"}
 
 
-def _kw(x, nd):
-    return ("%%.%df" % nd) % x
+def n(v):
+    return "{:,}".format(int(v))
 
 
 def write(path, fig):
-    mw, u, pu = fig["mw"], fig["units"], fig["per_unit_kw_fourth_day"]
-    r0 = fig["ladder"]["R0 ex post, every event"]
-    a = fig["ask_a"]
-    fd = [_day(x) for x in fig["fourth_days"]["Cool Credit"]]
-    lines = []
-    lines += ["## Tags", "",
-              "**Domain:** Energy Systems & Utilities (generation capacity planning).",
-              "**Analytical objective:** Opportunity Sizing & Decision Support.", ""]
-    lines += ["## 1. Final Recommendation", "",
-              "**The USD 3.2 million expansion line should go to the Home Battery Network, which adds %d MW to the "
-              "2027 accredited capacity against %d MW for Peak Time Rewards, the runner-up.** The deciding figure is "
-              "each programme's 18:00 reduction on the fourth consecutive event day, where the design year's peak "
-              "hour falls. Not Cool Credit, which leads on the record's average event at %d MW but adds %d MW in "
-              "that hour; not Business Demand Partners, at %d MW."
-              % (mw["Home Battery Network"], mw["Peak Time Rewards"], round(r0["Cool Credit"]), mw["Cool Credit"],
-                 mw["Business Demand Partners"]), ""]
-    lines += ["## 2. Critical Components", "",
-              "1. The system peak hour of the design year, the hour beginning 18:00 MST on 23 July 2027, is the "
-              "**fourth** consecutive weekday OP-7 calls.",
-              "2. The budget buys **{:,}** batteries, **{:,}** rebate customers, **{:,}** thermostat premises or "
-              "**{:,}** commercial sites.".format(u["Home Battery Network"], u["Peak Time Rewards"], u["Cool Credit"],
-                                                  u["Business Demand Partners"]),
-              "3. Accredited capacity added: Home Battery Network **%d MW**, Peak Time Rewards **%d MW**, Cool Credit "
-              "**%d MW**, Business Demand Partners **%d MW**." % tuple(mw[p] for p in ORDER), ""]
-    am = fig["ask_b_months"]
-    cm = fig["ask_c_months_whole"]
-    lines += ["## 3. Step-by-Step Solution", "",
-              "1. Took the hour of highest forecast load in appendix_b_design_year_2027.csv (the hour beginning "
-              "18:00 on 23 July 2027) and applied OP-7's trigger (a weekday whose forecast high reaches 110F) to "
-              "the design year's daily highs: 20 to 23 July are called, so the peak hour is the fourth event day "
-              "in a row.",
-              "2. Rebuilt each event date's run day from dr_event_log_2024-2026.csv as consecutive calendar days "
-              "with an event: the record's fourth days are %s, %s and %s." % tuple(fd),
-              "3. Read each programme's reduction per enrolled unit in the hour beginning 18:00 MST: holdout less "
-              "treatment mean kWh in ridgeway_cool_credit_panel_2024-2026.csv (UTC less seven hours), holdout less "
-              "alerted mean kW in ridgeway_peak_time_rewards_2024-2026.csv, the mean verified site reduction in "
-              "ridgeway_business_demand_partners_2024-2026.csv, and discharge over enrolled batteries in "
-              "brightwell_fleet_event_summary_2024-2026.csv under the 3.0 kW setting of schedule 2.",
-              "4. Averaged each over its fourth days (%s kW a Cool Credit premise, %s kW a rebate customer, %s kW a "
-              "site, %s kW a battery) and multiplied by the whole units dr_expansion_costs_2027.xlsx's all-in costs "
-              "buy: the Home Battery Network %d MW, Peak Time Rewards %d, Cool Credit %d, Business Demand Partners %d."
-              % (_kw(pu["Cool Credit"], 3), _kw(pu["Peak Time Rewards"], 4), _kw(pu["Business Demand Partners"], 1),
-                 _kw(pu["Home Battery Network"], 2), mw["Home Battery Network"], mw["Peak Time Rewards"],
-                 mw["Cool Credit"], mw["Business Demand Partners"]),
-              "5. Counted, for each 2026 event day, the premises in cool_credit_enrolments_cis_2026-10-16.csv "
-              "enrolled that day with a thermostat ready at 23:00 UTC under OP-7 section 6: the enrolled serial or "
-              "a device in halvern_device_registry_2026-10-16.json at the same address once both are normalised, "
-              "registered and not retired by then, its last row in halvern_status_changes_2026.csv ONLINE, or "
-              "IDLE reported after the firmware 6.0 push of 6 July 2026.",
-              "6. Dropped exact repeats from brightwell_dispatch_records_2026.csv, added each battery's record hours "
-              "for an event (the MST date of the dispatch start), counted a premise in "
-              "battery_interconnection_register_2026-10-16.csv once per event when any of its batteries reached "
-              "three hours, and paid USD 15 an event in event order up to USD 255.",
-              "7. Kept the latest submitted row per meter and month in arroyo_nominations_2026.csv for the "
-              "utility's meters, those in cbmu_commercial_meters_2026-10-16.csv, and summed nominated kW by month.",
-              "8. Recommended the Home Battery Network, %d MW ahead of Peak Time Rewards."
-              % (mw["Home Battery Network"] - mw["Peak Time Rewards"]), ""]
-    lines += ["## 4. Deliverable Answers", "", "### dr_capacity_note_2027.docx", "",
-              "1. Recommendation: expand the Home Battery Network with the USD 3.2 million.",
-              "2. Accredited capacity each programme's expansion adds in the 2027 system peak hour, whole "
-              "megawatts:"]
-    for p in ORDER:
-        lines.append("   - %s: %d MW" % (p, mw[p]))
-    lines += ["3. Runner-up: Peak Time Rewards.",
-              "4. A bar chart of each programme's megawatts sits under the table on page 1 of the note.", "",
-              "### dr_programme_audit_2026.csv", "",
-              "5. Cool Credit enrolled premises with a thermostat online at 16:00, each 2026 event day, whole "
-              "premises:"]
-    for d, v in a.items():
-        lines.append("   - %s: {:,}".format(v) % _day(d))
-    lines.append("6. Home Battery Network incentive owed by 2026 event month, nearest dollar:")
-    for m, v in am.items():
-        lines.append("   - %s: USD {:,}".format(v) % MONTH[m])
-    lines.append("7. Home Battery Network premises that reached the season cap: {:,}".format(fig["ask_b_capped"]))
-    lines.append("8. Business Demand Partners nominated capacity by month, whole kilowatts:")
-    for m, v in cm.items():
-        lines.append("   - %s 2026: {:,} kW".format(v) % MONTH[m])
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(lines) + "\n")
+    st = fig["stations_r100"]
+    order = sorted(fig["stations"], key=lambda c: -fig["stations"][c])
+    pick, ru = fig["pick"], fig["runner_up"]
+    others = [c for c in order if c not in (pick, ru)]
+    g = fig["gates"]
+    rp = fig["repay_gbp"]
+    L = []
+    L.append("## Tags")
+    L.append("")
+    L.append("**Domain:** Urban & Regional Science (optimization: siting one platform dispatch team on a rail network).")
+    L.append("**Analytical objective:** Opportunity Sizing & Decision Support.")
+    L.append("")
+    L.append("## 1. Final Recommendation")
+    L.append("")
+    L.append("**Site the 2027 platform dispatch team at %s: it takes %s passenger-minutes of lateness a weekday off "
+             "the network's trains, %s more than %s's %s.** Not %s, which removes the most overrun minutes on its own "
+             "trains but whose units turn round with time to spare and pass almost none of it on; not Ambrey Parkway, "
+             "whose "
+             "longest dwells fall on the park-and-ride extras, whose units do not work again until the evening."
+             % (pick, n(st[pick]), n(fig["gap"]), ru, n(st[ru]), ru))
+    L.append("")
+    L.append("## 2. Critical Components")
+    L.append("")
+    L.append("1. %s saves **%s** passenger-minutes per weekday across the network's weekday trains" % (pick, n(st[pick])))
+    L.append("2. %s saves **%s** passenger-minutes per weekday" % (ru, n(st[ru])))
+    L.append("3. The other shortlisted stations save %s" % ", ".join("%s **%s**" % (c, n(st[c])) for c in others))
+    L.append("")
+    L.append("## 3. Step-by-Step Solution")
+    L.append("")
+    L.append("1. Took the valuation from dispatch_team_brief_2027.docx section 3: passenger lateness on every weekday "
+             "passenger train on the %d autumn 2026 weekdays as they ran, each passenger's minutes after the booked "
+             "arrival where they leave the train, with the team removing three fifths of each train's dwell over its "
+             "booked dwell at its station for trains booked to depart there from 06:30 up to 19:30." % fig["weekdays"])
+    L.append("2. Joined each weekday's calls in train_running_autumn_2026.csv to working_timetable_autumn_2026.xlsx on "
+             "headcode and TIPLOC, and weighted each train's arrival lateness at every station by its alighters in "
+             "passenger_census_2026-10-13.csv, matched through station_register.csv.")
+    L.append("3. Replayed each weekday with the team at each shortlisted station in turn: a train leaves that station "
+             "earlier by three fifths of its overrun but never before its booked departure, keeps every later "
+             "section's recorded running time, and leaves each later station at its booked time or its replayed "
+             "arrival plus the dwell it recorded, whichever is later.")
+    L.append("4. Followed each unit through its day by the running record's unit numbers: no working that left its "
+             "origin late left sooner than four minutes after its unit's arrival, so a working that left late exactly "
+             "four minutes after that arrival leaves four minutes after the unit's replayed arrival instead, not "
+             "before its booked time, and the unit's later workings are replayed the same way.")
+    L.append("5. Averaged the passenger lateness taken off over the %d weekdays: %s." %
+             (fig["weekdays"], ", ".join("%s %s" % (c, n(st[c])) for c in order)))
+    L.append("6. Gateline ask: differenced each array's cumulative counters in gateline_readings_2026-10-12_to_16.csv "
+             "over 13 October 2026 in BST, adding %s across a wrap, resuming a restarted controller from the 02:00 "
+             "reading it restored, and counting a tidal array's entries-counter passages in its exit-only hours as "
+             "people leaving." % n(fig["constants"]["counter_wrap"]))
+    L.append("7. Delay Repay ask: summed every approved payment row in delay_repay_claims_extract_2027-01-15.csv for "
+             "journeys to or from RVC, appeal top-ups under the same claim_ref included; matched each claim to the train "
+             "leaving its stated origin at its booked departure and calling at its destination, or the other way round "
+             "where none does (a return ticket's claim names the ticket's stations); dated a claim whose journey date is "
+             "the day it was first submitted, and whose train did not reach the destination 15 minutes late that day, "
+             "by the last earlier weekday its train did; kept the weekdays from 7 September to 27 November 2026 and "
+             "banded each claim by its train's lateness at the destination in the running record.")
+    L.append("8. %s gets the team: %s passenger-minutes a weekday, %s ahead of %s." % (pick, n(st[pick]), n(fig["gap"]), ru))
+    L.append("")
+    L.append("## 4. Deliverable Answers")
+    L.append("")
+    L.append("### dispatch_team_siting_2027.xlsx")
+    L.append("")
+    L.append("1. Weekday saving by shortlisted station, passenger-minutes to the nearest 100:")
+    for c in order:
+        L.append("   - %s: %s" % (c, n(st[c])))
+    L.append("2. Pick %s (%s); runner-up %s (%s); gap %s passenger-minutes." % (pick, n(st[pick]), ru, n(st[ru]), n(fig["gap"])))
+    L.append("3. Passengers through the gates at each gated shortlisted station on Tuesday 13 October 2026:")
+    for s in P.GATED:
+        L.append("   - %s: entered %s; left %s" % (s, n(g[s]["entered"]), n(g[s]["left"])))
+    L.append("4. Delay Repay compensation paid, weekday journeys to or from Ravelstoke Central, 7 September to "
+             "27 November 2026, pounds:")
+    for ln in P.LINES:
+        L.append("   - %s: 15 to 29 minutes £%s; 30 to 59 minutes £%s; 60 minutes or more £%s" %
+                 (LN[ln], n(rp["%s|15 to 29" % ln]), n(rp["%s|30 to 59" % ln]), n(rp["%s|60 or more" % ln])))
+    L.append("")
+    L.append("### lateness_saved_by_station.png")
+    L.append("")
+    L.append("5. Ranked horizontal bar chart of every shortlisted station's weekday saving, %s highlighted at the top." % pick)
+    L.append("")
+    with open(path, "w") as fh:
+        fh.write("\n".join(L))

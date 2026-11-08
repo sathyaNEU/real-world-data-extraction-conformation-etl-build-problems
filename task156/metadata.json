@@ -1,138 +1,119 @@
 {
  "task": "task156",
- "decision": "Whether the Ngaio Road subdivision can connect to the PS03 Riverbank Road pump station in 2027 within the station's consented wet weather overflows, or must wait for the storage upgrade",
+ "decision": "The councils in the 2027 bargaining round at which the branch applies for protected action ballot orders, for ballots opening 1 March 2027, a ballot authorising action only if half the roll votes",
  "deliverables": [
-  "ps03_ngaio_road_connection_2027.xlsx",
-  "council_report_ngaio_road_2027.docx",
-  "replay_overflows_2004-2023.png"
+  "pab_2027_turnout_forecast.xlsx",
+  "pab_2027_recommendation_bcom.docx"
  ],
- "domain": "physical-environmental-sciences",
+ "domain": "political-science-public-policy",
  "objective": "forecasting",
  "distractor_files": [
-  "target/rauwhero_wwtp_inlet_daily_2024-2026.csv",
-  "target/ps03_pump_work_orders_2024-2026.csv"
+  "target/council_workforce_returns_2026.csv",
+  "target/member_survey_2024_results.xlsx"
  ],
- "as_of": "2026-11-04",
+ "as_of": "2026-11-03",
  "files": [
   {
-   "file": "target/building_consents_2023-2026.csv",
-   "source": "Council building consent register extract, 2023 to 2026",
+   "file": "target/bargaining_round_2027.xlsx",
+   "source": "LSU Victoria Branch 2027 bargaining round tracker, 31 October 2026",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 496
+   "rows": 24
   },
   {
-   "file": "target/council_electricity_sites_2026-10.csv",
-   "source": "Council electricity retailer site list, October 2026",
+   "file": "target/council_workforce_returns_2026.csv",
+   "source": "Councils' workforce returns to the branch under the agreements' information clauses, 30 June 2026",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 12
+   "rows": 30
   },
   {
-   "file": "target/kahuwera_lines_outage_notices_2024-2026.csv",
-   "source": "Lines company outage notices for the council's ICPs, 2024 to 2026",
+   "file": "target/delegate_election_return_2026.xlsx",
+   "source": "LSU Victoria Branch returning officer's return of the July 2026 worksite delegate elections",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 27
+   "rows": 233
   },
   {
-   "file": "target/krc_consent_auth-2024-0418_network_overflows.pdf",
-   "source": "Kahuwera Regional Council discharge permit AUTH-2024-0418, granted 18 March 2024",
+   "file": "target/delegate_register_2018-2026.xlsx",
+   "source": "LSU Victoria Branch delegate register: workplace delegates by term, 2018-20 to 2024-26, kept by the organising coordinator",
+   "licence": "Constructed for this task; no third-party data; free to use with the task.",
+   "rows": 897
+  },
+  {
+   "file": "target/lsu_dues_and_remittances_procedure_2025.pdf",
+   "source": "LSU Victoria Branch, Dues and remittances: finance procedure FP-04, revised July 2025",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
    "rows": null
   },
   {
-   "file": "target/krc_groundwater_72_1043_daily_2004-2026.csv",
-   "source": "Kahuwera Regional Council level export, bore 72_1043 Rauwhero Terrace, daily, 2004 to 31 October 2026",
-   "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 8340
-  },
-  {
-   "file": "target/krc_rainfall_1187_15min_2026_provisional.csv",
-   "source": "Kahuwera Regional Council telemetry, KRC 1187, 15-minute rainfall for 2026 to 31 October, provisional",
-   "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 29184
-  },
-  {
-   "file": "target/krc_rainfall_1187_hourly_2004-2025.csv",
-   "source": "Kahuwera Regional Council hydrometric archive, climate station Rauwhero at Treatment Plant (KRC 1187), hourly rainfall 2004 to 2025",
-   "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 192864
-  },
-  {
-   "file": "target/overflow_monitor_sms_log_2024-2026.csv",
-   "source": "Council SMS gateway log of the engineered overflow monitors' messages, 2024 to 31 October 2026",
-   "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 512
-  },
-  {
-   "file": "target/ps03_pump_work_orders_2024-2026.csv",
-   "source": "PS03 maintenance work orders, 2024 to 2026",
-   "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 38
-  },
-  {
-   "file": "target/ps03_riverbank_rd_scada_15min_2024-2026.csv",
-   "source": "PS03 Riverbank Road SCADA historian export, 15-minute values, 1 January 2024 to 31 October 2026, pulled 3 November 2026",
-   "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 99360
-  },
-  {
-   "file": "target/ps03_riverbank_rd_station_data_sheet.pdf",
-   "source": "PS03 pump station data sheet, revision 4, 7 November 2023",
+   "file": "target/lsu_pab_guide_for_officials_2025.pdf",
+   "source": "LSU Victoria Branch, Protected action ballots: a guide for branch officials, March 2025",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
    "rows": null
   },
   {
-   "file": "target/ps03_storage_upgrade_project_brief.docx",
-   "source": "PS03 storage augmentation project brief, version 2, 12 August 2026",
+   "file": "target/member_survey_2024_results.xlsx",
+   "source": "LSU Victoria Branch member survey, September 2024: results by council",
+   "licence": "Constructed for this task; no third-party data; free to use with the task.",
+   "rows": 30
+  },
+  {
+   "file": "target/membership_register_extract_2026-11-02.csv",
+   "source": "LSU Victoria Branch membership system: every member since 1 July 2019 with employer, worksite and dates, extract of 2 November 2026",
+   "licence": "Constructed for this task; no third-party data; free to use with the task.",
+   "rows": 27075
+  },
+  {
+   "file": "target/online_vote_invitations_2022-2025.csv",
+   "source": "The branch's online voting service: invitations and votes for the branch's online votes, March 2022 to October 2025",
+   "licence": "Constructed for this task; no third-party data; free to use with the task.",
+   "rows": 54892
+  },
+  {
+   "file": "target/online_votes_2022-2025.csv",
+   "source": "The branch's online voting service: the votes' titles and voting windows, 2022 to 2025",
+   "licence": "Constructed for this task; no third-party data; free to use with the task.",
+   "rows": 4
+  },
+  {
+   "file": "target/organiser_diary_export_2025-26.csv",
+   "source": "LSU Victoria Branch organisers' shared calendar export, July 2025 to June 2026",
+   "licence": "Constructed for this task; no third-party data; free to use with the task.",
+   "rows": 9000
+  },
+  {
+   "file": "target/payroll_remittance_advices_2025-26.csv",
+   "source": "LSU Victoria Branch finance: council payroll remittance advices for union dues received July 2025 to July 2026",
+   "licence": "Constructed for this task; no third-party data; free to use with the task.",
+   "rows": 804
+  },
+  {
+   "file": "target/regional_forum_signin_2025-26.csv",
+   "source": "LSU Victoria Branch regional delegates' forum sign-in sheets, 2025-26",
+   "licence": "Constructed for this task; no third-party data; free to use with the task.",
+   "rows": 420
+  },
+  {
+   "file": "target/tallyhouse_pab_declarations_2021.pdf",
+   "source": "Tallyhouse Ballot Services Pty Ltd, declarations of protected action ballot results, 2021 round",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
    "rows": null
   },
   {
-   "file": "target/rating_information_2026-10-31.csv",
-   "source": "Council rating information database snapshot, 31 October 2026",
-   "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 4640
-  },
-  {
-   "file": "target/rauwhero_wastewater_assets_2026-10.xlsx",
-   "source": "Rauwhero District Council asset management system extract: wastewater gravity mains, manholes, pump stations and overflow monitors, 30 October 2026",
-   "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 1718
-  },
-  {
-   "file": "target/rauwhero_wwtp_inlet_daily_2024-2026.csv",
-   "source": "Rauwhero wastewater treatment plant operator's daily inlet meter readings, 2024 to 2026",
-   "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 1034
-  },
-  {
-   "file": "target/rdc_code_of_practice_s5_wastewater_2022.pdf",
-   "source": "Rauwhero District Council Code of Practice for Land Development and Subdivision, Section 5 Wastewater, July 2022",
+   "file": "target/tallyhouse_pab_declarations_2023-24.pdf",
+   "source": "Tallyhouse Ballot Services Pty Ltd, declarations of protected action ballot results, 2023-24 round",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
    "rows": null
   },
   {
-   "file": "target/rdc_water_metering_billing_policy_2023.pdf",
-   "source": "Rauwhero District Council Water Metering and Billing Policy, July 2023",
+   "file": "target/western_shires_payroll_statements_2025-26.pdf",
+   "source": "Western Shires Payroll Services, statements of union deductions by client council, 2025-26",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
    "rows": null
   },
   {
-   "file": "target/rm26-0187_ngaio_road_servicing_report.pdf",
-   "source": "Ngaio Road subdivision RM26-0187 wastewater servicing report, 21 September 2026",
+   "file": "target/worksites_2026-11.csv",
+   "source": "LSU Victoria Branch worksite list with the codes in use before the July 2024 membership system migration, November 2026",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": null
-  },
-  {
-   "file": "target/water_accounts_2026-11.csv",
-   "source": "Council water billing system: accounts for the PS03 catchment's meters, November 2026",
-   "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 3350
-  },
-  {
-   "file": "target/water_meter_reads_2023-2026.csv",
-   "source": "Council water billing system: meter readings for the PS03 catchment's meters, October 2023 to October 2026",
-   "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 44846
+   "rows": 464
   }
  ]
 }

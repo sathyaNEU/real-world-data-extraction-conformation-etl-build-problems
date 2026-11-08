@@ -24,16 +24,25 @@ FILES = {
     "hours": "timesheet_hours_by_pay_period_2021-2026.csv",
     "calendar": "payroll_calendar_2021-2027.csv",
     "plan": "work_plan_hours_2027.xlsx",
-    "standard": "pinewater_contractor_safety_standard_cs4.pdf",
-    "programme": "crew_safety_recognition_programme.pdf",
+    "standard": "pinewater_contractor_safety_standard_cs4.docx",
+    "programme": "crew_safety_recognition_programme.docx",
     "notice": "recognition_programme_2027_notice.docx",
     "nearmiss": "good_catch_reports_2025-2026.csv",
     "subs": "subcontractor_monthly_safety_2026.csv",
 }
 CLS_LEGACY = {"FA": "First aid", "MT": "Medical treatment", "RW": "Restricted work", "DA": "Days away"}
 BODY = ["Hand/fingers", "Back", "Knee", "Ankle/foot", "Shoulder", "Eye", "Wrist", "Head/face", "Arm", "Leg"]
+BODY_P = [0.27, 0.19, 0.09, 0.10, 0.09, 0.07, 0.06, 0.05, 0.04, 0.04]
 NATURE = ["Laceration", "Strain/sprain", "Contusion", "Foreign body", "Fracture", "Puncture", "Burn", "Insect sting",
           "Dermatitis", "Heat illness"]
+NATURE_P = [0.26, 0.31, 0.12, 0.06, 0.04, 0.06, 0.03, 0.05, 0.03, 0.04]
+
+
+def _label(rng, labels, names, p):
+    """A body part or nature drawn as injuries fall (strains and hands most): the case stream's own draw is still taken,
+    so every other value in the record is what it was, and the label comes from its own stream."""
+    rng.integers(len(names))
+    return names[int(labels.choice(len(names), p=p))]
 
 
 def _rng(*keys):
@@ -57,6 +66,7 @@ def mdY(d):
 def derive(S):
     """Turn the truth into the records each system holds."""
     rng = _rng("derive")
+    labels = _rng("derive", "labels")
     crews = S["crews"]
     logged = [i for i in S["injuries"] if i["reported"] and W.HIST0 <= i["date"] <= W.HIST1]
     logged.sort(key=lambda i: (i["date"], i["emp"], i["cls"]))
@@ -74,7 +84,7 @@ def derive(S):
         mm = int(rng.integers(0, 12)) * 5
         c = dict(emp=i["emp"], date=i["date"], loc=i["work_district"], time="%02d:%02d" % (hh, mm), job=job, cls=i["cls"],
                  unit=i["unit"], district=i["district"], type=i["type"], code=i["code"], mutual_aid=i["mutual_aid"],
-                 body=BODY[int(rng.integers(len(BODY)))], nature=NATURE[int(rng.integers(len(NATURE)))],
+                 body=_label(rng, labels, BODY, BODY_P), nature=_label(rng, labels, NATURE, NATURE_P),
                  cycle_day=i["cycle_day"], ci=i.get("ci"))
         # first entries: some medical-treatment cases go in as first aid and are revised once the clinic visit
         # is known (more often late in a crew's count); some restricted-work cases become days away when the
@@ -366,7 +376,8 @@ def plan_hours(S):
     plan = {}
     for (dist, t), h in sorted(base.items()):
         tot = round(h * W.PLAN_GROWTH[dist] / 100) * 100
-        q = [round(tot * s / 100) * 100 for s in W.QUARTER_SHARE]
+        prof = [a + b for a, b in zip(W.QUARTER_PROFILE[t], W.DISTRICT_LEAN[dist])]
+        q = [round(tot * s / sum(prof) / 100) * 100 for s in prof]
         q[-1] = tot - sum(q[:-1])
         plan[(dist, t)] = q
     return plan

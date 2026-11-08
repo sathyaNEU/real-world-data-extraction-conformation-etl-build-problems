@@ -129,7 +129,7 @@ def write(target, world):
         ws.column_dimensions[col].width = w
     p = os.path.join(target, FILES["entries"])
     wb.save(p)
-    PP.normalize_ooxml(p, "Melissa Chen", "Melissa Chen", "2026-05-04T23:12:00Z", "2026-11-28T05:41:00Z",
+    PP.normalize_ooxml(p, "Pamela Sullivan", "Pamela Sullivan", "2026-05-04T23:12:00Z", "2026-11-28T05:41:00Z",
                        excel=True)
     # the centres register
     rows = []

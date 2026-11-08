@@ -2,7 +2,48 @@
 
 ## Draw
 
-Architecture 2, drawn 2026-11-01 at the batch 1 re-root (architecture 1 is recorded below and in `## Tried and
+Architecture 3, drawn 2026-11-01 after architecture 2's emissions-inventory cell was yielded to task468 v6 (architectures
+1 and 2 are recorded below and in `## Tried and rejected`).
+
+| Field | Value |
+|---|---|
+| Card | `.claude/skills/fingerprint/cards/task456.json`, architecture v3, registered 2026-11-01T02:10:11Z after a fresh pull; `guard.py check` WARN only (the old prompt's shell, replaced by this architecture's prompt; two older first names; government_agency's frequency; identity_resolution's semantics risk, answered by the analyst test) |
+| Pairing | `survey-research-official-statistics` / `census-register-administrative-data-quality` / Data Extraction & Conformation (ETL) |
+| Shape | 03, a bridge between two totals: the registry's active records to the persons it insures |
+| Decision | `quantity_figure`: the authority's insured persons at 31 December 2026, the count the province's 2027-28 capitation round funds |
+| Gate G / strategy | `etl_conformance` / `identity_resolution`: the people the 2026 renewal campaign registered twice are counted, never listed, as the excess of same-name, same-birthday pairs over coincidence |
+| Layer 2 | `estimation_fit`, `own:chance-coincidence-excess-of-same-name-same-birthday-pairs` |
+| Gaps / pattern / generators | population (the file is not the thing); none; G10 (cross-dimensional duplication), G17 (statistical rigour) |
+| Forum / forcing event / org | the provincial ministry's capitation round (`funder_or_donor`, `budget_or_appropriation`), `government_agency` (the regional health authority) |
+| Role | the authority's registry and decision support manager (`finance_controller`); people drawn with `guard.py names --geo Canada --seed 456`: Susan Hess, Lee Villegas, Monica Gonzalez |
+| Context artifact | `filed_model`: the platform vendor's migration reconciliation report |
+
+**The world.** A fictional regional health authority keeps its region's insured persons registry. In 2026 it moved the
+registry to a new platform and ran a card renewal campaign: residents renewed online with their health number, and the
+renewal check matched the number, the birth date and the surname on file. Residents whose surname had changed since their
+last card (marriage, divorce, a corrected spelling) failed the check, and many then applied as new residents and received
+a second health number under the new surname, while the old record stayed active until its card expired. The province
+funds the authority's primary care networks by capitation on the insured persons at 31 December, each person counted once.
+
+**Data-native sentence.** The renewal check rejected exactly the residents whose surname had changed, so the people the
+registry now holds twice share a given name, a birth date and a sex across two surnames, and so do the strangers whom
+chance gives the same name and birthday, in numbers each birth year's own given-name mix fixes.
+
+**Abstraction sentence (the test that would re-root the draw).** Against the nearest drivers on file (task137 v3 at 0.07,
+task468 v5 and task251 v3 at 0.05): none shares "a count of entities held twice, read as an excess of coincidences over the
+rate the population's own composition fixes". task157 v2 scales sampled pair defects by the square of a sampling fraction;
+task455 counts continuing identifiers through a recorded continuity; task471 completes an undercount from two counts'
+overlap. The sentence cannot be written against an approved build.
+
+**Sources, one line each.** `stumping` 1.1 (the deciding quantity is one no shipped source lists; an inclusion or exclusion
+over a second source has no safe filing, so the decisive step is an estimate) and 1.4 (the survivor anatomy); the client's
+census-register rigor card on gross and net error; the birthday coincidence count (pairs sharing a birth date among n
+people of one birth year, n(n-1)/2 over the year's days, split by given name) as the field's estimation organ; the
+province's capitation schedule as the filed WHAT.
+
+## Architecture 2 record (abandoned 2026-11-01 at stage 2)
+
+Architecture 2, drawn 2026-11-01 and abandoned the same day at stage 2 before any data was cut (`## Tried and
 rejected`).
 
 | Field | Value |
@@ -265,3 +306,4 @@ Pair ceiling: 39.9 (planning weights 38 / 7 / 55 with the call and the eight sha
 - 2026-11-01, architecture 2 draw, the cell: the directive excluded general statistics (spent for this slot), physical and environmental sciences, healthcare delivery and survey research (this batch's recent ETL builds), which on the taxonomy leaves education's item-response-theory-test-equating as the only ETL task type, and that cell is closed by task464 architecture 4's enumeration plus task450 (anchor drift, non-equivalent groups), task474 v7 (retest gain), task488 (adaptive calibration) and task482 architecture 11 (plausible values); healthcare delivery's payment-claims cell carries no live build of this batch (task482 v14 and v15 and task468 v4 are spent lineage), so it was screened as the honest alternative before any card was filed.
 - 2026-11-01, architecture 2 draw, payment claims screened on paper and set aside, each with the rule it dies to: a readmission rate judged with member-clustered rather than binomial variance (a filed level leaves only a variance, and the call retags as anomaly detection beside task468 v4's shell); a one-time retroactive rate catch-up on a paid triangle's calendar diagonal (an artefact inflating the raw development is Layer 1, and the effect clears the 1.15 floor only as the triangle's largest spike); recoveries arriving on an audit clock (task451's non-stationary development); the stop-loss terminal liability from claimant-level completion (task445 v2's held subset read from a second body's log); NTSV births by parity from linked birth certificates (19c4263b: a filed population another source lists makes the link rule application); an audit sample post-stratified by processing route or month (the stratum is a column one join away); a vendor PEPM, prompt-pay or appeals queue (the swap test reads any queue); site-of-care, incident-to and implant carve-outs (each a field read or a filed rule once linked); pharmacy rebates by tier or channel (an unprinted rate recovered from aggregates, or task482 v16's shared-meter attribution in other nouns); stock against flow for chronic services (task182 architecture 6's watched-absence start, the WHAT screen); and plan-paid seasonality on each group's own deductible cycle (time_semantics, banned against task130 in the window, and the partial year's missing months make it a forecast).
 - 2026-11-01, architecture 2 draw, education screened and set aside: examinee choice among optional sections anchored on the compulsory part (task450's non-equivalent groups through a shared subset), testlet dependence in true-score equating against a filed bank scale (task281's open family, and recalibrating at passage level leaves the bank's scale), speededness and not-reached items (an anchor-drift screen catches them), interrupted sessions read from the incident log (task468 v5's set-aside subset recorded in a separate register), and a withdrawn or rekeyed item (a filed rule).
+- 2026-11-01, architecture 2 abandoned at stage 2, before any data was cut: the packaging converter's VOC emissions (the bypass read as the solvent above the oxidizer's air capacity) sat in the emissions-inventory ETL cell that task468 architecture 6 registered 93 seconds later and built to stage 4 first, and that cell also carries task482 v16 shipped today, so task456 yielded it; the driver was not re-skinned into another cell (the guard reads this slot's own lineage and the strategy is natural only where a physical setpoint ties the two units), and architecture 3 redraws the decisive step in survey research's register-quality cell.

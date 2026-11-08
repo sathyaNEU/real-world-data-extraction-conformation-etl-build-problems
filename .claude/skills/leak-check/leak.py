@@ -648,11 +648,72 @@ def sweep_metadata(target, rep):
     flagged = [l for l in out.split("\n")
                if re.search(r"python-docx|openpyxl|reportlab|matplotlib|pypdf|LibreOffice|Microsoft|outside the band|out-of-band timestamp", l, re.I)
                and not re.search(r"\bno (producer|writer|out-of-band)|clean\b", l, re.I)]
+    # A PDF is written by an office application (LibreOffice Writer or Word export) and names it in Producer and
+    # Creator, as a real office's PDF does. The portal fails a PDF that names a programming library (ReportLab),
+    # a PDF whose Producer or Creator is the issuing organisation, and a placeholder Subject.
+    honest = [l for l in flagged if ".pdf" in l and re.search(r"libreoffice|microsoft", l, re.I)
+              and not re.search(r"reportlab|python-docx|openpyxl|matplotlib|pypdf|outside the band|out-of-band", l, re.I)]
+    flagged = [l for l in flagged if l not in honest]
     if flagged:
         for l in flagged[:15]:
             rep.add("10 container metadata", "LEAK", "-", l.strip()[:200])
     else:
         rep.add("10 container metadata", "INFO", "-", "audit reported no writer signature (%d lines)" % len(out.split("\n")))
+    for l in honest[:15]:
+        rep.add("10 container metadata", "INFO", "-", "PDF names the office application that wrote it: " + l.strip()[:160])
+    tool = re.compile(r"microsoft|word|excel|acrobat|adobe|distiller|libreoffice|openoffice|writer|quartz|"
+                      r"ghostscript|chrom|skia|cairo|print|pdf", re.I)
+    try:
+        from pypdf import PdfReader
+    except ImportError:
+        PdfReader = None
+    import zipfile as _zf
+    for root, _, files in os.walk(target):
+        for fn in sorted(files):
+            if fn.lower().endswith(".parquet"):
+                # the footer's created_by names the writing library ("parquet-cpp-arrow version ..."); the portal
+                # fails it, and ARROW:schema in the key-value metadata says the same
+                try:
+                    import pyarrow.parquet as _pq
+                    md = _pq.ParquetFile(os.path.join(root, fn)).metadata
+                except Exception:
+                    continue
+                if md.created_by:
+                    rep.add("10 container metadata", "LEAK", fn,
+                            "parquet created_by names %r; leave it out of the footer" % md.created_by[:60])
+                if md.metadata and any(k.startswith(b"ARROW:") or k == b"pandas" for k in md.metadata):
+                    rep.add("10 container metadata", "LEAK", fn, "parquet key-value metadata carries the Arrow or pandas schema")
+                continue
+            if fn.lower().endswith((".xlsx", ".docx", ".pptx")):
+                # Office writes AppVersion as a two-part release ("16.0300"); openpyxl's "3.1" is a known tell,
+                # and so is its two-line app.xml with no TitlesOfParts
+                try:
+                    app = _zf.ZipFile(os.path.join(root, fn)).read("docProps/app.xml").decode("utf-8", "replace")
+                except Exception:
+                    continue
+                v = re.search(r"<AppVersion>([^<]*)</AppVersion>", app)
+                if v and not re.fullmatch(r"\d\d\.\d{4}", v.group(1)):
+                    rep.add("10 container metadata", "LEAK", fn,
+                            "docProps/app.xml AppVersion is %r, not an Office release (openpyxl writes 3.1)" % v.group(1))
+                if fn.lower().endswith(".xlsx") and "TitlesOfParts" not in app:
+                    rep.add("10 container metadata", "REVIEW", fn, "docProps/app.xml has no TitlesOfParts, which Excel always writes")
+                continue
+            if not fn.lower().endswith(".pdf") or PdfReader is None:
+                continue
+            try:
+                m = PdfReader(os.path.join(root, fn)).metadata or {}
+            except Exception:
+                continue
+            if (m.get("/Subject") or "").strip() == "(unspecified)":
+                rep.add("10 container metadata", "LEAK", fn, "Subject is the library's placeholder (unspecified)")
+            for k in ("/Producer", "/Creator"):
+                v = (m.get(k) or "").strip()
+                if re.search(r"reportlab|fpdf|python|pypdf", v, re.I):
+                    rep.add("10 container metadata", "LEAK", fn,
+                            "%s names a programming library (%r); export the PDF from an office application" % (k[1:], v[:60]))
+                elif v and not tool.search(v):
+                    rep.add("10 container metadata", "LEAK", fn,
+                            "%s names %r, not the application that wrote the PDF" % (k[1:], v[:60]))
 
 
 def sweep_prompt(prompt_text, rep, task_name="", legacy=False):

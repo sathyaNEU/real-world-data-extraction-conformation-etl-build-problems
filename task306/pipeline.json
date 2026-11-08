@@ -1,62 +1,130 @@
 {
  "task": "task306",
  "status": "SHIPPED",
- "domain": "quantitative-finance / portfolio-construction-risk (client quantitative-finance)",
+ "domain": "pharmacology-pharmacoepidemiology-safety / benefit-risk-assessment (client pharmacology-pharmacoepidemiology-safety)",
  "objective": "opportunity-sizing-decision",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-31",
- "stump": "A competent analyst nets each backtested strategy's gross alpha of its rebalances priced at what the desk's own orders paid per traded pound in the same index band and gives the GBP 400 million to small-cap momentum; cost rises with each trade's share of the stock's daily traded value, and at that size momentum's swaps take a fifth to two fifths of its small caps' day, so the mid-cap value strategy keeps the most.",
- "architecture": 4,
- "loops": 1,
+ "updated": "2026-11-08",
+ "stump": "The default path carries each review's pilot take-off rate to the federation's patients in scope and funds the antipsychotic review at about 24 harms a year; the step that lands it there is carrying the pilot's average rate to every patient, when practice pharmacists almost never stopped a medicine a specialist service had started (4 of 96 in the pilot), the pilot's antipsychotic patients were mostly practice-started (136 of 160) and a specialist service started 86 per cent of the antipsychotic patients in scope, so the antipsychotic review would avoid about 6 harms a year against the benzodiazepine review's 12.",
+ "architecture": 5,
+ "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-31",
-  "checks": "61, 0 FAIL, 0 WARN"
+  "date": "2026-11-08"
  },
  "leak": {
-  "leak_py": "REVIEW on target.zip 7f2aba02 (--asof 2026-12-01, no LEAK; sweeps 1, 4, 6 and 11 ruled in the note's Leak review; sweep 11 is the corpus shell quota for the 'which' question form, a voice-check WARN)",
-  "reader": "read 1 on 2ac88df8 and read 2 on 7f2aba02, isolated, pack and prompt only: no leak at either, question 6 analytical at both (the cost of trading GBP 400 million estimated from the desk's smaller executions by participation); leak_check_report.md"
+  "leak_py": "REVIEW 2026-11-08 on target.zip a915483e (--asof 2027-01-06), no LEAK; every REVIEW line ruled harmless in the design note's Stage 4",
+  "reader": "read 1 on 0bacf975 and read 2 on ea8155d7, isolated (Sonnet, medium), prompt and pack only: no leak at either; question 6 an analytical choice (which off-probability to carry to the patients not yet reviewed), who started a medicine not named at either; machine-made lists measured and ruled, the ePACT2 summary's BNF label corrected after read 2; leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-31 (people names only: Carole, Simpson and Sarah in older builds)",
-  "surface": "exit 0 on the final cut 2026-10-31 (personas Carole Shaw, Howard Simpson, Sarah Ford)"
+  "heart": "WARN 2026-11-08 on the final cut: repeat.decision (pick_one_of_n) against task118's architecture 6, registered at 01:45Z after this card (00:04Z); one review of three is the programme's own decision",
+  "surface": "exit 0 2026-11-08 on the final cut; 8 pairs promoted for the author's clone check (task304, task305, task307, task308, task310, task467, task169, task128); personas in the pack the card's three"
  },
  "judge": {
   "pass": 1,
-  "date": "2026-10-31",
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "FIX_NOW (reconciled)",
-  "report": "task306/determinism_check_report_arch4.md",
-  "finding": "the call held in every variant; the runner-up, the gap and the kept alpha moved with the curve's exponent, weighting and band terms, the consolidation day and the ESG names, since the data did not separate the forms",
-  "fixed": "the world widened so the whole fit family converges (C7, 31 members; band by band each alpha 0.25 inside its million, C8): participation from thin names in the two lower bands, the consolidations in names no book trades, the ESG list before the log, the orders from 1 April 2025; IC-07 files the band's executions as the population and the TCA standard the consolidation day and the 60-session history (the WHAT); the golden fits band by band",
+  "date": "2026-11-08",
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW",
+  "report": "task306/determinism_check_report_arch5.md",
+  "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "finding": "step 6 gave the GP Connect key as patient, sender and document date, which read literally as the letter date matched 757 of about 3,960 October to December letters and filed the second half at 28.8, 26.5, 27.1, 25.3 and 28.3; residuals not counted against the verdict: the 7 April copies counted twice (first half 46.8, 44.1, 46.5, 43.0, 43.6) and a weekend-only working day (Wrekinside North Q2 11.7 against 11.6)",
+  "fixed": "step 6 states the verifier's match; specification 4.3 counts a letter once, in the half and at the practice of its first receipt (SF16); hub appointments before a bank holiday written up on the day (SF17); SF16 to SF18 and both asks' clean truth asserted (checks.py K7, K8); the call, the stump and every graded figure unchanged; only the consultation extract and the specification moved in the pack (0bacf975 to ea8155d7)",
   "re_judge": {
    "pass": 2,
-   "date": "2026-10-31",
+   "date": "2026-11-08",
+   "cut": "ea8155d7",
    "verdict": "DETERMINISTIC",
    "disposition": "APPROVE",
-   "report": "task306/determinism_check_report.md",
-   "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+   "report": "task306/determinism_check_report_arch5_pass2.md",
+   "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
    "gate_h": "domain pass, layers pass, decisive_step analytical",
-   "residual": "a cost curve fitted through the origin keeps the call, the runner-up and the gap and moves momentum's kept alpha from 5 to 4 (3.64); the executions reject it (small-cap R2 0.77 against 0.68); not filed, since naming the curve's form would file the method; recorded in the design note's SF3 row"
+   "residual": "advisory only: a provenance flag from any class letter at any time files review A (15.8 against B 12.0) but does not separate the pilot's outcomes (23 against 47 per cent in A), so the data rule it out; 151 same-day repeat calls in the practice systems count as consultations under specification 4.1, collapsing them would lower each consultation figure by 0.1 to 0.3, row counting read as natural and no clause advised"
   }
  },
- "returned": [
-  {
-   "date": "2026-10-26",
-   "portal": "determinism block failed, two findings on the 2027 population and the pack basis",
-   "repair": "determinism",
-   "commit": "RESHIPPED (task306), determinism repair, 2026-10-26"
-  }
- ],
- "resume": "Shipped 2026-10-31 on architecture 4 after the FIX_NOW repair: the re-judge DETERMINISTIC, APPROVE (decisive step analytical, the participation-dependent cost carried to GBP 400 million), leak read 2 clean with question 6 analytical, every free gate re-run on target.zip 7f2aba02 (two byte-identical builds, 46 checks, verify PASS, figures_check 51 of 51, precut 61 checks, voice-check PASS with the 'which' quota WARN). Waits on the portal.",
+ "returned": [],
+ "resume": "Shipped 2026-11-08 on target.zip a915483e; waits on the portal. The shipped cut differs from the re-judged cut ea8155d7 only in the ePACT2 summary's BNF label for the gabapentinoid line, a declared distractor no figure reads (corrected after the leak reader's read 2); every free gate re-run on a915483e.",
  "approved": null,
- "delivered": "2026-10-31",
+ "delivered": "2026-11-08",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "architecture_spent": false,
+ "lineage_v4": {
+  "stump": "A competent analyst nets each backtested strategy's gross alpha of its rebalances priced at what the desk's own orders paid per traded pound in the same index band and gives the GBP 400 million to small-cap momentum; cost rises with each trade's share of the stock's daily traded value, and at that size momentum's swaps take a fifth to two fifths of its small caps' day, so the mid-cap value strategy keeps the most.",
+  "architecture": 4,
+  "loops": 1,
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-31",
+   "checks": "61, 0 FAIL, 0 WARN"
+  },
+  "leak": {
+   "leak_py": "REVIEW on target.zip 7f2aba02 (--asof 2026-12-01, no LEAK; sweeps 1, 4, 6 and 11 ruled in the note's Leak review; sweep 11 is the corpus shell quota for the 'which' question form, a voice-check WARN)",
+   "reader": "read 1 on 2ac88df8 and read 2 on 7f2aba02, isolated, pack and prompt only: no leak at either, question 6 analytical at both (the cost of trading GBP 400 million estimated from the desk's smaller executions by participation); leak_check_report.md"
+  },
+  "duplicate_check": {
+   "heart": "WARN 2026-10-31 (people names only: Carole, Simpson and Sarah in older builds)",
+   "surface": "exit 0 on the final cut 2026-10-31 (personas Carole Shaw, Howard Simpson, Sarah Ford)"
+  },
+  "judge": {
+   "pass": 1,
+   "date": "2026-10-31",
+   "verdict": "NOT_DETERMINISTIC",
+   "disposition": "FIX_NOW (reconciled)",
+   "report": "task306/determinism_check_report_arch4.md",
+   "finding": "the call held in every variant; the runner-up, the gap and the kept alpha moved with the curve's exponent, weighting and band terms, the consolidation day and the ESG names, since the data did not separate the forms",
+   "fixed": "the world widened so the whole fit family converges (C7, 31 members; band by band each alpha 0.25 inside its million, C8): participation from thin names in the two lower bands, the consolidations in names no book trades, the ESG list before the log, the orders from 1 April 2025; IC-07 files the band's executions as the population and the TCA standard the consolidation day and the 60-session history (the WHAT); the golden fits band by band",
+   "re_judge": {
+    "pass": 2,
+    "date": "2026-10-31",
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task306/determinism_check_report.md",
+    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "residual": "a cost curve fitted through the origin keeps the call, the runner-up and the gap and moves momentum's kept alpha from 5 to 4 (3.64); the executions reject it (small-cap R2 0.77 against 0.68); not filed, since naming the curve's form would file the method; recorded in the design note's SF3 row"
+   }
+  },
+  "returned": [
+   {
+    "date": "2026-10-26",
+    "portal": "determinism block failed, two findings on the 2027 population and the pack basis",
+    "repair": "determinism",
+    "commit": "RESHIPPED (task306), determinism repair, 2026-10-26"
+   },
+   {
+    "date": "2026-11-07",
+    "portal": "portal input check: both PDFs carried '(unspecified)' in Subject",
+    "repair": "metadata",
+    "zip": "2ddb9a8d",
+    "moves": "Subject set to 'Investment Committee policy IC-07, allocation of new capital' and 'Transaction cost analysis standard, revision 4'; only the two PDFs moved, no figure moved",
+    "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)"
+   },
+   {
+    "date": "2026-11-07",
+    "portal": "portal input check: the parquet footer's created_by named parquet-cpp-arrow 26.0.0; both PDFs named department names as Producer and Creator over a Python PDF library's structure",
+    "repair": "metadata",
+    "zip": "e379b86a",
+    "moves": "the market-data parquet written without the Arrow schema and with created_by left out of the footer (data unchanged); both PDFs written as Word documents and exported by LibreOffice Writer (task306/generator/officepdf.py), Producer LibreOffice 24.2, Creator Writer, the issuing body as Author, the real Subject kept; only those three files moved, no figure moved",
+    "checks": "generator checks (46, 0 failed), verify PASS, two byte-identical builds, leak.py REVIEW with no LEAK; no reader, judge or clone check (author's minor-fix rule)"
+   },
+   {
+    "date": "2026-11-07",
+    "portal": "FAILED_TO_STUMP: both responses NOT stumped. Both filed the golden exactly: UK Mid Cap Value keeps GBP 8 million, UK Large Cap Quality 6, UK Smaller Companies Momentum 5 (gross 12, 7 and 20 less recurring cost 4, 1 and 15), runner-up UK Large Cap Quality, gap GBP 2 million. Both executed the field's full careful method: replayed fills deduplicated, GBX to GBP, failover recreations merged into the original instruction, blocks kept whole for impact and split for attribution, the account register's effective dates (the reused WM-DYN-01 code), strictly prior 20-session ADV and 60-session volatility, per-band regressions IS_bps = a + b * vol_bps * sqrt(participation) on the desk's economic orders validated on a July to November holdout (RMSE 13.6, 8.5 and 18.9 bps against 26.6, 12.7 and 40.2 for flat band costs), every candidate rebalance trade priced at GBP 400 million, flip points reported. The ask layer landed whole: both reported all 24 ask figures equal to submission.md (the 16 quarterly shortfalls and the 8 half-year traded values), where generator/ceiling.py had scored the cracker at zero on both asks; the failover merge and the block allocation were executed because TCA standard section 1 and the allocation export filed them",
+    "why": "the participation-dependent cost (the square-root impact law carried to size) is the field's textbook and a careful response executes it; the desk's thin-name orders let a holdout validate the curve against the band average, so the data revealed the right method by fit; both ask devices were executable from filed rules",
+    "repair": "design (re-root: architecture 4 spent with its world, the market-impact capacity driver and its prompt shell; architecture 5 in another client domain, world and dataset)",
+    "commit": ""
+   }
+  ],
+  "resume": "re-root at stage 1: architecture 5 in another client domain and world (EV pack refurbishment, regional GVA induced round, windstorm reinsurance and market-impact capacity all spent), with a new world, dataset, generator and prompt shell, under the author's five conditions of 2026-11-07 (the textbook method done carefully files the wrong call; no fit, back-test or reconciliation picks the golden route; asks ride an unstated cross-system reconstruction; the ladder keeps one of the top two off the call; the three rules in writing)",
+  "delivered": "2026-10-31",
+  "zip_sha256_16": "e379b86a41a4f95c",
+  "domain": "quantitative-finance / portfolio-construction-risk (client quantitative-finance)",
+  "spent": "2026-11-07 on its first portal round (FAILED_TO_STUMP): both responses filed the golden (UK Mid Cap Value 8, UK Large Cap Quality 6, momentum 5, gap 2) by a per-band square-root impact fit validated on a holdout against flat band costs, and all 24 ask figures, whose devices were filed in the TCA standard and the allocation export; the market-impact world, the capacity driver and the shell are spent"
+ },
  "history": [
   {
    "date": "2026-10-31",
@@ -129,7 +197,35 @@
   {
    "date": "2026-10-31",
    "event": "SHIPPED: architecture 4, give the GBP 400 million to UK Mid Cap Value (8 against UK Large Cap Quality 6 and momentum 5); re-judge DETERMINISTIC, APPROVE; target.zip 7f2aba02"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "portal FAILED_TO_STUMP on architecture 4: both responses landed the golden (UK Mid Cap Value 8, UK Large Cap Quality 6, momentum 5, gap 2) and all 24 ask figures, by the square-root impact law fitted per band and validated on a holdout; architecture 4 spent"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "DRAWN: architecture 5, pharmacology benefit-risk x opportunity sizing: Marches Primary Care Collaborative's 2027 deprescribing review, the pilot's take-off carried by who started each medicine; registered 2026-11-08"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "BUILD: generator, pack (18 files in 4 formats, the letters feed 176,956 rows), goldens and submission; call review B, benzodiazepines and Z-drugs (12 serious harms a year) over review C (8) and review A (6), gap 4; the default path files review A at about 24; every free gate green on target.zip 0bacf975"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "PAUSED at stage 4: the leak reader and the determinism judge not run (no Agent tool in the building session); briefs written"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "stage 4 on 0bacf975: the leak reader found no leak; the determinism judge returned DETERMINISTIC, FIX_NOW on step 6's GP Connect wording, with residual forks on the 7 April copies and the bank-holiday working day"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "fixed in the generator in one pass (step 6, specification 4.3, write-ups before a bank holiday, K7 and K8); target.zip ea8155d7; leak reader read 2 no leak; re-judge DETERMINISTIC, APPROVE"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "SHIPPED: run review B, benzodiazepines and Z-drugs (12 serious harms a year) over review C (8) and review A (6), gap 4; target.zip a915483e"
   }
  ],
- "zip_sha256_16": "7f2aba0203b068e1"
+ "zip": "a915483ef2342ec8d2c30a150f8286d30653413debbd533cd60d771d2c6fb41c"
 }

@@ -4,7 +4,6 @@ graded figure and both asks, and comparing them with figures.json.
     python3 task306/generator/verify.py
 """
 import json
-import math
 import os
 import re
 import sys
@@ -13,129 +12,230 @@ import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-T = os.path.join(os.path.dirname(HERE), "target")
-BAD = []
+TASK = os.path.dirname(HERE)
+T = os.path.join(TASK, "target")
+read = lambda n, **k: pd.read_csv(os.path.join(T, n), dtype=str, keep_default_na=False, **k)
+
+CLASS_WORDS = {"A": ("risperidone", "quetiapine", "haloperidol", "olanzapine"),
+               "B": ("diazepam", "temazepam", "lorazepam", "zopiclone", "zolpidem"),
+               "C": ("pregabalin", "gabapentin"),
+               "O": ("codeine", "co-codamol", "tramadol", "morphine", "oxycodone", "buprenorphine")}
+KEY = {"A": "AP", "B": "BZ", "C": "GB"}
 
 
-def check(name, cond, detail=""):
-    print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "   " + str(detail)))
-    if not cond:
-        BAD.append(name)
+def kind(text):
+    t = text.lower()
+    if t.startswith("clobazam"):
+        return "X"
+    for k, ws in CLASS_WORDS.items():
+        if any(t.startswith(w) for w in ws):
+            return k
+    return None
 
 
-def london(ts):
-    t = pd.to_datetime(ts, utc=True)
-    return t.dt.tz_convert("Europe/London").dt.date
+def mentions(text):
+    t = text.lower()
+    for k in ("A", "B", "C"):
+        for w in CLASS_WORDS[k] + (("clobazam",) if k == "B" else ()):
+            if re.search(r"\b%s\b" % w, t):
+                return k
+    return None
 
 
 def main():
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    master = pd.read_csv(os.path.join(T, "wealdmoor_security_master_2026-11-30.csv"), dtype=str).fillna("")
-    band = dict(zip(master["sedol"], master["index_band"].map({"FTSE 100": "L", "FTSE 250": "M", "FTSE SmallCap": "S"})))
-    cons = {}
-    for s, note in zip(master["sedol"], master["corporate_action_note"]):
-        m = re.search(r"(\d\d)/(\d\d)/(\d{4})", note)
-        if m:
-            cons[s] = pd.Timestamp(int(m.group(3)), int(m.group(2)), int(m.group(1))).date()
-    mk = pd.read_parquet(os.path.join(T, "lse_daily_market_data_2025-2026.parquet"))
-    mk["trade_date"] = pd.to_datetime(mk.trade_date).dt.date
-    mk = mk.sort_values(["sedol", "trade_date"])
-    mk["value"] = mk.close_gbx / 100.0 * mk.volume_shares
-    mk["ret"] = np.log(mk.close_gbx / mk.groupby("sedol").close_gbx.shift(1))
-    mk.loc[[cons.get(s) == d for s, d in zip(mk.sedol, mk.trade_date)], "ret"] = np.nan
-    g = mk.groupby("sedol")
-    mk["adv20"] = g.value.transform(lambda x: x.shift(1).rolling(20, min_periods=20).mean())
-    mk["vol60"] = g.ret.transform(lambda x: x.shift(1).rolling(60, min_periods=10).std()) * 1e4
-    look = mk.set_index(["sedol", "trade_date"])[["adv20", "vol60"]]
+    spec_rows = {}
+    from pypdf import PdfReader
+    spec = "\n".join(p.extract_text() for p in PdfReader(os.path.join(T, "medicines_safety_programme_2027.pdf")).pages)
+    for band in ("18 to 64", "65 to 74", "75 to 84", "85 and over"):
+        m = re.search(re.escape(band) + r"\s+(not in scope|[\d.]+)\s+(not in scope|[\d.]+)\s+([\d.]+)", spec)
+        spec_rows[band] = [None if x == "not in scope" else float(x) for x in m.groups()]
+    harm = {k: {b: v[i] for b, v in spec_rows.items() if v[i] is not None} for i, k in enumerate("ABC")}
 
-    od = pd.read_csv(os.path.join(T, "oms_orders_2025-2026.csv"), dtype={"order_id": str})
-    fl = pd.read_csv(os.path.join(T, "oms_fills_2025-2026.csv"), dtype={"order_id": str})
-    fl = fl.drop_duplicates("exec_id")
-    fl["px"] = np.where(fl.price_unit == "GBP", fl.fill_price * 100.0, fl.fill_price)
-    od["day"] = london(od.created_utc)
-    filled = fl.groupby("order_id").fill_qty.sum()
-    od["filled"] = od.order_id.map(filled).fillna(0).astype(int)
-    term = od[od.status == "TERMINATED"].copy()
-    term["left"] = term.order_qty - term.filled
-    rec = od[od.source == "BACKUP-RECOVERY"]
-    key = ["account_code", "sedol", "side", "day"]
-    mm = rec.merge(term[key + ["left", "order_id"]].rename(columns={"order_id": "orig"}), left_on=key + ["order_qty"],
-                   right_on=key + ["left"], how="left")
-    parent = dict(zip(mm.order_id, mm.orig))
-    fl["oid"] = [parent.get(o) if isinstance(parent.get(o), str) else o for o in fl.order_id]
-    fl["pv"] = fl.fill_qty * fl.px
-    agg = fl.groupby("oid").agg(q=("fill_qty", "sum"), pv=("pv", "sum")).reset_index()
-    ex = agg.merge(od, left_on="oid", right_on="order_id")
-    ex["avg"] = ex.pv / ex.q
-    ex["sgn"] = np.where(ex.side == "BUY", 1.0, -1.0)
-    ex["sf"] = ex.sgn * (ex.avg - ex.arrival_mid_gbx) / ex.arrival_mid_gbx * 1e4
-    ex["value"] = ex.q * ex.arrival_mid_gbx / 100.0
-    lv = look.reindex(list(zip(ex.sedol, ex.day)))
-    ex["part"] = ex.value.values / lv.adv20.values
-    ex["vol"] = lv.vol60.values
-    ex["band"] = ex.sedol.map(band)
-    coef = {}
-    for b in "LMS":
-        sub = ex[ex.band == b]
-        X = np.column_stack([np.ones(len(sub)), sub.vol * np.sqrt(sub.part)])
-        coef[b], *_ = np.linalg.lstsq(X, sub.sf.values, rcond=None)
-    check("each band's coefficient on volatility times the square root of participation sits near 0.85",
-          all(0.75 < coef[b][1] < 0.95 for b in "LMS"), {b: round(float(coef[b][1]), 3) for b in "LMS"})
+    reg = read("member_practice_register_2026.csv")
+    pcn = dict(zip(reg.ods_code, reg.primary_care_network))
+    R = pd.read_parquet(os.path.join(T, "patient_registrations_2020-2026.parquet"))
+    end = pd.to_datetime(R.registration_end)
+    start = pd.to_datetime(R.registration_start)
+    dod = pd.to_datetime(R.date_of_death)
+    day = pd.Timestamp("2026-12-31")
+    cur = R[(start <= day) & (end.isna() | (end > day)) & (dod.isna() | (dod > day))]
+    cur = cur[cur.practice_code.map(pcn).notna() & (cur.practice_code.map(pcn) != "Clun Valley PCN")]
+    age = dict(zip(cur.patient_pseudonym, 2026 - cur.birth_month.str[:4].astype(int)))
+    iss = pd.read_parquet(os.path.join(T, "prescribing_issues_2025-07_2026-12.parquet"))
+    iss["k"] = iss.medicine.map(kind)
+    d = pd.to_datetime(iss.issue_date)
+    w = iss[(d >= "2026-07-01") & (d <= "2026-12-31")]
+    n = w.groupby(["patient_pseudonym", "k"]).size()
+    prob = read("problem_list_extract_2026-12-31.csv")
+    codes = prob.groupby("patient_pseudonym").snomed_code.apply(set).to_dict()
+    pal, smi, epi = "1129481000000101", {"69322001", "58214004", "13746004"}, "84757009"
+    scope = {"A": [], "B": [], "C": []}
+    for p, a in age.items():
+        cs = codes.get(p, set())
+        if pal in cs:
+            continue
+        if a >= 65 and n.get((p, "A"), 0) >= 2 and not (cs & smi):
+            scope["A"].append(p)
+        if a >= 65 and n.get((p, "B"), 0) >= 3:
+            scope["B"].append(p)
+        if a >= 18 and n.get((p, "C"), 0) >= 2 and n.get((p, "O"), 0) >= 2 and epi not in cs:
+            scope["C"].append(p)
 
-    summ = pd.read_excel(os.path.join(T, "research_backtests_2027_candidates.xlsx"), sheet_name="Summary")
-    alpha = dict(zip(summ["Strategy code"], summ["Annualised gross alpha, 2015 to 2026"].astype(str).str.rstrip("%").astype(float)
-                     / 100))
-    tr = pd.read_csv(os.path.join(T, "backtest_rebalance_trades_2025-2026.csv"))
-    tr["d"] = pd.to_datetime(tr.rebalance_date).dt.date
-    tr = tr[(tr.d >= pd.Timestamp(2025, 12, 1).date()) & (tr.d <= pd.Timestamp(2026, 11, 30).date())]
-    tr["sedol"] = tr["isin"].map(dict(zip(master["isin"], master["sedol"])))
-    lt = look.reindex(list(zip(tr.sedol, tr.d)))
-    v = tr.traded_weight.abs() * 400e6
-    p = v.values / lt.adv20.values
-    a = np.array([coef[band[s]][0] for s in tr.sedol])
-    k = np.array([coef[band[s]][1] for s in tr.sedol])
-    tr["cost"] = v.values * (a + k * lt.vol60.values * np.sqrt(p)) / 1e4
-    cost = tr.groupby("strategy_code").cost.sum()
-    for k in ("SCM", "MCV", "LCQ"):
-        net = alpha[k] * 400e6 - cost[k]
-        check("%s alpha kept GBP %dm" % (k, fig["candidates"][k]["net_gbp_m"]),
-              int(round(net / 1e6)) == fig["candidates"][k]["net_gbp_m"], round(net / 1e6, 3))
-        check("%s gross GBP %dm" % (k, fig["candidates"][k]["gross_gbp_m"]),
-              int(round(alpha[k] * 400)) == fig["candidates"][k]["gross_gbp_m"])
-    nets = {k: alpha[k] * 400e6 - cost[k] for k in ("SCM", "MCV", "LCQ")}
-    order = sorted(nets, key=lambda k: -nets[k])
-    check("the call and the runner-up", order[0] == fig["call"] and order[1] == fig["runner_up"], order)
+    # who started the medicine: a class letter in the 60 days before the earliest class course's first issue
+    cou = read("repeat_medication_courses_2026-12-31.csv")
+    cou["k"] = cou.medicine.map(kind)
+    first = cou[cou.k.isin(["A", "B", "C"])].assign(f=lambda x: pd.to_datetime(x.first_issue_date)) \
+        .groupby(["patient_pseudonym", "k"]).f.min().to_dict()
+    let = read("trust_medicine_letters_feed_2019-2026.csv")
+    look = read("trust_hospital_number_lookup.csv")
+    hn = dict(zip(zip(look.trust, look.hospital_number), look.patient_pseudonym))
+    let["who"] = [p if p else hn.get((s, h), "") for p, s, h in zip(let.patient_pseudonym, let.sender, let.hospital_number)]
+    let["when"] = [pd.Timestamp(x) if "-" in x else pd.Timestamp(x[6:] + "-" + x[3:5] + "-" + x[:2])
+                   for x in let.letter_date]
+    let["k"] = let.medicine_line.map(mentions)
+    cl = let[let.k.notna()].groupby(["who", "k"])["when"].apply(list).to_dict()
 
-    reg = pd.read_csv(os.path.join(T, "trading_account_register.csv"), dtype=str).fillna("")
-    live = ["UK Equity Income", "UK Mid Cap Growth", "UK Smaller Companies", "UK Dynamic"]
+    def started_by_specialist(p, k):
+        f = first.get((p, k))
+        return any(f - pd.Timedelta(days=60) <= x < f for x in cl.get((p, k), []))
 
-    def owner(acc, d):
-        for _i, r in reg[reg.account_code == acc].iterrows():
-            if pd.Timestamp(r.opened).date() <= d and (r.closed == "" or d <= pd.Timestamp(r.closed).date()):
-                return r.account_name
-        return None
-    al = pd.read_csv(os.path.join(T, "oms_block_allocations_2025-2026.csv"), dtype={"block_order_id": str})
-    blk = ex[ex.order_id.isin(set(al.block_order_id))].merge(al, left_on="order_id", right_on="block_order_id")
-    blk["account_code"] = blk["account_code_y"]
-    blk["value"] = blk.allocated_qty * blk.arrival_mid_gbx / 100.0
-    blk["pv"] = blk.allocated_qty * blk.avg
-    keep = ex[~ex.order_id.isin(set(al.block_order_id))]
-    ex = pd.concat([keep, blk[keep.columns]], ignore_index=True)
-    e26 = ex[[d.year == 2026 for d in ex.day]].copy()
-    e26["who"] = [owner(a, d) for a, d in zip(e26.account_code, e26.day)]
-    e26 = e26[e26.who.isin(live)]
-    e26["q"] = [(d.month - 1) // 3 + 1 for d in e26.day]
-    e26["h"] = [1 if d.month <= 6 else 2 for d in e26.day]
-    sf = e26.groupby(["who", "q"]).apply(lambda x: (x.sf * x.value).sum() / x.value.sum(), include_groups=False)
-    tv = e26.groupby(["who", "h"]).pv.sum() / 100.0
-    bad_a = [k for k in fig["ask_shortfall_bps"] if round(float(sf[(k.rsplit(" ", 1)[0], int(k[-1]))]), 1)
-             != fig["ask_shortfall_bps"][k]]
-    bad_b = [k for k in fig["ask_traded_gbp_m"] if int(round(tv[(k.rsplit(" ", 1)[0], int(k[-1]))] / 1e6))
-             != fig["ask_traded_gbp_m"][k]]
-    check("ask A: every quarter's shortfall recomputes", not bad_a, bad_a)
-    check("ask B: every half's traded value recomputes", not bad_b, bad_b)
-    print("verify:", "PASS" if not BAD else "FAIL (%d)" % len(BAD))
-    sys.exit(1 if BAD else 0)
+    log = read("deprescribing_pilot_outcome_log_2026.csv")
+    six = log[log.record_type == "Six-month follow-up"]
+    lab = {"Antipsychotics 65+": "A", "Benzodiazepines and Z-drugs 65+": "B", "Gabapentinoid with opioid": "C"}
+    rate = {}
+    for k in "ABC":
+        s = six[six.review.map(lab) == k]
+        sp = s.patient_pseudonym.map(lambda p: started_by_specialist(p, k))
+        off = s.outcome == "Off medicine"
+        rate[(k, True)] = off[sp].mean()
+        rate[(k, False)] = off[~sp].mean()
+    out = {}
+    for k in "ABC":
+        tot_off = tot_h = 0.0
+        for p in scope[k]:
+            ch = rate[(k, started_by_specialist(p, k))]
+            a = age[p]
+            b = "18 to 64" if a < 65 else "65 to 74" if a < 75 else "75 to 84" if a < 85 else "85 and over"
+            tot_off += ch
+            tot_h += ch * harm[k][b] / 100
+        out[k] = (len(scope[k]), tot_off, tot_h)
+    order = sorted("ABC", key=lambda k: -out[k][2])
+    errs = []
+    if KEY[order[0]] != fig["call"] or KEY[order[1]] != fig["runner_up"]:
+        errs.append("call %s runner-up %s" % (order[0], order[1]))
+    for k in "ABC":
+        f = fig["reviews"][KEY[k]]
+        if out[k][0] != f["in_scope"] or int(round(out[k][1] / 10)) * 10 != f["off_10"] or int(round(out[k][2])) != f["harms_1"]:
+            errs.append("review %s %s against %s" % (k, out[k], f))
+    gap = int(round(out[order[0]][2])) - int(round(out[order[1]][2]))
+    if gap != fig["gap"]:
+        errs.append("gap %d" % gap)
+
+    # ask A: letters received, by the receiving practice's network and the half of first receipt
+    wf = read("practice_document_workflow_2026.csv")
+    wf["at"] = pd.to_datetime(wf.received)
+    letters = let.groupby("letter_reference").agg(sender=("sender", "first"), service=("service", "first"),
+                                                  who=("who", "first"), when=("when", "first"),
+                                                  enc=("encounter_date", "first"),
+                                                  lines=("medicine_line", lambda x: tuple(x))).reset_index()
+    got = wf.set_index("sender_reference")
+    letters["at"] = letters.letter_reference.map(got["at"])
+    letters["prac"] = letters.letter_reference.map(got["practice_code"])
+    spare = wf[~wf.sender_reference.isin(set(letters.letter_reference))]
+    spare = spare[spare.sender == "Wrekinside Teaching Hospitals NHS Trust"].sort_values("at")
+    bucket = {}
+    for r in spare.itertuples():
+        bucket.setdefault((r.patient_pseudonym, r.sender), []).append((r.at, r.practice_code))
+    todo = letters[letters["at"].isna() & (letters.sender == "Wrekinside Teaching Hospitals NHS Trust")]
+    for i in todo.sort_values(["when", "letter_reference"]).index:
+        q = bucket.get((letters.at[i, "who"], letters.at[i, "sender"]), [])
+        w0 = letters.at[i, "when"]
+        for j, (at, pr) in enumerate(q):
+            if w0 <= at.normalize() <= w0 + pd.Timedelta(days=21):
+                letters.at[i, "at"], letters.at[i, "prac"] = q.pop(j)
+                break
+    mmh = letters.sender == "Marches Mental Health NHS Trust"
+    earlier = letters[mmh & (letters.when < "2026-04-07")]
+    seen = dict(zip(zip(earlier.who, earlier.service, earlier.enc, earlier.lines), earlier.letter_reference))
+    letters["one"] = letters.letter_reference
+    resent = mmh & (letters.when == "2026-04-07")
+    letters.loc[resent, "one"] = [seen.get(k, r) for k, r in zip(zip(letters[resent].who, letters[resent].service,
+                                                                      letters[resent].enc, letters[resent].lines),
+                                                                  letters[resent].letter_reference)]
+    firsts = letters.dropna(subset=["at"]).sort_values("at").groupby("one").first()
+    firsts = firsts[(firsts["at"] >= "2026-01-01") & (firsts["at"] < "2027-01-01")]
+    firsts["net"] = firsts.prac.map(pcn)
+    firsts["half"] = np.where(firsts["at"] < "2026-07-01", "H1", "H2")
+    lists = pd.read_csv(os.path.join(T, "registered_list_sizes_2026.csv"), dtype={"practice_code": str})
+    lists["net"] = lists.practice_code.map(pcn)
+    den = lists.groupby(["net", "extract_date"]).registered_patients.sum()
+    cnt = firsts.groupby(["net", "half"]).size()
+    for net_ in sorted(set(pcn.values())):
+        for h, dd in (("H1", "2026-01-01"), ("H2", "2026-07-01")):
+            v = round(1000 * cnt.get((net_, h), 0) / den[(net_, dd)] + 1e-9, 1)
+            if abs(v - fig["letters"][net_][h]["rate"]) > 1e-9:
+                errs.append("letters %s %s %.1f against %.1f" % (net_, h, v, fig["letters"][net_][h]["rate"]))
+
+    # ask B: consultations
+    hub = read("pharmacist_hub_appointments_2026.csv")
+    t_utc = pd.to_datetime(hub.slot_start_utc.str[:19])
+    summer = (t_utc >= "2026-03-29 01:00") & (t_utc < "2026-10-25 01:00")
+    hub["day"] = (t_utc + pd.to_timedelta(summer.astype(int), unit="h")).dt.normalize()
+    one = hub[(hub.patient_pseudonym != "") & (hub.outcome == "Attended")]
+    act = read("clinical_system_pharmacist_activity_2026.csv")
+    act["day"] = pd.to_datetime(act.consultation_date)
+    hol = {pd.Timestamp(x) for x in ("2026-04-03", "2026-04-06", "2026-05-04", "2026-05-25", "2026-08-31",
+                                     "2026-12-25", "2026-12-28")}
+
+    def nxt(x):
+        x = x + pd.Timedelta(days=1)
+        while x.weekday() >= 5 or x in hol:
+            x += pd.Timedelta(days=1)
+        return x
+    rows_by = act.groupby(["patient_pseudonym", "clinician"]).groups
+    used = set()
+    for r in one.itertuples():
+        for j in rows_by.get((r.patient_pseudonym, r.pharmacist), []):
+            if j not in used and r.day <= act.at[j, "day"] <= nxt(r.day):
+                used.add(j)
+                break
+    grp = pd.read_excel(os.path.join(T, "hub_group_session_register_2026.xlsx"), dtype=str)
+    grp = grp[grp.Attended == "Yes"]
+    reg_rows = R[R.practice_code.map(pcn).notna()]
+    spells = {}
+    for p, a, b, c in zip(reg_rows.patient_pseudonym, pd.to_datetime(reg_rows.registration_start),
+                          pd.to_datetime(reg_rows.registration_end), reg_rows.practice_code):
+        spells.setdefault(p, []).append((a, b, c))
+    succ = dict(zip(reg.ods_code, reg.successor_ods_code))
+
+    def net_on(p, x):
+        for a, b, c in spells.get(p, []):
+            if a <= x and (pd.isna(b) or x < b):
+                return pcn[succ.get(c) or c]
+    recs = [(pcn[c], x) for c, x, j in zip(act.practice_code, act.day, act.index) if j not in used]
+    recs += [(net_on(p, x), x) for p, x in zip(one.patient_pseudonym, one.day)]
+    recs += [(net_on(p, pd.Timestamp(x)), pd.Timestamp(x)) for p, x in zip(grp.Patient, grp.Date)]
+    cdf = pd.DataFrame(recs, columns=["net", "day"])
+    cdf["q"] = "Q" + cdf.day.dt.quarter.astype(str)
+    cc = cdf.groupby(["net", "q"]).size()
+    for net_ in sorted(set(pcn.values())):
+        for q, dd in (("Q1", "2026-01-01"), ("Q2", "2026-04-01"), ("Q3", "2026-07-01"), ("Q4", "2026-10-01")):
+            v = round(1000 * cc.get((net_, q), 0) / den[(net_, dd)] + 1e-9, 1)
+            if abs(v - fig["consultations"][net_][q]["rate"]) > 1e-9:
+                errs.append("consultations %s %s %.1f against %.1f" % (net_, q, v,
+                                                                       fig["consultations"][net_][q]["rate"]))
+    golden = pd.read_csv(os.path.join(TASK, "golden", "pharmacist_consultations_2026.csv"))
+    for r in golden.itertuples():
+        if abs(r.consultations_per_1000 - fig["consultations"][r.primary_care_network][r.quarter[-2:]]["rate"]) > 1e-9:
+            errs.append("golden csv %s %s" % (r.primary_care_network, r.quarter))
+    print("verify: call %s, runner-up %s, gap %d; reviews %s" % (KEY[order[0]], KEY[order[1]], gap,
+                                                                {KEY[k]: (v[0], round(v[1], 2), round(v[2], 3))
+                                                                 for k, v in out.items()}))
+    for e in errs:
+        print("MISMATCH", e)
+    print("verify:", "PASS" if not errs else "FAIL (%d)" % len(errs))
+    sys.exit(1 if errs else 0)
 
 
 if __name__ == "__main__":

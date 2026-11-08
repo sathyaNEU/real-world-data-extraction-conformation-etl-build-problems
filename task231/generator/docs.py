@@ -189,7 +189,7 @@ def email(path):
             "Everything we have from the winter is in the review folder: the ESS export, Quillan's withheld log, "
             "the central server's message log, the modem and site registers, the outage notices, the pavement "
             "export and the pre-season checks from last fall. The HRRR point forecasts Dispatch pulls and the ATR "
-            "counts are in there as well.\n\nThanks,\nMelissa\n\nMelissa Hayden\nITS Program Manager\n%s\n" % P.ORG)
+            "counts are in there as well.\n\nThanks,\n\nMelissa Hayden\nITS Program Manager\n%s\n" % P.ORG)
     m.set_content(body)
     with open(path, "wb") as f:
         f.write(bytes(m))

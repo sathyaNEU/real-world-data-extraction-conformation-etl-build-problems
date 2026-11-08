@@ -1,10 +1,10 @@
 {
  "task": "task445",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "education-learning-sciences / item-response-theory-test-equating (client education-learning-sciences)",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-01",
  "stump": "A competent analyst compares Question 6's marks with the other optional questions' for the candidates who answered it, adjusting for Section A or within the candidates who answered it beside another essay, and files no scaling; the candidates who chose Question 6 knew its topic, and the candidates who answered all three essays put it over two marks harder, so its marks are raised.",
  "architecture": 3,
@@ -15,18 +15,24 @@
   "checks": "61, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 on target.zip 51f94b0e (--asof 2026-12-01, no LEAK; sweeps 3, 4 and 6 ruled in the note's Leak sweep; a first cut's LEAK on 'rubric' reworded)",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-01 on target.zip a676a08f (--asof 2026-12-01, no LEAK), each line ruled in the note's Leak sweep",
+  "reader": "read 1 on 51f94b0e and read 2 on a676a08f (two personas renamed for the people guard), isolated, pack and prompt only: no leak at either, question 6 analytical at both (what the whole cohort would have earned on a question part of it chose); leak_check_report.md"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-11-01 on the registered card",
-  "heart": "WARN 2026-11-01 on a fresh pull (first names Mary and Christopher in older builds; Gate G and question form against task231; Gate G overuse 5 of 12)",
-  "surface": "exit 0 on the final cut 2026-11-01 (no BLOCK; 10 pairs promoted for the author's adjudicated read on the card's differentiated same-driver signatures)"
+  "heart": "WARN 2026-11-01 on the final cut (people.first Mary and Pamela in older builds; Gate G and the whether question form repeat task231 v2). An earlier BLOCK on the surname Turner against task125 and the first name Melissa against task231 v2, both drawn the same day, was cleared by renaming Christopher Turner to Philip Montes and Melissa Chen to Pamela Sullivan from guard.py names --geo au --seed 445; no figure moved",
+  "surface": "exit 0 on the final cut 2026-11-01 (personas Mary Deleon, Pamela Sullivan, Philip Montes)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "pass": 1,
+  "date": "2026-11-01",
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task445/determinism_check_report.md",
+  "zip_judged": "51f94b0e (the shipped a676a08f differs only in two personas' names; figures.json identical)",
+  "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "residual": "the population whose marks measure demand is not filed (the thread reads the triple writers' within-candidate comparison as the method the data force, the chooser and Section A routes confounded); the triple writers' 95 per cent band, about 1.85 to 2.33, sits inside the 1.5 to 2.5 rounding cell"
  },
  "returned": [
   {
@@ -42,9 +48,9 @@
    "commit": "DRAWN (task445) architecture 2"
   }
  ],
- "resume": "stage 4 from the main thread: rebuild with `python3 task445/generator/build.py` (two byte-identical builds, then checks.py and verify.py; target.zip sha256 51f94b0ef73a713b64044e63a6be16bc3d91cf91657b79448210234cf1e4261c), then spawn together in the background, both at medium effort, the leak reader on scratchpad/leak-task445/ with the brief scratchpad/task445_stage4_leak_brief.md and the determinism judge on task445 (architecture 1's reports kept as *_arch1*.md and architecture 2's as determinism_check_report_arch2.md); fix every finding in the generator in one pass and rebuild, re-judge a FIX_NOW once; then stage 5: every gate on the final cut, the reader's section in leak_check_report.md, git add -f task445/target.zip and task445/golden/*, ledger row, card current, commit SHIPPED (task445)",
+ "resume": "Shipped 2026-11-01 on architecture 3: the judge DETERMINISTIC, APPROVE (decisive step analytical, Question 6's demand read from the candidates who wrote all three essays), two clean leak reads, every free gate re-run on target.zip a676a08f (two byte-identical builds, the generator checks and verifier, figures_check 49 of 49, precut 61 checks, voice-check PASS, guard heart WARN and surface exit 0). Waits on the portal.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": "",
  "lineage": [
   {
@@ -238,6 +244,10 @@
   {
    "date": "2026-11-01",
    "event": "stage 3 complete on architecture 3: the asks' silent devices (moved candidates' booklets under the earlier number and centre, candidates who wrote no essay present only in the Section A scan) put the cracker off all 24 ask figures; every free gate green on target.zip 51f94b0e; paused at stage 4 for the main thread"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "SHIPPED: architecture 3, raise every candidate's Question 6 mark by 2 before the best two essays are credited; judge DETERMINISTIC, APPROVE; target.zip a676a08f"
   }
  ],
  "build": {

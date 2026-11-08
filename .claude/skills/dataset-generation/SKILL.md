@@ -367,8 +367,10 @@ local. Assert each of these in the realism sweep, per column and per document.
    sites and produced names contradicting what the sites did. Draw per row, give the counts an uneven spread,
    and assert both no fixed period in the sequence and no name that names one service while its rows deliver
    another.
-5. **A document never states a position later than its own file date**, and a document's producer is the body
-   that issued it: a regulator's fee schedule carrying the plan's name as Producer is a defect, and so is
+5. **A document never states a position later than its own file date**, and a document's author is the body
+   that issued it: a regulator's fee schedule carrying the plan's name as Author is a defect (a PDF is
+   exported by an office application, which its Producer and Creator name, never a programming library or an
+   organisation: `reduce-house-fixes` H1), and so is
    `Application` "Microsoft Excel" beside the writing library's own `AppVersion`. Assert both per document
    against its issuer.
 

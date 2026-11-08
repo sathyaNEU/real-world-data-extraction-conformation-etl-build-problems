@@ -1,35 +1,34 @@
 # leak check, task118
 
-**Verdict: REVIEW.** 21 files read, 29 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 10 files read, 20 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: headline, release, national, readers, design, clicks, architecture, golden, culture, record, device, sentence, reading, change, silent, article, section, reduction, decisive, corrections, minutes, consecutive, fourth, counts, batteries
+Stump terms swept: headline, record, section, release, architecture, working, national, readers, golden, clicks, culture, reading, ambrey, minute, reader, device, second, counts, article, change, turnround, sentence, decisive, corrections, harness
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `op7_demand_response_dispatch_rev3.pdf`: 3 of 25 stump-paragraph terms appear (national, record, batteries); read whether the document names the move
-- **REVIEW** `ra_plan_2027_capacity_accreditation.pdf`: 4 of 25 stump-paragraph terms appear (design, record, reduction, counts); read whether the document names the move
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `dispatch_team_brief_2027.docx`: carries 11 of 13 distinctive words of the committed call: 'Site the 2027 platform dispatch team at Pellingham: it takes 4,100 passenger-minutes of lateness a weekday off the netwo'
 
-## 6 ranking artifacts (REVIEW 2, INFO 2)
-- **REVIEW** `dr_customer_survey_2026.xlsx`: names 4 of 4 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `dr_event_log_2024-2026.csv`: names 4 of 4 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `dr_expansion_costs_2027.xlsx`: names 4 of 4 answer-set candidates; confirm it does not rank them on the decision question
-- **INFO** `op7_demand_response_dispatch_rev3.pdf`: names 4 of 4 answer-set candidates; confirm it does not rank them on the decision question
+## 4 design-note vocabulary (REVIEW 1)
+- **REVIEW** `dispatch_team_brief_2027.docx`: 3 of 25 stump-paragraph terms appear (ambrey, minute, change); read whether the document names the move
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `appendix_b_design_year_2027.csv`: 2928 ISO dates after 2026-10-19, e.g. 2027-06-01, 2027-06-02, 2027-06-03, 2027-06-04, 2027-06-05
+## 6 ranking artifacts (REVIEW 1, INFO 5)
+- **REVIEW** `passenger_census_2026-10-13.csv`: names 6 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `dispatch_team_brief_2027.docx`: names 4 of 8 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `incident_log_autumn_2026.csv`: names 6 of 8 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `station_register.csv`: names 6 of 8 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `station_usage_estimates_2025-26.csv`: names 6 of 8 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `working_timetable_autumn_2026.xlsx`: names 6 of 8 answer-set candidates; confirm it does not rank them on the decision question
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 12 describing content (REVIEW 1)
-- **REVIEW** `op7_demand_response_dispatch_rev3.pdf`: names 8 column(s) of the data files verbatim (Programme, command, customers, firmware, month, programme): confirm it is the organisation's own record and not a note written for the analyst
-
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
-
-## 3 answer figures in the pack (clean)
 
 ## 5 announcements (clean)
 
@@ -39,29 +38,24 @@ Stump terms swept: headline, release, national, readers, design, clicks, archite
 
 ## 11 prompt gate (clean)
 
-
 ## Solver's-eye read
 
-Architecture 5, read 2 on target.zip 90561f0e (isolated Sonnet reader, a fresh copy of prompt.txt and target/ only; read
-again because OP-7 gained section 6).
+Isolated Sonnet reader at medium effort on the repaired pack, fresh copies of `prompt.txt` and `target/` only, spawned
+from the main session on 2026-11-07.
 
-1. Decisive step: none quoted outright; the nearest is the RA plan's 4.3 (accredited at the expected load reduction in
-   the system peak hour of the design year, against the load the same enrolled units would have drawn), which states
-   the estimand, not a pitfall.
-2. Ranking file: none; the cost workbook gives a cost per added unit and ranks nothing, and the survey and the event
-   log do not rank on the question.
-3. Helping file: none; the three PDFs read as utility documents with owners, revisions and footers.
-4. Answer figure or name: none; the plan's accredited-MW table covers generators and purchases only.
-5. Population sentences: plan 4.2 (the hour of highest forecast load in Appendix B), 4.3 (the expected reduction per
-   enrolled unit under the contracts in force for 2027), schedule 2.1 (3.0 kW a battery), OP-7 section 3 (a weekday
-   forecast at 110F or above is called); each literal result is the golden's.
-6. What decides: an analytical choice, the counterfactual reduction in the peak hour; OP-7 section 6, the clocks and
-   the incentive terms sit in the ledger asks.
-
-Sweep lines: the survey and the event log harmless (satisfaction scores; tickets and forecast highs, no megawatts);
-Appendix B's 2027 dates are the file's nature; OP-7 section 6 reads as the utility's own procedure and says nothing
-about the main question.
-
-Realism: the two workbooks' core properties showed the last save before creation; build.py now gives each workbook
-its own save history (asserted as H26), re-cut as target.zip 1b48e1a3 with no figure moved. The desert street and
-site names are the region's own.
+- Q1: no sentence announces the decisive step; the brief's paragraph 8 files the station-level saving only.
+- Q2: no file ranks the shortlisted stations on the question; the usage estimates rank footfall, and the incident log's
+  station-overrun cause never occurs at a shortlisted station.
+- Q3: none; every file is a record the operator keeps (the station register a thin but real crosswalk).
+- Q4: the usage estimates put Saltgate's footfall highest, a shortcut to the default path's wrong answer, not the
+  valued quantity: harmless.
+- Q5: the brief's paragraph 7 files the WHAT (each passenger's minutes after booked arrival where they leave the train,
+  every weekday train, the autumn weekdays as they ran, the census day's counts); paragraph 8 files the team's effect at
+  its station.
+- Q6: an analytical choice: the running file's unit field links a train into its next working and nothing filed names a
+  unit, a diagram or a next working.
+- Sweep lines: the brief and the census both harmless.
+- Realism: one tell, every census train's boarders equal to its alighters; fixed in the generator (the census as
+  counted, a miscount of one or two at about one count in fifteen: 214 of 559 trains balance, the largest gap 7), every
+  graded call figure unchanged at its rounding. Disclosure: the reader's automatic git context carried this task's
+  DRAWN commit message before it opened a file; it reports Q1 to Q5 did not draw on it and confirmed Q6 from the data.

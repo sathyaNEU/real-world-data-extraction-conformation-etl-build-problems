@@ -1,244 +1,382 @@
 # task306 design note
 
+Architecture 5, drawn 2026-11-08 after the portal returned architecture 4 FAILED_TO_STUMP on 2026-11-07 (both
+responses filed the golden capacity call and all 24 ask figures). One architecture per world: energy (EV packs),
+urban (regional GVA), actuarial (windstorm reinsurance) and quantitative finance (market impact) are spent in this
+slot, so the build moves to pharmacology with a new world, dataset, generator and prompt shell. The author's five
+conditions of 2026-11-07 bind the design and are argued in `## Author's conditions` before any data is cut.
+
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task306.json`, architecture 4, registered 2026-10-31 after a pull; the
-   three earlier architectures sit in the card's lineage as spent.
-2. Pairing: Quantitative Finance, task type portfolio-construction-risk, objective Opportunity Sizing & Decision
-   Support (the headline is the alpha a year each strategy keeps at the size it would be given, pool to realisable,
-   and the larger keeps the money); shape other (three candidates each with a gross alpha, a cost at size and a net,
-   the call, the runner-up and the gap, a chart, and two asks on the desk's own 2026 trading).
-3. World: Wealdmoor Investment Management, a London asset manager whose systematic equity desk runs four live UK
-   strategies and has three more backtested; its brokers Orchard Lane Securities, Calder Row Brokers, Brightwater
-   Execution and Hythe Street Markets. People from `guard.py names --geo "United Kingdom" --seed 306`: Howard Simpson
-   (chief investment officer, chairs the investment committee and sends the request), Carole Shaw (head of
-   systematic equities), Sarah Ford (head of trading, owns transaction cost analysis).
-4. Quantity: for each backtested strategy, its expected alpha a year in pounds at GBP 400 million, the backtest's
-   gross alpha less the cost its 2026 rebalances would pay traded at that size; the call is which strategy takes the
-   money from 4 January 2027.
-5. Default path: each strategy's 2026 turnover priced at what the desk's own orders paid per traded pound in stocks of
-   the same size (or a flat research cost), the field's back-of-envelope capacity check, which leaves small-cap
-   momentum first on its gross lead.
-6. Data-native sentence: the desk's orders carry each order's size and the stock's daily traded value, so the cost of
-   an order rises with its share of that value along a curve the executions trace; the desk's small-cap and mid-cap
-   pounds traded sat at about one per cent of a stock's day at the median, their larger shares coming in thin names
-   where an ordinary order is much of the day, while at GBP 400 million momentum's month-end trades take about 30 per cent of each liquid
-   small cap's day at the median pound, a scale the desk's average cost never weighted.
-7. Against task310 (an added store's yield behind a site's send-out limit), task106 (candidates sharing one pool of
-   spare capacity), task309 (one effect ratio carried across an intensity range) and task83 (a capped budget ranked by
-   a randomized holdout's effect): here one candidate is funded whole and the carried quantity is a cost per traded
-   pound that rises smoothly with the trade's share of the stock's day, fitted on the desk's own executions (the
-   card's differentiation lines).
-8. Furniture: forum committee_or_panel (the investment committee), forcing launch_or_rollout (the strategy goes live
-   on 4 January 2027), org financial_institution, role portfolio_manager; none is banned against the last three
-   builds (task181, task474, task125).
-9. Prompt shell: a which question (what alpha each keeps, and which should take it), the second sentence opening
-   "The", the rounding sentence opening "Alpha"; the dead architecture's how-much shell is not kept;
-   deliverables pptx and xlsx.
-10. Guard WARN people.first answered: Carole and Sarah each appear in one older build (task105, task108); both are the
-   drawn personas for this seed and no other persona in the pack shares their names.
+1. Card: `.claude/skills/fingerprint/cards/task306.json`, architecture 5, registered 2026-11-08; architecture 4 moved
+   into the card's lineage with its fate (the four earlier architectures sit there as spent).
+2. Pairing: Pharmacology, Pharmacoepidemiology & Safety, task type benefit-risk-assessment, objective Opportunity
+   Sizing & Decision Support (never carded on this objective). The headline is a sized opportunity, pool to
+   realisable: each review's eligible patients (the pool), the patients a year of pharmacist reviews would take off
+   the medicine for good (the realisable part) and the serious harms that avoids, which decides the call.
+3. World: Marches Primary Care Collaborative, a GP federation in the West Midlands whose clinical pharmacist team
+   serves its member practices under NHS Severn Marches Integrated Care Board's medicines safety contract. The team
+   can run one structured deprescribing review across every member practice in 2027-28. In the first half of 2026 it
+   piloted all three candidate reviews in the Clun Valley Primary Care Network's practices (rural, far from the
+   specialist services) and followed each reviewed patient for six months. Specialist letters reach the practices
+   from Wrekinside Teaching Hospitals NHS Trust and Marches Mental Health NHS Trust. People from `guard.py names --geo
+   "United Kingdom" --seed 306`: Colin French (the federation's lead clinical pharmacist, who ran the pilot, runs the
+   team across the practices and puts the 2027 review to the board), Leigh Bond (the federation's clinical director,
+   who chairs the board), Sylvia McDonald (the board's medicines optimisation pharmacist, who manages the contract).
+4. Candidates: (A) antipsychotics in people aged 65 and over (excluding psychosis, schizophrenia and bipolar disorder);
+   (B) benzodiazepines and Z-drugs in people aged 65 and over; (C) gabapentinoids taken with an opioid.
+5. Quantity: for each review, the serious harms a year it would avoid if run from April 2027 across the member
+   practices outside the pilot network: the sum over the patients meeting its protocol on 31 December 2026 of each
+   patient's chance of being off the medicine six months after review times the attributable harm rate per
+   patient-year at their age (the programme specification's section 3 and table 1). The call is which review runs.
+6. Shape: other. Three reviews, each with the patients it takes off and the harms that avoids (6 figures); the call,
+   the runner-up and the gap (3); a two-panel chart (2 to 3); the letters each network's practices received in each
+   half of 2026 (10); each network's patient consultations in each quarter (20); the two files: 43 to 44 criteria.
+7. Default path: carry each review's pilot take-off rate (the share of reviewed patients still off the medicine six
+   months on) to the federation's eligible patients and weight them by the harm table; it files antipsychotics.
+8. Data-native sentence: the practices' records carry each medicine's first issue and the specialists' letters carry
+   each recommendation to start one, so who started a patient's medicine is a relation between two systems that no
+   field stores; the pilot practices' patients were mostly practice-started because the Clun Valley is far from the
+   memory and older adults' services, while elsewhere in the federation most older people on an antipsychotic were
+   started by a specialist service, and practice pharmacists almost never stopped a medicine a specialist had started.
+9. Abstraction sentence, written against the nearest approved builds and found not to be the same: task258 carries a
+   playbook only where the mechanism's precondition holds (the preload in the served head) and task309 carries a cut
+   by a physical intensity; here the review reaches every eligible patient, nothing in the mechanism is absent and
+   nothing varies in intensity: the measured success rate depends on a provenance, who started the medicine, which
+   the pilot's population nearly all shared and the federation's antipsychotic users mostly do not. The card carries
+   differentiation lines against task258, task309, task124, task141, task303, task137, task128, task304 and task98.
+10. Furniture: forum board_of_directors (the federation's board approves its 2027 programme), forcing
+   purchase_order_or_contract (the integrated care board's 2027-28 medicines safety contract names the review in its
+   schedule), org hospital_or_health_provider (a GP federation providing the pharmacist service), role field_unit_lead
+   (the lead pharmacist runs the team across the practices). Redrawn after registration: task482's architecture 17
+   registered minutes before this card with committee_or_panel, launch_or_rollout and programme_officer, so those three
+   were redrawn to the board, the contract and the team lead, each the honester description of who decides, what
+   forces it and who asks, not merely the passing one. Redrawn at the draw: forum executive_team, forcing
+   budget_or_appropriation and the stump strategy composition_mix each repeated a build in the primary checkout's
+   window (task204, task142), and decomposition_attribution repeated task185 there. Two strategy keys describe this
+   design honestly, composition_mix (the pooled rate does not fit this pool's mix on a property no column names) and
+   forecast_method_backtest (`strategies.md` F6: the rate is stationary only in a constructed exposure, rebuilt from a
+   log, and the natural carry fails forward); the card takes the second because the window bars the first, and the
+   design note's step is exactly F6's: the take-off rate is stationary only within the provenance rebuilt from the
+   letters. No back-test picks it (condition 2 below).
+11. As of 6 January 2027, the extracts' pull date; the board meets on 14 January 2027 and the review starts in April.
+12. Prompt shell: a how-much question (the harm each review would avoid), the second sentence opening on the paper
+   for the board, the rounding sentence opening "Patients"; deliverables pdf and csv. None repeats a shell in this
+   slot's lineage. Guard on main: PASS. Guard from the primary checkout: WARN repeat.gate_g (forecasting against
+   task142), answered: the forecast here is a take-off carried across provenance, task142's is a population
+   projection.
+
+## Author's conditions
+
+1. The field's full textbook method, done carefully, files the wrong call. The field's method for a deprescribing
+   review's value is absolute harm at each patient's age times the patients the review takes off, the take-off read
+   from the review's own pilot (benefit-risk card 1: absolute risks at each subgroup's baseline). Done carefully (each
+   review's own pilot rate at six months, the protocol's eligibility and exclusions applied, ages banded, practice
+   mergers conformed, the pilot checked for homogeneity across its practices, ages and sexes, which it passes), it
+   funds antipsychotics. Only the step the data's structure demands files the golden: the take-off rate is stationary
+   only within provenance, so it must be carried by who started each medicine, rebuilt from the letters. No sentence
+   in the pack says that a specialist-started medicine is harder to stop or that provenance should be read.
+2. The data does not reveal the right method by fit. No model is fitted. The pilot's pooled rate reproduces the
+   pilot exactly and so does the provenance-stratified rate; neither is tested on the federation, whose 2027 outcome
+   does not exist yet; the pilot is homogeneous on every recorded attribute (practice, age band, sex), so no residual,
+   R-squared, back-test or reconciliation on any shipped column prefers the golden route.
+3. The asks are not executable from filed rules: each rides a reconstruction across two systems or grains no sentence
+   states (designed in `## Ask sheet`, `supplemental-stumping` Part 2.1), and on paper each of the top two keeps under
+   two fifths of the ask weight.
+4. The ladder (`## Ladder`) keeps at least one of the top two off the call: every route that does not rebuild
+   provenance files antipsychotics, including every reweighting by a recorded attribute; the pair is argued near 50
+   and built under 60 against a bar of 70.
+5. The three rules sit in `## Three rules`, each on its own line; `precut.py` exit 0 before data is cut.
 
 ## Default path
 
-1. Read IC-07: alpha at a size is the backtest's annualised gross alpha less the shortfall the twelve months of
-   rebalances would pay at that size, estimated from the desk's own executions.
-2. Conform the desk's orders (each execution id once, pounds fills as pence, the failover orders merged, shortfall
-   from arrival, cost positive) and read what they paid in the band each candidate trades, as IC-07 files it: the
-   value-weighted shortfall per band, about 33 basis points for the large caps, 37 for the FTSE 250 and 61 for the
-   small caps.
-3. Scale each candidate's traded weights to GBP 400 million and price every pound traded at its band's average, the
-   field's capacity check done on the desk's record.
-4. Net it from gross alpha: UK Smaller Companies Momentum keeps about GBP 13 million, UK Mid Cap Value 10, UK Large Cap
-   Quality 6.
+1. Read the federation's 2027 medicines safety programme specification: one review run from April 2027 across the
+   member practices outside the Clun Valley network, valued at the serious harms a year it avoids, the sum over the
+   patients in scope of each patient's chance of being off the medicine six months after review times the harm rate
+   at their age in table 1 (section 3).
+2. Run each review's protocol on the practices' issue, problem list and registration extracts on 31 December 2026:
+   612 patients for the antipsychotic review, 1,239 for the benzodiazepine review and 1,636 for the gabapentinoid
+   review.
+3. Read the 2026 pilot from its close-out report and outcome log: the share of reviewed patients off the medicine six
+   months on is 40.0 per cent for antipsychotics, 23.0 for benzodiazepines and 27.9 for gabapentinoids, the same
+   across the pilot's practices, age groups and sexes (smallest p-value 0.21).
+4. Carry each review's pilot rate to its patients in scope and weight by the harm rate at each patient's age: about
+   24 harms a year for antipsychotics against 12 for benzodiazepines and 11 for gabapentinoids.
 
-Ends on: UK Smaller Companies Momentum
-Golden: UK Mid Cap Value
+Ends on: the antipsychotic review, about 24 harms a year avoided.
+Golden: the benzodiazepine review, 12 harms a year avoided against the gabapentinoid review's 8 (the runner-up) and
+the antipsychotic review's 6; gap 4.
 
 ## Stump sentence
 
-The default path prices each candidate's twelve months of rebalances at GBP 400 million at what the desk's own orders
-paid per traded pound in the same band and gives the money to UK Smaller Companies Momentum; the step that lands it
-there is carrying the desk's average cost to trades of a new size, when the executions show shortfall rising with the
-square root of each order's share of the stock's daily traded value and at GBP 400 million momentum's month-end swaps
-take a fifth to two fifths of each small cap's day, so it keeps about GBP 5 million against UK Mid Cap Value's 8.
+The default path carries each review's pilot take-off rate to the federation's patients in scope and funds the
+antipsychotic review at about 24 harms a year; the step that lands it there is carrying the pilot's average rate to
+every patient, when practice pharmacists almost never stopped a medicine a specialist service had started (4 of 96
+in the pilot), the pilot's antipsychotic patients were mostly practice-started (136 of 160) and a specialist service
+started 86 per cent of the antipsychotic patients in scope, so the antipsychotic review would avoid about 6 harms a
+year against the benzodiazepine review's 12.
 
 ## Three rules
 
-Task type: portfolio-construction-risk (Quantitative Finance), which serves Opportunity Sizing & Decision Support: the headline is the alpha a year each candidate keeps at the capital it would be given, the pool its gross alpha and the realisable part what survives its own trading.
-Domain test: the quantity that decides is each candidate's alpha net of the market impact its rebalances pay at GBP 400 million, which systematic equity estimates from the desk's transaction cost analysis, cost per order rising with its share of the stock's daily volume; with another field's nouns there is no participation, no arrival-mid shortfall and nothing that makes a trade dearer per pound as it grows.
-Swap: "Which charity should receive the bequest, sized by the beneficiaries it reaches?" reads differently, because a grant's cost per beneficiary does not rise with the size of the cheque against what a market absorbs in a day; put megawatt-hours in and there is no stock whose daily traded value prices the trade.
-Layer 1: the OMS export as the desk's systems write it: fills re-sent after the 9 June outage under the same execution ids, one broker reporting pounds where the rest report pence, orders the backup re-created after each failover under new ids, block orders on the desk's block account with a separate allocation export, cancelled orders with unfilled remainders, UTC stamps against London trade dates, a reused account code, SEDOL in the market data against ISIN in the backtest log, share consolidations in the market data; each is produced by the system that records it and none is placed to be caught.
-Layer 2: estimation_fit, the shortfall curve in trade size: the desk's executions trace cost against each order's share of the stock's day, and the comparison is decided by reading that curve at the participation each candidate's rebalances would have at GBP 400 million.
-Decisive step: pricing each rebalance trade at the cost the executions show for an order of its own share of the stock's day, rather than at what the desk paid on average for its own, far smaller orders.
-Not semantics: every field read right (participation, arrival mid, shortfall sign, the bands) still leaves the band averages, which are correct figures for the desk's own orders and say nothing about orders ten to forty times larger; no column holds a trade's cost at a size the desk never traded.
-Not rule application: IC-07 files the estimand and the TCA standard the measures, and neither says how cost depends on size; executing every filed rule with each band's average cost files momentum, and only the shape of cost against participation in the executions, which no sentence states, moves the money.
-Analyst test: a strong analyst conforms every fill, reads IC-07 and the TCA standard correctly, prices each candidate's rebalances at GBP 400 million at the desk's value-weighted shortfall for that band and gives the money to UK Smaller Companies Momentum at about GBP 13 million kept; every field is read and every rule executed, and the call is wrong because momentum's trades at that size sit far up a cost curve the desk's average never reached.
-Estimand: ic_capital_allocation_policy_2026.pdf section 2 with tca_standard_rev4.pdf sections 1 to 3: population, the candidates in Research's workbook; outcome, alpha a year at GBP 400 million, the annualised gross alpha 2015 to 2026 less the implementation shortfall of the rebalances of the twelve months to 30 November 2026 scaled to GBP 400 million and traded in full on each rebalance day; unit, pounds a year; comparison, the largest.
-No decoy: nothing is planted to be caught; no memo, research note or broker estimate argues the band average, the commission schedule and the ESG list are context, and the backtest workbook carries gross alpha only.
-No certified replay: no certified or published figure reproduces the method; no file carries a cost estimate for any candidate, a capacity figure or a ranking.
-Lesson: what a strategy keeps depends on the size it runs at, because a trade's cost rises with its share of the stock's daily volume; a model that learns to read the desk's own cost curve at the size being decided, not at the size it has traded, sizes capacity the way the field does, which no build on file teaches.
+Task type: benefit-risk-assessment (Pharmacology, Pharmacoepidemiology & Safety), which serves Opportunity Sizing & Decision Support: each review's eligible patients are the pool, the patients a year of reviews takes off for good the realisable part, and the serious harms that avoids decide the call.
+Domain test: the quantity that decides is the serious harm a deprescribing review avoids, worked the way benefit-risk works it: the absolute harm a patient's continued use carries at their age, from the programme's attributable rates, summed over the patients the review actually takes off; with another field's nouns there is no medicine, no specialist who started it, no harm per patient-year of use and no pharmacist's review to stop it.
+Swap: "which of three loyalty campaigns should the retailer run, sized by the lapsed customers each wins back" keeps the arithmetic shape but loses what decides here, because no campaign's success depends on which body first put a customer on a product and no attributable harm per year of use weights the people it moves.
+Layer 1: the systems' own records: practice prescribing coded by dm+d virtual product against trust letters naming medicines in free text, one row per medicine line, with strengths and brand names; two practices merged on 1 April 2025, their registrations carried by the survivor and the hospitals' practice field keeping the old code for some patients; two trusts' date formats; a minority of letters carrying only a hospital number, resolved through the federation's lookup; the pilot log's six-month row beside its review row; the mental health trust's April 2026 system change (an outage week's letters sent on 7 April, four weeks re-sent under new references); the hospital trust's GP Connect receipts from October 2026 with a message id and the message's date; letters dated over Christmas arriving in January; the hub booking system in UTC; hub appointments written into shared-record practices' systems on the day or the next working day; group reviews held as one booking with a separate register. Each is produced by the system that writes it, none is placed to be caught, and with every one handled the call is unchanged (checks.py R2).
+Layer 2: estimand_identification, carrying a pilot's measured success to a different population: the pilot's take-off is stationary only within who started each medicine, so it must be carried by that provenance to the federation's own mix, not at the pilot's average.
+Decisive step: for each patient in scope, reading whether a specialist service started the medicine (a hospital or mental health trust letter naming a medicine of the class shortly before the practice first issued it) and carrying the pilot's take-off for patients started that way, because the pilot's pharmacists took 196 of 604 practice-started patients off and 4 of 96 specialist-started, and the pilot's patients were mostly practice-started.
+Not semantics: every field read right (the dm+d codes, the letters' recommendations, the six-month status, the harm table's bands) still leaves the pilot's average take-off, which is a correct figure for the pilot's own patients; no field records who started a medicine, and the take-off's dependence on it appears only when the pilot is split by a relation no column holds.
+Not rule application: no filed rule says who can be taken off or how a pilot carries; the protocols file eligibility and the specification files the harm rates and the sum over patients, and executing every filed sentence with the pilot's reported rates funds antipsychotics. The enumerated family (the pilot's average; its rate re-weighted by age band or sex; carried by product; provenance read from any class letter at any time; the provenance carry under every window from 30 to 365 days, either date basis, hospital-number letters dropped or resolved, Start letters only, the specialist rate pooled across reviews, and stratified by age band or by sex) spreads the antipsychotic review's harms from 5.8 to 24.1 a year; the standing family (the routes the pilot's own outcomes leave defensible once provenance is read: 46 against 4 per cent off) spreads them from 5.84 to 6.15 and every rounded figure stays (checks.py M5); what rules the rest out is the pilot's own split, never a sentence.
+Analyst test: a strong analyst conforms every record, applies each protocol, carries each review's pilot take-off (40.0, 23.0 and 27.9 per cent, the same across the pilot's practices, ages and sexes) to the patients in scope, weights them by the harm table and funds the antipsychotic review at about 24 harms a year; every field and rule is read right, and the call is wrong because a specialist service started 86 per cent of the antipsychotic patients in scope and the pilot's pharmacists took 4 of 96 specialist-started patients off.
+Estimand: medicines_safety_programme_2027.pdf section 3: population, the patients registered at member practices outside the Clun Valley network who meet the review's protocol on 31 December 2026, every one of whom the team reviews; outcome, the serious harms a year the review avoids, the sum over those patients of each patient's chance of being off the medicine six months after review (no class issue in the 183 days after it) times the attributable harm rate in table 1 at their age on 31 December 2026; unit, harms a year, and patients taken off as the sum of the chances; comparison, the largest.
+No decoy: nothing is planted to be caught: no memo, briefing or stakeholder argues for a review, the pilot close-out reports what the pilot measured and recommends nothing, and no document ranks the reviews by the harm they would avoid across the federation.
+No certified replay: no certified or published figure reproduces the method; the close-out's rates are the pilot's own, true for its patients, and no file carries a federation-wide take-off, a provenance share or a harm estimate for any review.
+Lesson: a programme's measured success carries to a new population only through what it depended on, and what a deprescribing review depends on most is who started the medicine; a model that learns to ask where each patient's arrangement came from before carrying a pilot rate sizes medicines programmes the way the field should, which no build on file teaches.
 
 ## Survivor anatomy
 
-Actor: the deciding property, what a trade of a given size would cost, has no column; the orders carry their own participation and shortfall, the candidates' trades carry only a weight, and the property is the relation between the two that the executions trace and the candidates' trades sit far beyond on average.
-Link: no key ties a candidate's trade to any execution; the comparison that prices it (the desk's orders binned or fitted on participation, read at the trade's own participation on the rebalance date) is one the band-average capacity check never asks for, and no sentence invites it.
-Reflex: the field's back-of-envelope capacity check, turnover times the desk's average realised cost, is rung 0 and files UK Smaller Companies Momentum.
-Back-test: the textbook route validates: on the desk's own orders the band average reproduces each book's realised 2026 shortfall almost exactly, because those orders sit where the average was measured.
-Second use: every file the decisive step reads has its own reason to be in the pack: the fills and orders carry the year's TCA report (both asks), the market data the participation the standard defines, the trade log the candidates' rebalances.
-Shock: momentum's gross alpha is the largest by GBP 8 million and its trades are the desk's most familiar kind; the golden is not an interval of any sort of the candidates by gross alpha, turnover, band or holdings, asserted in checks.py (C2 and R0).
-Pins: the WHAT sits in IC-07 (gross alpha, the twelve months of rebalances, the size, traded in full on the day, the desk's executions in the candidate's index band as the population a cost is estimated from, commissions and the launch build outside) and the TCA standard (shortfall, value, participation, volatility, the consolidation day that gives no return, the 60 sessions of history); no filed sentence names how cost grows with size, a square root, impact or capacity (R1).
+Actor: the deciding property, who started a patient's medicine, has no column: the practices' records carry the first issue, the letters carry a recommendation and a date, and provenance is the relation between the two (a letter naming a medicine in the review's class shortly before the practice first issued it) that nothing stores.
+Link: no key ties a letter to a medicine course; the link is the patient's pseudonym plus a time order plus a free-text medicine name read against dm+d, and no sentence invites reading letters for the call: the letters are in the pack for the board's letters workload (ask A).
+Reflex: the field's method for a review's value, absolute harm at each patient's age times the patients taken off at the review's own pilot rate, sits at rung 1 and files the antipsychotic review.
+Back-test: the textbook route validates: the pilot's take-off is homogeneous across its practices, age bands and sexes (asserted, smallest p-value 0.21), the close-out says so, and the pilot rate reproduces the pilot's own outcomes exactly; no record of the federation's 2027 outcome exists to refute it.
+Second use: every file the decisive step reads has its own reason to be in the pack: the letters feed ask A, the medication courses and prescribing issues carry each protocol's eligibility, the pilot log carries the take-off, the registrations carry ages, eligibility and ask B's networks, the list sizes both asks' denominators.
+Shock: the antipsychotic review's pilot rate is the highest and its pool harm the largest, which reads as ordinary; the golden (benzodiazepines) is not the top of any sort of the reviews by eligible patients, pilot rate, harm rate, pool harm or patients taken off at the pilot rate (asserted in checks.py, R0).
+Pins: the WHAT sits in the programme specification (the population outside the Clun Valley network on 31 December 2026, the six-month definition of off, the harm table and the age it is read at, the sum over patients) and the protocols (eligibility); no filed sentence names who started a medicine, specialists, letters, provenance or a carry by subgroup (R1).
 
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Second use | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| R0 turnover at a flat research cost | none | the trade log's weights | the backtest habit | none | none | one product | yes | readable |
-| R1 turnover at the desk's average shortfall per band | IC-07 names the desk's executions | the TCA columns | the field's capacity check | the desk's own books reproduce it | the battery cleans the fills | one product | yes | readable |
-| R2 R1 with the orders' average per order, not per pound | none | the TCA columns | a TCA summary | none | none | one product | yes | readable |
-| R3 (decisive) each trade priced at its own participation on the executions' cost curve | none names size, a curve, impact or a square root | no column holds a trade's cost at a new size | not the capacity reflex | no file prices any candidate | the battery stops at clean orders | not affine in any shipped column | the files carry the asks | silent |
+| R0 eligible patients times the harm rate, no take-off | the specification's harm table | the courses' columns | the pool-harm reflex | none | none | one product | yes | readable |
+| R1 the pilot's take-off times eligible times harm | the close-out's rates | the pilot log | the field's method | the pilot reproduces itself | the battery cleans the log | one product | yes | readable |
+| R2 R1 re-weighted by age band, sex, practice or product | none | the pilot log's columns | a case-mix carry | the close-out's homogeneity table | none | one product | yes | readable |
+| R3 (decisive) each patient's take-off by who started the medicine | none names provenance, specialists or letters | no column holds provenance | not the carry reflex | no file prices any review federation-wide | the battery stops at clean courses | not affine in any shipped column | the letters carry ask A | silent |
 
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | participation's daily traded value | 20 sessions before the trade date | 60 sessions | same call and rounded figures (asserted) | TCA standard section 3 |
-| SF2 | daily volatility | 60 sessions before | 250 sessions | same call and rounded figures (asserted) | TCA standard section 3 |
-| SF3 | the cost curve's form and weighting | least squares, band by band, on daily volatility times the square root of participation | participation to the 0.4 to 0.7, without the volatility term, value-weighted, the exponent fitted per band, binned | same call, runner-up, gap and rounded figures under every member (asserted, C2, C3 and C7); band by band each alpha stays at least 0.25 inside its million (C8); a fit through the origin keeps the call, runner-up and gap and moves momentum's kept alpha to 4 (the re-judge's one open member, rejected by the fit) | convergence: the desk's small-cap and mid-cap orders reach a fifth to two thirds of a thin name's day, so the executions trace the curve across the participation the candidates trade at |
-| SF4 | the failover orders in the fit | merged into their originals | left as separate orders | same call and rounded figures (asserted) | TCA standard section 1 |
-| SF5 | re-sent fills in the fit | each execution id once | kept twice | same call and rounded figures (asserted) | TCA standard section 1 |
-| SF6 | a pounds fill | times 100 into pence | read as pence | shortfalls of minus 10,000 bps show at once (asserted) | the fill's price unit and TCA standard section 1 |
-| SF7 | expected gross alpha | the Summary's annualised figure | the annual alphas compounded or averaged | the annual alphas compound to it (asserted) | IC-07 section 2 |
-| SF8 | the rebalances priced | the twelve months to 30 November 2026: twelve monthly, four quarterly | calendar 2026 or the whole log | not the filed window (asserted twelve and four) | IC-07 section 2 |
-| SF9 | what the cost of trading excludes | commissions and the launch build | either included | not the filed estimand | IC-07 section 2 (asserted) |
-| SF10 | shortfall, value, a block's owners and a portfolio's orders | arrival mid, filled quantity at arrival, the allocation export, the dated register | fill value, order quantity, the blotter's account | moves the asks only | TCA standard sections 1, 2 and 4 (asserted) |
-| SF11 | the executions a candidate's cost is estimated from | the desk's executions in stocks of the candidate's index band | one curve pooled over the bands | with an intercept per band, same call and rounded figures (asserted, C7); with one intercept for all bands the figures move, since the half-spread differs by band | IC-07 section 2 (asserted, SF9) |
-| SF12 | the consolidation day in the volatility | no return | the history before it adjusted, or the tenfold change left as a return | same call and rounded figures under both (asserted, C7): only the least liquid small caps, which no book or candidate trades, consolidate | TCA standard section 3 (asserted, SF10) |
-| SF13 | an order without 60 sessions of history | measured only once 60 sessions exist | measured on fewer | none exists: the books' orders begin on 1 April 2025, the 64th session (asserted) | TCA standard section 3 (asserted, SF10) |
-| SF14 | the ESG list against the rebalance log | inert: every exclusion took effect before the log and the orders begin | the excluded names dropped from the rebalances | no rebalance trade is in an excluded name (asserted), so dropping changes nothing (C7) | the list's own effective dates |
-| SF15 | the Severnvale transition's and the block account's orders in the fit | kept: the desk's own executions | dropped | same call and rounded figures (asserted, C7) | IC-07 section 2 |
-| SF16 | orders cancelled part filled, in the fit | kept for the quantity they filled | dropped | same call and rounded figures (asserted, C7) | TCA standard section 2 |
+| SF1 | eligible | the protocol on 31 December 2026 (issues in the six months to and including that date) | issues in calendar 2026; the six months' first day read as 29 June, 30 June or 2 July | same call (asserted); the same patients in scope under every first day (asserted) | the protocols' search sentence and specification section 3.2 |
+| SF2 | off the medicine | no issue of a medicine in the review's class in the 183 days after review | off at review | not the pilot's measure; every six-month row equals the 183-day rule (asserted) | specification section 3.4 and protocol step 5 |
+| SF3 | the population | patients registered outside the Clun Valley network | every member practice | same call (asserted) | specification sections 1 and 3.2 |
+| SF4 | the age a harm rate is read at | age on 31 December 2026 | age at review in 2027 | same call (asserted) | specification section 3.3 |
+| SF5 | who started the medicine | a letter naming a class medicine in the 60 days before the first issue of the patient's earliest class course | 30, 90, 180 or 365 days; Start recommendations only | same call and rounded figures (asserted, C1) | convergence: every specialist-started course has its letter 5 to 26 days before its first issue and none earlier, and no practice-started course has a class letter in the 365 days before |
+| SF6 | the letter's date | the trust's letter date | the practice's received date where the workflow log holds it | same call and rounded figures (asserted, C1) | convergence: every initiation letter was received before the first issue |
+| SF7 | letters carrying only a hospital number | resolved through the lookup | dropped | same call and rounded figures (asserted) | no initiation letter carries only a hospital number |
+| SF8 | the pilot's specialist-started take-off | each review's own | pooled across the reviews | same call and rounded figures (asserted) | convergence: the three reviews' rates are equal (1 of 24, 1 of 24, 2 of 48) |
+| SF9 | a patient on two medicines in a class | one patient, the earliest course | one per course | same call (asserted; 74 patients, all practice-started) | the protocols: a search finds patients |
+| SF10 | a patient in scope for two reviews | counted in each review | dropped from one | same call (asserted; 16 patients) | only one review runs |
+| SF11 | the pilot's review row against its six-month row | the six-month row | the review row's outcome | not the pilot's measure; same call (asserted) | specification section 3.4, protocol step 5 and the close-out's off rate |
+| SF12 | merged practices | their patients in the survivor's network | the old code's network | same call (each merged practice sits in its survivor's network, asserted) | the practice register's closed date and successor |
+| SF13 | rounding path | each figure rounded once from its unrounded sum; the gap from the rounded figures | the gap rounded from the unrounded sums | same gap (asserted) | the prompt's rounding sentence |
+| SF14 | a course's first issue | the courses extract's first_issue_date | the earliest issue in the issue extract | not a first issue: the issue extract starts on 1 July 2025 | the field's name; it equals the issue extract wherever that covers the date (asserted) |
+| SF15 | a course begun before the letters feed opened (1 October 2019) | none exists: every class course began on or after 15 November 2019 | treated as of unknown start | same call (none exists, asserted) | the courses extract |
+| SF16 | a letter sent twice (ask A) | one letter, in the half and at the practice of its first receipt | each copy a letter | the call is untouched; every first-half figure moves (asserted, K3) | specification section 4.3, which counts a letter once at its first receipt (asserted, K7); which 7 April letters are copies is left to their content |
+| SF17 | the day a hub appointment's practice record may fall on (ask B) | the appointment's day or the next working day | the next weekday, bank holidays ignored; any window of 3 to 10 days | the call is untouched; the same 20 figures (asserted, K7) | convergence: no write-up falls across a bank holiday (the pharmacists write up before the break) and no same-pharmacist record of a patient falls within 10 days of a hub appointment except its write-up (asserted, K7) |
+| SF18 | the GP Connect receipt a Wrekinside letter takes (ask A) | the first receipt for the patient carrying no letter's reference, on or within 21 days after the letter date | windows of 15 or 30 days | the call is untouched; the same 10 figures (asserted, K7) | convergence: no other Wrekinside document reaches a patient within 30 days of a medicine letter |
 
 ## Ladder
 
 | Rung | Construction | Files | Dies to |
 |---|---|---|---|
-| 0 | gross alpha less turnover at a flat 10 basis points | UK Smaller Companies Momentum (GBP 19 million kept) | IC-07 sends the cost to the desk's executions |
-| 1 | gross alpha less turnover at the desk's value-weighted shortfall per band | UK Smaller Companies Momentum (about 13, against 10 and 6) | the desk's pounds sat where the average was measured; at GBP 400 million momentum's swaps take a fifth to two fifths of each small cap's day |
-| 2 | rung 1 with the per-order average | UK Smaller Companies Momentum (13, against 11 and 7) | the same fact: the desk's orders are mostly small |
-| 3 (decisive) | each trade at the cost the executions show for its own participation | UK Mid Cap Value (8), UK Large Cap Quality (6), momentum (5) | the golden |
+| 0 | patients in scope times the harm rate (pool harm) | antipsychotics (60.3 against 51.1 and 38.8) | the specification values what a review takes off, not the pool |
+| 1 | the pilot's take-off times each patient's harm rate | antipsychotics (24.1 against 11.8 and 10.8) | a specialist service started 86 per cent of the antipsychotic patients in scope; the pilot's were mostly practice-started |
+| 2 | rung 1 re-weighted by age band or sex, or carried by product | antipsychotics | the same fact: none of those attributes moves the take-off |
+| 2b | provenance read from any class letter at any time | antipsychotics (15.8 against 12.0 and 9.2) | a letter after the medicine began did not start it; the pilot's antipsychotic split blurs to 23 against 47 per cent |
+| 3 (decisive) | each patient's take-off by who started the medicine | benzodiazepines 12.0, gabapentinoids 8.1, antipsychotics 6.2 | the golden |
 
-- **Margins on the cut pack** (asserted in checks.py): the golden keeps 4.90 (momentum), 7.99 (UK Mid Cap Value) and
-  5.90 (UK Large Cap Quality), a gap of 2.08. Across the 31-member fit family (C7: participation to the 0.4 to 0.7,
-  with and without the volatility term, band by band and pooled with an intercept per band, unweighted and
-  value-weighted, without the transition, the block account or the cancelled orders, either consolidation reading,
-  the ESG names dropped) band by band momentum keeps 4.79 to 5.24, UK Mid Cap Value 7.97 to 8.07 and UK Large Cap
-  Quality 5.85 to 6.03, each at least 0.25 inside its whole million (C8); the pooled fits widen that to 4.74 and 6.14,
-  still 0.2 inside. The fitted power, the binned reading, 60-session participation, 250-session volatility and the
-  fit without the failover merge or with the re-sent fills round to the same figures (C3, SF1 to SF5). The size-blind
-  routes file momentum by 2.4 to 7.4 million (R0). The one member outside the family, recorded at the re-judge: a
-  curve fitted through the origin (no half-spread) keeps the call, the runner-up and the gap but puts momentum at
-  3.64, so its kept alpha rounds to 4 against the golden's 5; the executions reject it (the small-cap band's fit
-  explains 0.77 of the shortfall's variance with the intercept against 0.68 without), and naming the curve's form
-  would file the method.
-- **Pricing sequence.** (1) The residue the filed WHAT leaves is how cost depends on size, a method, not a knob. (2)
-  Momentum has to fall from about 13 kept to under 6; at GBP 400 million its pounds trade at a fifth to two fifths of
-  the day, where the executions price them at about twice the band average (126 basis points against 61). (3) The one-group-by route (cost by
-  band) ranks the books' realised costs correctly and misprices the candidates; no route is affine in a shipped
-  column. (4) Across the fit family momentum spreads 4.74 to 5.24, mid caps 7.97 to 8.07; the gap of 2 million to
-  the runner-up holds under every member (raw 1.86 to 2.22). (5) and (6) No variance is corrected. (7) No subset of rows prints a
-  candidate's cost. (8) The reflex sweep runs as code (checks.py R0, C2 and C3).
+- Position and margins (measured, checks.py M3 and L1): the golden is second on rungs 0 and 1 and first on rung 3;
+  rung 1's winner leads by 2.05 times; the golden leads the runner-up by 1.48 times and the runner-up the third by
+  1.32 times.
+- Pricing sequence. (1) The residue the filed WHAT leaves is how each patient's chance of coming off is carried from
+  the pilot, a method, not a knob. (2) The antipsychotic review falls from 24.1 to 6.2 harms: its carried take-off
+  falls from 40 to 10 per cent. (3) The one-group-by routes (the pilot by any recorded attribute, or by product) are
+  homogeneous by construction and file rung 1. (4) The take-off rates are observed proportions over a pilot of 700
+  patients with a six-month check; the standing family's spread (provenance alone, or by age band or sex) moves the
+  antipsychotic review by 0.31 harms and no rounded figure. (5) and (6) No variance is corrected. (7) No subset of
+  rows prints a review's federation-wide figure. (8) The reflex sweep runs as code (checks.py L0 to L5, R3).
+- Bin test: the decisive step is worth about 18 harms on the antipsychotic review against a standing spread of 0.31;
+  each graded harm sits within 0.16 of its whole number and each patients figure within 2.2 of its ten (M4).
 
 ## Closure table
 
 | Axis | Reading in this build | Move |
 |---|---|---|
-| 1 Population | the candidates in Research's workbook; each one's cost estimated from the desk's executions in its index band | filed (IC-07 sections 1 and 2); SF11 |
-| 2 Unit of account | pounds of alpha a year at GBP 400 million | filed (IC-07 section 2) |
-| 3 Attribution window | the rebalances of 1 December 2025 to 30 November 2026 | filed (IC-07 section 2); SF8 |
-| 4 As-of dating | each trade's participation and volatility on its rebalance date, the consolidation day giving no return, 60 sessions of history | filed (TCA standard section 3); SF1, SF2, SF12, SF13 |
-| 5 Version basis | the trade log as Research cut it; the OMS export of 1 December 2026 | one version shipped |
-| 6 Denominator | the GBP 400 million for alpha; arrival value for shortfall | filed |
-| 7 Weighting | shortfall value-weighted at arrival; the curve's own weighting left open and converging | filed (TCA standard section 2); SF3 (C7) |
-| 8 Window length | twelve months of rebalances | filed |
-| 9 Boundary inclusivity | 1 December 2025 and 30 November 2026 both inside | filed; no rebalance near either edge |
-| 10 Rounding path | each figure rounded once from unrounded pounds; the gap from the rounded figures | C1; mid-bin asserted (C4) |
-| 11 Tie-break | none needed: the margins exceed 1.2 million | C2 |
-| 12 Maturity and censoring | none: the orders are complete fills to the export | C1 |
-| 13 Order of operations | conform, size, fit, price, net | C1 (SF4, SF5) |
-| 14 Row order | none | C1 |
-| 15 Duplicate resolution | each execution id once | filed (TCA standard section 1); SF5 |
-| 16 Identity normalisation | ISIN to SEDOL through the security master | the systems' own keys |
-| 17 Netting against gross | buys and sells both cost, signed so a cost is positive | filed (TCA standard section 2) |
-| 18 Dimensional units | pence in the market data and fills, pounds where a fill says so | filed; SF6 |
-| 19 Code and status semantics | TERMINATED, BACKUP-RECOVERY, CANCELLED, the block account | filed (TCA standard section 1) |
-| 20 Integerisation | none: pounds | C1 |
-| 21 Clause scope | IC-07's commissions and launch exclusions bind the call only | filed scope |
-| 22 Forward window contents | the twelve months of 2026 rebalances stand for a year of trading from 4 January 2027 | filed (IC-07 section 2) |
+| 1 Population | the protocol's patients at member practices outside the Clun Valley network on 31 December 2026 | filed (specification section 3); SF3 |
+| 2 Unit of account | the patient; harms a year | filed; SF9 |
+| 3 Attribution window | eligibility on the six months to 31 December 2026; letters by the half of first receipt (ask A); consultations by quarter of the consultation (ask B) | filed (protocols; the asking sentences); SF1 |
+| 4 As-of dating | age and registration on 31 December 2026; the receiving practice (ask A); registration on the day of each consultation (ask B) | filed (specification 3.2, 3.3, 4.1); asserted |
+| 5 Version basis | the pilot's six-month row | filed (pilot log header); SF11 |
+| 6 Denominator | eligible patients; registered patients at the start of each half or quarter for the asks | filed (asking sentences) |
+| 7 Weighting | each patient once at their own chance and age | filed (specification section 3) |
+| 8 Window length | 183 days for off; the provenance window converges from 30 to 180 days | filed; SF2, SF5 |
+| 9 Boundary inclusivity | 31 December 2026 inside; no course begins on a window edge | asserted |
+| 10 Rounding path | once, from the unrounded sum | SF13 |
+| 11 Tie-break | none needed: margins exceed 1.2 times | asserted |
+| 12 Maturity and censoring | every pilot patient has six months of follow-up by 31 December 2026 | asserted |
+| 13 Order of operations | conform, classify, carry, weight, sum | asserted |
+| 14 Row order | none | asserted |
+| 15 Duplicate resolution | the six-month row; a re-sent letter once, at its first receipt (ask A); a hub appointment and its practice-system record once (ask B) | forced by identity; asserted (K3, K4, K5) |
+| 16 Identity normalisation | pseudonym, the hospital-number lookup, dm+d names | the systems' own keys; SF7 |
+| 17 Netting against gross | none | n/a, asserted |
+| 18 Dimensional units | patients and harms a year | filed |
+| 19 Code and status semantics | the protocol codes, the recommendation words | the protocols' own code lists |
+| 20 Integerisation | whole patients and harms printed from unrounded sums | SF13 |
+| 21 Clause scope | the specification's population binds the call only | filed scope |
+| 22 Forward window contents | the eligible patients on 31 December 2026 stand for 2027's reviews | filed (specification section 3) |
 
 ## Literal reader
 
-Executed word for word, IC-07 takes each candidate's annualised gross alpha from the workbook, scales the trade log's
-weights for the twelve months to 30 November 2026 to GBP 400 million and asks what implementation shortfall those
-trades would pay, traded in full on each rebalance day, estimated from the desk's executions in the candidate's index
-band; the TCA standard defines shortfall, value, participation and volatility, the consolidation day and the history
-it is measured on. A literal reader fitting cost on participation, the standard's own measure, files
-the golden; the band average is a reading of the executions that ignores the measure the standard defines.
+Executed word for word, the specification asks for the sum over the eligible patients outside the Clun Valley network
+of each patient's chance of being off six months after review times the harm rate at their age; the protocols fix who
+is eligible and the pilot supplies the evidence for each patient's chance. A literal reader who estimates each
+patient's chance from the pilot's outcomes for patients like that patient files the golden once the pilot is split by
+provenance, because that is the only attribute the pilot's take-off depends on; the pilot's average is the easy method
+on the same literal estimand, not another reading of it.
 
 ## Oracles
 
-None on the main call: no file carries a cost estimate, capacity figure or ranking for any candidate. The verifier
-(generator/verify.py) recomputes the call, every figure and both asks with pandas from target/ alone.
+None on the main call: no file carries a federation-wide take-off, a provenance share or a harm estimate for any
+review, and the close-out's rates are the pilot's own. The verifier (generator/verify.py) recomputes the call, every
+figure and both asks with pandas from target/ alone.
 
 ## Ask sheet
 
-Two asks on the desk's own 2026 trading, both from the OMS export the call reads for its curve, neither carrying the
-call's decisive step.
+Two asks on records the call never reads: the hospital medicine letters the practices received in 2026 (ask A, in the
+paper) and the pharmacist team's 2026 consultations (ask B, the csv). Ask A counts every medicine letter any member
+practice received in 2026, about any patient; ask B counts consultations. Neither touches the protocols' searches,
+the courses, the pilot or the six-month rule.
 
-**Ask A, each live strategy's implementation shortfall in each quarter of 2026 (16 figures, bps to one decimal).**
-- Devices: the orders the backup re-created after each failover are the originals (TCA standard section 1), and
-  nothing keys them; a block order belongs to its books by the allocation export.
-- Hazards: re-sent fills, pounds fills, cancelled remainders, the dated register.
+**Ask A, the hospital medicine letters each network's practices received in each half of 2026, per 1,000 patients
+registered at the start of the half (10 figures, one decimal).**
+- H18 home: the board sizes the medicine-letter workload each network's practices carry before committing the
+  pharmacist team to a review.
+- Primary 1 (D1 and D2, one letter under two reference schemes): the mental health trust's April 2026 system change
+  sent its outage week's letters on 7 April for the first time and re-sent the four weeks before under the new
+  system's references, every one dated 7 April; a re-sent letter is the earlier letter, received first in March, and a
+  held one is new, and only its content (patient, service, encounter date, lines) tells which is which. Keeping the
+  batch moves every first-half figure by 0.60 to 0.74; dropping it moves them by 0.15 to 0.38.
+- Primary 2 (D7, the true key elsewhere): from October 2026 the hospital trust's documents arrive through GP Connect,
+  and the workflow log carries the message id for a reference and the message's own date for the document date, so a
+  letter's receipt is found only as the next receipt from that sender for that patient. Re-keying on patient, sender
+  and document date moves every second-half figure by 12.0 to 14.5, and falling back to the letter date by 1.3 to 2.1
+  (each device's shifts printed by generator/ceiling.py).
+- Hazards: letters dated over Christmas received in January (the asking sentence's received basis), one row per
+  medicine line, two date formats, hospital-number-only letters, merged practices' old codes.
+- Pin test: the sentence pins the basis (received), the population (letters its practices received; specification
+  4.3 files both trusts' letters as hospital medicine letters and counts a letter once, in the half and at the
+  practice of its first receipt) and the denominator (registered at the start of the half, specification 4.2); both
+  devices sit where the pins leave open which records are one letter and which receipt belongs to which letter. The
+  count-once sentence was filed after stage 4's first judge pass read a copy's second receipt as open (SF16): it
+  names the unit, not the 7 April batch, which copies in it are earlier letters, or how a GP Connect receipt is
+  found.
 
-**Ask B, the value each live strategy traded in each half of 2026 (8 figures, whole GBP million).**
-- Device: the block orders sit on the desk's block account in the blotter and reach each book only through the
-  post-trade allocation export.
-- Hazards: the same battery; the reused account code.
+**Ask B, each network's patient consultations with the team in each quarter of 2026, per 1,000 patients registered at
+the start of the quarter (20 figures, one decimal).**
+- H18 home: the board checks every network's patients had pharmacist time in 2026 before committing the team to one
+  review across them.
+- Primary 1 (D1, one appointment under two systems): hub pharmacists write a hub appointment into the patient's record
+  at the 16 shared-record practices, on the day or the next working day, under the practice system's own id and the
+  time of writing; the hub's export stamps its slots in UTC. One appointment is one consultation, and matching on
+  patient and day leaves every next-day record standing: 0.41 to 1.07 per 1,000 too many in every figure.
+- Primary 2 (D6, an event's quantity one grain below): a group medicines review is one hub booking with no patient,
+  its patients in the group session register; specification 4.1 counts each patient at a group review. One per
+  session misses 17 of 20 figures by 0.13 to 0.45.
+- Hazards: did-not-attend and cancelled bookings, UTC, registration on the day for hub patients, genuine same-day
+  call-backs at the practice (an over-matching trap for a patient-and-day key).
+- Pin test: the sentence pins the unit (patient consultations, defined in 4.1, a patient counting towards the
+  network of their practice on the day of the consultation), the denominator and the quarter; neither device's
+  handling is named. How far after an appointment its practice record may fall is closed by the data, not a sentence
+  (SF17): before a bank holiday the pharmacists write up on the day, so a weekend-only working day and any window of
+  3 to 10 days file the same 20 figures.
 
-| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
-|---|---|---|
-| A, 16 quarter shortfalls | measures each re-created order from its own arrival and leaves the blocks on the block account | miss |
-| B, 8 half-year traded values | leaves the blocks on the block account | miss |
+Main population zero-counts: no device row (a 7 April letter, a GP Connect receipt, a hub record, a group booking)
+touches a protocol search, course, pilot outcome or provenance relation the call reads; dropping the whole 7 April
+batch leaves every patient's provenance and the call unchanged (checks.py K6).
 
-Pair ceiling: 28.5 ((38 + 7 + 55 x 0) and (5 + 7 + 55 x 0), averaged)
+| The cracker (landed the call, ran the hygiene battery, executed every filed rule) | Verdict |
+|---|---|
+| A, 10 letter rates: receipt through the reference join, GP Connect re-keyed on patient, sender and document date, the 7 April batch dropped as a re-send | miss |
+| A, the same with unmatched receipts on the letter date, or the batch kept | miss |
+| B, 20 consultation rates: hub and practice records matched on patient and day after UTC conversion, attended group patients counted | miss |
+
+The full includer (a stress row, outside the gate) matches each GP Connect receipt to the letter it follows, keeps the
+first-time letters in the 7 April batch and matches a hub appointment to the same pharmacist's record on the next
+working day: it keeps all 30 and scores 100 on the call; with the best miss off the call at 12, that pair is 56.
+
+Pair ceiling: 28.5 (the cracker keeps 0 of 30 ask figures: 45.0 on the call, the mirror 12.0 off it)
 Mirror leakage: 0.0 per cent of ask weight
-Measured by: generator/ceiling.py (run on the cut pack, target.zip 7f2aba02)
+Measured by: generator/ceiling.py (run on the cut pack)
 
-## Leak review
+## Stage 4
 
-`leak.py task306 --asof 2026-12-01` on target.zip 7f2aba02: REVIEW, no LEAK; each line ruled.
-- Sweep 1, the backtest workbook's Notes sheet: harmless; it defines gross alpha, says the ESG list is applied and
-  names its preparer, and describes no file or column.
-- Sweep 4 on IC-07 (executions, candidate, rebalances, standard, outside) and on the TCA standard (orders, average,
-  participation, standard, register): harmless; they are each document's own nouns for its estimand and measures, and
-  neither says how cost depends on size (R1). IC-07's population sentence (the desk's executions in the candidate's
-  index band) is the grouping the band average itself uses, and the TCA standard's consolidation and history sentences
-  are measurement conventions; none names a curve, a square root or impact.
-- Sweep 6, the backtest workbook names the candidates beside numbers: harmless; it ranks them by gross alpha, the input
-  IC-07 names, not by the alpha each keeps.
-- INFO, the account register names the live books: their codes and dates, no figure.
-- Sweep 11, the prompt gate's shell quota (WARN in voice-check.py, which passes): the corpus now holds the 'which'
-  question form at 37 per cent of 196 prompts against a cap of 30, a quota other builds moved since this prompt was
-  written; the prompt is left as built for the main thread to reword at the role level if it chooses.
+Cut judged: target.zip 0bacf975 (two byte-identical builds; checks.py 99 of 99, verify PASS, figures_check 88 of 88,
+precut 61 checks with no FAIL or WARN, voice-check PASS, container audit clean on target and golden, pair ceiling 28.5).
 
-## Pre-ship check
+leak.py on that cut: REVIEW, no LEAK. Each line ruled:
+- Sweep 3, the protocols and the specification carry the call's wording: it is review B's own name as both file it,
+  and every review's name appears alike; harmless.
+- Sweep 4, the close-out, the protocols and the specification carry four to seven stump-paragraph terms (antipsychotic,
+  practice, programme, checks, outside, letter): the field's nouns, the specification's population and its section 4.3
+  reporting paragraph; none names specialists or who started a medicine (checks.py R1, which also holds letters to
+  that paragraph); harmless.
+- Sweep 4, a prompt sentence carries task nouns (practices, medicine); harmless.
+- Sweep 6, the falls admissions file names the five networks beside numbers: the networks are the asks' units, not the
+  decision's candidates, and the file prices no review; a declared distractor; harmless.
 
-1. The three rules re-read against the built pack: the decisive step is the cost curve read at the candidates'
-   participation, analytical; the mess is Layer 1 only and each piece is asserted not to move the call (SF4 to SF6).
-2. Determinism: the WHAT filed in IC-07 (the band's executions) and the TCA standard (the consolidation day, the
-   60-session history); every member of the 31-member fit family converges on the golden's call, runner-up, gap and
-   whole millions (C7), band by band at least 0.25 inside each million (C8), and the distractors are inert (SF14).
-3. Gates on the final cut: generator checks, the verifier, two byte-identical builds, figures_check.py, precut.py,
-   voice-check.py, leak.py, guard.py surface and heart.
+guard.py heart WARN and surface exit 0. The WARN is repeat.decision (pick_one_of_n) against task118's architecture 6,
+registered at 01:45Z on 2026-11-08, after this card (00:04Z); one review of three is the programme's own decision.
+surface promoted 8 pairs for the author's adjudicated clone check (task304, task305, task307, task308, task310,
+task467, task169, task128), each on shared card axes (population gap, pick_one_of_n, the pilot log as calibration) or
+batch-level surface; the card carries differentiation lines against task304 and task128. Personas in the pack: the
+card's three.
+
+Leak reader (Sonnet, medium, prompt and pack only, on 0bacf975): no leak. Its question 6 named an analytical choice
+(which off-probability to carry to unreviewed patients, and whether the pilot's rates transfer) without naming who
+started a medicine; it read the close-out's consistency section as nudging toward one pooled rate, which is the
+default path's step 3. Its machine-made list was measured on the cut and ruled harmless (leak_check_report.md).
+
+Determinism judge pass 1 (Sonnet, medium, on 0bacf975): DETERMINISTIC, FIX_NOW (determinism_check_report_arch5.md).
+Every golden figure reproduced. Gate G decomposition_attribution, analytical_non_defect, surface_read_dependency no,
+sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical; stump power strong (the pooled carry
+files review A at 24.1 harms against B's 11.8 and C's 10.8, and A passes B only if its specialist-started take-off
+exceeded about 14 per cent against 4.2). The finding: step 6 named the GP Connect key as patient, sender and document
+date, which read literally as the letter date matched 757 of about 3,960 October to December letters and filed the
+second half at 28.8, 26.5, 27.1, 25.3 and 28.3. Two residual forks it did not count against the verdict: the 7 April
+copies counted twice (the first half at 46.8, 44.1, 46.5, 43.0 and 43.6) and a weekend-only working day (Wrekinside
+North's second quarter at 11.7 against 11.6).
+
+Fixed in the generator in one pass, the call, the stump and every graded figure unchanged: step 6 states the
+verifier's match (the first Wrekinside receipt for the patient carrying no letter's reference, received on or within
+21 days after the letter date and not taken by an earlier letter); specification 4.3 counts a letter once, in the half
+and at the practice of its first receipt (SF16); hub appointments before a bank holiday are written up on the day
+(SF17; the golden's 20 figures do not move); SF16 to SF18 and both asks' clean truth asserted
+(checks.py K7 and K8). Only the consultation extract and the specification moved in the pack.
+
+Leak reader read 2 (Sonnet, medium, on ea8155d7, after the specification's count-once sentence): no leak, no file
+that exists only to help, question 6 an analytical choice (how to estimate the chance off from the pilot), who
+started a medicine not named. Its machine-made list was ruled (leak_check_report.md); the one true tell, the ePACT2
+summary's label "0408010 Control of epilepsy (gabapentinoids)", is now the BNF's paragraph name with the substances
+the line counts ("0408010 Control of the epilepsies: gabapentin and pregabalin"), a declared distractor no figure
+reads. The golden paper's source note now says the first receipt on or after the letter's date, as step 6 does.
+
+Determinism judge pass 2, the re-judge (Sonnet, medium, on ea8155d7): DETERMINISTIC, APPROVE
+(determinism_check_report_arch5_pass2.md). Every committed answer reproduced; Gate G decomposition_attribution,
+analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass,
+decisive_step analytical; the provenance flag invariant over windows of 30 to 365 days, either date basis, Start
+letters only and the earliest or any course; the GP Connect match invariant over windows of 14 to 28 days. Two
+advisories, neither a fix: a flag from any class letter at any time files review A (15.8 harms against B's 12.0)
+but does not separate the pilot's outcomes (23 against 47 per cent in review A), which the starter flag does (4
+against 25 to 46 per cent), so the data rule it out (the ladder's any-time rung, checks.py R3); and 151 same-day
+repeat calls in the practice systems, distinct records at distinct times, count as consultations under
+specification 4.1 (each patient a pharmacist consults is one patient consultation), where collapsing them to one per
+patient per day would lower every consultation figure by 0.1 to 0.3; the judge reads row counting as the natural
+reading and advised against a further clause.
+
+Shipped cut: target.zip a915483e (sha256 a915483ef2342ec8d2c30a150f8286d30653413debbd533cd60d771d2c6fb41c), which
+differs from the re-judged ea8155d7 only in that ePACT2 label. Every free gate re-run on it: two byte-identical builds,
+checks.py 105 of 105, verify PASS, figures_check 89 of 89, precut 61 checks with no FAIL or WARN, voice-check PASS,
+leak.py REVIEW with no LEAK (the lines above), container audit clean on target and golden, guard.py heart WARN (the
+task118 decision type above) and surface exit 0, pair ceiling 28.5 with mirror leakage 0.0 (ceiling.py).
 
 ## Tried and rejected
 
@@ -268,3 +406,32 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip 7f2aba02)
 - 2026-10-31, kept: participation comes from thin names, as it does on a desk. Each lower band carries a tail of thinly traded names (52 in the FTSE 250, 100 in the SmallCap), where the books' ordinary orders, sized in pounds and scaled only mildly with liquidity, take a fifth to two thirds of the day; the desk's pounds stay in liquid names at about one per cent, so the band averages still file momentum (by 2.7 million) while about 1,550 small-cap orders above a tenth of the day pin the curve where momentum trades. The 12 least liquid small caps, which no book or candidate trades, carry the consolidations; the ESG list predates the log and no book or candidate trades a listed name; the books' orders begin on 1 April 2025 with 60 sessions of history; the Severnvale transition trades large and mid caps only, at five orders a day.
 - 2026-10-31, a tail of 130 thin small caps was dropped: it left momentum's investable pool (5 million a day or more) too small to swap 18 names a month, and its kept alpha fell to under 1 million.
 - 2026-10-31, a common intercept across the bands was not chased: the half-spread differs by band (3, 8.5 and 25 bps), so one intercept misprices each band's trades by 0.5 to 2.2 million, which no rounding bin absorbs; IC-07 now files the population a cost is estimated from (the desk's executions in the candidate's index band), the WHAT, and the golden fits band by band. A lower shortfall noise and a narrower or wider spread of order sizes were screened and left the family's width unchanged (it is form error, set by where the desk's orders sit), so the order sizes' spread was set at 0.6 for the wider stump margin.
+- 2026-11-07, architecture 4 (Wealdmoor's GBP 400 million to one of three backtested UK strategies, the alpha each keeps once its rebalances are priced at that size) spent on its first portal round, FAILED_TO_STUMP: both responses filed the golden exactly (UK Mid Cap Value 8, UK Large Cap Quality 6, momentum 5, gap 2) by the field's own textbook, a per-band fit of shortfall on volatility times the square root of participation, validated on a July to November holdout where it beat the flat band costs (RMSE 13.6, 8.5 and 18.9 bps against 26.6, 12.7 and 40.2), so the data revealed the right method by fit; both also took all 24 ask figures, since the failover merge and the block allocation were filed in TCA standard section 1 and the allocation export. The participation-dependent cost carried to size is what a careful analyst executes by reflex; the market-impact world, the capacity driver and the which shell are spent.
+- 2026-11-08, re-root screen before architecture 5 (paper only, no harness): a retention trial's spillover through referral or household ties (task127's reserved credit contagion is the same insight, and task131 v1 shipped household interference); an outpatient follow-up rollout netted of GP re-referrals and a DNA programme credited only with avoided rebookings (the first is a hidden overlap the author's lesson says both responses find, the second is one group-by once thought of); theatre overrun cancellations traced to a late start from the first patient's admission (task130, task111 and task137 screened the knock-on as a reflex); line infections split insertion against maintenance by days since insertion and an IV-to-oral switch netted of unswitchable courses (the options' own names announce the class, and the IVOS criteria are filed nationally); broadband full fibre's churn benefit by copper line length (the line's sync speed is one join from a column).
+- 2026-11-08, architecture 5's first registered draft (a ward deterioration service, e-obs alerting with critical care outreach, validated at about a 43 per cent cut in arrest calls in two directorates and carried to an uncovered directorate whose arrests mostly had no e-obs escalation in the day before): rejected before registration on the abstraction sentence, because it is task258's insight in clinical nouns (a validated effect that works only through a per-unit precondition every past application met, carried to units that lack it, visible only by a join), and the guard put its structural signature on task127 v2 (the landed concurrent wait); the antecedent-arrest analysis is also the rapid-response literature's own (MERIT, NCEPOD), so a careful response would execute it.
+- 2026-11-08, a shared-care rule filed in the federation's policy (practice pharmacists may not stop a specialist-started medicine without the specialist's agreement): rejected, because with the rule filed the decisive step becomes identifying a class from records under a filed rule, which is rule application; the provenance effect is left to the pilot's own outcomes.
+- 2026-11-08, ask A first counted letters about each network's registered patients, the hospitals' stale practice
+  field the device: the registration date (the letter's, the receipt's or the half's start) was unfiled, a fork, and
+  filing it pinned the device; re-sited onto the letters each network's practices received, the asking sentence's own
+  basis, with the devices in which records are one letter and which receipt is whose.
+- 2026-11-08, the first GP Connect rows carried the letter's own date as the document date: the hygiene battery's
+  re-key on patient, sender and date found every receipt and the cracker kept all five second-half letter figures.
+  GP Connect messages carry their own send date, which the workflow log now holds.
+- 2026-11-08, harms first graded to one decimal: a carry stratified by provenance and age band moved the antipsychotic
+  review by 0.3 harms, so harms are whole numbers and patients the nearest 10, the precision the pilot carries; the
+  specialist-started pilot patients who came off are the ones whose age band and sex leave the stratified carries
+  inside those bins (checks.py M5), each review's rate unchanged (1 of 24, 1 of 24, 2 of 48).
+- 2026-11-08, an initiation letter typed in the mental health trust's outage week went out in the 7 April batch, so a
+  response that dropped the batch for ask A lost those patients' provenance on the call: such courses now carry the
+  hospital trust's letter, and no initiation letter is held (checks.py K6).
+- 2026-11-08, the first cut's gabapentinoid pool took 37 extra patients from texture opioid users overlapping texture
+  gabapentinoid users, and palliative-care and epilepsy texture patients drawn from other reviews' pools left the
+  protocol short of the truth by one or two: texture is now drawn outside every pool, and the protocol finds exactly
+  the truth's patients (checks.py T1).
+- 2026-11-08, read as a literal judge before stage 4: the close-out's take-up sentence (94 per cent of invitations)
+  invited multiplying each chance by take-up, which moved review B to 11 harms and 270 patients; the sentence is gone
+  and specification 3.2 files that the team reviews every patient in scope. Ask B's network read at the quarter's
+  start moved 7 of 20 figures (newly registered patients drop out); specification 4.1 files the day of the
+  consultation. "Hospital medicine letters" could be read without the mental health trust; specification 4.3 names
+  both trusts. None names a device.
+- 2026-11-08, stage 4 judge pass 1 on 0bacf975 (DETERMINISTIC, FIX_NOW): step 6 gave the GP Connect key as patient, sender and document date, which a literal reader took as the letter date (the message's own date is the day of receipt) and which filed the second-half letters 12.0 to 14.5 per 1,000 low; hub appointments written up on the next working day across a bank holiday left a weekend-only reading one figure off (Wrekinside North's second quarter, 11.7 against 11.6); and a 7 April copy's second receipt was left to the word letters. Step 6 now states the verifier's match, the pharmacists write up before a bank holiday, and specification 4.3 counts a letter once at its first receipt.

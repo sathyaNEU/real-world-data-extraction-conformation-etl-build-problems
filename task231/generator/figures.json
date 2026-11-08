@@ -4,34 +4,34 @@
    "fault": "connector",
    "fr": 0,
    "site": "SD-158",
-   "withheld": 178
+   "withheld": 181
   },
   {
    "fault": "rime",
    "fr": 0,
    "site": "SD-277",
-   "withheld": 239
+   "withheld": 240
   },
   {
    "fault": "rime",
-   "fr": 17,
+   "fr": 0,
    "site": "SD-336",
-   "withheld": 225
+   "withheld": 205
   },
   {
    "fault": "radiation shield",
    "fr": 0,
    "site": "SD-344",
-   "withheld": 349
+   "withheld": 335
   },
   {
    "fault": "wet filter",
    "fr": 0,
    "site": "SD-411",
-   "withheld": 67
+   "withheld": 65
   }
  ],
- "highest_below": "0.5",
+ "highest_below": "0",
  "line": "2",
  "method": {
   "below_line": "1.5",
@@ -48,6 +48,7 @@
   "tau_hi": "4.5",
   "tau_lo": "1.5"
  },
+ "old_heads": "IR65369, SC23676, SC23693, SC57331",
  "pool_groups": [
   "Halvorsen Meadow, Bitterbrush Flat, Teller Junction",
   "Cutler Meadow, Ransom Creek",
@@ -135,323 +136,225 @@
    "SD-318"
   ]
  },
- "spare_site": "SD-171 Sheep Ridge",
+ "sections": {
+  "Sawyer 1": {
+   "excluded": 24,
+   "freezing": "21,386",
+   "ice": "4,644",
+   "unavailable": "1,225"
+  },
+  "Sawyer 2": {
+   "excluded": 40,
+   "freezing": "27,025",
+   "ice": "5,719",
+   "unavailable": "851"
+  },
+  "Sawyer 3": {
+   "excluded": 40,
+   "freezing": "33,118",
+   "ice": "7,186",
+   "unavailable": "1,391"
+  },
+  "Sawyer 4": {
+   "excluded": 95,
+   "freezing": "27,330",
+   "ice": "5,893",
+   "unavailable": "1,105"
+  }
+ },
+ "spare_sites": "SD-171 Sheep Ridge, SD-211 Ransom Creek, SD-351 Antelope Bench, SD-411 Fenwick",
  "stations": {
   "SD-109": {
-   "excluded": 0,
-   "fr": 12,
-   "freezing": "2,835",
-   "ice": 617,
-   "share": "0.2",
-   "unavailable": 652,
-   "withheld": 12,
+   "fr": 4,
+   "share": "0",
+   "withheld": 4,
    "z": "1,176"
   },
   "SD-113": {
-   "excluded": 0,
-   "fr": 1,
-   "freezing": "3,067",
-   "ice": 682,
-   "share": "0.0",
-   "unavailable": 544,
-   "withheld": 1,
+   "fr": 0,
+   "share": "0",
+   "withheld": 0,
    "z": "1,193"
   },
   "SD-118": {
-   "excluded": 0,
-   "fr": 221,
-   "freezing": "3,163",
-   "ice": 604,
-   "share": "4.3",
-   "unavailable": 293,
-   "withheld": 221,
+   "fr": 205,
+   "share": "4",
+   "withheld": 205,
    "z": "1,118"
   },
   "SD-122": {
-   "excluded": 0,
-   "fr": 818,
-   "freezing": "3,212",
-   "ice": 631,
-   "share": "16.1",
-   "unavailable": 423,
-   "withheld": 818,
+   "fr": 714,
+   "share": "14",
+   "withheld": 714,
    "z": "1,106"
   },
   "SD-127": {
-   "excluded": 0,
    "fr": 0,
-   "freezing": "2,993",
-   "ice": 658,
-   "share": "0.0",
-   "unavailable": 412,
+   "share": "0",
    "withheld": 0,
    "z": "1,238"
   },
   "SD-131": {
-   "excluded": 0,
-   "fr": 439,
-   "freezing": "3,205",
-   "ice": 619,
-   "share": "8.6",
-   "unavailable": 276,
-   "withheld": 439,
+   "fr": 564,
+   "share": "11",
+   "withheld": 564,
    "z": "1,142"
   },
   "SD-138": {
-   "excluded": 25,
    "fr": 0,
-   "freezing": "2,648",
-   "ice": 575,
-   "share": "0.0",
-   "unavailable": 290,
+   "share": "0",
    "withheld": 0,
    "z": "1,052"
   },
   "SD-147": {
-   "excluded": 6,
-   "fr": 586,
-   "freezing": "3,496",
-   "ice": 783,
-   "share": "11.5",
-   "unavailable": 264,
-   "withheld": 586,
+   "fr": 725,
+   "share": "14",
+   "withheld": 725,
    "z": "1,560"
   },
   "SD-158": {
-   "excluded": 13,
    "fr": 0,
-   "freezing": "3,582",
-   "ice": 801,
-   "share": "0.0",
-   "unavailable": 359,
-   "withheld": 178,
+   "share": "0",
+   "withheld": 181,
    "z": "1,655"
   },
   "SD-163": {
-   "excluded": 9,
    "fr": 0,
-   "freezing": "4,049",
-   "ice": 875,
-   "share": "0.0",
-   "unavailable": 211,
+   "share": "0",
    "withheld": 0,
    "z": "1,984"
   },
   "SD-171": {
-   "excluded": 0,
-   "fr": 2,
-   "freezing": "4,095",
-   "ice": 885,
-   "share": "0.0",
-   "unavailable": 366,
-   "withheld": 2,
+   "fr": 0,
+   "share": "0",
+   "withheld": 0,
    "z": "2,048"
   },
   "SD-204": {
-   "excluded": 0,
-   "fr": 242,
-   "freezing": "3,481",
-   "ice": 750,
-   "share": "4.8",
-   "unavailable": 197,
-   "withheld": 242,
+   "fr": 250,
+   "share": "5",
+   "withheld": 250,
    "z": "1,418"
   },
   "SD-211": {
-   "excluded": 0,
-   "fr": 346,
-   "freezing": "3,440",
-   "ice": 723,
-   "share": "6.8",
-   "unavailable": 439,
-   "withheld": 346,
+   "fr": 406,
+   "share": "8",
+   "withheld": 406,
    "z": "1,441"
   },
   "SD-219": {
-   "excluded": 0,
-   "fr": 13,
-   "freezing": "3,571",
-   "ice": 776,
-   "share": "0.3",
-   "unavailable": 319,
-   "withheld": 13,
+   "fr": 0,
+   "share": "0",
+   "withheld": 0,
    "z": "1,462"
   },
   "SD-226": {
-   "excluded": 12,
-   "fr": 195,
-   "freezing": "3,860",
-   "ice": 858,
-   "share": "3.8",
-   "unavailable": 368,
-   "withheld": 195,
+   "fr": 163,
+   "share": "3",
+   "withheld": 163,
    "z": "1,878"
   },
   "SD-233": {
-   "excluded": 0,
-   "fr": 0,
-   "freezing": "3,472",
-   "ice": 744,
-   "share": "0.0",
-   "unavailable": 543,
-   "withheld": 0,
+   "fr": 2,
+   "share": "0",
+   "withheld": 2,
    "z": "1,449"
   },
   "SD-240": {
-   "excluded": 0,
    "fr": 0,
-   "freezing": "3,986",
-   "ice": 870,
-   "share": "0.0",
-   "unavailable": 256,
+   "share": "0",
    "withheld": 0,
    "z": "1,902"
   },
   "SD-251": {
-   "excluded": 0,
    "fr": 2,
-   "freezing": "3,165",
-   "ice": 704,
-   "share": "0.0",
-   "unavailable": 328,
+   "share": "0",
    "withheld": 2,
    "z": "1,362"
   },
   "SD-262": {
-   "excluded": 28,
    "fr": 0,
-   "freezing": "4,189",
-   "ice": 895,
-   "share": "0.0",
-   "unavailable": 242,
+   "share": "0",
    "withheld": 0,
    "z": "2,164"
   },
   "SD-277": {
-   "excluded": 0,
    "fr": 0,
-   "freezing": "4,367",
-   "ice": 907,
-   "share": "0.0",
-   "unavailable": 372,
-   "withheld": 239,
+   "share": "0",
+   "withheld": 240,
    "z": "2,311"
   },
   "SD-289": {
-   "excluded": 0,
    "fr": 0,
-   "freezing": "4,028",
-   "ice": 889,
-   "share": "0.0",
-   "unavailable": 362,
+   "share": "0",
    "withheld": 0,
    "z": "1,941"
   },
   "SD-307": {
-   "excluded": 0,
-   "fr": 23,
-   "freezing": "3,697",
-   "ice": 810,
-   "share": "0.5",
-   "unavailable": 479,
-   "withheld": 23,
+   "fr": 7,
+   "share": "0",
+   "withheld": 7,
    "z": "1,688"
   },
   "SD-312": {
-   "excluded": 0,
-   "fr": 21,
-   "freezing": "3,810",
-   "ice": 835,
-   "share": "0.4",
-   "unavailable": 385,
-   "withheld": 21,
+   "fr": 4,
+   "share": "0",
+   "withheld": 4,
    "z": "1,707"
   },
   "SD-318": {
-   "excluded": 0,
-   "fr": 216,
-   "freezing": "4,141",
-   "ice": 885,
-   "share": "4.2",
-   "unavailable": 409,
-   "withheld": 216,
+   "fr": 144,
+   "share": "3",
+   "withheld": 144,
    "z": "2,082"
   },
   "SD-336": {
-   "excluded": 41,
-   "fr": 17,
-   "freezing": "4,393",
-   "ice": 898,
-   "share": "0.3",
-   "unavailable": 382,
-   "withheld": 225,
+   "fr": 0,
+   "share": "0",
+   "withheld": 205,
    "z": "2,422"
   },
   "SD-344": {
-   "excluded": 25,
    "fr": 0,
-   "freezing": "3,484",
-   "ice": 794,
-   "share": "0.0",
-   "unavailable": 397,
-   "withheld": 349,
+   "share": "0",
+   "withheld": 335,
    "z": "1,562"
   },
   "SD-351": {
-   "excluded": 29,
-   "fr": 4,
-   "freezing": "3,521",
-   "ice": 803,
-   "share": "0.1",
-   "unavailable": 275,
-   "withheld": 4,
+   "fr": 2,
+   "share": "0",
+   "withheld": 2,
    "z": "1,611"
   },
   "SD-402": {
-   "excluded": 0,
    "fr": 0,
-   "freezing": "2,853",
-   "ice": 599,
-   "share": "0.0",
-   "unavailable": 315,
+   "share": "0",
    "withheld": 0,
    "z": "1,008"
   },
   "SD-405": {
-   "excluded": 0,
    "fr": 0,
-   "freezing": "2,781",
-   "ice": 588,
-   "share": "0.0",
-   "unavailable": 202,
+   "share": "0",
    "withheld": 0,
    "z": "992"
   },
   "SD-411": {
-   "excluded": 0,
    "fr": 0,
-   "freezing": "2,924",
-   "ice": 612,
-   "share": "0.0",
-   "unavailable": 510,
-   "withheld": 67,
+   "share": "0",
+   "withheld": 65,
    "z": "1,031"
   },
   "SD-416": {
-   "excluded": 11,
    "fr": 0,
-   "freezing": "3,243",
-   "ice": 724,
-   "share": "0.0",
-   "unavailable": 482,
+   "share": "0",
    "withheld": 0,
    "z": "1,424"
   }
  },
  "total_excluded": 199,
- "total_freezing": "108,751",
- "total_ice": "23,394",
- "total_unavailable": "11,352",
+ "total_freezing": "108,859",
+ "total_ice": "23,442",
+ "total_unavailable": "4,572",
  "winter_hours": 5088,
  "winter_hours_s": "5,088"
 }

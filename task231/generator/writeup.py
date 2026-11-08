@@ -23,7 +23,7 @@ def submission(fig, rows, path):
           "**Yes. The data quality standard sends %s stations back to Quillan for a re-tuned air temperature spatial "
           "test before winter 2027/28: %s.**" % (WORD[len(ret)], ", ".join(_st(r) for r in ret)),
           "Their false-rejection shares were %s per cent of the winter's %s hours, against the standard's line of "
-          "2 per cent; the highest of the other stations was %s per cent. At the basin floors the test withheld the cold "
+          "2 per cent; every other station rounds to %s per cent. At the basin floors the test withheld the cold "
           "pools' air on still nights, and at the three grades above the pools it withheld right readings because "
           "its estimate leaned on the cold floor stations nearby. Checked against an hourly lapse line or the HRRR "
           "forecast, the floor readings look wrong and only the three grades go on the list." % (
@@ -55,24 +55,32 @@ def submission(fig, rows, path):
           "from %s to %s C gives the same hours." % (m["fa_km"], m["lapse"], m["tau"], m["tau_lo"], m["tau_hi"]),
           "5. Share = right withheld hours / %s winter hours; re-tune above 2 per cent." % fig["winter_hours_s"],
           "6. Unavailable hours: the message log's modems to sites through the modem register with removed modems "
-          "kept and the unregistered spare placed at %s by the export's observations, local times with their zone "
-          "to UTC, each message's hours first to last, the earliest receipt within %s minutes of the hour's end "
-          "available, hours inside a notified outage excluded." % (fig["spare_site"], m["grace_min"]),
-          "7. Freezing and ice hours: the pavement export with re-sent rows once, travel-lane ports only, each "
-          "serial's model (replaced sensors from the register's notes) for its units, the firmware %s code table "
-          "from each serial's applied time and %s before it and for SCAN-16 sensors." % (m["fw_new"], m["fw_old"]),
+          "kept, and each spell of a shop spare's messages placed at the one station whose export readings it "
+          "carried (%s); local times with their zone to UTC, each message's hours first to last, the earliest "
+          "receipt within %s minutes of the hour's end available, hours inside a notified outage excluded; summed "
+          "by maintenance section." % (fig["spare_sites"], m["grace_min"]),
+          "7. Freezing and ice hours: the pavement export with re-sent rows once, travel-lane ports only, the heads "
+          "that came out during the winter kept on their RPU and port (%s, an IRS-31 reporting whole tenths of a "
+          "degree C, a SCAN-16 degrees F), the firmware %s code table from each serial's applied time and %s before "
+          "it and for SCAN-16 sensors; summed by maintenance section." % (fig["old_heads"], m["fw_new"],
+                                                                         m["fw_old"]),
           ""]
     L += ["## 4. Deliverable Answers", "", "### %s" % P.DELIVERABLES[1], "",
           "1. Re-tune the spatial test before winter 2027/28 at: %s." % ", ".join(_st(r) for r in ret),
           "2. Chart: every station's false-rejection share against the 2 per cent line, the re-tuned stations "
           "marked.", "", "### %s" % P.DELIVERABLES[0], "",
-          "1. False-rejection share of winter hours (per cent) and re-tune:",
+          "1. False-rejection share of winter hours (whole per cent) and re-tune:",
           "   - " + "; ".join("%s %s%s" % (r["site"], r["share_s"], " re-tune" if r["retune"] else "")
                               for r in rows),
-          "2. Unavailable hours under Schedule B: " + "; ".join("%s %s" % (r["site"], r["unavailable"]) for r in rows)
-          + ".",
-          "3. Travel-lane freezing hours: " + "; ".join("%s %s" % (r["site"], r["freezing_s"]) for r in rows) + ".",
-          "4. Travel-lane ice hours: " + "; ".join("%s %s" % (r["site"], r["ice"]) for r in rows) + ".", ""]
+          "2. Unavailable station-hours under Schedule B: " + "; ".join(
+              "%s %s" % (sec, v["unavailable"]) for sec, v in fig["sections"].items()) + "; network %s." %
+          fig["total_unavailable"],
+          "3. Travel-lane freezing station-hours: " + "; ".join(
+              "%s %s" % (sec, v["freezing"]) for sec, v in fig["sections"].items()) + "; network %s." %
+          fig["total_freezing"],
+          "4. Travel-lane ice station-hours: " + "; ".join(
+              "%s %s" % (sec, v["ice"]) for sec, v in fig["sections"].items()) + "; network %s." % fig["total_ice"],
+          ""]
     open(path, "w", encoding="utf-8").write("\n".join(L))
 
 
@@ -132,14 +140,15 @@ def enrich(fig, rows, S):
     R = A.rungs(M, S["target"])
     fig["r2_sites"] = [reg["sites"][k]["site"] for k in A.retune(R["R2 hourly lapse refit within 5 C"])]
     fig["rungs"] = {k: [reg["sites"][x]["site"] for x in A.retune(v)] for k, v in R.items()}
-    fig["spare_site"] = "%s %s" % (reg["sites"][list(S["A"]["placed"].values())[0]]["site"],
-                                   reg["sites"][list(S["A"]["placed"].values())[0]]["name"])
+    fig["spare_sites"] = ", ".join(sorted("%s %s" % (reg["sites"][k]["site"], reg["sites"][k]["name"])
+                                          for spells in S["A"]["placed"].values() for k, _, _ in spells))
+    fig["old_heads"] = ", ".join(S["B"]["unregistered"])
     fig["method"] = {"tau": "2", "tau_lo": "1.5", "tau_hi": "4.5", "below_line": "1.5", "corr": "0.8",
                      "group_km": "25", "group_m": "80", "fa_km": "50", "lapse": "6.5", "grace_min": "20",
                      "fw_new": "4.1", "fw_old": "3.4", "lapse_tol": "5"}
     for r in rows:
         k = reg["idx"][r["site"]]
         r["floor"] = k in floor_idx
-        r["share_s"] = "%.1f" % r["share"]
+        r["share_s"] = "%d" % r["share"]
         r["freezing_s"] = "{:,}".format(r["freezing"])
     return fig

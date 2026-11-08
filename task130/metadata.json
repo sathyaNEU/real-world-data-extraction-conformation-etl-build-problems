@@ -20,7 +20,6 @@
   "formats": [
    "csv",
    "docx",
-   "pdf",
    "xlsx"
   ],
   "largest_file": "timesheet_hours_by_pay_period_2021-2026.csv",
@@ -63,9 +62,9 @@
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "crew_safety_recognition_programme.pdf",
-   "format": "pdf",
-   "bytes": 3397,
+   "path": "crew_safety_recognition_programme.docx",
+   "format": "docx",
+   "bytes": 11538,
    "rows": null,
    "source": "Constructed: Redbud HR-14 Crew Safety Recognition Programme, Revision 2 (effective 11 January 2021)",
    "date": "2021-01-04",
@@ -99,9 +98,9 @@
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "pinewater_contractor_safety_standard_cs4.pdf",
-   "format": "pdf",
-   "bytes": 5023,
+   "path": "pinewater_contractor_safety_standard_cs4.docx",
+   "format": "docx",
+   "bytes": 11873,
    "rows": null,
    "source": "Constructed: Pinewater EMC Contractor Safety Performance Standard CS-4, Revision 3 (effective 1 January 2026)",
    "date": "2025-12-08",

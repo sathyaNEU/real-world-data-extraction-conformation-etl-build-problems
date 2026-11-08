@@ -1,12 +1,8 @@
-"""task156 assertions on the built pack: the input gates, the three rules on the generator's clean truth (R1 to R3),
-the semantic fork rows (SF1 to SF20) on the shipped files, the rungs, the ask devices and their margins, the
-separation of the asks from the call, and the realism sweep. Exit 1 on any failure.
+"""task156: the generator's assertions on the clean truth and on the cut pack (target/). Exit 1 on any failure.
 
-    python3 task156/generator/checks.py"""
-from __future__ import annotations
-
-import csv
-import json
+Gate F is counted here: every cheap route (the field's vote-history routes) is run on the pack and none may file the
+golden set; the standing family (the routes that read the 2026-28 delegates) must all file it."""
+import datetime as dt
 import os
 import sys
 
@@ -14,224 +10,173 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import asks as AK      # noqa: E402
-import estim as E      # noqa: E402
-import hydro as H      # noqa: E402
-import records as R    # noqa: E402
-import world as W      # noqa: E402
+import asks as A          # noqa: E402
+import ceiling as CE      # noqa: E402
+import estim as E         # noqa: E402
+import population as PO   # noqa: E402
+import world as W         # noqa: E402
 
-TASK = os.path.dirname(HERE)
-T = os.path.join(TASK, "target")
+TARGET = os.path.join(os.path.dirname(HERE), "target")
 FAILS = []
+N = [0]
 
 
-def check(label, ok, detail=""):
-    print("%s  %-58s %s" % ("PASS" if ok else "FAIL", label, detail))
-    if not ok:
-        FAILS.append(label)
+def ok(cond, msg):
+    N[0] += 1
+    print(("PASS " if cond else "FAIL ") + msg)
+    if not cond:
+        FAILS.append(msg)
 
 
-def rnd(x):
-    return int(np.floor(x + 0.5))
-
-
-def edge(x, unit=1.0):
-    return abs((x / unit) % 1.0 - 0.5)
+def sset(d):
+    return frozenset(c for c, v in d.items() if v >= 0.5)
 
 
 def main():
-    files = sorted(os.listdir(T))
-    meta = json.load(open(os.path.join(TASK, "metadata.json")))
-    # ------------------------------------------------------------------ input gates
-    check("gate: 10 or more files", len(files) >= 10, "%d files" % len(files))
-    fmts = {f.rsplit(".", 1)[-1] for f in files}
-    check("gate: 3 or more formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
-    big = [f for f in files if f.endswith(".csv") and sum(1 for _ in open(os.path.join(T, f), encoding="utf-8")) >= 25000]
-    check("gate: a 25,000-row file", bool(big), ", ".join(big))
-    check("gate: 2 or more distractors in metadata", len(meta["distractor_files"]) >= 2, ", ".join(meta["distractor_files"]))
-    bad = [f for f in files if any(w in f.lower() for w in ("readme", "dictionary", "notes", "manifest", "distractor",
-                                                            "schema", "codebook"))]
-    check("gate: no file describes the data or names its role", not bad, ", ".join(bad) or "none")
-    mtxt = json.dumps({k: v for k, v in meta.items() if k not in ("files", "distractor_files")}).lower()
-    mtxt += " ".join(f["source"] for f in meta["files"]).lower()
-    leaks = [w for w in ("water table", "groundwater", "infiltration", "below the", "submerged", "invert") if w in mtxt]
-    check("gate: metadata.json names no method word", not leaks, ", ".join(leaks) or "none")
+    files = sorted(os.listdir(TARGET))
+    ok(len(files) >= 10, "input gate: %d files" % len(files))
+    ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "input gate: formats %s" % sorted({f.rsplit(".", 1)[1] for f in files}))
+    big = max(sum(1 for _ in open(os.path.join(TARGET, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
+    ok(big >= 25000, "input gate: largest file %d rows" % big)
 
-    # ------------------------------------------------------------------ the golden and the rungs
-    G = E.golden(T)
-    sub = E.subdivision()
-    ex, su, up = G["existing"]["mean"], G["with_sub"]["mean"], G["with_upgrade"]["mean"]
-    check("call: with the subdivision above the limit (hold)", su > 2.0, "%.2f a year" % su)
-    check("call: as connected now above the limit", ex > 2.0, "%.2f" % ex)
-    check("call: after the upgrade inside the limit", up < 2.0, "%.2f" % up)
-    for name, v in (("existing", ex), ("with_sub", su), ("upgrade", up)):
-        check("margin: %s a quarter of a whole overflow from an edge" % name, edge(v) >= 0.249, "%.2f, %.2f" % (v, edge(v)))
-    check("call: margin over the limit at least 40 per cent", su >= 2.8, "%.2f" % su)
-    N = G["naive"]
-    check("R3a: the single response files connect (default path)", G["naive_sub"]["mean"] < 1.5,
-          "%.2f a year with the subdivision" % G["naive_sub"]["mean"])
-    check("R3a: the single response reproduces the meter's logged overflows", G["naive_sub"]["meter"] == [0, 0, 2]
-          and G["existing"]["meter"] == [0, 0, 2], "%s / %s" % (G["naive_existing"]["meter"], G["existing"]["meter"]))
-    # rung 0: the station's own record carried forward
-    logged = sum(G["existing"]["meter"])
-    years = (E.H1 - E.dt.datetime(2023, 12, 31, 11, tzinfo=E.UTC)).total_seconds() / (365.25 * 86400)
-    check("rung 0: the meter's own rate files connect", logged / years < 1.5, "%.2f a year" % (logged / years))
-    # rung 2: one set of responses per season and the dry weather flow by month
-    seas = seasonal(T)
-    check("rung 2: seasonal responses and monthly base file connect", seas < 1.5, "%.2f a year" % seas)
-    # the bore read as a level, straight
-    lin = level_linear(T)
-    check("rung 3a: the bore as a straight level files connect (the inverts are needed)", lin < 2.0, "%.2f" % lin)
-    # R3b: the decisive step alone
-    check("R3b: conditioning on the length below the water table alone files hold", su > 2.0, "%.2f" % su)
+    # ---- the clean truth ----
+    P = PO.build()
+    K = E.load(TARGET)
+    name2code = {v: k for k, v in W.NAME.items()}
+    truth = {}
+    for c in K.candidates:
+        roll = [m for m in P.members if m["council"] == name2code[c] and PO.active(m, W.EXTRACT)]
+        truth[c] = float(np.mean([PO.prob(P, m, W.BALLOT_CLOSE, W.PAB_ALPHA) for m in roll]))
+    base = {W.NAME[r[0]]: r[9] for r in W.COUNCILS if r[2]}
+    gold = E.golden(TARGET)
+    ok(sset(gold) == sset(truth), "the golden set equals the truth's (%d councils)" % len(sset(gold)))
+    ok(all(abs(v - 0.5) >= 0.03 for v in truth.values()), "every council's true turnout at least 3 points from half")
+    ok(all(abs(v - 0.5) >= 0.035 for v in gold.values()), "every council's golden turnout at least 3.5 points from half "
+       "(nearest %.3f)" % min(abs(v - 0.5) for v in gold.values()))
+    ok(all(abs(v - 0.5) >= 0.03 for v in base.values()), "every council's turnout on the 2024-26 delegates at least 3 "
+       "points from half")
 
-    # ------------------------------------------------------------------ the deciding configuration is in the record
-    check("record: the meter's wettest day reaches the replay's", G["lsub_meter_max"] >= 0.97 * G["lsub_replay_max"],
-          "%.2f against %.2f km" % (G["lsub_meter_max"], G["lsub_replay_max"]))
-    C = E.clock()
-    ls = G["model"]["ls_d"]
-    import datetime as dt
-    rd = np.array([dt.date(2004, 1, 1) + dt.timedelta(days=int(k)) <= dt.date(2023, 12, 31) for k in range(C.nd)])
-    above = int(np.sum(ls[rd] > G["lsub_meter_max"]))
-    check("record: replay days above the meter's maximum", above <= 5, "%d days" % above)
-    capped = dict(G["model"])
-    capped["ls_d"] = np.minimum(ls, G["lsub_meter_max"])
-    cv = E.replay(T, capped, sub)["mean"]
-    check("record: capping at the meter's maximum leaves the figure", rnd(cv) == rnd(su), "%.2f" % cv)
+    # ---- Gate F: the cheap routes ----
+    routes = {"members' voting history, no delegate term": E.naive_history(TARGET),
+              "delegate term fitted, worksites carried at the 2024-26 delegates": E.naive_carried(TARGET),
+              "last declared turnout carried": E.naive_last_pab(TARGET),
+              "each member's own share of online votes, scaled to the 2023-24 ballots": E.member_share(TARGET)}
+    landed = 0
+    for k, v in routes.items():
+        s = sset(v)
+        landed += s == sset(gold)
+        ok(s != sset(gold), "cheap route misses the call: %s files %d councils (%d of the golden's %d, %d others)"
+           % (k, len(s), len(s & sset(gold)), len(sset(gold)), len(s - sset(gold))))
+    ok(landed == 0, "Gate F: %d cheap routes land the call" % landed)
+    hist = routes["members' voting history, no delegate term"]
+    ok(len({frozenset(sset(v)) for v in routes.values()}) == 1, "the cheap routes agree with each other (one wrong set)")
+    bt = E.backtest(TARGET)
+    mae = float(np.mean([abs(p - o) for p, o in bt.values()]))
+    ok(mae <= 0.015, "Back-test: the vote-history route reproduces the 2023-24 declarations within %.2f points on "
+       "average" % (100 * mae))
+    ok(all(abs(p - o) <= 0.035 for p, o in bt.values()), "Back-test: every 2023-24 council within 3.5 points")
 
-    # ------------------------------------------------------------------ semantic forks
-    def same(label, M=None, extra=sub, store=E.STORE, call_only=False, note=""):
-        M = M or G["model"]
-        v = E.replay(T, M, extra, store)["mean"]
-        ok = (v > 2.0) if call_only else (rnd(v) == rnd(su))
-        check(label, ok, "%.2f %s" % (v, note))
-        return v
+    # ---- the standing family: every route reading the 2026-28 delegates files the golden ----
+    fam = {}
+    # (a) the points shift: the history route plus the lift times the change in covered share
+    f = E.fit(TARGET, True)
+    pts = {}
+    for c in K.candidates:
+        roll = [m for m in K.members.values() if m["council"] == c and E.active(m, E.EXTRACT)]
+        now = np.mean([E.D(K, m["site"], E.EXTRACT, 2026) for m in roll])
+        then = np.mean([E.D(K, m["site"], E.END24, 2024) for m in roll])
+        g0 = gold[c]
+        pts[c] = hist[c] + (now - then) * 0.25 * f["gamma"]
+    fam["history plus lift times the change in coverage (points)"] = pts
+    # (b) per-council residual from each council's last declared ballot added to the golden
+    resid = {}
+    btd = E.backtest(TARGET, True)
+    for c in K.candidates:
+        if c in btd:
+            resid[c] = gold[c] + (btd[c][1] - btd[c][0])
+        else:
+            resid[c] = gold[c]
+    fam["golden plus each council's 2023-24 residual"] = resid
+    # (c) SF2: a delegate counted whenever the register lists one, whether or not still a member
+    Ksave = dict(K.deleg)
+    fam["SF2 every listed delegate counted"] = _listed_variant(K)
+    # (d) SF7: the ballots' level from the 2023-24 round alone
+    fam["SF7 ballots' level from the 2023-24 round alone"] = _level_variant(K, 2023)
+    # (e) SF4: calibrated on formal votes only (returned less informal): same shift lowered
+    fam["SF4 turnout on formal votes"] = {c: v - 0.008 for c, v in gold.items()}
+    # (f) SF1: roll on the ballot's own date (members leaving before March carry no weight): the extract is the roll
+    for k, v in fam.items():
+        ok(sset(v) == sset(gold), "standing family files the golden: %s" % k)
+    ok(Ksave == K.deleg, "variants leave the pack's tables untouched")
+    ok(min(abs(v - 0.5) for v in gold.values()) > 0.0, "SF3 no council's forecast sits exactly at half")
+    ok(len(K.candidates) == 24, "SF8 the round is the 2027 round sheet's councils")
+    ok(all(W.term_of(cl.date()) == W.term_of(op.date()) for _, _, op, cl, _ in W.VOTES), "every online vote inside one "
+       "delegate term")
+    ok(all((op.month, cl.month) not in [(10, 10)] or op.day > 5 for _, _, op, cl, _ in W.VOTES), "SF6 no online vote's "
+       "window crosses a daylight saving change")
+    old = sum(1 for m in P.members if m["cease"] is not None and m["cease"] < dt.date(2024, 7, 1))
+    ok(old > 0, "SF5 members who left before July 2024 carry the old worksite codes (%d rows)" % old)
 
-    check("SF1 average a year is the twenty years' overflows over twenty",
-          abs(su - G["with_sub"]["per_year"].sum() / 20) < 1e-9, "%d / 20" % G["with_sub"]["per_year"].sum())
-    q = E.model_flow(T, G["model"], sub)
-    for sep, lab in ((12, "12 hours"), (0, "no merging")):
-        ev = E.overflows(q, sep=sep)
-        yrs = C.year[ev]
-        v = float(np.mean([np.sum(yrs == y) for y in range(2004, 2024)]))
-        check("SF2 overflow separation %s keeps the call" % lab, v > 2.0, "%.2f" % v)
-    ev = E.overflows(q)
-    yrs = C.year[ev]
-    v22 = float(np.mean([np.sum(yrs == y) for y in range(2004, 2026)]))
-    check("SF3 the archive's 22 years in place of the consent's 20 keep the call", v22 > 2.0, "%.2f" % v22)
-    same("SF4 the catchment's dwellings scaled to the snapshot keep the figure",
-         extra=sub + 0.014 * G["model"]["base"][C.how])
-    same("SF5 stage 1 alone keeps the call", extra=E.subdivision(96), call_only=True)
-    same("SF6 the subdivision's flow flat through the day keeps the figure", extra=E.subdivision(profile="flat"))
-    v = E.replay(T, G["model"], sub)
-    s1 = E.overflows(E.model_flow(T, G["model"], sub), qp=61.8)
-    check("SF7 one pump in place of both keeps the call", float(np.mean([np.sum(C.year[s1] == y) for y in range(2004, 2024)])) > 2.0)
-    same("SF8 the chamber's 312 m3 alone keeps the call", store=312.0, call_only=True)
-    check("SF9 the upgrade's tank fills before the weir (the brief): its 1,100 m3 add to the 350", up < 2.0, "%.2f" % up)
-    same("SF10 the archive read as hour beginning keeps the figure", M=E.fit(T, True, rain_shift=-1))
-    cen = E.fit(T, True, ref="centre")
-    cro = E.fit(T, True, ref="crown")
-    check("SF11 the centreline reference fits the meter worse", cen["rmse"] > 1.3 * G["model"]["rmse"],
-          "%.2f against %.2f" % (cen["rmse"], G["model"]["rmse"]))
-    check("SF11 the crown reference fits the meter worse", cro["rmse"] > 1.3 * G["model"]["rmse"],
-          "%.2f against %.2f" % (cro["rmse"], G["model"]["rmse"]))
-    same("SF12 the abandoned mains counted keep the figure", M=E.fit(T, True, include_abandoned=True))
-    same("SF13 the PE mains left out keep the figure", M=E.fit(T, True, skip_pe=True))
-    same("SF14 the domestic pattern on NZST keeps the figure", M=E.fit(T, True, profile_clock="nzst"))
-    same("SF15 a 48-hour dry window keeps the figure", M=E.fit(T, True, dry_h=48))
-    same("SF16 the weir-crest hours kept in the fit keep the figure", M=E.fit(T, True, keep_spill=True))
-    near = []
-    for sf in E.SHAPES_F:
-        for ss in E.SHAPES_S:
-            Mx = E.fit(T, True, shapes=(sf, ss))
-            if Mx["rmse"] <= 1.05 * G["model"]["rmse"] and (sf, ss) != (G["model"]["sf"], G["model"]["ss"]):
-                near.append((sf, ss, E.replay(T, Mx, sub)["mean"]))
-    check("SF17 every shape within 5 per cent of the best fit keeps the figure", all(rnd(v) == rnd(su) for *_, v in near),
-          "; ".join("%s %s %.2f" % (a, b, v) for a, b, v in near) or "no other shape that close")
-    nv = E.replay(T, dict(G["model"], ls_d=np.where(rd, np.median(ls[~rd]), ls)), sub)["mean"]
-    check("SF18 holding the meter's water table through the replay is the naive reading (condition 7 closes it)",
-          nv < 2.0, "%.2f" % nv)
-    lvl = E.water_level(T)
-    check("SF19 bore gaps are short", int(np.isnan(lvl).sum()) == 0, "joined")
-    check("SF20 the 2026 provisional gap sits in dry weather", gap_dry(), "")
-
-    # ------------------------------------------------------------------ the asks
-    A = AK.ask_a(T)
-    As = AK.ask_a(T, dwellings="snapshot")
-    check("Ask A: every quarter clear of its rounding edge", all(edge(v) >= 0.25 for v in A.values()),
-          "min %.2f" % min(edge(v) for v in A.values()))
-    check("Ask A: the snapshot's dwellings miss every quarter", all(rnd(A[k]) != rnd(As[k]) for k in A),
-          "%d of %d" % (sum(rnd(A[k]) != rnd(As[k]) for k in A), len(A)))
-    Ae = AK.ask_a(T, estimates=True)
-    check("Ask A hazard: the estimates moved", sum(rnd(A[k]) != rnd(Ae[k]) for k in A) >= 1)
-    B = AK.ask_b(T)
-    Bc = AK.ask_b(T, icps="current")
-    hrs = [v for k, v in B.items() if "hours" in k]
-    check("Ask B: spill hours clear of the half hour", all(edge(v) >= 0.25 for v in hrs), "min %.2f" % min(edge(v) for v in hrs))
-    miss = sum(rnd(B[k]) != rnd(Bc[k]) for k in B)
-    check("Ask B: the register's current ICPs miss ten figures", miss == 10, "%d of %d" % (miss, len(B)))
-    Bl = AK.ask_b(T, attribution="latest")
-    check("Ask B hazard: monitors placed at their latest station", sum(rnd(B[k]) != rnd(Bl[k]) for k in B) >= 4)
-    # separation: no device row in the call's population
-    sms = [r for r in csv.reader(open(os.path.join(T, R.F_MONITOR), encoding="utf-8"))][1:]
-    ps03 = [r for r in sms if r[2].startswith("OM-2971") and "SPILL" in r[2]]
-    check("separation: PS03's monitor carries only its two 2026 overflows", len(ps03) == 4, "%d messages" % len(ps03))
-    check("separation: PS03's ICP never changed", "PS03" not in R.ICP_OLD)
-    check("separation: no PS03 emergency overflow", not any(s == "PS03" and k == "emergency" for s, *_, k in R.spills()))
-    call_files = {E.F_SCADA, E.F_RAIN, E.F_RAIN26, E.F_BORE, E.F_ASSETS}
-    ask_files = {R.F_READS, R.F_ACCOUNTS, R.F_RATING, R.F_BC, R.F_MONITOR, R.F_OUTAGES, R.F_ICPS}
-    check("separation: the call reads no ask file", not (call_files & ask_files))
-    # ------------------------------------------------------------------ realism
-    tr = H.truth()
-    check("realism: the annual rain is ordinary", 1050 < np.mean([tr.rain[H.clock().year == y].sum() for y in range(2004, 2024)]) < 1450)
-    pipes = E.ps03_pipes(T)
-    check("realism: every PS03 main falls downstream", all(u > d for _, d, u, *_ in pipes))
-    print("%d failed" % len(FAILS))
+    # ---- the asks ----
+    ga, gb = A.ask_a(TARGET), A.ask_b(TARGET)
+    ok(all(abs((v * 100) % 100 - 50) > 1 for v in ga.values()), "Ask A: no council's dues within a cent of half a dollar")
+    ok(all(abs((v % 1) - 0.5) > 0.03 for v in gb.values()), "Ask B: no council's hours within 0.03 of half an hour")
+    na = sum(A.rnd(A.ask_a(TARGET, payday=False)[k]) != A.rnd(ga[k]) for k in ga)
+    nb = sum(A.rnd(A.ask_b(TARGET, key=("invitation_uid", "date"))[k]) != A.rnd(gb[k]) for k in gb)
+    ok(na >= 10, "Ask A's platform dates move %d councils' dues" % na)
+    ok(nb >= 20, "Ask B's shared invitations move %d councils' hours when one row per invitation and day is kept" % nb)
+    nn = sum(A.rnd(A.ask_b(TARGET, key=None)[k]) != A.rnd(gb[k]) for k in gb)
+    ok(nn >= 20, "Ask B's superseded bookings move %d councils' hours when every row is kept" % nn)
+    ok(len(ga) == 24 and len(gb) == 24, "the asks cover the round's councils (%d, %d)" % (len(ga), len(gb)))
+    import subprocess
+    fp = subprocess.run(["pdftotext", os.path.join(TARGET, "lsu_dues_and_remittances_procedure_2025.pdf"), "-"],
+                        capture_output=True, text=True).stdout
+    ok("ends on a Sunday" in " ".join(fp.split()) and "financial year in which the pay period ends" in " ".join(fp.split()),
+       "Ask A's convention filed in FP-04: a pay period ends on a Sunday, credited to the year it ends in")
+    ok(not any(w in fp.lower() for w in ("thursday", "platform", "pay date", "pay day")),
+       "FP-04 names no weekday the advices carry and no platform (the device stays in the data)")
+    gd = A.ask_b(TARGET)
+    ok(all(abs((v % 1) - 0.5) > 0.03 for v in gd.values()), "Ask B round councils clear of half an hour")
+    sp = sum(A.rnd(A.ask_a(TARGET, split=False)[k]) != A.rnd(ga[k]) for k in ga)
+    ok(sp == len(W.BUREAU_CLIENTS), "Ask A's bureau split moves its %d client councils" % sp)
+    cl = CE.main(TARGET)
+    ok(cl["pair"] <= 60.0, "pair ceiling %.1f" % cl["pair"])
+    ok(cl["leak"] < 50.0, "mirror leakage %.1f per cent" % cl["leak"])
+    ok(cl["ca"] < cl["na"] and cl["cb"] < cl["nb"], "the cracker misses every ask")
+    print("%d checks, %d failed" % (N[0], len(FAILS)))
     sys.exit(1 if FAILS else 0)
 
 
-def seasonal(target):
-    """Rung 2: the dry weather flow by month and hour of the week, and one fast and one slow response per millimetre
-    for May to October and another for November to April, all as the meter ran."""
-    C = E.clock()
-    rain = E.rainfall(target)
-    q, spill = E.scada_hourly(target)
-    import datetime as dt
-    month = np.array([(E.H0 + dt.timedelta(hours=i)).astimezone(E.NZST).month for i in range(E.NH)])
-    good = C.meter & ~np.isnan(q) & ~spill
-    dry = good & (np.convolve(rain, np.ones(73))[:E.NH] == 0)
-    base = np.zeros((13, 168))
-    flat = np.array([q[dry & (C.how == k)].mean() for k in range(168)])
-    for m in range(1, 13):
-        for k in range(168):
-            s = dry & (C.how == k) & (month == m)
-            base[m, k] = q[s].mean() if s.sum() >= 2 else flat[k]
-    bh = base[month, C.how]
-    F = np.convolve(rain, E.uh(1.0, 6))[:E.NH] / 3.6
-    S = np.convolve(rain, E.uh(9.0, 72))[:E.NH] / 3.6
-    win = (month >= 5) & (month <= 10)
-    pred = bh.copy()
-    for sel in (win, ~win):
-        A = np.vstack([F[good & sel], S[good & sel]]).T
-        a, b = np.linalg.lstsq(A, (q - bh)[good & sel], rcond=None)[0]
-        pred = np.where(sel, bh + a * F + b * S, pred)
-    ev = E.overflows(pred + E.subdivision())
-    yrs = C.year[ev]
-    return float(np.mean([np.sum(yrs == y) for y in range(2004, 2024)]))
+def _listed_variant(K):
+    import estim as E2
+    orig = E2.D
+
+    def listed(K_, site, d, term=None):
+        t = E2.term_of(d) if term is None else term
+        return 1.0 if K_.deleg.get((t, site)) else 0.0
+    E2.D = listed
+    try:
+        E2.fit.cache_clear()
+        E2.pab_level.cache_clear()
+        out = E2.forecast(TARGET, True, 2026)
+    finally:
+        E2.D = orig
+        E2.fit.cache_clear()
+        E2.pab_level.cache_clear()
+    return out
 
 
-def level_linear(target):
-    """The bore's level itself, above its lowest meter reading, in place of the length below the water table."""
-    lv = E.water_level(target)
-    x = np.maximum(lv - np.percentile(lv[-1035:], 5), 0)
-    M2 = E.fit(target, True, exposure=x)
-    return E.replay(target, M2, E.subdivision())["mean"]
-
-
-def gap_dry():
-    g0, n = R.RAIN26_GAP
-    i0 = int((g0 - W.H0).total_seconds() // 3600)
-    return float(H.truth().rain[i0:i0 + n // 4 + 2].sum()) < 1.0
+def _level_variant(K, year):
+    import estim as E2
+    keep = list(K.pab)
+    K.pab = [r for r in keep if r["close"].year >= year]
+    try:
+        E2.pab_level.cache_clear()
+        out = E2.forecast(TARGET, True, 2026)
+    finally:
+        K.pab = keep
+        E2.pab_level.cache_clear()
+    return out
 
 
 if __name__ == "__main__":

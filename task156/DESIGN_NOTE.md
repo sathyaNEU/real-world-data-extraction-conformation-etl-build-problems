@@ -1,336 +1,237 @@
-# task156: a district council's pump station, whether a subdivision can connect in 2027 within the station's consented overflows (architecture 2)
+# task156: a union branch, at which councils it applies for protected action ballot orders for March 2027 (architecture 3)
 
-Private, never ships. Architecture 1 (Millrind's 2027 paid moderation pool, a developer Q&A network's volunteer
-reviewers carried on survival by tenure) shipped 2026-10-17, was returned by the portal on 2026-10-27 with both
-responses on the call, and was reshipped the same day as loop 3 with its world, prompt and asks kept. The batch 1
-triage of 2026-10-31 re-roots the slot in a new world: nothing of architecture 1 is carried (world, decision,
-quantity, prompt shell, deliverables, asks and mechanism are all new), and its identity sits in the card's
-`lineage` with its fate.
+Private, never ships. Architecture 1 (Millrind's 2027 paid moderation pool) was returned FAILED_TO_STUMP on
+2026-10-27 and re-rooted; architecture 2 (the Riverbank Road pump station's consented overflows) was returned
+FAILED_TO_STUMP on 2026-11-07 with both responses on the hold call, because any full-record replay with the subdivision
+already broke the consent. The slot is re-rooted again in a new domain: nothing of either architecture is carried
+(world, decision, quantity, prompt shell, deliverables, asks and mechanism are all new), and both identities sit in the
+card's `lineage` with their fates.
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task156.json`, architecture v2, registered 2026-10-31T18:27:04Z; architecture 1 (v1 loop 3, and v1 loops 1 and 2 before it) in `lineage`, its shell in `lineage_shells` |
-| Domain / task type | `physical-environmental-sciences`, task type `hydrology-flood-frequency` (serves Forecasting): the deciding quantity is how often a pump station's capacity is exceeded under a long rainfall record, an exceedance frequency worked the way urban hydrology works it, by continuous simulation of a calibrated rainfall-derived infiltration and inflow model |
-| Objective | Forecasting & Predictive Modeling: the station's average wet-weather overflows a year once the subdivision connects in 2027, a window not yet open, estimated the way the discharge consent states it (the network as it will be, run through the 2004 to 2023 record) |
-| Shape | `other`: the call with the consent figure with and without the subdivision, the fitted infiltration components, a chart of the replay year by year against the limit, and row-set asks on records the call never reads (arithmetic in `## Shape` at stage 2) |
-| Decision | `go_hold_or_stop`, answer unit `named_option`: connect in 2027, or hold the connection until the storage upgrade |
-| Mechanism | population then time: the meter's 2024 to 2026 storms and dry days are not the population of days the consent's replay runs (Gap 2), and the decision is forward (Gap 1); generators G14 (conditioned yield: the infiltration a dry day and a storm drive is conditioned on the length of sewer below the water table, which the replay's wet years carry past anything the meter saw), G16 (the conditioned model chosen over one response per millimetre on storms it was not fitted on), G13; Gate G `forecasting`; strategy `forecast_method_backtest` (a rate stationary only in a constructed exposure, kilometres of sewer below the water table) |
-| Layer 2 family / pattern | `forecast_uncertainty` (model choice on out-of-sample error); `own:submerged-length-conditioned-infiltration-chosen-out-of-sample` |
-| Furniture | forum `council_or_assembly` (the elected district council resolves on the officers' report whether the subdivision connects in 2027), forcing event `other` (the developer's request under the development agreement to connect stage 1 from March 2027, which consent condition 8 makes the council assess), organisation family `local_government`, role family `capacity_planner` (the three waters operations manager assessing the station's capacity for growth), context artifact `monitoring_export` (the station's SCADA export the operations manager works from), calibration `realised_outcome_roster` (the station's overflow log, which both routes reproduce), opening `question-first`, question form `whether` |
-| Spine | `pump_station_inflow_2024-2026.csv`, the station's SCADA inflow every 15 minutes for three years (about 105,000 rows, UTC), beside the council's rain gauge, the regional bore's daily groundwater level from 2006, the asset register's pipes with invert levels and the 2004 to 2023 hourly rainfall record; constructed for this build, no real dataset |
-| Deliverables | `subdivision_connection_assessment_2027.xlsx` (the assessment), `council_report_subdivision_connection_2027.docx` (the officers' report to council), `replay_overflows_2004-2023.png` (the replay year by year against the limit) |
-| People | drawn with `guard.py names --geo "New Zealand" --seed 156`: Aaliyah Beattie, Benjamin Gilbert, Anaru Boyce (roles fixed at stage 3; Sean McDowall passed over, his first name already on task105); the requester is in no file and not in the prompt |
+| Card | `.claude/skills/fingerprint/cards/task156.json`, architecture v3, registered 2026-11-07 on a fresh pull of main; architectures 1 and 2 in `lineage`, their shells in `lineage_shells` |
+| Domain / task type | `political-science-public-policy`, task type `election-polling-forecasting` (serves Forecasting): the deciding quantity is each council's expected turnout in a statutory ballot that is valid only if half the roll votes, forecast elector by elector the way turnout is forecast from vote history and calibrated on declared results |
+| Objective | Forecasting & Predictive Modeling: turnout in ballots opening 1 March 2027, a window not yet open; the roll is fixed (members employed at each council on 15 January 2027), the outcome is whether half of it votes |
+| Shape | `10` (scorecard against a threshold): every 2027 bargaining council carries an expected turnout and a side of the 50 per cent line, the call is the set of councils that clear it; asks on records the call never reads (arithmetic in `## Shape`) |
+| Decision | `designation_set`, answer unit `set_of_items`: the councils at which the branch applies for protected action ballot orders in February 2027 |
+| Mechanism | population: the members whose past votes the history records are not, at some councils, the electorate the 2027 ballot meets, because the delegate active at their worksite when they voted is no longer there or a new one is (pattern A, past exceedance against forward yield: the councils' past ballots cleared half, the forward yield at some does not); generators G14 (turnout conditioned on an active delegate at the member's worksite), G13 (the July 2026 delegate elections fall between the last online vote and the ballot), G4 (a member's past votes attributed to the member when part belongs to the delegate in post at the time); Gate G `forecasting`; strategy `forecast_method_backtest` (the vote-history model reproduces the last closed round and misses the next) |
+| Layer 2 family / pattern | `forecast_uncertainty` (a forecast validated out of sample on the last round, whose precondition, the mobilisation the history embedded, fails in the forward window); `own:vote-history-turnout-carried-past-a-change-in-workplace-mobilisation` |
+| Furniture | forum `board_of_directors` (the Branch Committee of Management, the branch's governing body, resolves which applications are lodged), forcing event `statutory_or_regulatory_filing` (the applications to the Fair Work Commission for protected action ballot orders, lodged in February 2027), organisation family `cooperative_or_member_body` (a registered trade union branch), role family `research_desk` (the branch's research and bargaining officer), context artifact `register` (the branch's delegate register), calibration `counterparty_acknowledgement` (the ballot agent's declared turnouts, which both routes reproduce), opening `question-first`, question form `which` |
+| Spine | `online_vote_invitations_2022-2025.csv`, one row per invitation the branch's online voting service sent a member for one of its online votes (about 85,000 rows, UTC), beside the membership register, the delegate register, the worksite list and the ballot agent's declared results; constructed for this build, no real dataset |
+| Deliverables | `pab_2027_turnout_forecast.xlsx` (the forecast and the asks), `pab_2027_recommendation_bcom.docx` (the memo to the Branch Committee of Management) |
+| People | drawn with `guard.py names --geo australia --seed 156`: Samantha Taylor, Dennis Kim, Eric Goodwin (John Howard passed over, a former prime minister; Margaret Montgomery passed over, her first name already on task258) |
 
-**Guard answers (registered card, `guard.py check` WARN, no BLOCK, after rebasing on main).**
-- Redrawn after the rebase: task191 and task250 were registered on main after this worktree's base, and with them in
-  the window `committee_or_panel`, `purchase_order_or_contract` and `filed_standard` BLOCKed. The replacements are the
-  honester labels: a subdivision's connection held back for capacity is a growth decision an elected council resolves
-  on an officers' report at a scheduled meeting, not a staff panel's, and the file the operations manager works from is
-  the station's SCADA export; the consent stays in the pack as the governing document.
-- Redrawn in place at stage 3 (2026-10-31): after the PAUSED rebase the window before this draw held task306, task470 and task250 (task191 re-registered after it, task250's role family became operations_director), so `vote_or_meeting` met task306 and `operations_director` met task250. The forcing event is now `other` (the developer's request to connect, which condition 8 makes the council assess) and the role family `capacity_planner`, the honester labels; both values are clear of the builds drawn after this one too, so no later card meets a new collision.
-- `repeat.question_form` against task250: the decision is a gate (connect in 2027 or hold to the upgrade), and a gate
-  asks whether (`guide-to-prompt`); "whether" holds 10 per cent of prompts on file, under its 30 per cent quota, and
-  the second-sentence opener ("the") and the deliverable set (docx, png and xlsx) differ from task250's.
-- `test.same_driver_older` (population, G14, forecasting) is differentiated on the card against task134, task146,
-  task165 and task173 v1, one line each naming how the driver differs. The redrawn labels are the honest ones: the
-  first probe carried `validated_decoy` true and Gap 1 first, which BLOCKed on `two_layer.validated_decoy` and on a
-  signature spent in five builds; the meter's own record refutes one response per millimetre for anyone who checks it
-  against the high-water-table storms and the overflow log, so `validated_decoy` is false, and the decisive gap is
-  that the meter's days are not the replay's population, which puts population first.
+**Guard answers (registered card, `guard.py check` PASS on a fresh pull).** The first probe carried gap `time` with
+pattern `E`, which BLOCKed as the same puzzle as task445 inside the batch and the same driver signature as eight older
+builds; `time` with pattern `none` BLOCKed on task130's lineage (G14, then G13 and G4 as the decisive code). The
+honest description is the population one: the electorate the forward ballot meets at the councils whose delegates
+changed is not the electorate whose votes the history records, and the councils' past ballots cleared half while the
+forward yield at some does not (pattern A). Forum, forcing event and organisation family are clear of the last three
+builds (task232, task190, task456).
 
-**Abstraction test.** Stripped of nouns: how often a fixed capacity is exceeded once a steady load is added, when the
-standing load and each event's response scale with how much of a fixed network lies below a fluctuating level read
-from a separate record, so a response and a standing load read off a short record whose level mostly stayed low
-understate a long record whose level often rose past most of the network. Nearest by mechanism:
-- task178 (lineage, hydrology) fits one stage-discharge relation whose form changes above a level few gaugings reach;
-  here no relation changes form: infiltration is linear in the submerged length, and the nonlinearity sits in how that
-  length grows with the water level, read from the register's inverts, which no flow record shows.
-- task138 (hydrology) replays past weather seasons through a root-zone balance started from each field's store; the
-  replay is shared furniture (continuous simulation over a record is the field's method), the decisive move is not:
-  there the share of each input reaching the store, here the exposure that conditions the response.
-- task165 conditions an upgrade's gain on each site's untreated share, read from each site's own record; here the
-  conditioning state is in no record of the storms or days: it is built from a level series against fixed elevations.
-- task173 v1 re-mixes a bench of first-contact takers; here nothing is re-mixed, the exposure is continuous and
-  physical.
-- task134 and task146 condition on an option's payoff and on refusal timing within a period; neither builds an exposure.
-None shares the latent structure, the default path and the correction.
-
-**Data-native sentence.** The infiltration reaching the station through cracked joints and laterals runs only where a
-pipe lies below the water table, so it scales with the kilometres of sewer whose inverts sit under that day's
-groundwater level; on the river terrace that level follows the river's high flows from the upper catchment more than
-local rain, the 2024 to 2026 meter ran through low-river years when the water table stood below most of the terrace's
-sewers, and the consent's 2004 to 2023 record holds winters with it above most of them, so a response per millimetre
-and a base flow read off the meter understate the replay's wet years.
-
-**Sources read, one line each.**
-- `guard.py recent`, `coverage`, `mechanisms --objective forecasting` (every forecasting driver on file, lineage
-  included) and `slots` on the setting nouns (sewer, infiltration, water table, invert, pump station, overflow,
-  groundwater; unit hydrograph, rainfall, replay, continuous simulation, consent, storage) and on the mechanism words:
-  no slot note or card carries a sewer, infiltration or groundwater mechanism; the replay furniture is task138's and
-  task178's, read above.
-- The neighbouring re-roots' `pipeline.json` (task118, task130, task181, task191, task250, task268, task306, task470,
-  task482): none touches physical-environmental-sciences hydrology this batch.
-- `layer2-rigor-patterns.md`: no patterns filed for Physical & Environmental Sciences, so the pattern is the build's
-  own.
-- task174's paused notes: the forward condition must act through a quantity the change does not name and no unit in
-  the record has reached, the data must reveal it, and the textbook validation passes only because the hold-out shares
-  the training regime; here the meter's high-water-table weeks are the separating storms.
+**The data-native sentence.** The branch's own online votes record who voted but not who was asked to by a delegate,
+and the delegate register's elected terms with the returning officer's July 2026 return, read against each member's
+worksite, are the only place the July 2026 delegate elections show; the history the forecast is carried on was all gathered under the delegates elected in 2020,
+2022 and 2024.
 
 ## Shape
 
-`other`, the criteria from the answer's structure: the call (1) with its three replay figures (3), the four critical
-components (4), the replay chart's parts (bars per year for both cases, the limit line at 2, the finding title, the
-axis: 5), the files (3), Ask A's eleven quarters (11) and Ask B's twenty station-year figures and two network totals
-(22). About 49 criteria before the instruction-following lines; the asks carry 33 of them.
+Shape 10, a scorecard against one threshold: the 24 councils in `bargaining_round_2027.xlsx` each carry an expected
+turnout and a side of the 50 per cent line, and the call is the set on the right side. Criteria: the set (1), each
+council's side (24), the councils whose side the decisive step moves named in the memo (8), the delegate lift and the
+back-test as critical components (2); asks: each round council's 2025-26 dues (24) and organiser hours (24); the two
+deliverables present (2). Well over 25, supplied by the answer's structure. The prompt names no count.
 
 ## Default path
 
-1. Averaged the SCADA export's good 15-minute inflow into UTC hours beside the climate station's hourly rain (the archive
-   in NZST hour ending to 2025, the 2026 provisional telemetry at 15 minutes in UTC).
-2. Took the station's dry weather flow, infiltration included, as the mean of the dry hours (no rain in the previous 72
-   hours) for each hour of the week over 2024 to October 2026, the field's dry weather flow and base infiltration.
-3. Fitted the rest of the flow as the field's RTK unit hydrograph: a fast and a slow triangular response per millimetre of
-   rain, calibrated on every storm of the meter.
-4. Checked it the textbook way: it reproduces the meter's two logged overflows (both in 2026) and fits 2026 within about
-   1 L/s on average when 2026 is held out of the calibration.
-5. Ran it through every hour of 2004 to 2023 with the subdivision's code of practice flow added, at the data sheet's
-   112.0 L/s and 350 m3, and counted the overflows under consent condition 3.
+1. Read `membership_register_extract_2026-11-02.csv`, place each member at their council (the worksite list maps the
+   codes used before July 2024), and take each council's roll as the members employed on the extract.
+2. Build each member's voting history from `online_vote_invitations_2022-2025.csv` (four online votes, 2022 to 2025).
+3. Fit the field's vote-history turnout model: a logit of voting on vote, council, age, membership years and
+   employment (or each member's own share of the votes they were asked to), and set it on the protected action
+   ballots' level with the agent's declared 2021 and 2023-24 turnouts.
+4. Back-test: the 2023-24 round, rebuilt from the online votes before it, lands within about 0.7 points of the
+   declarations on average and within 3.5 points at every council.
+5. Run the 2 November 2026 roll through the model; apply where the expected turnout is at least half (the guide's
+   rule).
 
-Ends on: about 1 wet weather overflow a year with the subdivision (0.70), inside the limit of 2, so connect in 2027.
-Golden: about 3 a year with the subdivision (3.20), above the limit, so hold the connection until the upgrade (about 1 a year after it).
+Ends on: 15 councils (Ardeen, Bellcourt, Corrigan Valley, Elmhurst Bay, Fairholme, Halston, Jerrick, Lindale, Marlow
+Coast, Northvale, Rosedene, Stanwick, Tallis Creek, Valmont, Westhaven).
+Golden: 11 councils (Ardeen, Copeland Downs, Corrigan Valley, Fairholme, Halston, Lindale, Northvale, Pellham,
+Stanwick, Valmont, Westhaven).
 
 ## Stump sentence
 
-Fitting one unit-hydrograph response per millimetre and the meter's own dry weather flow on 2024 to 2026 and replaying 2004
-to 2023 files about 1 overflow a year with the subdivision (0.70), inside the consent's two, and connects it; the step that
-lands it there is reading the station's response as fixed when its infiltration rises 4.2 L/s for every kilometre of sewer
-below the water table, which stood a median 0.2 km over the meter and 2.1 km over the replay.
+Carrying each member's own voting history, calibrated to the 2021 and 2023-24 declared turnouts and checked on the
+2023-24 round within a point, files 15 councils above half; the step that lands it there is reading each member's
+past votes as theirs alone when they rode the elected delegate in post at their worksite at the time, and the July
+2026 delegate elections left worksites at Bellcourt, Elmhurst Bay, Jerrick, Marlow Coast, Rosedene and Tallis Creek
+without one and filled worksites at Copeland Downs and Pellham, so with the 2026-28 delegates the set is 11.
 
 ## Three rules
 
-- Task type: physical-environmental-sciences / hydrology-flood-frequency (serves Forecasting): the deciding quantity is
-  how often a hydraulic capacity is exceeded under a long rainfall record.
-- Domain test: the station's average wet weather overflows a year under the consent's continuous simulation, worked the
-  way urban hydrology works rainfall-derived inflow and infiltration: a calibrated unit hydrograph model with a dry weather
-  flow, run through every hour of the long rainfall record and routed through the station's pumps and storage.
-- Swap: "can the new ward open without breaching its consented overflow frequency" has no rainfall record to run, no
-  sewer, no water table and no pipe inverts: the quantity that decides has no counterpart, so the task stops reading the same.
-- Layer 1: the SCADA in UTC with six comms gaps and the hours when the RTU's calculated inflow reads the pumps alone (the
-  wet well at the weir); the archive in NZST hour ending with four infilled gaps (quality 500) beside the 2026 telemetry in
-  UTC at 15 minutes with a 13-hour logger gap; the bore as depth below its measuring point with five runs of missing days;
-  eleven abandoned mains still on the register; each written by its own system and each asserted neutral (SF10, SF12, SF16, SF19, SF20).
-- Layer 2: forecast_uncertainty, the model chosen on hours it was not fitted on: carrying the meter's response forward, or
-  conditioning the infiltration on the kilometres of sewer below the water table before the replay, flips the call.
-- Decisive step: recognising that the station's base infiltration and slow storm response scale with the length of sewer
-  lying below the terrace water table, building that length for every day from the bore's level and every in-service
-  main's two inverts, and replaying each day of 2004 to 2023 with its own water table.
-- Not semantics: reading every field, clock, unit and definition correctly, the consent's "each day as it occurred"
-  included, still leaves the single response on connect, because no file says the response moves with the water table;
-  the meter shows it only where its residuals are cut against the bore.
-- Not rule application: no filed rule says how the station's inflow responds to anything, so executing every consent
-  condition and the code still needs an inflow model; the enumerated family (the meter's own rate, one response per
-  millimetre, one per season with a monthly base, the bore as a straight level, the length below the water table) spans
-  0.70 to 3.20 a year with the subdivision; the standing family (what the June 2025 held-out weeks do not refute: the length
-  model and its near shapes and conventions, SF10 to SF17) spans 3.0 to 3.3; what rules the rest out is a held-out miss of
-  about 43 L/s on those weeks, loud only to someone who holds them out.
-- Analyst test: a strong analyst who reads every file and rule correctly separates the dry weather flow, fits one
-  unit-hydrograph response per millimetre on the 2024 to 2026 storms, carries the meter's base flow into the replay with
-  the subdivision's flow added, and files about 1 overflow a year (0.70), inside the consent's two, so the connection proceeds.
-- Estimand: consent AUTH-2024-0418 conditions 3, 6, 7 and 8: the network draining to EO-03 as connected at the assessment
-  plus the connection at full development with the Code of Practice's design flows, run through every hour of the KRC 1187
-  record from 1 January 2004 to 31 December 2023 each day as it occurred, wet weather overflows under the 24-hour rule, their
-  count divided by twenty against the limit of two.
-- No decoy: nothing is planted: no memo, draft, prior assessment or stakeholder figure argues connect; the meter's dry
-  groundwater years are the world's weather; the developer's report declines to model the station; the logged overflows are
-  the station's own record and both routes reproduce them.
-- No certified replay: no certified or published figure exists for a method to reproduce; the consent prescribes the
-  estimand and no method, and the overflow log ties under every route.
-- Lesson: an infiltration-dominated station's capacity rides on how much of its network lies below a moving water table,
-  so a model calibrated in low-groundwater years has to be conditioned on a constructed exposure (sewer length below the
-  water table, from a level record against asset inverts) before it is run through a long record; no build on file builds
-  an exposure from a register's elevations against a level series.
+Task type: election-polling-forecasting (Political Science & Public Policy), which serves Forecasting: each council's turnout in a statutory ballot opening 1 March 2027, forecast elector by elector from vote history and set on declared results.
+Domain test: the deciding quantity is each council's expected turnout against a participation threshold, worked the way turnout forecasting works it, a vote-history logit of each elector calibrated on declared results; the field's own mobilisation estimand (the lift personal contact gives turnout) carries the forecast once the contact network changes.
+Swap: "megawatt-hours" for "ballots" or "patients" for "members" leaves no roll, no participation threshold under section 459 and no elected workplace delegate whose presence moves an elector's turnout; the call stops reading.
+Layer 1: the membership system's July 2024 migration left leavers on the old worksite codes and employer names; the online votes are logged in UTC; the agent's two rounds use different declaration layouts inside PDFs; the delegate register keeps a term's delegates listed after they leave and carries the pre-2024 codes and council names for its older terms. Nothing is placed to be caught.
+Layer 2: forecast_uncertainty: a forecast validated out of sample on the last round whose precondition, the mobilisation the history embedded, fails in the forward window; the choice that flips the call is conditioning each member's turnout on the delegate in post at the ballot, estimated from the online votes, rather than carrying the history.
+Decisive step: recognising that a member's past participation was produced under the delegate then in post at their worksite, estimating the delegate lift from the online votes across the 2020, 2022 and 2024 terms, and running the 2027 roll with the delegates of the 2026-28 term still in post on the extract.
+Not semantics: every field, code and date read correctly (worksite codes mapped, UTC handled, both declaration layouts parsed, leavers off the roll) still leaves the vote-history route on 15 councils; nothing in any file defines turnout by delegate presence or names the July 2026 elections as a change.
+Not rule application: no filed rule or procedure says turnout depends on delegates; the guide files only the threshold, the roll and the window. Enumerated family: the vote-history logit, the member's own share, the last declared turnout, the fitted model with worksites carried at the 2024-26 delegates, the points shift, the residual-calibrated model, the listed-delegate variant, a level from one round: 11 to 15 councils. Standing family, once the July 2026 change is seen: every member of it files the same 11 (asserted, `checks.py`), the four cheap members 15, so the standing spread on the graded set is zero only after the step and the step is what decides; what rules the cheap members out is the change in the delegate register between terms, which no sentence points to.
+Analyst test: a strong analyst who maps the codes, handles UTC, parses both layouts and reads the guide fits the vote-history model, confirms it rebuilds the 2023-24 round within 0.7 points, applies it to the 2 November 2026 roll and files 15 councils; six of those fall below half and two councils it leaves out clear it once the 2026-28 delegates are read in.
+Estimand: `lsu_pab_guide_for_officials_2025.pdf` section 2 files the population (every member employed at the council on the round's register extract), the outcome (the share of that roll forecast to return a ballot), the window (the round's ballot period, opening 1 March 2027) and the comparison (at or above 50 per cent); the round is the "2027 round" sheet.
+No decoy: nothing is planted: no memo, briefing, survey or stakeholder figure ranks the councils or argues a set; the member survey and the workforce returns are distractors that carry no turnout and no delegate figure; the delegate register is the organising coordinator's ordinary record.
+No certified replay: the method is not hidden behind a certified figure to be reproduced; the declarations are realised outcomes the easy route reproduces too (the back-test), and the decisive step changes the forward window, not the fit to the declarations.
+Lesson: a turnout model validated on the last round carries the organisation that produced its history; when the contact network moves between the last observation and the forecast window, the history must be re-read through the network, not carried; no build on file conditions an elector's turnout on a dated workplace contact.
 
 ## Survivor anatomy
 
-- Actor: each day's kilometres of PS03 sewer below the water table has no column in any file: it is a relation between the
-  regional bore's level and every in-service main's two inverts in the asset register, built by arithmetic for every day.
-- Link: no key joins the bore to the register or the SCADA; the link is elevation (the level against each pipe's inverts)
-  and the day, no sentence names it, and the field's method (dry weather flow plus a unit hydrograph per millimetre) never
-  asks for the bore.
-- Reflex: the field's named method, an RTK unit hydrograph per millimetre with the meter's dry weather flow (rung 1, and its
-  seasonal form at rung 2), files about 1 overflow a year with the subdivision, connect: the default path's Ends on.
-- Back-test: the textbook route validates: it reproduces the meter's two logged overflows and fits 2026 within about 1 L/s
-  when 2026 is held out; only the June 2025 high-river weeks, which no calendar split isolates, show its 43 L/s miss.
-- Second use: the bore file is in the pack for the upgrade tank's flotation check (the brief names it as the design
-  groundwater source), the register is the network's asset extract the operations team works from, and the archive is the
-  consent's own record; delete the decisive step and every file stays.
-- Shock: the June 2025 rise in dry weather flow is the meter's biggest movement, but it comes with no rain and no overflow
-  and reads as a wet season's ordinary infiltration; the replay's wet years carry ordinary rainfall, and the call is one
-  verdict, not a set of units a sort could interval.
-- Pins: the consent files the WHAT (population of days, catchment and connection, outcome, unit, limit) in the regulator's
-  own genre; no filed sentence names groundwater, infiltration, the bore, the water table, a season or a model.
+Actor: members and worksites have rows, but whether an elected delegate was in post at a member's worksite on a vote's close is a relation between the register's dated terms, the member's worksite and the delegate's own membership dates: no column of any file holds it.
+Link: the join is member to worksite (old codes through the worksite list) to the register's term for the vote's date, with the delegate checked against their own membership row; no shared key carries a delegate to an elector, and the field's vote-history method never asks for the comparison.
+Reflex: the field's named method, a vote-history turnout logit calibrated on declared results (or each member's own share of past votes), sits at rung 1 and files 15 councils.
+Back-test: the textbook route rebuilds the 2023-24 declarations within 0.7 points on average and 3.5 at worst (asserted), because the 2022 and 2024 delegates sat at much the same worksites; the validation record confirms the easy route.
+Second use: the delegate register is the organising coordinator's term-by-term record to 2024-26 and the July 2026 return is the returning officer's declaration of the new term, each what any solver reads to see who represents a worksite; the online votes are the vote-history route's own input; the declarations calibrate every route; the worksite list maps the 2024 code migration for the register itself. Deleting the decisive step drops no file.
+Shock: the July 2026 elections' changes sit inside ordinary term-to-term churn (worksites gain and lose delegates every term); the golden set is not an interval of any shipped statistic (it holds Valmont at 36 per cent coverage and leaves out Darnley Plains at 82, and its turnouts run from 57 to 72 while Bellcourt's last declaration was 56).
+Pins: the guide files the threshold, the roll, the window and the comparison; no sentence names delegates, mobilisation, the 2026 elections or any grouping; deleting any filed sentence leaves the decisive step where it was.
 
 ## Readability screen
 
 | Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | 7 Organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 0, the meter's own rate (2 overflows in 2.84 years) | no | no | yes, the record's rate | no | no | yes | no | readable |
-| 1, one response per millimetre and the meter's base | no | no | yes, RTK per mm | the log ties | no | no | no | readable |
-| 2, a response per season and the base by month | no | no | yes, seasonal RTK | the log ties | no | no | no | readable |
-| 3 (decisive), the length below the water table, each day replayed | no sentence names it | no column holds it | not the field's default | no control scores it | the battery never builds it | not a ratio of a shipped figure | the bore and register have their own uses | silent |
+| 0, the last declared turnout carried | no | yes, the declarations | yes, the record's own rate | the declarations tie | no | yes | no | readable |
+| 1, the vote-history logit calibrated on the declarations | no | no | yes, the field's turnout model | the 2023-24 back-test passes | no | no | no | readable |
+| 1', each member's own share of past votes, scaled | no | no | yes | the back-test passes | no | yes | no | readable |
+| 2 (decisive), the delegate in post at the ballot, from the 2026-28 term | no sentence names it | no column holds it | not the field's default | no control scores it | the battery never builds it | not a ratio of shipped columns | the register is an ordinary record | silent |
 
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | average a year | twenty years' overflows over twenty | a year's maximum | same call | condition 7, "divided by twenty" |
-| SF2 | an overflow | discharges under 24 hours apart are one | 12 hours, or each discharge | same call | condition 3 |
-| SF3 | the record | 2004 to 2023 | the archive's 22 years | same call | condition 7 |
-| SF4 | as connected at the assessment | the meter's catchment | scaled to the rating snapshot | same call and figure | condition 7; inert, asserted |
-| SF5 | the connection | full development, 260 dwellings | stage 1 only | same call | condition 8, "at its full development" |
-| SF6 | design flows | 2.7 persons, 200 litres, Table 5.2 by hour | a flat average | same figure | the code's section 5.2 |
-| SF7 | what the station can pump | both pumps, 112.0 L/s | one pump, 61.8 L/s, or the duty pump alone below an assist level | same call (asserted); ask 1's counts read 4, 4 and 1 under the one-pump reading | the data sheet's drawdown test, condition 2, and the SCADA's storm drawdowns at 112 L/s |
-| SF8 | what it can store | 350 m3, duty start to the weir crest | the chamber's 312 m3 | same call | the data sheet |
-| SF9 | the upgrade | 1,100 m3 more below the crest | none | same call | the brief, "fills before the weir" |
-| SF10 | the archive's stamps | hour ending, NZST | hour beginning | same figure | the archive's own header |
-| SF11 | sewer below the water table | invert below the level | centreline or crown | same call | the meter: centre and crown fit at least 30 per cent worse |
-| SF12 | the mains counted | in service | abandoned ones too | same figure | the register's status; inert |
-| SF13 | which mains infiltrate | every in-service main | PE mains left out | same figure | inert, asserted |
-| SF14 | the domestic pattern's clock | NZ local time | NZST all year | same figure | the code's "New Zealand time"; inert |
-| SF15 | dry hours | no rain in the previous 72 hours | 48 hours | same figure | inert, asserted |
-| SF16 | hours at the weir crest | set aside from the fit | kept | same figure | inert, asserted |
-| SF17 | the response shapes | the best-fitting triangles | any within 5 per cent of it | same figure | the meter's fit, asserted |
-| SF18 | each day as it occurred | each day with its own water table | the meter's water table held | connect | condition 7, "each day as it occurred" |
-| SF19 | bore gaps | joined straight | carried | same figure | short gaps in dry spells; inert |
-| SF20 | the 2026 logger gap | left out | read as zero | same figure | the gap fell on dry hours; inert |
+| SF1 | the roll | members employed on the 2 November 2026 extract | members expected still employed in March 2027 | same call | guide section 2, "on the membership register extract taken for the round" |
+| SF2 | a delegate in post | elected for the term and still a member that day | every delegate the register lists for the term | same call | asserted in `checks.py` (SF2 variant) |
+| SF3 | half the roll | at or above 50 per cent | strictly above | same call | no council within 3.5 points of half (asserted) |
+| SF4 | turnout | ballot papers returned over the roll | formal votes over the roll | same call | section 459 counts employees who vote; asserted (SF4 variant) |
+| SF5 | a member's worksite | the register's code, old codes mapped through the worksite list | leavers dropped where the code is old | same call | the worksite list's own column; leavers carry no 2027 weight |
+| SF6 | a vote cast | any row with a vote time | votes inside the local window only | same call and figure | every vote time falls inside its window (asserted) |
+| SF7 | the ballots' level | one shift over both rounds' declarations | the 2023-24 round alone | same call | asserted (SF7 variant) |
+| SF8 | the round | the 24 councils on the "2027 round" sheet | every council with a past ballot | same call on the round | the tracker's sheet; the guide's "councils in the round" |
 
 ## Ladder
 
-| Rung | Construction | With the subdivision | Call |
-|---|---|---|---|
-| 0 | the meter's own rate carried forward (2 overflows in 2.84 years) | 0.70 | connect |
-| 1 (default) | one response per millimetre and the meter's base, replayed | 0.70 | connect |
-| 2 | a response per season and the base by month | 0.85 | connect |
-| 3a | the bore as a straight level above its low | 1.00 | connect |
-| 3 (decisive) | kilometres of sewer below the water table, each day replayed | 3.20 | hold |
+| Rung | Pipeline | Set | Golden's 11 kept | Others |
+|---|---|---|---|---|
+| 0 | last declared turnout carried, the model where a council has none | 15 | 9 | 6 |
+| 1 | vote-history logit, no delegate term | 15 | 9 | 6 |
+| 1' | each member's own share of the online votes, scaled to the 2023-24 ballots | 15 | 9 | 6 |
+| 1'' | delegate term fitted, worksites carried at the 2024-26 delegates | 15 | 9 | 6 |
+| 2 | the delegate in post at the ballot (2026-28 term) | 11 | 11 | 0 |
 
-Margins: rung 1 sits 1.30 under the limit and the golden 1.20 over it (60 per cent); every licensed variant of the golden
-stays in the whole-number bin of 3 (SF4 to SF17 asserted); after the upgrade 0.75, inside the limit by 1.25. Worth: the
-decisive move is the only one that reverses the call; the rungs below it all walk the same way. Pricing: the residue the
-filed WHAT leaves is the inflow model (a method, not a knob); the move is worth 2.5 overflows a year against a call that
-needs 1.3; the one-group-by route (a response per season) lands connect; the step estimates one coefficient from 1,000
-dry days across 0 to 21 km (4.20, its standard error under 0.01), so its noise is far below the move.
+The margin, argued on paper and asserted on the cut pack: every council sits at least 3.5 points from half on the
+golden (nearest Rosedene and Bellcourt) and at least 3 points under the 2024-26 delegates; the cheap rungs agree with
+one another on one wrong set, so the strong solvers' easy route is the one designed, and no cheap rung reaches the
+golden by a different road (Gate F counted: 0 of 4). The lift is large and measured tightly (log odds 1.05, standard
+error 0.02; about 24 points at the 2027 rolls), so every member of the standing family files the same 11.
 
 ## Closure table
 
 | Axis | Reading | Closure |
 |---|---|---|
-| 1 Population | every hour of 2004 to 2023, each day as it occurred; the catchment as connected plus 260 dwellings | condition 7 and 8, filed |
-| 2 Unit of account | wet weather overflows at EO-03 | condition 3 |
-| 3 Attribution window | the replay's years by NZST | condition 7; no overflow straddles a year end by more than hours (C1) |
-| 4 As-of dating | the catchment at the assessment (the meter) | condition 7; inert (SF4) |
-| 5 Version basis | the archive as verified, 2026 as provisional | the files' own headers; 2026 is meter only |
-| 6 Denominator | twenty years | condition 7 |
-| 7 Weighting | none | not applicable |
-| 8 Window length | the full meter for the fit | C1 across held-out splits |
-| 9 Boundary inclusivity | the limit is "shall not exceed two" | 3.20 against 2, far from the edge |
-| 10 Rounding path | the average computed unrounded, compared with 2, reported whole | the prompt's rounding; edges cleared (asserted) |
+| 1 Population | members employed at each round council on the 2 November 2026 extract | guide section 2 |
+| 2 Unit of account | a member returning a ballot | section 459; the declarations' count |
+| 3 Attribution window | the ballot opening 1 March 2027 | prompt and guide |
+| 4 As-of dating | the extract of 2 November 2026; delegates in post on it | guide section 2; the register's terms |
+| 5 Version basis | the agent's final declarations | the two PDFs carry only declarations |
+| 6 Denominator | the roll | section 459 |
+| 7 Weighting | none: every member counts once | not applicable |
+| 8 Window length | four online votes, two ballot rounds | the shipped record |
+| 9 Boundary inclusivity | at or above half | no council within 3.5 points (asserted) |
+| 10 Rounding path | turnout unrounded against half, reported whole | the side is graded; edges cleared |
 | 11 Tie-break | none | not applicable |
-| 12 Maturity and censoring | hours at the weir crest read the pumps alone | set aside; inert (SF16) |
-| 13 Order of operations | model, then route, then count | the routing is the station's own sequence |
+| 12 Maturity and censoring | members who joined after the last vote carry no history | the model's covariates carry them |
+| 13 Order of operations | worksite, delegate mark, model, level, roll | construction |
 | 14 Row order | none | not applicable |
-| 15 Duplicate resolution | discharges merged under 24 hours | condition 3 |
-| 16 Identity normalisation | PS03's mains by catchment field | the register's own field |
+| 15 Duplicate resolution | one invitation per member per vote | the log's own key |
+| 16 Identity normalisation | old worksite codes and employer names | the worksite list |
 | 17 Netting against gross | none | not applicable |
-| 18 Dimensional units | L/s, m3, mm, m NZVD2016 | units in the headers and the data sheet |
-| 19 Code and status semantics | in-service against abandoned mains; quality codes | the register's status (SF12); headers |
-| 20 Integerisation | overflow counts are whole | by construction |
-| 21 Clause scope | condition 8 applies to 50 or more dwellings | 260 dwellings |
-| 22 Forward window contents | the replay's driver files: the archive and the bore for 2004 to 2023 | shipped |
+| 18 Dimensional units | shares of the roll | the declarations' counts |
+| 19 Code and status semantics | a delegate still a member | the register against membership dates (SF2) |
+| 20 Integerisation | none on the call | not applicable |
+| 21 Clause scope | the guide's rule applies to every council in the round | guide section 2 |
+| 22 Forward window contents | the 2026-28 delegates and the extract | shipped |
 
 ## Literal reader
 
-Executing the prompt, consent conditions 3 and 6 to 8, the Code of Practice's section 5.2 and the data sheet word for
-word fixes everything but the inflow model, which no sentence states; the data force it (SF11, SF17, the held-out June
-2025 weeks), and every reading of every term gives the golden's call (SF1 to SF20), the easy answer coming from an easy
-model on the same literal estimand, never from another reading.
+Executed word for word, the guide forecasts the share of each council's 2 November 2026 roll returning a ballot in the
+March 2027 ballot and applies at or above half; the literal reading leaves the forecast's method open, the data force
+it (the history's precondition fails in the window), and every member of the standing family files the golden 11.
 
 ## Oracles
 
-- The overflow log (two overflows, both in 2026): reproduced by the single response and by the golden alike, so it ties on
-  both paths and arbitrates nothing.
-- The treatment plant's inlet readings (a declared distractor): show the June 2025 rise town-wide, on both readings alike.
-- The billing policy's and the consent's sentences: each ask's referee, none touching the call.
+`generator/estim.py` (the golden and the four cheap rungs, from target/ alone), `generator/verify.py` (an independent
+GLM through formulas, pdfplumber for the declarations and the bureau, pandas for the asks, imports nothing from the
+generator), `generator/checks.py` (35 assertions on the clean truth and the cut pack, Gate F counted).
 
 ## Ask sheet
 
-The call's population is PS03's SCADA inflow, the climate archive and telemetry, bore 72_1043 and the register's PS03
-mains. Every ask reads other rows: Ask A the catchment's water meters, accounts, rating snapshot and building consents;
-Ask B the other five stations' monitor messages, the lines company's outages and the council's electricity sites. Zero
-device or hazard rows sit in the call's population (asserted: PS03's monitor carries only its two 2026 overflows, PS03's
-ICP never changed, no PS03 emergency overflow, the call reads no ask file).
+The call's population is the membership register, the online vote log, the delegate register, the worksite list, the
+declarations and the round tracker. Every ask reads other rows: Ask A the councils' payroll remittance advices and
+the bureau's statements; Ask B the organisers' diary export and the forum sign-ins (placed through the register,
+which carries no device row). Zero device or hazard rows sit in the call's population.
 
-**Ask A, residential water use per dwelling per day in each quarter, January 2024 to September 2026 (11 figures, whole
-litres).** H18: a component of the subdivision's design flow (the code's 540 litres a dwelling against what the
-catchment's dwellings use). Construction: the billing policy's section 4 (spread from the first reading's day to the day
-before the second, estimates out, exchange readings in). Primary (all eleven quarters): the rating information is a
-snapshot of 31 October 2026, and 36 dwellings (minor dwellings, a unit added to a block of flats, four new houses) were
-certified during the window, so carrying the snapshot's parts back over every quarter overstates the dwellings and every
-quarter misses by 1 to 8 litres; only each rating unit's parts dated by the building consents' code compliance
-certificates lands, a reconstruction across the rating and consent systems. Hazards: cross-lease flats on one meter,
-each on its own account; sales that close one account and open the next on the same meter; estimated readings; meter
-exchanges; commercial rating units. Pin test: the policy files the measure (basis, spreading, grain), not which records
-date a dwelling.
+**Ask A, dues each round council's payroll deducted for the branch for pay periods ending in 2025-26 (24 figures,
+whole dollars).** H18: the branch's income from each council, which industrial action puts at risk. Construction: pay
+periods ending 1 July 2025 to 30 June 2026; finance procedure FP-04 files the convention (every council pays
+fortnightly in arrears, a pay period ends on a Sunday, a deduction is credited to the year its period ends in).
+Primary: the twelve round councils on the regional payroll platform from January 2026 date each run by its pay day,
+four days after the Sunday period end, so the run ending 28 June 2026 appears as 2 July and the date as carried drops
+it: twelve figures miss by one run each. No sentence names the platform, a weekday or which advices are dated how;
+only the weekday pattern in the advices shows it. Second: the bureau's three clients sit in
+one payment per run, split only by its statements. Hazard: an advice re-sent with its own number. Pin test: the asking
+sentence files the window by pay period, not which column carries it.
 
-**Ask B, each other pump station's wet weather overflows and spill hours in 2024 and in 2025, and the network's emergency
-overflows in each year (22 figures, whole numbers).** H18: the consent's own record across the network, the reporting
-the connection is decided under. Construction: conditions 3 and 5 on the monitors' messages, read on the monitors' own
-NZST clock, each serial placed by the installation history. Primary: three stations' supplies were renewed in 2025 and
-their earlier outages sit under the closed ICPs, which only the council's electricity site list holds against the same
-address; matching outages through the asset register's current ICP turns four emergency overflows into wet weather ones,
-missing ten figures (PS02 2024, PS04 2025, PS06 2024 and 2025, counts and hours, and both network totals). Hazards: a
-monitor serial reissued from PS02 to PS05 in 2025 (placed by date); the gateway's received times lagging the monitors'
-own on emergency messages; the float switches' chatter (the 24-hour rule). Pin test: the consent files what an emergency
-overflow is, not which ICP a station had.
+**Ask B, organiser hours at each round council in 2025-26 (24 figures, whole hours).** H18: where organising time went in
+the year the delegates were re-elected. Construction: travel and administration out; the asking sentence files the unit
+(a visit two organisers made counts for both, a moved booking once as held) and a regional forum's hours shared by
+the sign-ins from each council. Primary: one diary event is one organiser on one invitation on one day; a
+rescheduled booking leaves its superseded row (same organiser, invitation and day, earlier update), and about one
+visit in nine is made by two organisers on one invitation, so keeping one row per invitation and day drops the
+second organiser and keeping every row counts the superseded bookings: all 24 figures move either way. No field
+marks a moved booking; only the repeat of one organiser, invitation and day with an earlier update shows it. Hazard:
+weekly delegates' meetings share one invitation across weeks.
 
 | Ask | Figures | Cracker path (lands the call, runs the battery, executes every filed rule) | Cracker keeps | Verdict |
 |---|---|---|---|---|
-| A, water use per dwelling | 11 | the policy's spreading, actual and exchange readings, distinct rating units per meter, the snapshot's parts in every quarter | 0 of 11 | miss |
-| B, other stations' overflows | 22 | the monitors' own clock, serials placed by date, the 24-hour rule, outages through the register's current ICPs | 12 of 22 | miss |
+| A, dues 2025-26 | 24 | one copy of each advice, the bureau split by its statements, each run by the date the advice carries | 12 of 24 | miss |
+| B, organiser hours 2025-26 | 24 | travel and administration out, every organiser's rows counted, forums by sign-ins, no moved booking found | 0 of 24 | miss |
 
-| Ask | Mirror (the single response's connect, same ask handling) | Mirror keeps |
+| Ask | Mirror (the vote-history set, same ask handling) | Mirror keeps |
 |---|---|---|
-| A | as the cracker | 0 of 11 |
-| B | as the cracker | 12 of 22 |
+| A | as the cracker | 12 of 24 |
+| B | as the cracker | 0 of 24 |
 
-Pair ceiling: 48.5 (one response on the call and one off it, both handling the asks the cracker's way).
-Mirror leakage: 36.4 per cent of the ask weight.
-Measured by: generator/ceiling.py (on the cut pack: the cracker keeps 12 of 33 ask figures; the full includer, a stress row, keeps all 33).
+Pair ceiling: 42.2 (one response on the call and one off it, both handling the asks the cracker's way).
+Mirror leakage: 25.0 per cent of the ask weight.
+Measured by: generator/ceiling.py (on the cut pack: the cracker keeps 12 of 48 ask figures; the full includer, a stress row, keeps all 48).
 
 ## Gates at stage 3
 
-- Generator: `checks.py` 59 assertions, 0 failed (the input gates, the call and its margins, R3a and R3b, the rungs, the
-  deciding configuration in the record, SF1 to SF20, both asks' devices and margins, the separation, the realism sweep);
-  `verify.py` reproduces the three call figures by its own parsing and fit and every ask figure, 0 failed.
-- Two consecutive builds byte-identical: target, golden, figures.json and submission.md; target.zip sha256 200b0014d310ee60e8a5fb9b86bb8eec3ea9b5845bbfc7ed7f5e4c3daf9f91e3.
-- `figures_check.py`: PASS, 45 figures in blocks 1 to 4, none absent. `precut.py`: PASS, 61 checks. `voice-check.py`:
-  PASS, 977 characters, every shell class under its quota. Container audit (`scrub_producer_metadata.py`): clean.
-- `leak.py` (as of 2026-11-04): REVIEW, sweep 4 only, both lines ruled here. The consent carries record, overflow,
-  condition and inflow because they are its estimand's own words; the upgrade brief carries groundwater because the tank's
-  flotation check takes its design level from the regional bore, a fact about the tank's design and the bore's second use,
-  which says nothing of the station's inflow. Neither names the move.
-- `guard.py heart`: WARN (repeat.question_form against task250, answered at the draw); task130 v5, registered after this
-  draw with the same structural signature, differentiated on the card. `guard.py surface`: personas in the pack are the
-  three drawn names; five pairs promoted on card axes alone at surface similarity 0.080 to 0.084: task130, task134,
-  task146 and task165 on the structural signature (each differentiated on the card) and task154 on the calibration form
-  and context artifact (an economics stock revaluation sharing no world, data or driver), left for the author's
-  adjudicated clone check.
-- Measured on the cut pack: the conditioned replay files 2.90, 3.20 and 0.75 overflows a year (58, 64 and 15 in twenty
-  years); one response per millimetre 0.65 and 0.70; a response per season with the base by month 0.85; the bore as a
-  straight level 1.00; held out of each fit, the June 2025 high-river weeks are missed by 43 L/s on average by one response
-  per millimetre and by 0.2 L/s by the conditioned model. Pair ceiling 48.5, mirror leakage 36.4 per cent (`ceiling.py`).
+- `checks.py`: 39 assertions, 0 failed; `verify.py`: 0 disagreements; two consecutive builds byte-identical (target,
+  golden, figures.json, submission.md); `figures_check.py` PASS (88 figures); `precut.py` 61 checks, 0 FAIL, 0 WARN;
+  `voice-check.py` PASS (827 characters); `guard.py heart` PASS after a final fetch; `surface` promotes no pair.
+- `leak.py` REVIEW, no LEAK, each line ruled: the answer-figure lines are small counts that coincide (a yes count in a
+  2021 declaration, member counts in the bureau's statements), not golden figures in context; the call's council names
+  appear in every file because every file is about those councils, and none ranks them on the 2027 question (the
+  declarations are past realised turnouts, the easy route's own input and a past fact, never a forecast); the three
+  stump-paragraph words in the 2023-24 declarations are "carried", "question" and "declarations", the agent's own
+  ordinary wording; the dates after the setting are the agreements' nominal expiry dates in the round tracker and the
+  2026-28 term's end date in the July 2026 election return, both future by nature. After round 1: the tracker's and the
+  survey's 'Notes' sheets are the organisation's own notes (the round's lodgement and ballot period; the survey's
+  fieldwork dates), describing no column or file; FP-04's three stump-paragraph words are 'register', 'member' and
+  'record' in finance's ordinary sense (the remittance register), naming no move.
+- The PDFs are Writer exports (officepdf), Author the issuing organisation, a real Subject; the workbooks carry their
+  owners' names and Excel's own dialect; no programming library appears in any container.
 
 ## Tried and rejected
 
@@ -447,3 +348,40 @@ Measured by: generator/ceiling.py (on the cut pack: the cracker keeps 12 of 33 a
 - Assumed unit hydrograph shapes and a crown or centreline reference for the submerged length: the replay spread 2.1 to
   5.0 a year, but only because those variants fit the meter two to three times worse; among fits within a few per cent of
   the best the figures agree inside the whole-number bin, so the figures are graded to whole overflows a year.
+- Architecture 2 (the PS03 overflow replay with each day's own water table), returned FAILED_TO_STUMP on 2026-11-07:
+  both responses landed the hold call. Response 1 replayed 2004 to 2023 and filed 48 overflows against the 40 the
+  consent allows, then 2 after the upgrade; Response 2 filed the same hold. Any full-record replay with the subdivision
+  already broke the consent, so the decisive step (each replay day's own water table) was never needed. Lesson: the easy
+  route has to be the one strong solvers actually file, and it has to land on the wrong side; a count of rare
+  exceedances spreads with every modelling choice, so the call now sits on a mean quantity whose naive family is tight.
+- Judge round 1 (2026-11-07, FIX_NOW on the asks; the call forced, Gate G analytical_non_defect, Gate H pass). Ask A's
+  window read literally dropped the platform councils' last run (a 2 July 2026 date in the period-end column): FP-04 now
+  files the record's own convention (a pay period ends on a Sunday and is paid later that week; credited to the year it
+  ends in), naming no platform and no weekday the advices carry. Ask B's unit was open (raw, per invitation and day, or
+  per organiser, invitation and day): the asking sentence now files it (a visit two organisers made counts for both, a
+  moved booking once as held). Both asks were scoped to the 30 councils the branch covers while the prompt read as the
+  round: cut to the round's 24, the regional platform's twelve councils re-sited inside the round on the same pay
+  cycles, so no in-round figure moved. Ask 1's turnout figures had no rounding and a refit evaluating members at the
+  extract sat about 0.7 points under: the guide now files each member as they will stand when the ballot period closes
+  and the tracker files that period (1 to 15 March 2027); whole-per-cent figures were not adopted because five councils
+  sit within 0.05 of a half point (Corrigan Valley 62.53, Halston 59.53, Pellham 58.49, Rosedene 45.51, Underhill 40.54),
+  so a worksite-effects refit (lift 1.027) can cross a rounding edge; the prompt asks only whether each council reaches
+  half, the side being determinate under every refit. freeze.py: the main side unmoved; the twelve out-of-round ask
+  figures and block 4's turnout percentages were dropped by the repair (allowed, this line).
+- Hardening noted, not applied (the judge rated stump power moderate to good: a model that fits the delegate term lands
+  the call): ship the 2026-28 term as the organising coordinator's separate July 2026 election return rather than a
+  sheet of the delegate register, so the register a solver opens holds the terms the online votes cover and the new
+  term sits in a file read for its own purpose; the call, the stump and every figure would stay frozen.
+- Judge round 2 (2026-11-07): DETERMINISTIC, the call reproduced with 6 points either side and no respecification
+  flipping a council, stump power moderate to high. Before ship: step 8 reworded (the golden keeps the later, last
+  updated row of a moved booking); the xlsx inputs' creator and last-modified-by set to the branch, the body that
+  issues them; the 2021 declarations given the Producer of the LibreOffice release current at their June 2021 export
+  (7.1; the info dictionary is the last object, so startxref moves and every object offset is asserted unchanged), the
+  other four PDFs dated after 24.2's February 2024 release; and the hardening above applied: the 2026-28 term now ships
+  as `delegate_election_return_2026.xlsx`, the returning officer's return, and `delegate_register_2018-2026.xlsx` holds
+  the terms to 2024-26. No graded figure moved (freeze.py); the input gates hold (17 files).
+- Surface at ship promoted three pairs on card axes alone: task157 (back to back, the same domain and objective; a
+  petition sample's pair defects, not a turnout forecast, differentiated on the card), task154 (the calibration form
+  realised_outcome_roster repeated two builds apart: redrawn to counterparty_acknowledgement, the agent's declared
+  results being a counterparty's record) and task265 (left truncation in a descriptive survival estimate,
+  differentiated on the card); heart PASS; left for the author's adjudicated clone check.

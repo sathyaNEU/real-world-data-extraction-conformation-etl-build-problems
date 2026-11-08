@@ -24,8 +24,21 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
   real-clock timestamp into metadata, unseen by text checks.
 - **Cost.** The signature says generated; the timestamp contradicts the setting, both ways (`python-docx`
   stamps 2013). Assert a band, not a ceiling.
-- **Line.** Signatures: scrub inputs; a script-made golden may keep its own. Timestamps: scrub every shipped
-  file whose body states a date, goldens included. Scrubbing both everywhere is the cheap way out.
+- **Line.** Signatures: scrub OOXML and image inputs; a script-made golden may keep its own. A PDF input is
+  made by an office application, not a programming library: write the document as .docx and export it with
+  LibreOffice Writer (`soffice --headless --convert-to pdf`), so Producer and Creator honestly read
+  "LibreOffice" and "Writer" and no library header comment exists; the issuing organisation goes in Author
+  only and the Subject is real. The portal fails a PDF that names ReportLab or another library, one whose
+  Producer or Creator is the organisation, one whose library header was overwritten, and a Subject left at
+  the placeholder "(unspecified)" (task127, task482). Fix the export's date, /DocChecksum and /ID at equal
+  length so two builds stay byte-identical (task482/generator/officepdf.py).
+  An xlsx input's docProps/app.xml reads as Excel saves it: AppVersion an Office release ("16.0300") and the
+  sheet names in TitlesOfParts. The portal fails openpyxl's AppVersion 3.1 (task118); the scrub script
+  rewrites app.xml and leak.py sweep 10 refuses it.
+  A parquet input carries no writer: write it with `store_schema=False` and leave `created_by` out of the
+  footer, which the format allows; the portal fails "parquet-cpp-arrow version ..." (task306,
+  task306/generator/pack.py `_drop_created_by`).
+  Timestamps: scrub every shipped file whose body states a date, goldens included.
 - **Check.** Sweep the pack and the deliverables (two generators): no writer name, no stamp outside the
   band. Wire OOXML, PDF and image branches even before a file of that kind ships.
 - **Repair.** Byte-level, never a re-save (it re-stamps). OOXML: repack same entries in order, change only

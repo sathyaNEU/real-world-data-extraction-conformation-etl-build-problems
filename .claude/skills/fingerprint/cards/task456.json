@@ -1,12 +1,12 @@
 {
   "task": "task456",
-  "architecture": "v2 (re-root at the batch 1 audit: a US flexible packaging converter's 2026 VOC emissions against its 95-ton synthetic minor limit, the oxidizer's fixed air capacity a fixed solvent capacity because every dryer holds its exhaust at a quarter of the lower explosive limit, so the bypass vents only the solvent above that capacity)",
+  "architecture": "v3 (re-root after the cell clash: a Canadian regional health authority's insured population at the end of 2026 for the province's capitation round, the people its registry holds twice since the card renewal campaign estimated as the excess of same-name, same-birthday pairs over chance)",
   "drawn": "2026-11-01",
-  "slot_note": "re-root of task456 in the same objective (Data Extraction & Conformation), batch 1; architecture 1 (the hospital bed-status feeds' latent class model) spent at the batch 1 audit; new world (a flexible packaging converter's air permit), new dataset, new shell",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "emissions-inventory",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "a flexible packaging converter's 2026 actual VOC emissions under its synthetic minor permit, conformed from the ink room's issues and returns by press job, the presses' job logs, the regenerative thermal oxidizer's 15-minute record, the waste solvent shipments and the stack test, in the year a sixth press started up and the presses' combined dryer exhaust outran the oxidizer's air capacity at peak",
+  "slot_note": "re-root of task456 in the same objective (Data Extraction & Conformation), batch 1; architecture 2 (the packaging plant's VOC emissions) abandoned at stage 2 for a same-cell clash with task468 v6; new world, new dataset, new shell",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a regional health authority's count of insured persons at 31 December 2026, conformed from the legacy health insurance registry and the new registration platform after the 2026 card renewal campaign, in which residents whose surname had changed could not pass the renewal check and applied as new, so the registry holds some of them twice under two health numbers and two surnames",
   "objective": "etl",
   "shape": "03",
   "decision_type": "quantity_figure",
@@ -14,72 +14,70 @@
   "answer": "",
   "answer_source": "submission.md, Final Recommendation",
   "gap": [
-    "time",
-    "objective"
+    "population"
   ],
   "pattern": [
-    "C"
+    "none"
   ],
   "generators": [
-    "G1",
-    "G7"
+    "G10",
+    "G17"
   ],
-  "gate_g": "binding_constraint",
+  "gate_g": "etl_conformance",
   "calibration_form": "none",
-  "stump_strategy": "binding_constraint",
+  "stump_strategy": "identity_resolution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "filed_model",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the ink room's issues and returns, the job logs and the oxidizer's 15-minute record and reads the permit (VOC emitted is VOC applied less the VOC the oxidizer destroyed, VOC routed through the bypass uncontrolled) counts the bypass at all the solvent the running presses applied while the bypass damper stood open, or at the plant's average application rate over those hours, and files 2026 far over or under the 95-ton limit; the oxidizer treated its full air capacity throughout every bypass and each dryer holds its exhaust at a quarter of the lower explosive limit, so only the solvent load above the capacity's solvent equivalent went untreated, and 2026 lands between the two, over the limit by a margin neither shortcut gives.",
-  "domain_test": "The deciding quantity is the plant's 2026 actual VOC emissions, which an air permit engineer estimates from a solvent mass balance with the control device's destruction efficiency, its capture and its bypass, worked here as the solvent load in each 15 minutes above the oxidizer's capacity expressed in solvent through the dryers' LEL setpoint; with another field's nouns there is no lower explosive limit holding exhaust in proportion to solvent, no oxidizer sized in air volume and no bypass of the excess, and the task stops reading the same.",
-  "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:oxidizer-air-capacity-binding-on-lel-held-dryer-exhaust",
+  "analyst_test": "A strong analyst who conforms the legacy and new-platform extracts, removes the records the registry itself retired, de-duplicates by health number and links the rest probabilistically on given name, surname, birth date, sex and postal code files the linked count of active persons, because every pair that shares a given name, a birth date and a sex but not a surname scores as two people (or, read the other way, files every such pair as one person); the pairs chance alone produces in each birth year's given-name mix are only part of them, the excess is the people the renewal campaign registered twice, and the insured count lands between the two readings, below the linked count by a margin the linkage cannot see.",
+  "domain_test": "The deciding quantity is the registry's over-coverage, the persons it holds under two identifiers, which a register-quality analyst estimates rather than lists, worked here as the number of record pairs sharing a given name, a birth date and a sex in excess of the pairs the cohort's own name frequencies produce by coincidence; in another field's nouns there is no registry renewed under a changed surname, no birth cohort's name mix setting how often strangers share a birthday and a name, and the task stops reading the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:chance-coincidence-excess-of-same-name-same-birthday-pairs",
   "layer1": [
-    "the oxidizer's DCS export in UTC at 15-minute intervals, its tags renamed at the March control system upgrade",
-    "the presses' job logs in plant local time, the five older presses on the plant MES and the new press on its vendor's system in metric units",
-    "ink and solvent issues and returns by job from the ink room, returns booked on later dates against the original job, and press-side solvent drawn from drums logged separately",
-    "jobs paused and resumed, some moved to another press under the same job number with a suffix",
-    "waste solvent shipped quarterly for recovery, each manifest with the recycler's VOC content by lot",
-    "inks' VOC content in pounds per gallon from formulation sheets, re-issued mid-year for two ink series"
+    "the legacy registry extract in upper-case fixed formats (birth dates day-month-year, no diacritics, compound surnames run together) beside the new platform's mixed-case export with ISO dates and accents",
+    "status codes in two vocabularies (A, I, D against ACTIVE, LAPSED, DECEASED), with the legacy file frozen at the September cutover and the platform carrying later changes",
+    "deaths from the vital statistics feed applied to the platform only, a few weeks behind",
+    "postal codes with and without the space, and rural route addresses",
+    "renewals matched by the old health number carried on the platform record, and new applications carrying none"
   ],
-  "stakeholder_role": "the plant's environmental manager, who certifies the 2026 annual emissions statement and answers the state's full compliance evaluation",
-  "role_family": "compliance_or_audit",
+  "stakeholder_role": "the authority's registry and decision support manager, who certifies the insured count the province's capitation round funds for 2027-28",
+  "role_family": "finance_controller",
   "spine": {
-    "file": "rto1_dcs_15min_2026.csv",
-    "rows": 35040,
-    "entity": "one 15-minute interval of the oxidizer's record (inlet flow, combustion chamber temperature, bypass damper position)",
-    "grain": "15-minute interval",
+    "file": "registry_platform_2026-12-31.csv",
+    "rows": 150000,
+    "entity": "one registration record on the new platform (an insured person as the platform holds them)",
+    "grain": "registration record",
     "source": "synthetic"
   },
   "world": {
-    "geography": "United States (a fictional flexible packaging converter in a fictional county of a fictional state; the company, the state air division and the people are fictional)",
-    "currency": "USD",
-    "org_type": "a flexible packaging converter running six printing presses under a synthetic minor air permit",
+    "geography": "Canada (a fictional regional health authority in a fictional province; the authority, the ministry, the vendor and the people are fictional)",
+    "currency": "CAD",
+    "org_type": "a regional health authority that keeps the insured persons registry for its region",
     "invented_nouns": [
-      "RTO-1",
-      "BD-1"
+      "Tamarack Regional Health Authority",
+      "RegistryOne"
     ],
     "people": [
-      "Lynn Clarke",
-      "Timothy Mcdonald",
-      "Charles Patel"
+      "Susan Hess",
+      "Lee Villegas",
+      "Monica Gonzalez"
     ]
   },
-  "forum": "regulator_or_inspector",
-  "forcing_event": "audit_or_inspection",
-  "org_family": "manufacturer",
+  "forum": "funder_or_donor",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "government_agency",
   "deliverables": [
-    "voc_emissions_2026.xlsx",
-    "press_jobs_2026.csv"
+    "insured_count_2026.xlsx",
+    "registry_conformed_2026.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "scoring_unit": "per certified output",
-  "driver": "The decisive quantity is a release a control device stops only up to a fixed capacity, set in one unit while the release accrues in another, the two tied by a setpoint every source holds; whenever the sources' combined demand passes the capacity the excess goes untreated, so the untreated amount is each interval's combined load above the capacity's equivalent in the release's unit, not the whole load while the relief stood open and not the average load over those intervals.",
-  "driver_concrete": "The VOC the bypass vented is each 15-minute interval's combined solvent load of the running presses above the oxidizer's air capacity expressed in solvent at the dryers' 25 per cent LEL setpoint, summed over the intervals the bypass damper stood open.",
-  "stump": "A competent solver conforms the issues, the jobs and the oxidizer record and, reading the permit's bypass clause, counts as uncontrolled all the solvent the presses applied while the bypass damper stood open, or the plant's average application rate over those hours; the step that lands it there is treating the bypass as the presses' whole exhaust or their average, when the oxidizer kept treating its full air capacity throughout and each dryer's exhaust is held at a quarter of the LEL, so only the solvent above the capacity's solvent equivalent went untreated.",
+  "question_form": "what",
+  "scoring_unit": "per covered member",
+  "driver": "The decisive quantity is how many people a register holds twice, under two identifiers whose names disagree, read as the excess of record pairs sharing a given name, a birth date and a sex over the pairs that coincidence produces in each birth year's own name frequencies; judged pair by pair, a disagreeing surname either makes every such pair two people or every one of them one person, and both miss the count by the coincidental pairs.",
+  "driver_concrete": "The persons the registry holds twice are the same-given-name, same-birth-date, same-sex pairs across a surname change in excess of the pairs expected by chance from each birth year and sex's given-name counts, so the insured count is the de-duplicated records less that excess.",
+  "stump": "A competent solver conforms both extracts, removes retired and deceased records, de-duplicates by health number and links probabilistically, and files the linked count; the step that lands it there is treating every pair that shares a given name, a birth date and a sex but not a surname as two people (or every one as a duplicate), when coincidence produces only part of those pairs in each birth cohort's name mix and the excess is the people registered twice.",
   "lineage": [
     {
       "architecture": "v1 (the regional hospital bed-status feeds read through a latent class model of their agreement)",
@@ -102,21 +100,53 @@
       "forum": "committee_or_panel",
       "forcing_event": "season_or_peak",
       "org_family": "cooperative_or_member_body"
+    },
+    {
+      "architecture": "v2 (a flexible packaging converter's 2026 VOC emissions against its 95-ton synthetic minor limit, the bypass read as the solvent above the oxidizer's air capacity)",
+      "drawn": "2026-11-01",
+      "fate": "abandoned 2026-11-01 at stage 2, before any data was cut: the same emissions-inventory ETL cell as task468 architecture 6, registered 93 seconds later and built to stage 4 first; the cell was yielded to it",
+      "driver": "The decisive quantity is a release a control device stops only up to a fixed capacity, set in one unit while the release accrues in another, the two tied by a setpoint every source holds; whenever the sources' combined demand passes the capacity the excess goes untreated, so the untreated amount is each interval's combined load above the capacity's equivalent in the release's unit, not the whole load while the relief stood open and not the average load over those intervals.",
+      "stump": "A competent solver conforms the issues, the jobs and the oxidizer record and, reading the permit's bypass clause, counts as uncontrolled all the solvent the presses applied while the bypass damper stood open, or the plant's average application rate over those hours; the step that lands it there is treating the bypass as the presses' whole exhaust or their average, when the oxidizer kept treating its full air capacity throughout and each dryer's exhaust is held at a quarter of the LEL, so only the solvent above the capacity's solvent equivalent went untreated.",
+      "gap": [
+        "time",
+        "objective"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "gate_g": "binding_constraint",
+      "niche": "a flexible packaging converter's 2026 actual VOC emissions under its synthetic minor permit, conformed from the ink room's issues and returns by press job, the presses' job logs, the regenerative thermal oxidizer's 15-minute record, the waste solvent shipments and the stack test, in the year a sixth press started up and the presses' combined dryer exhaust outran the oxidizer's air capacity at peak",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "objective": "etl",
+      "stump_strategy": "binding_constraint",
+      "forum": "regulator_or_inspector",
+      "forcing_event": "audit_or_inspection",
+      "org_family": "manufacturer"
     }
   ],
   "differentiation": {
-    "task459": "task459 carries a ratio that changes with a unit's operating level across the year; here no ratio is carried: a shared device's fixed capacity binds only in the intervals the sources' combined demand passes it, and the untreated amount is the excess over it.",
-    "task482": "task482 splits one site meter's fuel among products by each process's physical driver; here nothing is split among products: the question is how much of one stream a full device could not take, read against a capacity the device's own meter shows it held.",
-    "task98": "task98 v2 sizes how many listed units a persons target needs once arrivals join units already in place, a forward count over an ordered list; here nothing is counted forward or ordered: a shared device's fixed capacity is passed only in some intervals, and the untreated release is the excess over it in those intervals.",
-    "task156": "task156 v2 counts how often a pump station's consented capacity is passed once a new steady load is added, a frequency carried into a coming year; here the year just closed is accounted, and the untreated release is the amount above the oxidizer's capacity in the intervals it was passed, the capacity's air volume turned into solvent through the dryers' LEL setpoint."
+    "task455": "task455 counts new administrative identifiers that continue an existing unit through a recorded continuity; here no record carries the continuity: the duplicates are counted, never listed, as an excess of coincidences over what each cohort's name mix produces.",
+    "task157": "task157 scales the pair defects a statutory sample catches by the square of its sampling fraction; here nothing is sampled: every record is present and the duplicates hide among genuine strangers who share a name and a birthday, separated only in number by the cohort's chance rate.",
+    "task471": "task471 completes a count from a census and an independent recount by their overlap; here there is one register and the error runs the other way, persons counted twice rather than missed.",
+    "task98": "task98 removes a population's members that two dated schedules both name, so the overlap is listed; here the overlap is never listed: the duplicates are counted only as an excess of chance coincidences of name and birthday.",
+    "task192": "task192 v1 counts distinct generating processes behind overlapping bursts from the interval each repeats on; here no process repeats: one person stands behind two records, and the count comes from how often strangers share a name and a birthday."
   },
   "mechanism_source": "design_note",
-  "notes": "re-rooted 2026-11-01 by a batch 1 fork: new world (a flexible packaging converter's synthetic minor permit), new dataset, new shell; stump_strategy binding_constraint: a shared control device's air capacity binds when the presses' combined LEL-held exhaust passes it, and only the solvent above the capacity's solvent equivalent is untreated.",
-  "registered": "2026-11-01T01:00:52Z",
+  "notes": "re-rooted 2026-11-01 after the emissions-inventory cell was yielded to task468 v6; stump_strategy identity_resolution: duplicate persons across a surname change estimated in number from the excess of same-name, same-birthday pairs over each cohort's coincidence rate, never matched one by one.",
+  "registered": "2026-11-01T02:10:11Z",
   "shell": {
     "question form": "which",
     "second-sentence opener": "put",
     "rounding opener": "round",
     "deliverable set": "csv+pdf"
-  }
+  },
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "put",
+      "rounding opener": "round",
+      "deliverable set": "csv+pdf"
+    }
+  ]
 }
