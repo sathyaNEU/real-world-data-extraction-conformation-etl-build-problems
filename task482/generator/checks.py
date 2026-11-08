@@ -1,314 +1,251 @@
-"""task482 architecture 16: the generator's checks on the built pack (python3 task482/generator/checks.py).
-
-The world's truth against the golden, the ladder (R0, R1, R1b, the decisive R2), every semantic fork of the design
-note's table (SF1 to SF14) converging on the golden's call, the asks' devices and margins, and the input gates."""
+"""task482 architecture 17: the generator's assertions on the shipped seed. The main call's screens, every semantic
+fork row (SF1 to SF15), the literal execution of every filed sentence, the three-rules block on the clean truth,
+the separation line and the asks' device mass. Exit 1 on any failure."""
 import datetime as dt
 import json
 import os
-import re
 import sys
-import zipfile
 
 import numpy as np
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
-T = os.path.join(TASK, "target")
-sys.path.insert(0, HERE)
-import golden as G   # noqa: E402
-import params as P   # noqa: E402
-import world as W    # noqa: E402
+import core as C
+import golden as G
+import params as P
+import rasch as RA
 
-FAILS = []
-N = [0]
+HERE = os.path.dirname(os.path.abspath(__file__))
+FAIL = []
 
 
 def check(name, ok, detail=""):
-    N[0] += 1
-    print("%s %-64s %s" % ("PASS" if ok else "FAIL", name, detail))
+    print("%s  %s %s" % ("PASS" if ok else "FAIL", name, detail))
     if not ok:
-        FAILS.append(name)
+        FAIL.append(name)
 
 
-def call_of(d, fam):
-    prem, earn = G.premium(fam, d["calloff"])
-    return prem, tuple(earn)
+def edge(x, step):
+    f = x / step
+    return abs((f - np.floor(f)) - 0.5) * step
 
 
 def main():
-    res = G.solve(T)
-    d, fam, beta = res["d"], res["fam"], res["beta"]
-    golden_call = (res["premium"], tuple(res["earning"]))
-    w = W.simulate()
-    truth = W.family_truth(w)
+    res = G.compute()
+    w, dr, bb, bg = res["w"], res["drafts"], res["b_bank"], res["b_gold"]
+    pl, sch = w["pool"], w["schools"]
+    items = pl["items"]
+    gold, bank = res["gold"], res["bank"]
 
-    # ------------------------------------------------------------------ the world against the golden
-    check("C1 the golden's call is the world's", golden_call == call_of(d, {f: dict(intensity=truth[f])
-                                                                         for f in G.FAMILIES}),
-          "golden %s, truth %s" % (golden_call, {f: round(truth[f], 4) for f in G.FAMILIES}))
-    check("C2 golden intensities within 0.003 of the truth for the billet and the ingot",
-          all(abs(fam[f]["intensity"] - truth[f]) < 0.003 for f in ("BIL6063", "BIL6082", "INGLM25")),
-          str({f: round(fam[f]["intensity"] - truth[f], 4) for f in G.FAMILIES}))
-    check("C3 the regression reads the processes' own rates within 5 per cent",
-          abs(beta["melt"] / P.MELT_KWH_PER_T - 1) < 0.05 and abs(beta["h1"] / P.H1_KW - 1) < 0.05 and
-          abs(beta["m3"] / P.M3_KWH_PER_T - 1) < 0.05 and abs(beta["t1"] / P.T1_KW - 1) < 0.08,
-          "melt %.0f, H1 %.0f, M3 %.0f, T1 %.0f; R2 %.4f" % (beta["melt"], beta["h1"], beta["m3"], beta["t1"],
-                                                             res["r2"]))
-    prod_truth = w["truth"]["produced"]
-    check("C4 production read from the lots is the world's (last result, passed)",
-          all(abs(d["prod"][f] - prod_truth[f]) < 0.6 for f in G.FAMILIES),
-          str({f: round(d["prod"][f] - prod_truth[f], 3) for f in G.FAMILIES}))
-    check("C5 the metered energy is the world's within 0.05 per cent",
-          abs(d["kwh"].sum() / w["truth"]["metered_kwh"] - 1) < 5e-4,
-          "%.0f against %.0f kWh" % (d["kwh"].sum(), w["truth"]["metered_kwh"]))
-
-    # ------------------------------------------------------------------ the ladder
-    m = G.mass_allocation(d)
-    r0 = call_of(d, m)
-    check("C6 R0 (mass allocation) puts every family under the limit and pays 480,700", r0[0] == 480700,
-          "%s at %.4f" % (r0, m["BIL6063"]["intensity"]))
-    y, x = res["y"], res["x"]
-    r1, _ = G.attribute(d, beta, h1="tonnes")
-    check("C7 R1 (the homogenizing furnace's gas shared by tonnes) pays 456,000", call_of(d, r1)[0] == 456000,
-          "%s, 6082 at %.4f" % (call_of(d, r1), r1["BIL6082"]["intensity"]))
-    b1b, _ = G.fit(y, x, ("melt", "m3", "h1_t", "t1"))
-    r1b, _ = G.attribute(d, b1b, h1="tonnes", h1_driver="h1_t")
-    check("C8 R1b (a tonnes regressor for the furnace) pays 456,000", call_of(d, r1b)[0] == 456000,
-          "%s, 6082 at %.4f" % (call_of(d, r1b), r1b["BIL6082"]["intensity"]))
-    check("C9 R2 (decisive: the furnace by its loads' hours) is the golden at 342,000",
-          golden_call == (342000, ("BIL6063", "INGLM25")), str(golden_call))
-    check("C10 6082 is the family the decisive step moves (under in R1, over in R2)",
-          r1["BIL6082"]["intensity"] <= G.LIMIT < fam["BIL6082"]["intensity"],
-          "%.4f against %.4f" % (r1["BIL6082"]["intensity"], fam["BIL6082"]["intensity"]))
-    check("C11 no family within 0.015 of the limit on the golden",
-          min(abs(fam[f]["intensity"] - G.LIMIT) for f in G.FAMILIES) > 0.015,
-          str({f: round(fam[f]["intensity"] - G.LIMIT, 4) for f in G.FAMILIES}))
-
-    # ------------------------------------------------------------------ the semantic forks, each converging on the call
-    def same(name, fam2, detail=""):
-        c = call_of(d, fam2)
-        check(name, c == golden_call, "%s %s" % (c, detail))
-
-    # SF1 the local year against the UTC year: UTC days
-    dd = dict(d)
-    yu = np.zeros(365)
-    for t, k in zip(d["starts"], d["kwh"]):
-        yu[(t.date() - dt.date(2026, 1, 1)).days] += k
-    bu, _ = G.fit(yu, x)
-    same("SF1 days and the year read in UTC give the same call", G.attribute(d, bu)[0])
-    # SF2 electricity is not fuel the works burned (SCR-2 section 2); the requirement's own words
-    scr2 = open(os.path.join(T, P.FILES["scr2"]), "rb").read()
-    import pdfplumber
-    txt = " ".join((p.extract_text() or "") for p in pdfplumber.open(os.path.join(T, P.FILES["scr2"])).pages)
-    txt = re.sub(r"\s+", " ", txt)
-    check("SF2 SCR-2 files the fuel the works burned and natural gas at its billed energy",
-          "fuel the works burned" in txt and "Natural gas is taken at the energy the gas supplier billed" in txt
-          and len(scr2) > 0, "section 2 and section 4")
-    # SF3 one average calorific value for the year
-    cv_bar = float(np.mean([p["cv"] for p in d["per"]]))
-    dd3 = dict(d)
-    k = 0
-    kk = np.array(d["kwh"])
-    for i, t in enumerate(d["starts"]):
-        while not (d["per"][k]["a"] <= t < d["per"][k]["b"]):
-            k += 1
-        kk[i] = kk[i] * cv_bar / d["per"][k]["cv"]
-    dd3["kwh"] = kk
-    y3 = np.zeros(365)
-    for t, v in zip(d["starts"], kk):
-        y3[G.DAY_INDEX[G.local_date(t)]] += v
-    b3, _ = G.fit(y3, x)
-    same("SF3 one average calorific value gives the same call", G.attribute(dd3, b3)[0])
-    # SF4 the exact imperial factor against the bill's 2.83
-    ex = W.utc(P.METER_EXCHANGE_LOCAL)
-    dd4 = dict(d)
-    dd4["kwh"] = np.array([v * (2.831685 / 2.83 if t < ex else 1.0) for t, v in zip(d["starts"], d["kwh"])])
-    y4 = np.zeros(365)
-    for t, v in zip(d["starts"], dd4["kwh"]):
-        y4[G.DAY_INDEX[G.local_date(t)]] += v
-    b4, _ = G.fit(y4, x)
-    same("SF4 hundreds of cubic feet at 2.831685 give the same call", G.attribute(dd4, b4)[0])
-    # SF5 production at the first result, and every inspected tonne
-    import csv
-    first, every = {}, {f: 0.0 for f in G.FAMILIES}
+    # ---- screen 1: levels and the lever; the golden mid-bin with margin
+    check("golden picks Paper C", res["pick"] == "C", str({d: round(v, 3) for d, v in gold.items()}))
+    check("golden marks mid-bin (0.25 of a mark from every rounding edge)",
+          all(edge(v, 1.0) >= 0.25 for v in gold.values()))
+    check("golden margin: the nearest other draft at least 0.5 marks further from 25",
+          min(res["dist"][d] for d in "AB") - res["dist"]["C"] >= 0.5)
+    # ---- screen 3 and the literal execution of every filed sentence (the specification, the standard-setting
+    # record, the bank's final run, the renumbering; nothing re-estimated): Paper A
+    check("default path and literal execution file Paper A", C.pick(bank) == "A", str({d: round(v, 3) for d, v in bank.items()}))
+    check("the default path's whole marks differ from the golden's on every draft",
+          all(round(bank[d]) != round(gold[d]) for d in "ABC"))
+    rv = C.rivals(w, bb, dr)
+    # ---- screen 2: the golden's own method holds (SF8 clock, SF9 boundary and lag, SF13 the recalibration's form)
+    for k, sf in (("lag2", "SF9"), ("lag4", "SF9"), ("utc_day", "SF8"), ("wle", "SF13"), ("joint", "SF13"),
+                  ("one_shift", "SF13")):
+        ok = C.pick(rv[k]) == "C" and all(round(rv[k][d]) == round(gold[d]) for d in "ABC")
+        check("%s %s files C at the golden's whole marks" % (sf, k), ok, str({d: round(v, 2) for d, v in rv[k].items()}))
+    # ---- screen 4: the careful readers land wrong
+    for k in ("outline_weeks", "outline_last_week", "whole_school", "last_days", "trend", "national_weeks"):
+        check("reader %s does not file C" % k, C.pick(rv[k]) != "C", str({d: round(v, 2) for d, v in rv[k].items()}))
+    check("SF12 each school's weeks on the national calendar files another call (the appendix header rules it out)",
+          C.pick(rv["national_weeks"]) != res["pick"])
+    # ---- structure the closures rest on
+    check("no school's first Term 3 unit ends before its first sitting day",
+          all(s["end1"] > s["days"][0] for s in sch))
+    check("SF9 no session on a school's unit-end day", all(p["day"] != sch[p["school"]]["end1"] for p in w["online"]))
+    check("SF8 every first unit ends on a Friday", all(s["end1"].weekday() == 4 for s in sch))
+    check("SF11 every second Term 3 unit ends at the school's term end, after the window",
+          all(s["term_end"] > P.WINDOW[-1] for s in sch))
+    check("SF14 every core unit ends by its school's Term 3 end, before November 2027",
+          all(s["term_end"] < dt.date(2027, 11, 1) for s in sch))
+    T = res["T"]
+    resp = w["M"] > 0
+    t3 = pl["t3"]
+    share = (T[:, t3] & resp[:, t3]).sum() / resp[:, t3].sum()
+    check("taught share of the Term 3 responses under one in five", share < 0.2, "%.3f" % share)
+    # ---- axis 21: every draft meets the strand ranges; the Term 3 counts
+    for d, ix in dr.items():
+        ok = all(lo <= sum(1 for i in ix if items[i]["strand"] == st) <= hi for st, (lo, hi) in P.STRAND_RANGE.items())
+        check("draft %s meets the specification's strand ranges and has 50 items" % d, ok and len(ix) == 50)
+    check("Term 3 items per draft", res["t3_count"] == {"A": 6, "B": 11, "C": 17}, str(res["t3_count"]))
+    # ---- screen 5: fit parity and the back-test
+    infit, outfit = RA.fit_stats(w["R"], w["M"], C.thetas_t12(w, bb), bb)
+    _, thb = C.bank_run(w)
+    infit, outfit = RA.fit_stats(w["R"], w["M"], thb, bb)
+    t12 = pl["t12"]
+    check("Term 3 infit inside the Term 1 and 2 items' infit range",
+          infit[t3].min() >= infit[t12].min() - 0.02 and infit[t3].max() <= infit[t12].max() + 0.02,
+          "T3 %.3f-%.3f, T12 %.3f-%.3f" % (infit[t3].min(), infit[t3].max(), infit[t12].min(), infit[t12].max()))
+    check("every item's outfit inside 0.7 to 1.3", outfit.min() > 0.7 and outfit.max() < 1.3,
+          "%.3f-%.3f" % (outfit.min(), outfit.max()))
+    anc = pl["anchors"]
+    free = [i for i in range(len(bb)) if i not in anc]
+    th_na = RA.fit_theta(w["R"][:, free], w["M"][:, free], bb[free])
+    ba = RA.fit_b(w["R"][:, anc], w["M"][:, anc], th_na, b0=bb[anc])
+    check("anchor block's free 2026 estimates within 0.10 logits of their banked values",
+          np.abs(ba - bb[anc]).max() < 0.10, "%.3f" % np.abs(ba - bb[anc]).max())
+    for f in range(P.N_FORMS):
+        rows = [r for r, p in enumerate(w["online"]) if p["form"] == f]
+        obs = w["R"][rows][:, pl["forms"][f]].sum(1).mean()
+        exp = RA.sig(thb[rows][:, None] - bb[pl["forms"][f]][None, :]).sum(1).mean()
+        check("the bank reproduces form %d's observed mean mark" % (f + 1), abs(obs - exp) < 0.05, "%.2f %.2f" % (obs, exp))
+    sh = bb[t3].mean() - bb[t12].mean()
+    check("Shock: the Term 3 items' banked mean within 0.35 logits of the Term 1 and 2 items'", abs(sh) < 0.35, "%.3f" % sh)
+    # ---- SF6 the preliminary run; SF10 duplicates; SF5 the scale; SF4 rounding; axis 14 row order
+    bp, _ = C.bank_run(w, upto=P.PRELIM_CUTOFF)
+    check("SF6 the preliminary run: default A, golden C", C.pick(C.marks(bp, dr)) == "A" and
+          C.pick(C.marks(C.recal_t3(w, bp, T.astype(float)), dr)) == "C")
+    for keep in ("first", "both"):
+        R2, M2 = C.matrices(w, keep)
+        b2, _ = C.bank_run(w, R2, M2)
+        g2 = C.marks(C.recal_t3(w, b2, T.astype(float), R2, M2), dr)
+        check("SF10 re-answered items kept %s: default A, golden C at its whole marks" % keep,
+              C.pick(C.marks(b2, dr)) == "A" and C.pick(g2) == "C" and all(round(g2[d]) == round(gold[d]) for d in "ABC"))
+    rc = bg - np.nanmean(bg)
+    check("SF5 re-centring the recalibrated bank on every item's mean keeps C (the scale is held by the anchors)",
+          C.pick(C.marks(rc, dr)) == "C", str({d: round(v, 2) for d, v in C.marks(rc, dr).items()}))
+    check("SF4 rounded marks compared give the same call",
+          min((abs(round(v) - 25), d) for d, v in gold.items())[1] == "C")
+    perm = np.random.default_rng(1).permutation(len(w["online"]))
+    th1 = C.thetas_t12(w, bb)
+    b1 = C.recal_t3(w, bb, T.astype(float), th=th1)
+    MP, RP, TP = w["M"][perm], w["R"][perm], T[perm]
+    b1p = C.recal_t3(w, bb, TP.astype(float), R=RP, M=MP, th=th1[perm])
+    check("axis 14 row order does not move an estimate", np.nanmax(np.abs(b1 - b1p)) < 1e-9)
+    # ---- SF1 SF2 SF3 SF7 SF15: the WHAT and identities
+    check("SF1 SF2 SF3 the expected mark is the sum of 50 item probabilities at the record's 0.35 logits",
+          abs(RA.expected_mark(bg[dr["C"]], P.THETA_ACHIEVED) - gold["C"]) < 1e-12 and P.THETA_ACHIEVED == 0.35)
+    codes = {it["code"] for it in items}
+    check("SF7 no card number reads as a bank code", all("S10-%04d" % it["card"] not in codes for it in items))
+    online = {p["entry"] for p in w["online"]}
+    a = w["asks"]
+    check("SF15 no make-up candidate is in the response export", all(x["entry"] not in online for x in a["roster"]))
+    # ---- separation line and the asks' device mass
+    old_entries = {o for o, _ in a["transfers"]}
+    check("separation: no transferred candidate's old entry and no withdrawn entry is in the response export",
+          not (old_entries & online) and not (set(a["withdrawn"]) & online))
+    region_of = {s["code"]: s["region"] for s in sch}
+    host_codes = {sch[h]["code"] for h in set(a["host_of"].values())}
+    naive_sat = {r: sum(1 for p in w["online"] if sch[p["school"]]["region"] == r) for r in P.REGIONS}
+    naive_mk = {r: [] for r in P.REGIONS}
+    for x in a["scripts"]:
+        naive_sat[region_of[x["school"]]] += 1
+        naive_mk[region_of[x["school"]]].append(x["mark"])
+    check("P1 the host-centre code misses sat in every region", all(naive_sat[r] != a["sat"][r] for r in P.REGIONS),
+          str(naive_sat))
+    check("P1 the host-centre code alone moves every region's mean make-up mark past half a unit, or leaves it blank",
+          all((not naive_mk[r]) or abs(np.mean(naive_mk[r]) - a["makeup_mean"][r]) > 0.05 for r in P.REGIONS),
+          str({r: (round(float(np.mean(v)), 2) if v else None) for r, v in naive_mk.items()}))
+    roster_sat = {r: sum(1 for p in w["online"] if sch[p["school"]]["region"] == r) for r in P.REGIONS}
+    for x in a["roster"]:
+        roster_sat[sch[x["home"]]["region"]] += 1
+    check("P1 counting roster lines (no-shows included) misses sat in every region with a no-show",
+          sum(1 for r in P.REGIONS if roster_sat[r] != a["sat"][r]) >= 3, str(roster_sat))
+    nsn_entered = {}
     seen = set()
-    for r in csv.DictReader(open(os.path.join(T, P.FILES["lots"]), encoding="utf-8")):
-        fam_ = G.PRODUCT[r["Product"]]
-        if r["Lot"] not in seen:
-            seen.add(r["Lot"])
-            every[fam_] += int(r["Net kg"]) / 1000.0
-            first[r["Lot"]] = (fam_, r["Result"], int(r["Net kg"]) / 1000.0)
-    p_first = {f: 0.0 for f in G.FAMILIES}
-    for fam_, res_, t_ in first.values():
-        if res_ == "PASS":
-            p_first[fam_] += t_
-    for label, prod in (("first result", p_first), ("every lot inspected", every)):
-        dd5 = dict(d)
-        dd5["prod"] = prod
-        same("SF5 production at the %s gives the same call" % label, G.attribute(dd5, beta)[0])
-    # SF6 the gas burned on rejected lots taken out of the families' numerators (pro rata to the tonnes rejected)
-    rej = {f: every[f] - d["prod"][f] for f in G.FAMILIES}
-    fam6 = {}
-    for f in G.FAMILIES:
-        share = d["prod"][f] / (d["prod"][f] + rej[f])
-        fam6[f] = dict(intensity=fam[f]["intensity"] * share)
-    same("SF6 rejected lots' gas removed from the numerator gives the same call", fam6)
-    # SF7 pilot flames while a process runs counted to the processes by their running hours
-    fam7 = {}
-    base_pilot = beta["const"] * 365
-    run_h = {"BIL6063": 0.0, "BIL6082": 0.0, "INGLM25": 0.0, "CSTLM25": 0.0}
-    for h in d["heats"]:
-        run_h[h["family"]] += (h["b"] - h["a"]).total_seconds() / 3600.0
-    for ld in d["h1"]:
-        run_h[ld["family"]] += (ld["b"] - ld["a"]).total_seconds() / 3600.0
-    run_h["CSTLM25"] += sum((b["b"] - b["a"]).total_seconds() / 3600.0 for b in d["t1"])
-    tot_h = sum(run_h.values())
-    allp = sum(d["prod"].values())
-    for f in G.FAMILIES:
-        kwh = fam[f]["kwh"] - base_pilot * d["prod"][f] / allp + base_pilot * run_h[f] / tot_h
-        fam7[f] = dict(intensity=kwh * G.CO2 / 1000.0 / d["prod"][f])
-    same("SF7 pilot gas counted to the processes by running hours gives the same call", fam7)
-    # SF8 heating degree days on 18 C, on 14 C, and none
-    for base in (18.0, 14.0):
-        yb, xb = G.daily(d, hdd_base=base)
-        bb, _ = G.fit(yb, xb)
-        same("SF8 heating degree days on %.0f C give the same call" % base, G.attribute(d, bb)[0])
-    bn, _ = G.fit(y, x, hdd=False)
-    same("SF8 no heating term gives the same call", G.attribute(d, bn)[0])
-    # SF9 the regression's grain: weekly, and the days a process ran
-    n = 364 // 7
-    yw = y[:n * 7].reshape(n, 7).sum(1)
-    xw = {k_: v[:n * 7].reshape(n, 7).sum(1) for k_, v in x.items()}
-    bw, _ = G.fit(yw, xw)
-    same("SF9 a weekly regression gives the same call", G.attribute(d, bw)[0])
-    mask = (x["melt"] + x["m3"] + x["h1"] + x["t1"]) > 0
-    bm, _ = G.fit(y[mask], {k_: v[mask] for k_, v in x.items()})
-    same("SF9 the days a process ran give the same call", G.attribute(d, bm)[0])
-    # SF10 melting gas spread by tonnes produced
-    same("SF10 melting by tonnes produced gives the same call", G.attribute(d, beta, melt="produced")[0])
-    # SF11 the re-keyed heats kept
-    import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(T, P.FILES["furnaces"]), read_only=True, data_only=True)
-    heats_all = []
-    for sheet in ("M1 casthouse", "M2 casthouse"):
-        for r in list(wb[sheet].iter_rows(values_only=True))[1:]:
-            heats_all.append(dict(furnace=sheet[:2], heat=r[0], family=G.ALLOY[str(r[1])], a=G.to_utc(r[2]),
-                                  b=G.to_utc(r[3]), t=float(r[4]), lot=r[5]))
-    dups = len(heats_all) - len(d["heats"])
-    dd11 = dict(d)
-    dd11["heats"] = heats_all
-    y11, x11 = G.daily(dd11)
-    b11, _ = G.fit(y11, x11)
-    same("SF11 the re-keyed heats kept give the same call", G.attribute(dd11, b11)[0], "(%d re-keyed rows)" % dups)
-    check("SF11 the furnace logs carry re-keyed heats", dups > 10, "%d rows" % dups)
-    # SF12 the call-offs: the months summed equal the schedule's totals (asserted in golden.read_calloffs)
-    check("SF12 the call-offs read from the schedule are SCR-2's tonnes",
-          d["calloff"] == P.CALLOFF_2027, str(d["calloff"]))
-    # SF13 the limit read inclusive or exclusive: no family on it
-    check("SF13 at or under the limit, or under it: no family on 0.235",
-          all(abs(fam[f]["intensity"] - G.LIMIT) > 1e-3 for f in G.FAMILIES), "")
-    # SF14 firing hours read as naive local differences
-    dd14 = dict(d)
-    dd14["h1"] = [dict(ld, b=ld["a"] + ((ld["b"].astimezone(G.LON).replace(tzinfo=None) -
-                                          ld["a"].astimezone(G.LON).replace(tzinfo=None)))) for ld in d["h1"]]
-    same("SF14 hours from the logs' local stamps unconverted give the same call", G.attribute(dd14, beta)[0])
-
-    # ------------------------------------------------------------------ the asks
-    built = __import__("build")
-    visits = None
-    try:
-        visits = built.weighbridge(w, os.devnull, os.devnull)
-    except Exception as e:  # pragma: no cover
-        check("A0 the weighbridge truth regenerates", False, repr(e))
-    if visits is not None:
-        truth_a = {g: {q: 0.0 for q in G.QUARTERS} for g in G.GRADES}
-        truth_b = {q: 0.0 for q in G.QUARTERS}
-        orders_ok = True
-        for v in visits:
-            q = G.quarter(v["day"])
-            ws = v["weights"]
-            if v["kind"] == "scrap1" and v["lines"][0]["status"] == "Accepted":
-                truth_a[v["lines"][0]["grade"]][q] += (ws[0] - ws[-1]) / 1000.0
-            elif v["kind"] == "scrap2":
-                for k_, gg in enumerate(v["order"]):
-                    truth_a[gg][q] += (ws[k_] - ws[k_ + 1]) / 1000.0
-                big = max(v["lines"], key=lambda ln: ln["actual"])
-                small = min(v["lines"], key=lambda ln: ln["actual"])
-                orders_ok &= big["declared"] > small["declared"]
-            elif v["kind"] in ("dross1", "dross2"):
-                truth_b[q] += (ws[-1] - ws[-2]) / 1000.0
-        check("A1 ask A (scrap by grade and quarter) is the weighbridge's truth to the kilogram",
-              all(abs(res["ask_a"][g][q] - truth_a[g][q]) < 1e-6 for g in G.GRADES for q in G.QUARTERS), "")
-        check("A2 every two-grade note declares its bigger tip bigger (the match is forced)", orders_ok, "")
-        check("A3 ask B (dross by quarter) is the weighbridge's truth", all(abs(res["ask_b"][q] - truth_b[q]) < 1e-6
-                                                                           for q in G.QUARTERS), "")
-        n2 = sum(1 for v in visits if v["kind"] == "scrap2")
-        n1 = sum(1 for v in visits if v["kind"] == "scrap1")
-        nd2 = sum(1 for v in visits if v["kind"] == "dross2")
-        nd = sum(1 for v in visits if v["kind"] in ("dross1", "dross2"))
-        check("A4 two-grade loads are a quarter or more of deliveries", n2 / float(n1 + n2) > 0.2,
-              "%d of %d" % (n2, n1 + n2))
-        check("A5 a third or more of the dross lifts first unload returned metal", nd2 / float(nd) > 0.25,
-              "%d of %d" % (nd2, nd))
-        resets = [v for v in visits if v["day"] >= P.WB_RESET]
-        check("A6 the weighbridge's tickets restart at 1 on the new indicator", resets and resets[0]["ticket"] == 1,
-              "first ticket after %s is %d" % (P.WB_RESET, resets[0]["ticket"]))
-    a_dec = G.scrap(T, split="declared")
-    kept_a = sum(1 for g in G.GRADES for q in G.QUARTERS if round(a_dec[g][q]) == round(res["ask_a"][g][q]))
-    b_fl = G.dross(T, combined="first_last")
-    kept_b = sum(1 for q in G.QUARTERS if round(b_fl[q]) == round(res["ask_b"][q]))
-    check("A7 the cracker's route (declared split, first and last weighing) misses ask A", kept_a <= 3,
-          "keeps %d of 16" % kept_a)
-    check("A8 the cracker's route misses ask B", kept_b == 0, "keeps %d of 4" % kept_b)
-    vals = [res["ask_a"][g][q] for g in G.GRADES for q in G.QUARTERS] + [res["ask_b"][q] for q in G.QUARTERS]
-    check("A9 no ask figure on an exact half tonne", all(abs((v % 1.0) - 0.5) > 0.011 for v in vals),
-          "closest %.3f" % min(abs((v % 1.0) - 0.5) for v in vals))
-
-    # ------------------------------------------------------------------ the input gates and the files
-    names = sorted(os.listdir(T))
-    exts = {n.rsplit(".", 1)[-1] for n in names}
-    check("G1 ten or more files in three or more formats", len(names) >= 10 and len(exts) >= 3,
-          "%d files, %s" % (len(names), sorted(exts)))
-    big = max(sum(1 for _ in open(os.path.join(T, n), encoding="utf-8")) - 1 for n in names if n.endswith(".csv"))
-    check("G2 a file of 25,000 rows or more", big >= 25000, "%d rows" % big)
-    meta = json.load(open(os.path.join(TASK, "metadata.json")))
-    check("G3 two or more named distractors, none named in a file name as one",
-          len(meta["distractors"]) >= 2 and all("distract" not in n for n in names), str(meta["distractors"]))
-    check("G4 every file has a source, a date and a licence in metadata.json",
-          sorted(f["name"] for f in meta["files"]) == names and all(f.get("source") and f.get("date") and
-                                                                    f.get("license") for f in meta["files"]), "")
-    dash = []
-    for n in names:
-        b = open(os.path.join(T, n), "rb").read()
-        if n.endswith((".xlsx", ".docx")):
-            b = b"".join(zipfile.ZipFile(os.path.join(T, n)).read(i) for i in zipfile.ZipFile(os.path.join(T, n))
-                         .namelist())
-        if chr(0x2014).encode() in b:
-            dash.append(n)
-    check("G5 no em dash in any file", not dash, str(dash))
-    stamps = {}
-    for n in names:
-        if n.endswith(".pdf"):
-            m_ = re.findall(rb"/CreationDate\s*\((D:[^)]*)\)", open(os.path.join(T, n), "rb").read())
-            stamps[n] = m_[0] if m_ else b""
-        if n.endswith(".xlsx"):
-            core = zipfile.ZipFile(os.path.join(T, n)).read("docProps/core.xml")
-            stamps[n] = re.findall(rb"<dcterms:created[^>]*>([^<]*)<", core)[0]
-    check("G6 every workbook and PDF carries its own creation stamp", len(set(stamps.values())) == len(stamps),
-          str({k: v.decode() for k, v in stamps.items()}))
-    lic = [n for n in names if "lorem" in open(os.path.join(T, n), "rb").read().decode("latin-1").lower()]
-    check("G7 no placeholder text", not lic, str(lic))
-    after = []
-    for n in names:
-        if n.endswith(".csv"):
-            for line in open(os.path.join(T, n), encoding="utf-8"):
-                if re.search(r"\b2027-0[2-9]|\b2027-1|/0[2-9]/2027|/1[0-2]/2027", line):
-                    after.append(n)
-                    break
-    check("G8 no record dated after the package's January 2027", not after, str(after))
-
-    print("%d checks, %d failed" % (N[0], len(FAILS)))
-    return 1 if FAILS else 0
+    for e in a["entries"]:
+        if e["status"] != "E":
+            continue
+        key = ("nsn", e["nsn"]) if e["nsn"] else ("entry", e["entry"])
+        if key in seen:
+            continue
+        seen.add(key)
+        r = region_of[e["school"]]
+        nsn_entered[r] = nsn_entered.get(r, 0) + 1
+    check("P2 an NSN match misses entered in every region by 2 or more",
+          all(nsn_entered[r] - a["entered"][r] >= 2 for r in P.REGIONS), str(nsn_entered))
+    sd_entered = {}
+    seen = set()
+    for e in a["entries"]:
+        if e["status"] != "E":
+            continue
+        key = (e["surname"], e["dob"])
+        if key in seen:
+            continue
+        seen.add(key)
+        r = region_of[e["school"]]
+        sd_entered[r] = sd_entered.get(r, 0) + 1
+    check("P2 a surname and birth-date match misses entered in every region (twins merged)",
+          all(sd_entered[r] != a["entered"][r] for r in P.REGIONS), str(sd_entered))
+    full = {}
+    seen = set()
+    for e in a["entries"]:
+        if e["status"] != "E":
+            continue
+        key = (e["first"], e["surname"], e["dob"])
+        if key in seen:
+            continue
+        seen.add(key)
+        full[region_of[e["school"]]] = full.get(region_of[e["school"]], 0) + 1
+    check("P2 the golden handling (first name, surname, birth date) reproduces entered", full == a["entered"], str(full))
+    # P4 (D4): unbooked candidates who sat at a host reach only the keyed file; the typed roster never lists them
+    rost = {x["script"]: x["home"] for x in a["roster"] if x["script"]}
+    walk_reg = {r: sum(1 for x in a["walkins"] if sch[x["home"]]["region"] == r) for r in P.REGIONS}
+    check("P4 walk-ins in every region", all(v >= 1 for v in walk_reg.values()), str(walk_reg))
+    fi_sat = {r: sum(1 for p in w["online"] if sch[p["school"]]["region"] == r) for r in P.REGIONS}
+    fi_n = {r: 0 for r in P.REGIONS}
+    fi_mk = {r: [] for r in P.REGIONS}
+    for x in a["scripts"]:
+        if x["script"] in rost:
+            reg = sch[rost[x["script"]]]["region"]
+            fi_sat[reg] += 1
+            fi_n[reg] += 1
+            fi_mk[reg].append(x["keyed_mark"] / 2 if x["keyed_mark"] > 50 else x["keyed_mark"])
+    check("P4 the roster join (unmatched scripts dropped) misses sat in every region",
+          all(fi_sat[r] != a["sat"][r] for r in P.REGIONS), str(fi_sat))
+    check("P4 the roster join misses every region's make-up count", all(fi_n[r] != a["makeup_n"][r] for r in P.REGIONS))
+    fi_mean = {r: (sum(v) / len(v) if v else None) for r, v in fi_mk.items()}
+    check("P4 with P3, the full includer's roster join misses every region's mean at one decimal",
+          all(fi_mean[r] is None or round(fi_mean[r], 1) != round(a["makeup_mean"][r], 1) for r in P.REGIONS),
+          str({r: (round(v, 2) if v is not None else None) for r, v in fi_mean.items()}))
+    hk = {r: [] for r in P.REGIONS}
+    for x in a["scripts"]:
+        reg = sch[rost[x["script"]]]["region"] if x["script"] in rost else region_of[x["school"]]
+        hk[reg].append(x["keyed_mark"] / 2 if x["keyed_mark"] > 50 else x["keyed_mark"])
+    hk_mean = {r: (sum(v) / len(v) if v else None) for r, v in hk.items()}
+    check("P4 unmatched scripts placed by the keyed code still miss every region's mean at one decimal",
+          all(hk_mean[r] is None or round(hk_mean[r], 1) != round(a["makeup_mean"][r], 1) for r in P.REGIONS),
+          str({r: (round(v, 2) if v is not None else None) for r, v in hk_mean.items()}))
+    check("P4 benign twin: the keyed file carries entry numbers on rostered scripts too",
+          any(x["entry"] and not x["walkin"] for x in a["scripts"]))
+    pct = [x for x in a["scripts"] if x["pct"]]
+    check("P3 the percentage batch has rows both over and at or under 50",
+          any(x["keyed_mark"] > 50 for x in pct) and any(x["keyed_mark"] <= 50 for x in pct))
+    naive_mean = {}
+    for r in P.REGIONS:
+        v = [(x["keyed_mark"] / 2 if x["keyed_mark"] > 50 else x["keyed_mark"]) for x in a["scripts"]
+             if sch[x["home"]]["region"] == r]
+        naive_mean[r] = sum(v) / len(v)
+    check("P3 halving only marks over 50 misses the Central and Capital means by 0.1 or more",
+          all(abs(naive_mean[r] - a["makeup_mean"][r]) >= 0.1 for r in ("Central", "Capital")),
+          str({r: round(v, 2) for r, v in naive_mean.items()}))
+    check("ask means mid-bin (0.015 from a rounding edge at one decimal)",
+          all(edge(v, 0.1) >= 0.015 for v in a["makeup_mean"].values()))
+    check("the host codes are the three host schools'", len(host_codes) == 3)
+    # ---- the 20-redraw screens (screens.py writes screens.json)
+    sp = os.path.join(HERE, "screens.json")
+    if os.path.exists(sp):
+        s = json.load(open(sp))["routes"]
+        check("redraws: golden C in 20 of 20", s["golden"]["picks"] == "C" * 20)
+        for k in ("lag2", "utc_day", "wle", "joint", "one_shift"):
+            check("redraws: %s C in 20 of 20" % k, s[k]["picks"] == "C" * 20)
+        check("redraws: lag4 (every Monday sitter dropped) C in at least 19 of 20", s["lag4"]["picks"].count("C") >= 19)
+        check("redraws: the bank A in 20 of 20", s["bank"]["picks"] == "A" * 20)
+        for k in ("outline_weeks", "outline_last_week", "whole_school", "last_days", "trend"):
+            check("redraws: %s never C" % k, "C" not in s[k]["picks"])
+        check("redraws: national weeks C in at most 3 of 20", s["national_weeks"]["picks"].count("C") <= 3)
+    else:
+        check("screens.json present", False)
+    print("%d failures" % len(FAIL))
+    return 1 if FAIL else 0
 
 
 if __name__ == "__main__":

@@ -1,132 +1,144 @@
 {
  "task": "task482",
- "architecture": 16,
- "setting": "2027-01-28",
+ "architecture": 17,
+ "setting": "2026-11-06",
  "files": [
   {
-   "name": "brackwell_electricity_hh_2026.csv",
+   "name": "bank_calibration_runs.csv",
+   "role": "evidence",
+   "source": "synthetic: the bank's 2025 final and 2026 preliminary and final calibration runs",
+   "date": "2026-09-07",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "candidate_survey_2026.csv",
    "role": "distractor",
-   "source": "synthetic: the electricity supplier's half-hourly settlement data for the works' import meter",
-   "date": "2027-01-11",
+   "source": "synthetic: the post-sitting survey of candidates' attitudes to science",
+   "date": "2026-08-24",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "name": "brackwell_gas_invoices_2026.pdf",
+   "name": "corlinn_item_bank_2026.xlsx",
    "role": "evidence",
-   "source": "synthetic: the gas supplier's VAT invoices by meter-read period, with calorific values",
-   "date": "2027-01-10",
+   "source": "synthetic: the Year 10 science item bank after the final 2026 calibration",
+   "date": "2026-09-08",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "name": "brackwell_heat_treatment_oven_t1_2026.csv",
+   "name": "council_minute_2026_10_14.pdf",
+   "role": "governing",
+   "source": "synthetic: the Council's minutes of 14 October 2026 (the 2027 sitting dates)",
+   "date": "2026-10-16",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "entries_register_aug2026.xlsx",
    "role": "evidence",
-   "source": "synthetic: the solution and ageing oven's batch log",
-   "date": "2027-01-18",
+   "source": "synthetic: the Trust's entries register for the August 2026 sitting",
+   "date": "2026-08-31",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "name": "brackwell_homogenizing_furnace_h1_2026.csv",
+   "name": "item_renumbering_2025.csv",
    "role": "evidence",
-   "source": "synthetic: the homogenizing furnace's load log",
-   "date": "2027-01-18",
+   "source": "synthetic: the bank's 2025 renumbering from item card numbers to bank codes",
+   "date": "2025-02-01",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "name": "brackwell_melting_furnace_logs_2026.xlsx",
+   "name": "makeup_roster_aug2026.pdf",
    "role": "evidence",
-   "source": "synthetic: the casthouse and foundry melting furnaces' charge logs as kept by the works office",
-   "date": "2027-01-19",
+   "source": "synthetic: the make-up sitting's typed roster by host centre",
+   "date": "2026-08-31",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "name": "brackwell_plant_asset_register.xlsx",
+   "name": "makeup_scripts_keyed.csv",
+   "role": "evidence",
+   "source": "synthetic: the office's keyed make-up scripts",
+   "date": "2026-09-10",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "member_bell_times_2026.json",
    "role": "distractor",
-   "source": "synthetic: the works' plant asset register with rated inputs",
-   "date": "2026-09-22",
+   "source": "synthetic: member schools' Term 3 bell times from the timetabling system",
+   "date": "2026-08-31",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "name": "brackwell_production_lots_2026.csv",
+   "name": "member_schools.csv",
    "role": "evidence",
-   "source": "synthetic: the inspection system's export of production lots and results",
-   "date": "2027-01-15",
+   "source": "synthetic: the Trust's member schools with codes and regions",
+   "date": "2026-08-31",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "name": "brackwell_scr2_data_package.eml",
+   "name": "paper_choice_request.eml",
+   "role": "context",
+   "source": "synthetic: the head of assessment's request",
+   "date": "2026-11-06",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "standard_setting_record_y10sci.pdf",
+   "role": "governing",
+   "source": "synthetic: the standard-setting record (standards on the bank scale)",
+   "date": "2026-03-04",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "y10sci_2027_drafts.xlsx",
    "role": "evidence",
-   "source": "synthetic: the supplier's cover email for its 2026 data package",
-   "date": "2027-01-21",
+   "source": "synthetic: the drafting panels' three draft papers for 2027, by item card number",
+   "date": "2026-11-02",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "name": "brackwell_scrap_goods_in_2026.csv",
+   "name": "y10sci_aug2026_responses.csv",
    "role": "evidence",
-   "source": "synthetic: the scrap goods-in register",
-   "date": "2027-01-08",
+   "source": "synthetic: the delivery platform's response export for the August 2026 online sitting, one row per scored response",
+   "date": "2026-08-24",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "name": "brackwell_shift_roster_2026.csv",
-   "role": "distractor",
-   "source": "synthetic: the casthouse and foundry crew roster",
-   "date": "2025-12-15",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "brackwell_site_gas_meter_2026.csv",
+   "name": "y10sci_aug2026_sessions.csv",
    "role": "evidence",
-   "source": "synthetic: the gas supplier's 15-minute interval export for the works' one site meter",
-   "date": "2027-01-12",
+   "source": "synthetic: the delivery platform's session log for the August 2026 sitting (UTC)",
+   "date": "2026-08-24",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "name": "brackwell_weighbridge_2026.csv",
+   "name": "y10sci_course_review_2026.pdf",
    "role": "evidence",
-   "source": "synthetic: the works' weighbridge export, one row per weighing",
-   "date": "2027-01-08",
+   "source": "synthetic: the Curriculum Committee's 2026 course review with member schools' sequences",
+   "date": "2026-09-09",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "name": "brackwell_works_weather_2026.csv",
-   "role": "evidence",
-   "source": "synthetic: the works' roof weather station, daily summary",
-   "date": "2027-01-05",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "velden_2027_calloff_schedule.xlsx",
-   "role": "evidence",
-   "source": "synthetic: the car maker's 2027 call-off schedule for the supplier",
-   "date": "2026-12-14",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "velden_scr2_supplier_carbon_requirement.pdf",
-   "role": "evidence",
-   "source": "synthetic: the car maker's supplier carbon requirement, Revision 2",
-   "date": "2025-12-08",
+   "name": "y10sci_paper_specification_2027.pdf",
+   "role": "governing",
+   "source": "synthetic: the Assessment Committee's 2027 paper specification",
+   "date": "2026-11-04",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   }
  ],
  "distractors": [
-  "brackwell_electricity_hh_2026.csv",
-  "brackwell_plant_asset_register.xlsx",
-  "brackwell_shift_roster_2026.csv"
+  "candidate_survey_2026.csv",
+  "member_bell_times_2026.json"
  ],
  "distractor_reasons": {
-  "brackwell_electricity_hh_2026.csv": "electricity is not fuel the works burned (SCR-2 section 2), so it carries no direct emissions",
-  "brackwell_plant_asset_register.xlsx": "rated burner inputs say what a burner can fire, not the gas it burned; SCR-2 takes billed energy",
-  "brackwell_shift_roster_2026.csv": "crew rotations say who was on shift, not what the processes burned"
+  "candidate_survey_2026.csv": "candidates' attitudes after the sitting: relevant to how the cohort felt about the paper, unused by the pre-equating or the regional counts",
+  "member_bell_times_2026.json": "each school's period times: relevant to when sessions ran, unused because the session log carries every sitting's own time"
  },
  "stated_inputs": [
-  "0.235",
-  "0.18296",
-  "1.02264",
-  "2.83"
+  "the paper specification's targeting rule (nearest 25 at the Achieved standard)",
+  "the standard-setting record's Achieved standard, 0.35 logits on the bank scale",
+  "the Council's November 2027 sitting dates"
  ],
  "deliverables": [
-  "velden_low_carbon_premium_2027.docx",
-  "brackwell_scr2_figures_2026.csv"
+  "committee_memo.docx",
+  "achieved_marks.png",
+  "paper_choice.xlsx"
  ]
 }

@@ -1,122 +1,103 @@
-"""task482 architecture 16: submission.md and metadata.json, every figure from figures.json and the golden run."""
+"""task482 architecture 17: submission.md and metadata.json, every figure from golden.compute()."""
 import json
 
-import golden as G
 import params as P
 
-NAME = {"BIL6063": "6063 extrusion billet", "BIL6082": "6082 extrusion billet", "INGLM25": "LM25 foundry ingot",
-        "CSTLM25": "LM25-TF sand castings"}
-GRADE = {"CST": "old cast aluminium", "EXT": "extrusion offcuts", "TRN": "turnings and swarf",
-         "UBC": "used beverage cans"}
+REG = P.REGIONS
 
 
-def t(x):
-    return "{:,}".format(x)
+def submission(res, path):
+    g, b, n = res["gold"], res["bank"], res["t3_count"]
+    fmt = lambda d: ", ".join("%s %s" % (r, d[r]) for r in REG)
+    ent = {r: "{:,}".format(res["entered"][r]) for r in REG}
+    sat = {r: "{:,}".format(res["sat"][r]) for r in REG}
+    mk = {r: "%.1f" % res["makeup_mean"][r] for r in REG}
+    txt = """## Tags
+
+**Domain:** Education & Learning Sciences (item response theory and test equating: a schools' assessment trust pre-equating draft papers from its Rasch item bank).
+**Analytical objective:** Data Extraction & Conformation (ETL).
+
+## 1. Final Recommendation
+
+**Set Paper C for the November 2027 sitting: its expected mark at the Achieved standard is 25 of 50 ({gC:.2f}), against 26 for Paper A ({gA:.2f}) and 23 for Paper B ({gB:.2f}).**
+
+## 2. Critical Components
+
+- The bank's Term 3 difficulties come from the August 2026 sitting, where {un} per cent of the responses to Term 3 items came before the candidate's own school had finished the unit (each session's New Zealand sitting day against the school's sequence in the course review's Appendix B).
+- Each Term 3 item is re-estimated on the taught responses ({tmin} to {tmax} per item) with abilities fixed on the Term 1 and 2 items at their final 2026 bank values; the scale stays on the anchor block.
+- Expected marks at 0.35 logits: Paper A {gA:.2f}, Paper B {gB:.2f}, Paper C {gC:.2f}; the bank as calibrated gives {bA:.2f}, {bB:.2f} and {bC:.2f} and would set Paper A.
+- Term 3 items per draft: Paper A {nA}, Paper B {nB}, Paper C {nC}.
+
+## 3. Step-by-Step Solution
+
+1. Map each draft's card numbers to bank codes through the 2025 renumbering and take the final 2026 run's difficulties.
+2. Put each session's start into New Zealand time and join the candidate's school to its Term 3 start and sequence in Appendix B (names through member_schools.csv), weeks counted from the school's own start.
+3. Mark each response to an item from the two late units taught when its sitting date is after its school's last date for that unit; each school's second late unit runs to its term's end.
+4. Keep the later answer where an item was answered again after a reconnect.
+5. Estimate abilities on the Term 1 and 2 items at their bank values, then re-estimate each Term 3 item on its taught responses with those abilities fixed.
+6. Sum each draft's Rasch probabilities at 0.35 logits and set the draft nearest 25 before rounding.
+7. Entered: standing entries (status E) once per candidate on first name, surname and birth date; sat: online candidates plus each keyed script at its home school (typed roster by script number, otherwise the keyed entry number through the register); make-up marks with the JT batch keyed on 2 September halved.
+
+## 4. Deliverable Answers
+
+### committee_memo.docx
+
+- Set Paper C.
+- Expected marks at the Achieved standard: Paper A 26, Paper B 23, Paper C 25.
+
+### achieved_marks.png
+
+- Paper A 26, Paper B 23, Paper C 25, against the specification's 25.
+
+### paper_choice.xlsx
+
+- Expected marks at the Achieved standard (nearest whole mark): Paper A 26, Paper B 23, Paper C 25.
+- Candidates entered: {ent}.
+- Candidates who sat, online or at a make-up session: {sat}.
+- Candidates who sat a make-up paper: {mkn}.
+- Mean make-up mark: {mk}.
+""".format(gA=g["A"], gB=g["B"], gC=g["C"], bA=b["A"], bB=b["B"], bC=b["C"], nA=n["A"], nB=n["B"], nC=n["C"],
+           un=res["untaught_pct"], tmin=res["taught_min"], tmax=res["taught_max"], ent=fmt(ent), sat=fmt(sat),
+           mkn=fmt(res["makeup_n"]), mk=fmt(mk))
+    with open(path, "w") as fh:
+        fh.write(txt)
 
 
-def submission(fig, res, path):
-    pr, co = fig["produced_t"], fig["calloff_t"]
-    hours, tonnes = res["parts"]["hours"], res["parts"]["tonnes"]
-    n82 = sum(1 for ld in res["d"]["h1"] if ld["family"] == "BIL6082")
-    n63 = sum(1 for ld in res["d"]["h1"] if ld["family"] == "BIL6063")
-    h_share = 100 * hours["BIL6082"] / sum(hours.values())
-    t_share = 100 * tonnes["BIL6082"] / sum(tonnes.values())
-    a, b = fig["ask_a"], fig["ask_b"]
-    L = ["## Tags", "",
-         "**Domain:** Physical & Environmental Sciences (emissions inventory: a secondary aluminium works' product "
-         "carbon intensities under a car maker's supplier carbon requirement).",
-         "**Analytical objective:** Data Extraction & Conformation (ETL).", "",
-         "## 1. Final Recommendation", "",
-         "**Velden pays Brackwell Alloys EUR %s in low-carbon premium on its 2027 call-offs: EUR 38 a tonne on "
-         "%s t of 6063 extrusion billet and %s t of LM25 foundry ingot, the two families at or under SCR-2's 0.235 "
-         "t CO2/t in 2026.**" % (t(fig["call"]["premium_eur"]), t(co["BIL6063"]), t(co["INGLM25"])),
-         "6082 extrusion billet and the LM25-TF sand castings are over the limit and earn nothing on their %s t and "
-         "%s t. The homogenizing furnace burns gas by the hours its loads soak, and a 6082 load soaks about %.0f "
-         "hours against about %.0f for 6063; shared by tonnes, the two billet alloys come out level and 6082 would "
-         "wrongly qualify." % (t(co["BIL6082"]), t(co["CSTLM25"]), hours["BIL6082"] / n82, hours["BIL6063"] / n63),
-         "",
-         "## 2. Critical Components", "",
-         "1. 2026 specific direct emissions against SCR-2's 0.235 t CO2 per tonne produced: 6063 billet and LM25 "
-         "ingot **at or under it**; 6082 billet and LM25-TF castings **over it**.",
-         "2. The homogenizing furnace's gas follows its firing hours, not its tonnes: 6082 loads take **%.0f per "
-         "cent** of its hours on %.0f per cent of its billet." % (h_share, t_share),
-         "3. 2026 production, tonnes that passed final inspection (each lot at its last result): 6063 billet %s, "
-         "6082 billet %s, LM25 ingot %s, LM25-TF castings %s." % (t(pr["BIL6063"]), t(pr["BIL6082"]),
-                                                               t(pr["INGLM25"]), t(pr["CSTLM25"])),
-         "4. 2027 call-offs: 6063 billet %s t, 6082 billet %s t, LM25 ingot %s t, castings %s t; premium EUR 38 x "
-         "%s t = EUR %s." % (t(co["BIL6063"]), t(co["BIL6082"]), t(co["INGLM25"]), t(co["CSTLM25"]),
-                            t(co["BIL6063"] + co["INGLM25"]), t(fig["call"]["premium_eur"])), "",
-         "## 3. Step-by-Step Solution", "",
-         "1. Gas: the 15-minute export moved from UTC to local time, hundreds of cubic feet x 2.83 to cubic metres "
-         "before the 14 April 10:30 meter exchange, and each interval converted at the volume correction factor and "
-         "calorific value of the invoice period it falls in (kWh = m3 x 1.02264 x CV / 3.6).",
-         "2. Logs: one row kept per furnace and heat (re-keyed rows dropped), each heat's tonnes spread from charge to "
-         "melt-out, tower melter charges in kg, homogenizing furnace and solution oven hours from door closed or start "
-         "to door opened or end, all local time.",
-         "3. Regressed each local day's kWh on casthouse tonnes melted, tower melter tonnes, homogenizing furnace "
-         "hours, solution oven hours and heating degree days (base 15.5 C on the daily mean), with a constant.",
-         "4. Each family carries its casthouse heats' tonnes melted at the melting rate and its homogenizing loads' "
-         "hours at the furnace's hourly rate; the castings carry the tower melter and the solution oven; the rest of "
-         "the year's gas (pilot flames, heating) is shared by tonnes produced.",
-         "5. Production from the lots file at each lot's last result, PASS only; CO2 at 0.18296 kg/kWh over each "
-         "family's production.",
-         "6. Premium: EUR 38 on the 2027 schedule's call-offs (months summed) of each family at or under 0.235.",
-         "7. Scrap: accepted goods-in lines joined to the weighbridge on ticket and date (tickets restart on 29 June); "
-         "a one-grade load is in-weigh less out-weigh, a two-grade load's grades are the drops across its two tips, "
-         "matched to the lines by their declared weights; summed by quarter of the goods-in date.",
-         "8. Dross: Midland's waste-out tickets, the out-weigh less the weighing just before the skip was lifted (the "
-         "second weighing where returned metal came off first); summed by quarter.", "",
-         "## 4. Deliverable Answers", "", "### %s" % P.DELIVERABLES[0], "",
-         "1. Premium on the 2027 call-offs: EUR %s." % t(fig["call"]["premium_eur"]),
-         "2. Families earning it: 6063 extrusion billet (%s t) and LM25 foundry ingot (%s t)." % (
-             t(co["BIL6063"]), t(co["INGLM25"])),
-         "3. Each family's 2026 emissions per tonne against the 0.235 t CO2/t limit: 6063 extrusion billet and LM25 "
-         "foundry ingot at or under it; 6082 extrusion billet and LM25-TF sand castings over it.",
-         "4. Chart of each family's 2026 emissions per tonne against the 0.235 limit.", "",
-         "### %s" % P.DELIVERABLES[1], "",
-         "1. Scrap bought in, tonnes as weighed, by grade and quarter of 2026:"]
-    for g in G.GRADES:
-        L.append("   - %s: Q1 %s, Q2 %s, Q3 %s, Q4 %s" % ((GRADE[g],) + tuple(t(a[g][q]) for q in G.QUARTERS)))
-    L.append("2. Dross sent off for recovery, tonnes as weighed: Q1 %s, Q2 %s, Q3 %s, Q4 %s." % tuple(
-        t(b[q]) for q in G.QUARTERS))
-    open(path, "w", encoding="utf-8").write("\n".join(L) + "\n")
-
-
-SOURCES = {
-    "meter": ("synthetic: the gas supplier's 15-minute interval export for the works' one site meter", "2027-01-12"),
-    "invoices": ("synthetic: the gas supplier's VAT invoices by meter-read period, with calorific values",
-                 "2027-01-10"),
-    "furnaces": ("synthetic: the casthouse and foundry melting furnaces' charge logs as kept by the works office",
-                 "2027-01-19"),
-    "h1": ("synthetic: the homogenizing furnace's load log", "2027-01-18"),
-    "t1": ("synthetic: the solution and ageing oven's batch log", "2027-01-18"),
-    "lots": ("synthetic: the inspection system's export of production lots and results", "2027-01-15"),
-    "scr2": ("synthetic: the car maker's supplier carbon requirement, Revision 2", "2025-12-08"),
-    "calloff": ("synthetic: the car maker's 2027 call-off schedule for the supplier", "2026-12-14"),
-    "email": ("synthetic: the supplier's cover email for its 2026 data package", "2027-01-21"),
-    "weather": ("synthetic: the works' roof weather station, daily summary", "2027-01-05"),
-    "weighbridge": ("synthetic: the works' weighbridge export, one row per weighing", "2027-01-08"),
-    "goodsin": ("synthetic: the scrap goods-in register", "2027-01-08"),
-    "elec": ("synthetic: the electricity supplier's half-hourly settlement data for the works' import meter",
-             "2027-01-11"),
-    "assets": ("synthetic: the works' plant asset register with rated inputs", "2026-09-22"),
-    "roster": ("synthetic: the casthouse and foundry crew roster", "2025-12-15"),
-}
-WHY = {"elec": "electricity is not fuel the works burned (SCR-2 section 2), so it carries no direct emissions",
-       "assets": "rated burner inputs say what a burner can fire, not the gas it burned; SCR-2 takes billed energy",
-       "roster": "crew rotations say who was on shift, not what the processes burned"}
+FILES = [
+    ("y10sci_aug2026_responses.csv", "evidence", "the delivery platform's response export for the August 2026 online sitting, one row per scored response", "2026-08-24"),
+    ("y10sci_aug2026_sessions.csv", "evidence", "the delivery platform's session log for the August 2026 sitting (UTC)", "2026-08-24"),
+    ("corlinn_item_bank_2026.xlsx", "evidence", "the Year 10 science item bank after the final 2026 calibration", "2026-09-08"),
+    ("bank_calibration_runs.csv", "evidence", "the bank's 2025 final and 2026 preliminary and final calibration runs", "2026-09-07"),
+    ("item_renumbering_2025.csv", "evidence", "the bank's 2025 renumbering from item card numbers to bank codes", "2025-02-01"),
+    ("y10sci_2027_drafts.xlsx", "evidence", "the drafting panels' three draft papers for 2027, by item card number", "2026-11-02"),
+    ("y10sci_paper_specification_2027.pdf", "governing", "the Assessment Committee's 2027 paper specification", "2026-11-04"),
+    ("standard_setting_record_y10sci.pdf", "governing", "the standard-setting record (standards on the bank scale)", "2026-03-04"),
+    ("council_minute_2026_10_14.pdf", "governing", "the Council's minutes of 14 October 2026 (the 2027 sitting dates)", "2026-10-16"),
+    ("y10sci_course_review_2026.pdf", "evidence", "the Curriculum Committee's 2026 course review with member schools' sequences", "2026-09-09"),
+    ("member_schools.csv", "evidence", "the Trust's member schools with codes and regions", "2026-08-31"),
+    ("paper_choice_request.eml", "context", "the head of assessment's request", "2026-11-06"),
+    ("entries_register_aug2026.xlsx", "evidence", "the Trust's entries register for the August 2026 sitting", "2026-08-31"),
+    ("makeup_roster_aug2026.pdf", "evidence", "the make-up sitting's typed roster by host centre", "2026-08-31"),
+    ("makeup_scripts_keyed.csv", "evidence", "the office's keyed make-up scripts", "2026-09-10"),
+    ("candidate_survey_2026.csv", "distractor", "the post-sitting survey of candidates' attitudes to science", "2026-08-24"),
+    ("member_bell_times_2026.json", "distractor", "member schools' Term 3 bell times from the timetabling system", "2026-08-31"),
+]
 
 
 def metadata(path):
-    files = []
-    for k, name in P.FILES.items():
-        src, date = SOURCES[k]
-        files.append({"name": name, "role": "distractor" if k in P.DISTRACTORS else "evidence", "source": src,
-                      "date": date, "license": "CC0 1.0 (synthetic, authored for this task)"})
-    meta = {"task": "task482", "architecture": 16, "setting": "2027-01-28",
-            "files": sorted(files, key=lambda f: f["name"]),
-            "distractors": [P.FILES[k] for k in P.DISTRACTORS],
-            "distractor_reasons": {P.FILES[k]: WHY[k] for k in P.DISTRACTORS},
-            "stated_inputs": ["0.235", "0.18296", "1.02264", "2.83"],
-            "deliverables": list(P.DELIVERABLES)}
-    json.dump(meta, open(path, "w"), indent=1)
+    d = {"task": "task482", "architecture": 17, "setting": "2026-11-06",
+         "files": [{"name": f, "role": r, "source": "synthetic: " + s, "date": dt,
+                    "license": "CC0 1.0 (synthetic, authored for this task)"} for f, r, s, dt in sorted(FILES)],
+         "distractors": ["candidate_survey_2026.csv", "member_bell_times_2026.json"],
+         "distractor_reasons": {
+             "candidate_survey_2026.csv": "candidates' attitudes after the sitting: relevant to how the cohort felt "
+                                          "about the paper, unused by the pre-equating or the regional counts",
+             "member_bell_times_2026.json": "each school's period times: relevant to when sessions ran, unused because "
+                                            "the session log carries every sitting's own time"},
+         "stated_inputs": ["the paper specification's targeting rule (nearest 25 at the Achieved standard)",
+                           "the standard-setting record's Achieved standard, 0.35 logits on the bank scale",
+                           "the Council's November 2027 sitting dates"],
+         "deliverables": ["committee_memo.docx", "achieved_marks.png", "paper_choice.xlsx"]}
+    with open(path, "w") as fh:
+        json.dump(d, fh, indent=1)
+        fh.write("\n")

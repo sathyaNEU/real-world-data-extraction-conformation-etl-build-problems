@@ -1,191 +1,177 @@
-"""task482 architecture 16: the golden deliverables and figures.json, written from golden.solve() on the pack.
+"""task482 architecture 17: the golden deliverables, written from golden.compute() on the shipped seed.
 
-    velden_low_carbon_premium_2027.docx   the purchasing note, with its chart
-    brackwell_scr2_figures_2026.csv       the quarterly scrap and dross figures
+    committee_memo.docx   the recommendation to the assessment committee
+    achieved_marks.png    each draft's expected Achieved mark against 25
+    paper_choice.xlsx     the working, with the August 2026 regional figures
 """
-import csv
-import io
-import json
 import os
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+import openpyxl  # noqa: E402
 from docx import Document  # noqa: E402
-from docx.enum.table import WD_TABLE_ALIGNMENT  # noqa: E402
-from docx.enum.text import WD_ALIGN_PARAGRAPH  # noqa: E402
 from docx.shared import Cm, Pt, RGBColor  # noqa: E402
+from openpyxl.styles import Alignment, Font, PatternFill  # noqa: E402
 
-import golden as G  # noqa: E402
+import params as P  # noqa: E402
 import postprocess as PP  # noqa: E402
 
-NAME = {"BIL6063": "6063 extrusion billet", "BIL6082": "6082 extrusion billet", "INGLM25": "LM25 foundry ingot",
-        "CSTLM25": "LM25-TF sand castings"}
-MEMO = "velden_low_carbon_premium_2027.docx"
-TABLE = "brackwell_scr2_figures_2026.csv"
-HEAD = ["quarter", "scrap_old_cast_t", "scrap_extrusion_offcuts_t", "scrap_turnings_swarf_t", "scrap_ubc_t",
-        "dross_sent_for_recovery_t"]
+REG = P.REGIONS
 
 
-def chart(res):
-    fam = res["fam"]
-    order = G.FAMILIES
-    vals = [fam[f]["intensity"] for f in order]
+def chart(res, path):
+    gold = res["gold"]
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9})
-    fig, ax = plt.subplots(figsize=(6.4, 2.9), dpi=150)
-    colours = ["#2f6f8f" if v <= G.LIMIT else "#c0504d" for v in vals]
-    y = range(len(order))[::-1]
-    ax.barh(list(y), vals, color=colours, height=0.58)
-    ax.axvline(G.LIMIT, color="#333333", lw=1.1, ls="--")
-    ax.text(G.LIMIT + 0.006, len(order) - 0.45, "SCR-2 limit 0.235", fontsize=8, color="#333333", va="center")
-    for yy, v in zip(y, vals):
-        ax.text(v + 0.006, yy, "%.3f" % v, va="center", fontsize=8)
-    ax.set_yticks(list(y))
-    ax.set_yticklabels([NAME[f] for f in order])
-    ax.set_xlim(0, max(vals) * 1.18)
-    ax.set_xlabel("t CO2 per tonne produced, 2026")
-    ax.set_title("6082 billet and the castings are over the limit", fontsize=10, loc="left")
+    fig, ax = plt.subplots(figsize=(6.2, 3.3), dpi=150)
+    xs = ["Paper A", "Paper B", "Paper C"]
+    vals = [gold[d] for d in "ABC"]
+    cols = ["#9db7c9", "#9db7c9", "#2f6f8f"]
+    ax.bar(xs, vals, color=cols, width=0.55)
+    ax.axhline(P.TARGET, color="#333333", lw=1.1, ls="--")
+    ax.text(2.42, P.TARGET + 0.25, "Specification: 25", fontsize=8, ha="right", color="#333333")
+    for i, v in enumerate(vals):
+        ax.text(i, v + 0.3, "%d" % round(v), ha="center", fontsize=9, fontweight="bold")
+    ax.set_ylim(0, 30)
+    ax.set_ylabel("Expected mark out of 50")
+    ax.set_title("Expected mark at the Achieved standard, November 2027 candidates", fontsize=9.5, loc="left")
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     fig.tight_layout()
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", metadata={"Software": None})
+    fig.savefig(path, format="png", metadata={"Software": None})
     plt.close(fig)
-    buf.seek(0)
-    return buf
 
 
-def _cell(c, text, bold=False, right=False, size=8.5):
-    c.text = ""
-    p = c.paragraphs[0]
-    run = p.add_run(text)
-    run.font.size = Pt(size)
-    run.bold = bold
-    if right:
-        p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+def _par(doc, text, bold=False, size=10, after=6, italic=False):
+    p = doc.add_paragraph()
+    r = p.add_run(text)
+    r.bold, r.italic = bold, italic
+    r.font.size = Pt(size)
+    p.paragraph_format.space_after = Pt(after)
+    return p
 
 
 def memo(res, path):
-    fam, d, parts, beta = res["fam"], res["d"], res["parts"], res["beta"]
-    earn = res["earning"]
+    g, b = res["gold"], res["bank"]
     doc = Document()
+    sec = doc.sections[0]
+    sec.left_margin = sec.right_margin = Cm(2.2)
     st = doc.styles["Normal"]
     st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-    for s in doc.sections:
-        s.left_margin = s.right_margin = Cm(2.2)
-        s.top_margin = Cm(1.8)
-        s.bottom_margin = Cm(1.8)
-        fp = s.footer.paragraphs[0]
-        fp.text = "Velden Automobil AG  |  Purchasing, light metals  |  internal"
-        fp.runs[0].font.size = Pt(8)
-        fp.runs[0].font.color.rgb = RGBColor(0x55, 0x55, 0x55)
-    hdr = [("To", "Tony Coleman, Purchasing, light metals"), ("From", "Supplier carbon reporting, light metals"),
-           ("Date", "28 January 2027"), ("Subject", "Brackwell Alloys: SCR-2 low-carbon premium on 2027 call-offs")]
-    for k, v in hdr:
+    st.font.size = Pt(10)
+    _par(doc, "Memo", bold=True, size=14, after=2)
+    for k, v in (("To", "Assessment Committee"), ("From", "Jeremy York, Psychometrician"), ("Date", "20 November 2026"),
+                 ("Subject", "Setting the 2027 Year 10 science paper")):
         p = doc.add_paragraph()
-        p.paragraph_format.space_after = Pt(0)
-        r = p.add_run("%s:\t" % k)
+        r = p.add_run("%s: " % k)
         r.bold = True
         p.add_run(v)
-    doc.add_paragraph()
-    tot = sum(d["calloff"][f] for f in earn)
-    h = doc.add_paragraph()
-    r = h.add_run("Premium of EUR {:,} on {:,} t: 6063 billet and LM25 ingot qualify, 6082 billet and the castings "
-                  "do not".format(res["premium"], tot))
-    r.bold = True
-    r.font.size = Pt(12.5)
-    doc.add_paragraph(
-        "Under SCR-2 section 7 Velden pays EUR 38 a tonne on the 2027 call-offs of each Brackwell family whose 2026 "
-        "specific direct emissions were 0.235 t CO2/t or less. On Brackwell's 2026 data package two families "
-        "qualify: 6063 extrusion billet at {a:.3f} and LM25 foundry ingot at {b:.3f}. Their call-offs of {c:,} t "
-        "and {e:,} t give EUR {p:,}. 6082 billet ({g:.3f}) and the LM25-TF castings ({h:.3f}) are over the limit, "
-        "so their {i:,} t and {j:,} t earn nothing.".format(
-            a=fam["BIL6063"]["intensity"], b=fam["INGLM25"]["intensity"], c=d["calloff"]["BIL6063"],
-            e=d["calloff"]["INGLM25"], p=res["premium"], g=fam["BIL6082"]["intensity"],
-            h=fam["CSTLM25"]["intensity"], i=d["calloff"]["BIL6082"], j=d["calloff"]["CSTLM25"]))
-    t = doc.add_table(rows=1, cols=7)
+        p.paragraph_format.space_after = Pt(0)
+    _par(doc, "", after=2)
+    _par(doc, "Recommendation", bold=True, size=11, after=3)
+    _par(doc, "Set Paper C. For a candidate at the Achieved standard sitting in November 2027, its expected mark is 25 "
+              "of 50, against 26 for Paper A and 23 for Paper B (before rounding %.2f, %.2f and %.2f)."
+         % (g["C"], g["A"], g["B"]))
+    _par(doc, "Why this differs from the bank as it stands", bold=True, size=11, after=3)
+    _par(doc, "Read straight off the bank, Paper A looks on target and Paper C looks hard (%.2f and %.2f). The "
+              "difference is all in the Term 3 items. The bank calibrated them on the August 2026 sitting, and when I "
+              "set each candidate's sitting day against their own school's sequence in the course review, %d per cent "
+              "of the responses to Term 3 items came before the school had finished that unit. Those items read about "
+              "a logit harder than they will be for a November candidate, who will have been taught both units."
+         % (b["A"], b["C"], res["untaught_pct"]))
+    _par(doc, "For 2027 I re-estimated each Term 3 item on the responses of candidates whose school had finished the "
+              "unit before they sat (%d to %d responses per item), with abilities held on the Term 1 and 2 items and "
+              "the scale on the anchor block. The Term 1 and 2 items keep their bank values. Paper C carries %d Term 3 "
+              "items, Paper B %d and Paper A %d, so the re-estimate moves C most."
+         % (res["taught_min"], res["taught_max"], res["t3_count"]["C"], res["t3_count"]["B"], res["t3_count"]["A"]))
+    _par(doc, "The choice holds if a unit counts as finished from its last day or a few days later, under a joint "
+              "recalibration without the untaught responses, and with one shared adjustment for all Term 3 items. All "
+              "three drafts meet the strand limits.")
+    _par(doc, "August 2026 sitting, for the annual report", bold=True, size=11, after=3)
+    t = doc.add_table(rows=1, cols=5)
     t.style = "Light Grid Accent 1"
-    t.alignment = WD_TABLE_ALIGNMENT.CENTER
-    heads = ["Family", "2026 production (t)", "2026 direct CO2 (t)", "t CO2/t", "Under limit", "2027 call-off (t)",
-             "Premium (EUR)"]
-    for c, x in zip(t.rows[0].cells, heads):
-        _cell(c, x, bold=True)
-    for f in G.FAMILIES:
-        ok = f in earn
+    for c, h in zip(t.rows[0].cells, ["Region", "Entered", "Sat (online or make-up)", "Sat a make-up paper",
+                                      "Mean make-up mark"]):
+        c.text = h
+    for r in REG:
         row = t.add_row().cells
-        vals = [NAME[f], "{:,.0f}".format(d["prod"][f]), "{:,.0f}".format(round(fam[f]["co2"], -1)),
-                "%.3f" % fam[f]["intensity"], "yes" if ok else "no", "{:,}".format(d["calloff"][f]),
-                "{:,}".format(38 * d["calloff"][f]) if ok else "0"]
-        for k, (c, x) in enumerate(zip(row, vals)):
-            _cell(c, x, right=k not in (0, 4))
-    row = t.add_row().cells
-    totals = ["Total", "{:,.0f}".format(sum(d["prod"].values())), "{:,.0f}".format(
-        round(sum(fam[f]["co2"] for f in G.FAMILIES), -1)), "", "", "{:,}".format(sum(d["calloff"].values())),
-        "{:,}".format(res["premium"])]
-    for k, (c, x) in enumerate(zip(row, totals)):
-        _cell(c, x, bold=True, right=k not in (0, 4))
-    p = doc.add_paragraph()
-    r = p.add_run("Production is the tonnes that passed Brackwell's final inspection in 2026, each lot at its last "
-                  "result. Direct CO2 is the gas each family's processes burned plus its tonnage share of the gas no "
-                  "process burned, at 0.18296 kg CO2/kWh. CO2 rounded to 10 t.")
-    r.font.size = Pt(8)
-    doc.add_picture(chart(res), width=Cm(15.5))
-    doc.add_heading("How the gas was attributed", level=2)
-    doc.add_paragraph(
-        "Brackwell burns all of its gas through one site meter, so the gas each process burned has to be read from "
-        "the meter. The supplier's 15-minute export (UTC; the imperial meter read in hundreds of cubic feet until "
-        "the exchange on 14 April) was converted to cubic metres and then to kWh at the volume correction factor "
-        "and the calorific value of the invoice covering each interval: {g:,.0f} MWh for 2026. Each local day's gas "
-        "was then regressed on what each process did that day: tonnes melted in the casthouse furnaces M1 and M2 "
-        "(each heat spread from charge to melt-out, re-keyed heats dropped), tonnes charged to the foundry tower "
-        "melter M3, hours the homogenizing furnace H1 and the solution oven T1 fired (door closed to door opened), "
-        "and heating degree days on base 15.5 C from the works' weather station.".format(g=parts["total"] / 1000.0))
-    doc.add_paragraph(
-        "The fit explains {r2:.1f} per cent of the daily variation. It gives {m:,.0f} kWh a tonne melted in the "
-        "casthouse, {m3:,.0f} kWh a tonne in the tower melter, {h:,.0f} kWh an hour in the homogenizing furnace and "
-        "{t:,.0f} kWh an hour in the solution oven, with {c:,.0f} kWh a day of pilot flames and {dd:,.0f} kWh a degree "
-        "day of space heating.".format(r2=100 * res["r2"], m=beta["melt"], m3=beta["m3"], h=beta["h1"], t=beta["t1"],
-                                       c=beta["const"], dd=beta["hdd"]))
-    doc.add_paragraph(
-        "The homogenizing furnace burns by the hour whatever the load weighs: a 6082 load soaks about {a:.0f} hours "
-        "against about {b:.0f} for 6063, so 6082 billet carries {c:.0f} per cent of the furnace's gas on {e:.0f} per "
-        "cent of its tonnes. Shared by tonnes, both billet alloys would sit at the same {f:.3f} and 6082 would "
-        "qualify. The castings carry the tower melter and the solution oven, and melt about 1.65 t for every tonne "
-        "that passes inspection. The gas no process burned ({base:,.0f} MWh) is shared by tonnes produced, as SCR-2 "
-        "section 3 sets out.".format(
-            a=parts["hours"]["BIL6082"] / sum(1 for ld in d["h1"] if ld["family"] == "BIL6082"),
-            b=parts["hours"]["BIL6063"] / sum(1 for ld in d["h1"] if ld["family"] == "BIL6063"),
-            c=100 * parts["hours"]["BIL6082"] / sum(parts["hours"].values()),
-            e=100 * parts["tonnes"]["BIL6082"] / sum(parts["tonnes"].values()),
-            f=res["r1_billet"], base=parts["base"] / 1000.0))
-    p = doc.add_paragraph()
-    r = p.add_run("Sources: Brackwell SCR-2 data package of 21 January 2027 (site gas meter export, Northgate gas "
-                  "invoices, furnace and oven logs, production lots, weather); Velden call-off schedule 2027, "
-                  "revision 0.")
-    r.font.size = Pt(8)
+        vals = [r, "{:,}".format(res["entered"][r]), "{:,}".format(res["sat"][r]), str(res["makeup_n"][r]),
+                "%.1f" % res["makeup_mean"][r]]
+        for c, v in zip(row, vals):
+            c.text = v
+    _par(doc, "", after=2)
+    _par(doc, "Entered counts each candidate once: candidates who moved school before the sitting appear under both "
+              "schools in the register. Make-up papers are counted at the candidate's home school, including the "
+              "candidates who sat at a host without a booking, whose scripts were keyed without a roster line; the "
+              "Central host's second-day scripts were keyed as percentages and are halved.", size=9)
+    _par(doc, "The working is in paper_choice.xlsx.", size=9, italic=True)
     doc.save(path)
-    PP.normalize_ooxml(path, "Tony Coleman", "Tony Coleman", "2027-01-26T09:14:00Z", "2027-01-28T11:52:00Z",
-                       company="Velden Automobil AG")
+    PP.normalize_ooxml(path, "Jeremy York", "Jeremy York", "2026-11-19T21:30:00Z", "2026-11-20T02:12:00Z",
+                       title="Setting the 2027 Year 10 science paper")
 
 
-def table(res, path):
-    a, b = res["ask_a"], res["ask_b"]
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f, lineterminator="\n")
-        w.writerow(HEAD)
-        for q in G.QUARTERS:
-            w.writerow(["2026-%s" % q] + [int(round(a[g][q])) for g in G.GRADES] + [int(round(b[q]))])
+def workbook(res, path):
+    w, pl = res["w"], res["w"]["pool"]
+    items = pl["items"]
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Recommendation"
+    bold = Font(bold=True)
+    ws.append(["Draft", "Term 3 items", "Expected mark, bank as calibrated", "Expected mark, November 2027",
+               "Distance from 25", "Expected mark (nearest whole mark)"])
+    for d in "ABC":
+        ws.append(["Paper " + d, res["t3_count"][d], round(res["bank"][d], 2), round(res["gold"][d], 2),
+                   round(res["dist"][d], 2), int(round(res["gold"][d]))])
+    ws.append([])
+    ws.append(["Set Paper %s: nearest 25 at the Achieved standard (%.2f logits on the bank scale)."
+               % (res["pick"], P.THETA_ACHIEVED)])
+    for c in ws[1]:
+        c.font = bold
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    for col, wd in zip("ABCDEF", [10, 12, 20, 20, 14, 18]):
+        ws.column_dimensions[col].width = wd
+    ws2 = wb.create_sheet("Term 3 items")
+    ws2.append(["Item code", "Card", "Unit", "Bank difficulty", "Taught responses", "Difficulty for November 2027",
+                "On drafts"])
+    for i in pl["t3"]:
+        on = "".join(d for d in "ABC" if i in res["drafts"][d])
+        if not on:
+            continue
+        ws2.append([items[i]["code"], items[i]["card"], items[i]["unit"], round(float(res["b_bank"][i]), 3),
+                    res["taught_n"][items[i]["code"]], round(float(res["b_gold"][i]), 3), on])
+    for c in ws2[1]:
+        c.font = bold
+    for col, wd in zip("ABCDEFG", [11, 8, 6, 14, 15, 24, 10]):
+        ws2.column_dimensions[col].width = wd
+    ws3 = wb.create_sheet("Draft items")
+    ws3.append(["Draft", "Card", "Item code", "Unit", "Difficulty used"])
+    for d in "ABC":
+        for i in sorted(res["drafts"][d], key=lambda i: items[i]["card"]):
+            ws3.append(["Paper " + d, items[i]["card"], items[i]["code"], items[i]["unit"],
+                        round(float(res["b_gold"][i]), 3)])
+    for c in ws3[1]:
+        c.font = bold
+    ws4 = wb.create_sheet("August 2026 by region")
+    ws4.append(["Region", "Entered", "Sat (online or make-up)", "Sat a make-up paper", "Mean make-up mark"])
+    for r in REG:
+        ws4.append([r, res["entered"][r], res["sat"][r], res["makeup_n"][r], round(res["makeup_mean"][r], 1)])
+    ws4.append(["All regions", sum(res["entered"].values()), sum(res["sat"].values()), sum(res["makeup_n"].values()), None])
+    for c in ws4[1]:
+        c.font = bold
+    for row in ws4.iter_rows(min_row=2, min_col=5, max_col=5):
+        for c in row:
+            c.number_format = "0.0"
+    for col, wd in zip("ABCDE", [12, 10, 22, 20, 18]):
+        ws4.column_dimensions[col].width = wd
+    for sh in (ws, ws2, ws3, ws4):
+        sh.freeze_panes = "A2"
+    ws["A1"].fill = PatternFill("solid", fgColor="DDE7EE")
+    wb.save(path)
+    PP.normalize_ooxml(path, "Jeremy York", "Jeremy York", "2026-11-17T22:05:00Z", "2026-11-20T01:48:00Z", excel=True)
 
 
-def write_all(target, golden_dir, here):
-    res = G.solve(target)
-    beta = res["beta"]
-    alt, _ = G.attribute(res["d"], beta, h1="tonnes")
-    res["r1_billet"] = alt["BIL6063"]["intensity"]
+def write_all(res, golden_dir):
     os.makedirs(golden_dir, exist_ok=True)
-    memo(res, os.path.join(golden_dir, MEMO))
-    table(res, os.path.join(golden_dir, TABLE))
-    fig = G.figures(res)
-    json.dump(fig, open(os.path.join(here, "figures.json"), "w"), indent=1, sort_keys=True)
-    return fig, res
+    memo(res, os.path.join(golden_dir, "committee_memo.docx"))
+    chart(res, os.path.join(golden_dir, "achieved_marks.png"))
+    workbook(res, os.path.join(golden_dir, "paper_choice.xlsx"))

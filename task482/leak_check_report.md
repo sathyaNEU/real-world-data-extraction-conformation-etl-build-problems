@@ -1,23 +1,33 @@
 # leak check, task482
 
-**Verdict: REVIEW.** 15 files read, 19 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 14 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: process, furnace, burned, section, driver, billet, asserted, shared, homogenizing, invoices, energy, record, supplier, period, decisive, physical, melting, sentence, produced, schedule, processes, per-tonne, call-off, nothing, export
+Stump terms swept: architecture, school, taught, reader, golden, reflex, decisive, readers, population, record, carried, member, shipped, inside, screened, family, sentence, carries, graded, landed, reading, window, finished, nothing, appendix
 
-## 1 file names (REVIEW 1)
-- **REVIEW** `velden_2027_calloff_schedule.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
+## 1 file names (REVIEW 2)
+- **REVIEW** `corlinn_item_bank_2026.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
+- **REVIEW** `entries_register_aug2026.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
 
-## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `velden_scr2_supplier_carbon_requirement.pdf`: 10 of 25 stump-paragraph terms appear (process, burned, shared, invoices, energy, record); read whether the document names the move
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `y10sci_paper_specification_2027.pdf`: carries 9 of 9 distinctive words of the committed call: 'Set Paper C for the November 2027 sitting: its expected mark at the Achieved standard is 25 of 50 (24.80), against 26 fo'
+
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `y10sci_course_review_2026.pdf`: 3 of 25 stump-paragraph terms appear (school, member, appendix); read whether the document names the move
+- **REVIEW** `y10sci_paper_specification_2027.pdf`: 3 of 25 stump-paragraph terms appear (school, record, member); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 2 author vocabulary (clean)
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 37% of 196 prompts (cap 30%); reword at the role level, not the verb
 
-## 3 answer figures in the pack (clean)
+## 12 describing content (REVIEW 2)
+- **REVIEW** `makeup_roster_aug2026.pdf`: names 8 column(s) of the data files verbatim (C108, C111, Entry no, Losa, Sharma, Tran): confirm it is the organisation's own record and not a note written for the analyst
+- **REVIEW** `y10sci_course_review_2026.pdf`: names 8 column(s) of the data files verbatim (Cells and body systems, Physical World, Planet Earth and Beyond, Unit, schools, start): confirm it is the organisation's own record and not a note written for the analyst
+
+## 2 author vocabulary (clean)
 
 ## 5 announcements (clean)
 
@@ -28,8 +38,6 @@ Stump terms swept: process, furnace, burned, section, driver, billet, asserted, 
 ## 8 column names (clean)
 
 ## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 
 ## Solver's-eye read

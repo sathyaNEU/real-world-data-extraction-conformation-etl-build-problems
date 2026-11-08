@@ -1,194 +1,216 @@
-"""task482 architecture 16: the independent verifier. Reads target.zip only (pypdf for the invoices, its own parsing
-and its own day-splitting), recomputes every graded figure and compares it with generator/figures.json.
-
-    python3 task482/generator/verify.py
-"""
+"""task482 architecture 17: the independent verifier. Recomputes the call and every ask figure from the shipped files
+alone (target/), with its own Rasch estimation and its own reading of the course review's appendix, and compares with
+figures.json. Exit 1 on any difference."""
 import csv
 import datetime as dt
-import io
 import json
 import os
 import re
+import subprocess
 import sys
-import zipfile
-from zoneinfo import ZoneInfo
 
 import numpy as np
 import openpyxl
-from pypdf import PdfReader
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
-LON = ZoneInfo("Europe/London")
-Z = zipfile.ZipFile(os.path.join(TASK, "target.zip"))
-FIG = json.load(open(os.path.join(HERE, "figures.json")))
-FAILS = []
+T = os.path.join(os.path.dirname(HERE), "target")
+NZ = dt.timezone(dt.timedelta(hours=12))
+MON = {m: i + 1 for i, m in enumerate(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])}
 
 
-def blob(name):
-    return Z.read(name)
+def pdf(name):
+    return subprocess.run(["pdftotext", "-layout", os.path.join(T, name), "-"], capture_output=True, text=True,
+                          check=True).stdout
 
 
-def table(name):
-    return list(csv.DictReader(io.StringIO(blob(name).decode("utf-8"))))
+def sheet(name, ws):
+    rows = list(openpyxl.load_workbook(os.path.join(T, name), read_only=True)[ws].iter_rows(values_only=True))
+    head = [str(h) for h in rows[0]]
+    return [dict(zip(head, r)) for r in rows[1:] if any(v is not None for v in r)]
 
 
-def utc_of(local):
-    return local.replace(tzinfo=LON).astimezone(dt.timezone.utc)
+def start_date(s):
+    s = s.strip()
+    m = re.search(r"(\d{1,2})/(\d{1,2})/(\d{4})", s)
+    if m:
+        return dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+    m = re.search(r"(\d{1,2}) ([A-Z][a-z]{2})", s)
+    return dt.date(2026, MON[m.group(2)], int(m.group(1)))
 
 
-def lday(u):
-    return u.astimezone(LON).date()
+def unit_of(name):
+    n = name.lower()
+    if any(k in n for k in ("force", "motion", "mechanic")):
+        return "U5"
+    if any(k in n for k in ("earth", "tecton")):
+        return "U6"
+    raise ValueError(name)
 
 
-def same(label, a, b):
-    ok = a == b
-    print("%s %-58s %s" % ("PASS" if ok else "FAIL", label, a if ok else "%r against figures.json %r" % (a, b)))
-    if not ok:
-        FAILS.append(label)
+def appendix(names):
+    """{school_code: (first Term 3 unit, its last day)} from Appendix B, columns found from its header line."""
+    txt = pdf("y10sci_course_review_2026.pdf")
+    pages = txt[txt.index("Appendix B"):].split("\f")
+    rows, cur = [], None
+    for page in pages:
+        lines = [l for l in page.splitlines() if l.strip() and not l.strip().startswith("began")
+                 and "course review 2026" not in l and not re.search(r"Page \d+", l)]
+        hits = [m.start(1) for l in lines for m in [re.search(r"\s{3,}(Wks 1-|Weeks 1 to |\d{1,2}/\d{1,2} to )", l)] if m]
+        if not hits:
+            continue
+        c3 = min(hits)       # the Term 3 column's left edge on this page
+        for l in lines:
+            name = next((n for n in sorted(names, key=len, reverse=True) if l.startswith(n)), None)
+            if name:
+                rest = l[len(name):].strip()
+                cur = [name, re.split(r"\s{3,}", rest)[0], "", ""]
+                rows.append(cur)
+            if cur is None:
+                continue
+            cur[3] += " " + l[c3:].strip()
+    out = {}
+    for name, start, _, t3 in rows:
+        ts = start_date(start)
+        t3 = " ".join(t3.split())
+        m = re.match(r"Wks 1-(\d+) (.+?); Wks", t3) or re.match(r"Weeks 1 to (\d+): (.+?)\. Weeks", t3)
+        if m:
+            k, first = int(m.group(1)), m.group(2)
+            mon = ts - dt.timedelta(days=ts.weekday())
+            end = mon + dt.timedelta(days=7 * (k - 1) + 4)
+        else:
+            m = re.match(r"\d{1,2}/\d{1,2} to (\d{1,2})/(\d{1,2}) (.+?); ", t3)
+            end, first = dt.date(2026, int(m.group(2)), int(m.group(1))), m.group(3)
+        out[names[name]] = (unit_of(first), end)
+    return out
 
 
-# ------------------------------------------------------------------ invoices and the meter
-periods = []
-for page in PdfReader(io.BytesIO(blob("brackwell_gas_invoices_2026.pdf"))).pages:
-    tx = re.sub(r"\s+", " ", page.extract_text())
-    st = re.findall(r"(\d{2})/(\d{2})/(\d{4}) (\d{2}):(\d{2})", tx)
-    a = dt.datetime(int(st[0][2]), int(st[0][1]), int(st[0][0]), int(st[0][3]), int(st[0][4]))
-    b = dt.datetime(int(st[-1][2]), int(st[-1][1]), int(st[-1][0]), int(st[-1][3]), int(st[-1][4]))
-    cv = float(re.search(r"Calorific value \(MJ/m3\) ([0-9.]+)", tx).group(1))
-    vcf = float(re.search(r"Volume correction factor ([0-9.]+)", tx).group(1))
-    periods.append((utc_of(a), utc_of(b), cv, vcf))
-periods.sort()
-hcf = 2.83
-day0 = dt.date(2026, 1, 1)
-y = np.zeros(365)
-total = 0.0
-for r in table("brackwell_site_gas_meter_2026.csv"):
-    u = dt.datetime.fromisoformat(r["Interval start (UTC)"]).replace(tzinfo=dt.timezone.utc)
-    m3 = float(r["Consumption"]) * (hcf if r["Unit"] == "hcf" else 1.0)
-    p = next(p for p in periods if p[0] <= u < p[1])
-    k = m3 * p[3] * p[2] / 3.6
-    y[(lday(u) - day0).days] += k
-    total += k
+def sig(x):
+    return 1 / (1 + np.exp(-x))
 
 
-def spread(a, b, weight, arr):
-    """Spread weight over the local days of [a, b) by the hours in each."""
-    span = (b - a).total_seconds()
-    cur = a
-    while cur < b:
-        d = lday(cur)
-        nxt = utc_of(dt.datetime.combine(d + dt.timedelta(days=1), dt.time()))
-        end = min(b, nxt)
-        arr[(d - day0).days] += weight * (end - cur).total_seconds() / span
-        cur = end
+def main():
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    bad = []
+    bank = {r["item_code"]: r for r in sheet("corlinn_item_bank_2026.xlsx", "Bank")}
+    card = {}
+    with open(os.path.join(T, "item_renumbering_2025.csv"), newline="") as fh:
+        for r in csv.DictReader(fh):
+            if r["item_code"]:
+                card[int(r["card_no"])] = r["item_code"]
+    drafts = {d: [card[int(r["Card"])] for r in sheet("y10sci_2027_drafts.xlsx", "Paper " + d)] for d in "ABC"}
+    ach = float(re.search(r"Achieved\s+([0-9.]+)", pdf("standard_setting_record_y10sci.pdf")).group(1))
+    schools, names = {}, {}
+    with open(os.path.join(T, "member_schools.csv"), newline="") as fh:
+        for r in csv.DictReader(fh):
+            schools[r["school_code"]] = r["region"]
+            names[r["school_name"]] = r["school_code"]
+    seq = appendix(names)
+    sess = {}
+    with open(os.path.join(T, "y10sci_aug2026_sessions.csv"), newline="") as fh:
+        for r in csv.DictReader(fh):
+            sess[r["session_id"]] = r
+    day, school_of = {}, {}
+    for r in sess.values():
+        t = dt.datetime.strptime(r["started_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc)
+        day[r["entry_no"]] = t.astimezone(NZ).date()
+        school_of[r["entry_no"]] = r["school_code"]
+    last = {}
+    with open(os.path.join(T, "y10sci_aug2026_responses.csv"), newline="") as fh:
+        for r in csv.DictReader(fh):
+            k = (r["entry_no"], r["item_code"])
+            st = sess[r["session_id"]]["started_utc"]
+            if k not in last or st >= last[k][0]:
+                last[k] = (st, int(r["score"]))
+    ents = sorted(day)
+    codes = sorted(bank)
+    ei = {e: i for i, e in enumerate(ents)}
+    ci = {c: j for j, c in enumerate(codes)}
+    R = np.zeros((len(ents), len(codes)))
+    M = np.zeros_like(R)
+    for (e, c), (_, v) in last.items():
+        R[ei[e], ci[c]] = v
+        M[ei[e], ci[c]] = 1
+    b = np.array([float(bank[c]["difficulty"]) for c in codes])
+    unit = [bank[c]["unit"] for c in codes]
+    early = [j for j, u in enumerate(unit) if u in ("U1", "U2", "U3", "U4")]
+    late = [j for j, u in enumerate(unit) if u in ("U5", "U6")]
+    th = np.zeros(len(ents))
+    for _ in range(40):
+        p = sig(th[:, None] - b[None, early])
+        th = np.clip(th + ((R[:, early] - p) * M[:, early]).sum(1) /
+                     np.maximum((p * (1 - p) * M[:, early]).sum(1), 1e-9), -4.5, 4.5)
+    taught = np.zeros((len(ents), len(late)))
+    for i, e in enumerate(ents):
+        first, end = seq[school_of[e]]
+        for k, j in enumerate(late):
+            taught[i, k] = 1.0 if (unit[j] == first and day[e] > end) else 0.0
+    Mt = M[:, late] * taught
+    bl = b[late].copy()
+    for _ in range(40):
+        p = sig(th[:, None] - bl[None, :])
+        bl = bl + ((p - R[:, late]) * Mt).sum(0) / np.maximum((p * (1 - p) * Mt).sum(0), 1e-9)
+    b2 = b.copy()
+    b2[late] = bl
+    marks = {d: float(sig(ach - b2[[ci[c] for c in drafts[d]]]).sum()) for d in "ABC"}
+    bank_marks = {d: float(sig(ach - b[[ci[c] for c in drafts[d]]]).sum()) for d in "ABC"}
+    call = min(marks, key=lambda d: abs(marks[d] - 25))
+    print("verify: marks %s, bank %s, call Paper %s" % ({d: round(v, 2) for d, v in marks.items()},
+                                                        {d: round(v, 2) for d, v in bank_marks.items()}, call))
+    if "Paper " + call != fig["call"]:
+        bad.append("call")
+    for d in "ABC":
+        if abs(marks[d] - float(fig["expected_achieved_mark_2dp"][d])) > 0.006:
+            bad.append("mark %s" % d)
+        if abs(bank_marks[d] - float(fig["bank_expected_achieved_mark_2dp"][d])) > 0.006:
+            bad.append("bank mark %s" % d)
+    # the asks
+    reg = list(fig["entered"])
+    ent = sheet("entries_register_aug2026.xlsx", "Entries")
+    seen, exact, entered = set(), set(), {r: 0 for r in reg}
+    sch_of_entry = {}
+    for e in ent:
+        sch_of_entry.setdefault(e["Entry no"], e["School code"])
+        if e["Status"] != "E" or tuple(e.values()) in exact:
+            continue
+        exact.add(tuple(e.values()))
+        key = (e["First name"], e["Surname"], str(e["Date of birth"]))
+        if key not in seen:
+            seen.add(key)
+            entered[schools[e["School code"]]] += 1
+    rost = {}
+    for l in pdf("makeup_roster_aug2026.pdf").splitlines():
+        s = re.search(r"\b(C\d{3}-\d{3})\b", l)
+        if s and re.search(r"\b26-\d{5}\b", l):
+            rost[s.group(1)] = re.search(r"\b(C\d{3})\b(?!-)", l).group(1)
+    sat = {r: 0 for r in reg}
+    for e, c in school_of.items():
+        sat[schools[c]] += 1
+    nmk = {r: 0 for r in reg}
+    mk = {r: [] for r in reg}
+    with open(os.path.join(T, "makeup_scripts_keyed.csv"), newline="") as fh:
+        for s in csv.DictReader(fh):
+            home = rost.get(s["script_no"]) or sch_of_entry[s["entry_no"]]
+            r = schools[home]
+            sat[r] += 1
+            nmk[r] += 1
+            v = float(s["mark"])
+            mk[r].append(v / 2 if (s["keyed_by"] == "JT" and s["keyed_on"] == "2026-09-02") else v)
+    for r in reg:
+        if entered[r] != fig["entered"][r]:
+            bad.append("entered %s" % r)
+        if sat[r] != fig["sat"][r]:
+            bad.append("sat %s" % r)
+        if nmk[r] != fig["makeup_candidates"][r]:
+            bad.append("makeup count %s" % r)
+        if "%.1f" % (sum(mk[r]) / len(mk[r])) != fig["makeup_mean"][r]:
+            bad.append("makeup mean %s" % r)
+    print("verify: entered %s sat %s make-up %s means %s" % (entered, sat, nmk,
+                                                             {r: round(sum(v) / len(v), 2) for r, v in mk.items()}))
+    for x in bad:
+        print("FAIL verify " + x)
+    print("verify: %s" % ("PASS" if not bad else "%d differences" % len(bad)))
+    return 1 if bad else 0
 
 
-# ------------------------------------------------------------------ the logs
-wb = openpyxl.load_workbook(io.BytesIO(blob("brackwell_melting_furnace_logs_2026.xlsx")), read_only=True,
-                            data_only=True)
-melt, m3d, h1d, t1d, hdd = (np.zeros(365) for _ in range(5))
-melted = {"6063": 0.0, "6082": 0.0, "LM25": 0.0}
-for sh in ("M1 casthouse", "M2 casthouse"):
-    keep = {}
-    for r in list(wb[sh].iter_rows(values_only=True))[1:]:
-        if r[0] is not None and r[0] not in keep:
-            keep[r[0]] = r
-    for r in keep.values():
-        spread(utc_of(r[2]), utc_of(r[3]), float(r[4]), melt)
-        melted[str(r[1])] += float(r[4])
-m3_total = 0.0
-seen = set()
-for r in list(wb["M3 tower melter"].iter_rows(values_only=True))[1:]:
-    if r[0] is None or r[0] in seen:
-        continue
-    seen.add(r[0])
-    m3d[(lday(utc_of(r[1])) - day0).days] += r[2] / 1000.0
-    m3_total += r[2] / 1000.0
-h1_hours = {"6063": 0.0, "6082": 0.0}
-for r in table("brackwell_homogenizing_furnace_h1_2026.csv"):
-    a = utc_of(dt.datetime.strptime(r["Door closed"], "%d/%m/%Y %H:%M"))
-    b = utc_of(dt.datetime.strptime(r["Door opened"], "%d/%m/%Y %H:%M"))
-    hrs = (b - a).total_seconds() / 3600.0
-    spread(a, b, hrs, h1d)
-    h1_hours[r["Alloy"]] += hrs
-t1_hours = 0.0
-for r in table("brackwell_heat_treatment_oven_t1_2026.csv"):
-    a, b = (utc_of(dt.datetime.fromisoformat(r[k])) for k in ("Start", "End"))
-    hrs = (b - a).total_seconds() / 3600.0
-    spread(a, b, hrs, t1d)
-    t1_hours += hrs
-for r in table("brackwell_works_weather_2026.csv"):
-    hdd[(dt.date.fromisoformat(r["Date"]) - day0).days] = max(0.0, 15.5 - float(r["Mean C"]))
-A = np.column_stack([melt, m3d, h1d, t1d, hdd, np.ones(365)])
-beta = np.linalg.lstsq(A, y, rcond=None)[0]
-
-# ------------------------------------------------------------------ production, attribution, the premium
-last = {}
-for r in table("brackwell_production_lots_2026.csv"):
-    when = dt.datetime.strptime(r["Inspected"], "%d/%m/%Y %H:%M")
-    if r["Lot"] not in last or when >= last[r["Lot"]][0]:
-        last[r["Lot"]] = (when, r)
-fam_of = {"6063 extrusion billet": "BIL6063", "6082 extrusion billet": "BIL6082", "LM25 foundry ingot": "INGLM25",
-          "LM25-TF sand castings": "CSTLM25"}
-prod = {f: 0.0 for f in fam_of.values()}
-for when, r in last.values():
-    if r["Result"] == "PASS":
-        prod[fam_of[r["Product"]]] += int(r["Net kg"]) / 1000.0
-gas = {"BIL6063": beta[0] * melted["6063"] + beta[2] * h1_hours["6063"],
-       "BIL6082": beta[0] * melted["6082"] + beta[2] * h1_hours["6082"],
-       "INGLM25": beta[0] * melted["LM25"],
-       "CSTLM25": beta[1] * m3_total + beta[3] * t1_hours}
-rest = total - sum(gas.values())
-allp = sum(prod.values())
-inten = {f: (gas[f] + rest * prod[f] / allp) * 0.18296 / 1000.0 / prod[f] for f in gas}
-wb2 = openpyxl.load_workbook(io.BytesIO(blob("velden_2027_calloff_schedule.xlsx")), read_only=True, data_only=True)
-call = {f: 0 for f in gas}
-for r in list(wb2["Call-offs 2027"].iter_rows(values_only=True))[1:]:
-    if not r[0]:
-        continue
-    s = r[1].lower()
-    f = "BIL6063" if "6063" in s else "BIL6082" if "6082" in s else "CSTLM25" if "casting" in s else "INGLM25"
-    call[f] += sum(int(v) for v in r[3:15])
-earning = [f for f in ("BIL6063", "BIL6082", "INGLM25", "CSTLM25") if inten[f] <= 0.235]
-same("premium (EUR)", 38 * sum(call[f] for f in earning), FIG["call"]["premium_eur"])
-same("families earning the premium", earning, FIG["call"]["earning"])
-same("intensities, two decimals", {f: "%.2f" % v for f, v in inten.items()}, FIG["intensity_2dp"])
-same("production (t)", {f: int(round(v)) for f, v in prod.items()}, FIG["produced_t"])
-same("call-offs (t)", call, FIG["calloff_t"])
-
-# ------------------------------------------------------------------ the asks
-visits = {}
-for r in table("brackwell_weighbridge_2026.csv"):
-    u = dt.datetime.fromisoformat(r["Weighed (UTC)"]).replace(tzinfo=dt.timezone.utc)
-    v = visits.setdefault((r["Ticket"], lday(u)), {"w": {}, "mv": r["Movement"], "day": lday(u)})
-    v["w"][int(r["Weighing"])] = int(r["Weight kg"])
-lines = {}
-for r in table("brackwell_scrap_goods_in_2026.csv"):
-    day = dt.datetime.strptime(r["Date"], "%d/%m/%Y").date()
-    lines.setdefault((r["WB ticket"], day), []).append(r)
-qn = lambda d: "Q%d" % ((d.month + 2) // 3)  # noqa: E731
-A_ = {g: {q: 0 for q in ("Q1", "Q2", "Q3", "Q4")} for g in ("CST", "EXT", "TRN", "UBC")}
-for key, ls in lines.items():
-    ws = [visits[key]["w"][k] for k in sorted(visits[key]["w"])]
-    if len(ls) == 1:
-        nets = [ws[0] - ws[-1]]
-    else:
-        drops = sorted([ws[0] - ws[1], ws[1] - ws[2]])
-        order = sorted(range(2), key=lambda i: int(ls[i]["Declared kg"]))
-        nets = [0, 0]
-        for rank, i in enumerate(order):
-            nets[i] = drops[rank]
-    for r, n in zip(ls, nets):
-        if r["Status"] == "Accepted" and r["Grade"] in A_:
-            A_[r["Grade"]][qn(key[1])] += n
-same("ask A, scrap by grade and quarter (t)", {g: {q: int(round(v / 1000.0)) for q, v in A_[g].items()} for g in A_},
-     FIG["ask_a"])
-B_ = {q: 0 for q in ("Q1", "Q2", "Q3", "Q4")}
-for key, v in visits.items():
-    if v["mv"] == "Waste out":
-        ws = [v["w"][k] for k in sorted(v["w"])]
-        B_[qn(v["day"])] += ws[-1] - ws[-2]
-same("ask B, dross by quarter (t)", {q: int(round(x / 1000.0)) for q, x in B_.items()}, FIG["ask_b"])
-print("verify: %d failed" % len(FAILS))
-sys.exit(1 if FAILS else 0)
+if __name__ == "__main__":
+    sys.exit(main())

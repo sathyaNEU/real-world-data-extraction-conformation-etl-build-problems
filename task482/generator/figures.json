@@ -1,109 +1,78 @@
 {
- "ask_a": {
-  "CST": {
-   "Q1": 2186,
-   "Q2": 2214,
-   "Q3": 2121,
-   "Q4": 2299
-  },
-  "EXT": {
-   "Q1": 2299,
-   "Q2": 2110,
-   "Q3": 1773,
-   "Q4": 2041
-  },
-  "TRN": {
-   "Q1": 2024,
-   "Q2": 1845,
-   "Q3": 2200,
-   "Q4": 2188
-  },
-  "UBC": {
-   "Q1": 2376,
-   "Q2": 2521,
-   "Q3": 2009,
-   "Q4": 2020
-  }
+ "achieved_ability": "0.35",
+ "bank_expected_achieved_mark": {
+  "A": 25,
+  "B": 21,
+  "C": 22
  },
- "ask_b": {
-  "Q1": 286,
-  "Q2": 262,
-  "Q3": 251,
-  "Q4": 270
+ "bank_expected_achieved_mark_2dp": {
+  "A": "24.78",
+  "B": "20.64",
+  "C": "21.58"
  },
- "call": {
-  "earning": [
-   "BIL6063",
-   "INGLM25"
-  ],
-  "not_earning": [
-   "BIL6082",
-   "CSTLM25"
-  ],
-  "premium_eur": 342000
+ "call": "Paper C",
+ "distance_from_25_2dp": {
+  "A": "0.89",
+  "B": "1.98",
+  "C": "0.20"
  },
- "calloff_t": {
-  "BIL6063": 7200,
-  "BIL6082": 3000,
-  "CSTLM25": 650,
-  "INGLM25": 1800
+ "entered": {
+  "Capital": 1035,
+  "Central": 1213,
+  "Northern": 1915,
+  "Southern": 1289
  },
- "co2_t": {
-  "BIL6063": 4800,
-  "BIL6082": 2200,
-  "CSTLM25": 1000,
-  "INGLM25": 2200
+ "entered_fmt": {
+  "Capital": "1,035",
+  "Central": "1,213",
+  "Northern": "1,915",
+  "Southern": "1,289"
  },
- "constants": {
-  "alloys": [
-   6063,
-   6082
-  ],
-  "co2_kg_per_kwh": 0.18296,
-  "co2_rounding_t": 10,
-  "hcf_to_m3": 2.83,
-  "hdd_base_c": 15.5,
-  "meter_exchange": "14 April 10:30",
-  "mj_per_kwh": 3.6,
-  "ticket_restart": "29 June",
-  "volume_correction": 1.02264
+ "entered_total": 5452,
+ "expected_achieved_mark": {
+  "A": 26,
+  "B": 23,
+  "C": 25
  },
- "earning_calloff_t": 9000,
- "gas_mwh": 55600,
- "h1": {
-  "hours_share_6082_pct": 47,
-  "mean_cycle_h": {
-   "BIL6063": 6.0,
-   "BIL6082": 15.0
-  },
-  "tonnes_share_6082_pct": 26
+ "expected_achieved_mark_2dp": {
+  "A": "25.89",
+  "B": "23.02",
+  "C": "24.80"
  },
- "intensity_2dp": {
-  "BIL6063": "0.21",
-  "BIL6082": "0.26",
-  "CSTLM25": "0.50",
-  "INGLM25": "0.17"
+ "makeup_candidates": {
+  "Capital": 27,
+  "Central": 37,
+  "Northern": 61,
+  "Southern": 45
  },
- "intensity_3dp": {
-  "BIL6063": "0.211",
-  "BIL6082": "0.263",
-  "CSTLM25": "0.501",
-  "INGLM25": "0.168"
+ "makeup_mean": {
+  "Capital": "24.5",
+  "Central": "26.4",
+  "Northern": "29.0",
+  "Southern": "25.1"
  },
- "limit": 0.235,
- "premium_eur_per_t": 38,
- "produced_t": {
-  "BIL6063": 22897,
-  "BIL6082": 8205,
-  "CSTLM25": 2044,
-  "INGLM25": 12816
+ "paper_marks": 50,
+ "runner_up": "Paper A",
+ "sat": {
+  "Capital": 1013,
+  "Central": 1188,
+  "Northern": 1874,
+  "Southern": 1261
  },
- "rates": {
-  "const": 2564.2,
-  "h1": 1505.8,
-  "hdd": 1030.5,
-  "m3": 611.8,
-  "melt": 818.9,
-  "t1": 573.0
- }
+ "sat_fmt": {
+  "Capital": "1,013",
+  "Central": "1,188",
+  "Northern": "1,874",
+  "Southern": "1,261"
+ },
+ "sat_total": 5336,
+ "target": 25,
+ "taught_responses_max": 176,
+ "taught_responses_min": 104,
+ "term3_items": {
+  "A": 6,
+  "B": 11,
+  "C": 17
+ },
+ "untaught_share_pct": 89
 }

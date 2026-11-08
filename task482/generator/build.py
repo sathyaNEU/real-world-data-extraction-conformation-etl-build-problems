@@ -1,515 +1,273 @@
-"""task482 architecture 16: writes the pack into a folder from the world.
-
-    python3 task482/generator/build.py [folder]
-"""
+"""task482 architecture 17: writes the pack under target/ from the truth (world.py) and the bank runs (core.py)."""
 import csv
 import datetime as dt
+import json
 import os
-import shutil
-import sys
+from email.message import EmailMessage
+from email.utils import format_datetime
 
 import numpy as np
+import openpyxl
+from openpyxl.styles import Font
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import docs as D     # noqa: E402
-import params as P   # noqa: E402
-import world as W    # noqa: E402
+import core as C
+import docs as D
+import golden as G
+import params as P
+import postprocess as PP
+import rasch as RA
+import world as W
 
-TASK = os.path.dirname(HERE)
-TARGET = os.path.join(TASK, "target")
-ALLOY = {"BIL6063": "6063", "BIL6082": "6082", "INGLM25": "LM25"}
+UTC = dt.timezone.utc
+VARIANTS = {"U1": ["Matter and reactions", "Chemistry: matter", "Particles and reactions", "Matter"],
+            "U2": ["Cells and body systems", "Cells & systems", "Body systems", "Life processes"],
+            "U3": ["Electricity and magnetism", "Electricity", "Circuits and magnets", "Electricity & magnetism"],
+            "U4": ["Space and the solar system", "Space", "Solar system", "Astronomy"],
+            "U5": ["Forces and motion", "Motion and forces", "Forces", "Mechanics: forces and motion", "Forces & motion"],
+            "U6": ["Earth's systems", "Dynamic Earth", "Earth systems", "Plate tectonics and the rock cycle",
+                   "Our changing Earth"]}
+FILES = ["y10sci_aug2026_responses.csv", "y10sci_aug2026_sessions.csv", "corlinn_item_bank_2026.xlsx",
+         "bank_calibration_runs.csv", "item_renumbering_2025.csv", "y10sci_2027_drafts.xlsx",
+         "y10sci_paper_specification_2027.pdf", "standard_setting_record_y10sci.pdf", "council_minute_2026_10_14.pdf",
+         "y10sci_course_review_2026.pdf", "member_schools.csv", "paper_choice_request.eml",
+         "entries_register_aug2026.xlsx", "makeup_roster_aug2026.pdf", "makeup_scripts_keyed.csv",
+         "candidate_survey_2026.csv", "member_bell_times_2026.json"]
 
 
-def rs(k):
-    return np.random.default_rng([P.SEED, 7000 + k])
-
-
-def write_csv(path, header, rows, eol="\r\n"):
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        wr = csv.writer(f, lineterminator=eol)
-        wr.writerow(header)
+def _csv(path, head, rows):
+    with open(path, "w", newline="") as fh:
+        wr = csv.writer(fh, lineterminator="\r\n")
+        wr.writerow(head)
         wr.writerows(rows)
 
 
-def minute(t):
-    """A logged local time: the world's instant in local wall time, to the minute."""
-    x = W.loc(t)
-    return (x + dt.timedelta(seconds=30)).replace(second=0, microsecond=0)
+def _utc(t):
+    return t.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def r20(x):
-    return int(round(x / 20.0)) * 20
+def _xlsx(path, sheets, creator, created, modified, widths=None):
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)
+    for name, head, rows in sheets:
+        ws = wb.create_sheet(name)
+        if head:
+            ws.append(head)
+            for c in ws[1]:
+                c.font = Font(bold=True)
+        for r in rows:
+            ws.append(r)
+        for j, wd in enumerate((widths or {}).get(name, [])):
+            ws.column_dimensions[openpyxl.utils.get_column_letter(j + 1)].width = wd
+        if head:
+            ws.freeze_panes = "A2"
+    wb.save(path)
+    PP.normalize_ooxml(path, creator, creator, created, modified, excel=True, company=P.TRUST)
 
 
-# ------------------------------------------------------------------------------------------------ gas
-def periods():
-    out = []
-    for k in range(len(P.READS) - 1):
-        a, b = P.READS[k], P.READS[k + 1]
-        out.append(dict(k=k, a=a, b=b, ua=W.utc(a), ub=W.utc(b), cv=P.CV[k]))
-    return out
+def _d(d, fmt):
+    return d.strftime(fmt).replace(" 0", " ").lstrip("0")
 
 
-def gas_meter(w, path, per):
-    ex = W.utc(P.METER_EXCHANGE_LOCAL)
-    rows, vol = [], np.zeros(W.N)
-    k = 0
-    for i in range(W.N):
-        t = W.T0 + i * W.STEP
-        while not (per[k]["ua"] <= t < per[k]["ub"]):
-            k += 1
-        m3 = w["metered"][i] * 3.6 / (P.VCF * per[k]["cv"])
-        stamp = t.strftime("%Y-%m-%d %H:%M")
-        if t < ex:
-            v = round(m3 / P.HCF_M3, 2)
-            rows.append(("8804419362", P.OLD_METER, stamp, "%.2f" % v, "hcf", "A"))
+def build(target):
+    os.makedirs(target, exist_ok=True)
+    for f in os.listdir(target):
+        os.remove(os.path.join(target, f))
+    res = G.compute()
+    w, pl, sch, a = res["w"], res["w"]["pool"], res["w"]["schools"], res["w"]["asks"]
+    items = pl["items"]
+    b_bank = res["b_bank"]
+    g = np.random.default_rng(P.SEED + 11)
+    code_of = {i: it["code"] for i, it in enumerate(items)}
+    t = lambda f: os.path.join(target, f)
+
+    # ---- the response export and the session log
+    _csv(t("y10sci_aug2026_responses.csv"), ["session_id", "entry_no", "item_code", "score"],
+         [("S%07d" % sid, entry, code_of[i], int(v)) for sid, entry, i, v in w["rows"]])
+    _csv(t("y10sci_aug2026_sessions.csv"),
+         ["session_id", "entry_no", "school_code", "form", "started_utc", "ended_utc", "status"],
+         [("S%07d" % s["sid"], s["entry"], s["school"], "F%d" % (s["form"] + 1), _utc(s["start"]), _utc(s["end"]),
+           s["status"]) for s in w["sessions"]])
+
+    # ---- the bank, its runs and the renumbering
+    _, thb = C.bank_run(w)
+    infit, outfit = RA.fit_stats(w["R"], w["M"], thb, b_bank)
+    p = RA.sig(thb[:, None] - b_bank[None, :])
+    se = 1.0 / np.sqrt(np.maximum((p * (1 - p) * w["M"]).sum(0), 1e-9))
+    n = w["M"].sum(0)
+    order = sorted(range(len(items)), key=lambda i: items[i]["code"])
+    rows = [[items[i]["code"], items[i]["unit"], items[i]["strand"], "MC" if items[i]["mc"] else "SA",
+             "Y" if items[i]["anchor"] else "N", round(float(b_bank[i]), 3), round(float(se[i]), 3), int(n[i]),
+             round(float(infit[i]), 2), round(float(outfit[i]), 2)] for i in order]
+    notes = [["Year 10 Science item bank: final 2026 calibration, run 7 September 2026 on every online response of the "
+              "August 2026 sitting."],
+             ["Difficulties are Rasch logits on the bank scale. The scale is held by the anchor block (anchor = Y) at its "
+              "banked values, set in 2024."],
+             ["The final run supersedes the preliminary run of 21 August 2026 (sessions to 19 August); both are in the "
+              "calibration runs file."],
+             ["Units U1 to U6 are the core units of the course outline. Fit is information-weighted (infit) and "
+              "unweighted (outfit) mean square."]]
+    _xlsx(t("corlinn_item_bank_2026.xlsx"),
+          [("Bank", ["item_code", "unit", "strand", "type", "anchor", "difficulty", "se", "responses_2026", "infit",
+                     "outfit"], rows), ("Notes", None, notes)],
+          "Jeremy York", "2026-09-07T03:40:00Z", "2026-09-08T22:15:00Z",
+          {"Bank": [11, 6, 24, 6, 7, 10, 7, 14, 7, 7], "Notes": [120]})
+    b_pre, _ = C.bank_run(w, upto=P.PRELIM_CUTOFF)
+    g25 = np.random.default_rng(P.POOL_SEED + 25)
+    runs = []
+    for i in order:
+        it = items[i]
+        if it["anchor"]:
+            v25 = float(pl["b"][i])
+        elif g25.random() < (0.6 if it["term"] < 3 else 0.5):
+            v25 = round(float(b_bank[i] + g25.normal(0, 0.06)), 3)
         else:
-            v = round(m3, 3)
-            rows.append(("8804419362", P.NEW_METER, stamp, "%.3f" % v, "m3", "A"))
-        vol[i] = v
-    write_csv(path, ["MPRN", "Meter serial", "Interval start (UTC)", "Consumption", "Unit", "Read type"], rows)
-    return vol
+            v25 = None
+        if v25 is not None:
+            runs.append(("2025 final", it["code"], "%.3f" % v25))
+    for i in order:
+        runs.append(("2026 preliminary", items[i]["code"], "%.3f" % b_pre[i]))
+    for i in order:
+        runs.append(("2026 final", items[i]["code"], "%.3f" % b_bank[i]))
+    _csv(t("bank_calibration_runs.csv"), ["run", "item_code", "difficulty"], runs)
+    used = {it["card"] for it in items}
+    retired = []
+    while len(retired) < 18:
+        c = int(g.integers(1040, 4990))
+        if c not in used and c not in retired:
+            retired.append(c)
+    ren = [(it["card"], it["code"], "2025-02-01", "renumbered") for it in items] + \
+          [(c, "", "2025-02-01", "retired") for c in retired]
+    ren.sort()
+    _csv(t("item_renumbering_2025.csv"), ["card_no", "item_code", "effective_from", "status"], ren)
 
-
-def gas_invoices(w, path, per, vol):
-    ex = W.utc(P.METER_EXCHANGE_LOCAL)
-    starts = [W.T0 + i * W.STEP for i in range(W.N)]
-
-    def idx(t):
-        return max(0, min(W.N, int((t - W.T0) / W.STEP)))
-
-    # the gas burned outside the export: December 2025 and the first days of January 2027, shaped on 2026's
-    dec = float(w["metered"][idx(W.utc(dt.datetime(2026, 12, 3, 9, 45))):].sum()) * 1.013
-    jan = float(w["metered"][:idx(W.utc(dt.datetime(2026, 1, 6, 10, 15)))].sum()) * 0.987
-    dec_hcf = dec * 3.6 / (P.VCF * per[0]["cv"]) / P.HCF_M3
-    jan_m3 = jan * 3.6 / (P.VCF * per[-1]["cv"])
-    cum = np.concatenate([[0.0], np.cumsum(vol)])
-    old0, new0 = 2846213.0, 12.0
-
-    def reg(t):
-        """The register at instant t: the old meter's in hcf before the exchange, the new meter's in m3 after."""
-        if t < W.T0:
-            return old0
-        if t <= ex:
-            return old0 + dec_hcf + cum[idx(t)]
-        if t >= W.T1:
-            return new0 + cum[W.N] - cum[idx(ex)] + jan_m3 * min(1.0, (t - W.T1) / (W.utc(P.READS[-1]) - W.T1))
-        return new0 + cum[idx(t)] - cum[idx(ex)]
-
-    invoices = []
-    for p in per:
-        meters = []
-        if p["ub"] <= ex:
-            o, c = int(reg(p["ua"])), int(reg(p["ub"]))
-            meters.append(dict(serial=P.OLD_METER, open=o, close=c, units="hcf", m3=(c - o) * P.HCF_M3,
-                               **{"from": p["a"], "to": p["b"]}))
-        elif p["ua"] >= ex:
-            o, c = int(reg(p["ua"])), int(reg(p["ub"]))
-            meters.append(dict(serial=P.NEW_METER, open=o, close=c, units="m3", m3=float(c - o),
-                               **{"from": p["a"], "to": p["b"]}))
-        else:
-            o, c = int(reg(p["ua"])), int(reg(ex))
-            meters.append(dict(serial=P.OLD_METER, open=o, close=c, units="hcf", m3=(c - o) * P.HCF_M3,
-                               **{"from": p["a"], "to": P.METER_EXCHANGE_LOCAL}))
-            o2, c2 = int(new0), int(reg(p["ub"]))
-            meters.append(dict(serial=P.NEW_METER, open=o2, close=c2, units="m3", m3=float(c2 - o2),
-                               **{"from": P.METER_EXCHANGE_LOCAL, "to": p["b"]}))
-        m3 = round(sum(m["m3"] for m in meters), 2)
-        kwh = int(round(m3 * P.VCF * p["cv"] / 3.6))
-        rate = P.UNIT_RATE_P[p["k"]]
-        days = (p["b"].date() - p["a"].date()).days
-        charge = round(kwh * rate / 100.0, 2)
-        standing = round(days * P.STANDING_GBP_DAY, 2)
-        ccl = round(kwh * P.CCL_P_KWH / 100.0, 2)
-        vat = round(0.2 * (charge + standing + ccl), 2)
-        note = ""
-        if p["ub"] <= ex:
-            note = ("Imperial meter: the register reads in hundreds of cubic feet, converted at 2.83 cubic metres "
-                    "to the unit.")
-        elif p["ua"] < ex:
-            note = ("Meter exchange on 14 April 2026 at 10:30: imperial meter %s removed at %d (hundreds of cubic "
-                    "feet, converted at 2.83 cubic metres to the unit); metric meter %s fitted at %05d cubic metres."
-                    % (P.OLD_METER, meters[0]["close"], P.NEW_METER, int(new0)))
-        invoices.append(dict(no="NG-%06d" % (418273 + 61 * p["k"]), issued=p["b"] + dt.timedelta(days=4 + p["k"] % 3),
-                             meters=meters, m3=m3, cv=p["cv"], kwh=kwh, rate=rate, charge=charge, days=days,
-                             standing=standing, ccl=ccl, vat=vat, total=round(charge + standing + ccl + vat, 2),
-                             note=note))
-    D.invoices_pdf(path, invoices)
-    return invoices
-
-
-# ------------------------------------------------------------------------------------------------ process logs
-def furnace_logs(w, path):
-    r = rs(3)
-    lot_of = {id(l["heat"]): l["lot"] for l in w["lots"] if "heat" in l}
-    remarks = ["Mg addition", "hold for chemistry", "door seal checked", "fluxed", "skimmed twice",
-               "burner 2 relit", "sample re-taken"]
+    # ---- the drafts (card numbers, the panels' unit words)
     sheets = []
-    for fur in ("M1", "M2"):
+    for d in ("A", "B", "C"):
+        ix = sorted(res["drafts"][d], key=lambda i: (items[i]["strand"], items[i]["unit"], items[i]["card"]))
+        sheets.append(("Paper %s" % d, ["Q", "Card", "Unit", "Marks"],
+                       [[q + 1, items[i]["card"], VARIANTS[items[i]["unit"]][0], 1] for q, i in enumerate(ix)]))
+    _xlsx(t("y10sci_2027_drafts.xlsx"), sheets, "Paul Shailer", "2026-10-28T01:20:00Z", "2026-11-02T20:05:00Z",
+          {"Paper %s" % d: [5, 8, 30, 7] for d in "ABC"})
+
+    # ---- governing documents
+    D.specification(t("y10sci_paper_specification_2027.pdf"))
+    cuts = []
+    for f in range(P.N_FORMS):
+        bf = b_bank[pl["forms"][f]]
+        for r in range(P.PAPER_LEN + 1):
+            if r == 0 or r == P.PAPER_LEN:
+                continue
+            th = 0.0
+            for _ in range(40):
+                pp = RA.sig(th - bf)
+                th += (r - pp.sum()) / max((pp * (1 - pp)).sum(), 1e-9)
+            if th >= P.THETA_ACHIEVED:
+                cuts.append((f, r))
+                break
+    D.standards(t("standard_setting_record_y10sci.pdf"), cuts)
+    D.minute(t("council_minute_2026_10_14.pdf"))
+
+    # ---- the course review with the member schools' sequences
+    seq = []
+    for s in sorted(sch, key=lambda s: s["name"]):
+        ts, te = s["term_start"], s["term_end"]
+        nwk = W.week_of_term(te, ts)
+        k = s["week_end1"]
+        n1, n2 = VARIANTS[s["first"]][int(g.integers(len(VARIANTS[s["first"]])))], \
+            VARIANTS[s["second"]][int(g.integers(len(VARIANTS[s["second"]])))]
+        fmt = int(g.integers(3))
+        if fmt == 0:
+            t3 = "Wks 1-%d %s; Wks %d-%d %s" % (k, n1, k + 1, nwk, n2)
+        elif fmt == 1:
+            t3 = "%d/%d to %d/%d %s; %d/%d to %d/%d %s" % (ts.day, ts.month, s["end1"].day, s["end1"].month, n1,
+                                                            (s["end1"] + dt.timedelta(days=3)).day,
+                                                            (s["end1"] + dt.timedelta(days=3)).month, te.day, te.month, n2)
+        else:
+            t3 = "Weeks 1 to %d: %s. Weeks %d to %d: %s." % (k, n1, k + 1, nwk, n2)
+        u12 = ["U1", "U2"] if g.random() < 0.5 else ["U2", "U1"]
+        u34 = ["U3", "U4"] if g.random() < 0.5 else ["U4", "U3"]
+        nm = lambda u: VARIANTS[u][int(g.integers(len(VARIANTS[u])))]
+        t12 = "T1: %s, %s. T2: %s, %s." % (nm(u12[0]), nm(u12[1]), nm(u34[0]), nm(u34[1]))
+        start = [ts.strftime("%d %b").lstrip("0"), ts.strftime("%a %d %B").replace(" 0", " "),
+                 ts.strftime("%d/%m/%Y")][int(g.integers(3))]
+        seq.append([s["name"], start, t12, t3])
+    D.course_review(t("y10sci_course_review_2026.pdf"), sch, seq)
+
+    # ---- member schools
+    moe = g.choice(np.arange(1100, 9800), len(sch), replace=False)
+    _csv(t("member_schools.csv"), ["school_code", "school_name", "region", "moe_number"],
+         sorted([(s["code"], s["name"], s["region"], int(m)) for s, m in zip(sch, moe)]))
+
+    # ---- the request
+    msg = EmailMessage()
+    msg["From"] = "Paul Shailer <p.shailer@corlinn.org.nz>"
+    msg["To"] = "Jeremy York <j.york@corlinn.org.nz>"
+    msg["Cc"] = "Theo Stevens <t.stevens@corlinn.org.nz>"
+    msg["Date"] = format_datetime(dt.datetime(2026, 11, 6, 16, 42, tzinfo=D.NZDT))
+    msg["Subject"] = "2027 Year 10 science paper"
+    msg["Message-ID"] = "<20261106164200.4821@corlinn.org.nz>"
+    msg.set_content(
+        "Hi Jeremy,\n\nThe assessment committee meets on 24 November to set the 2027 Year 10 science paper. The three "
+        "drafts came back from the panels last week and are in the drafts workbook, with the 2027 specification.\n\n"
+        "Could you work up the recommendation for the committee? Theo would like the working in a workbook he can "
+        "pass round. For the committee's annual report, could the same workbook carry the August sitting's entries "
+        "and sittings by region, and the make-up sitting's numbers and marks?\n\nEverything from the August sitting "
+        "is in the shared folder.\n\nThanks\n\nPaul Shailer\nHead of Assessment\n%s\n" % P.TRUST)
+    with open(t("paper_choice_request.eml"), "wb") as fh:
+        fh.write(bytes(msg))
+
+    # ---- the entries register
+    ent = sorted(a["entries"], key=lambda e: (e["entered"], e["school"], e["entry"]))
+    _xlsx(t("entries_register_aug2026.xlsx"),
+          [("Entries", ["Entry no", "NSN", "Surname", "First name", "Date of birth", "Gender", "School code",
+                        "Entered on", "Source", "Status"],
+            [[e["entry"], e["nsn"], e["surname"], e["first"], e["dob"], e["gender"], e["school"], e["entered"],
+              e["source"], e["status"]] for e in ent]),
+           ("Notes", None, [["Entries for the August 2026 Year 10 Science Benchmark, as at 31 August 2026."],
+                            ["Status: E entered; W withdrawn by the school before the sitting (a withdrawn entry is not "
+                             "a candidate)."],
+                            ["Source: school upload, or office (taken by the office from a school's email or phone "
+                             "call; the office form does not record the NSN)."]])],
+          "Corlinn Trust Office", "2026-05-18T21:10:00Z", "2026-08-30T23:52:00Z",
+          {"Entries": [10, 11, 14, 12, 12, 7, 11, 12, 13, 7], "Notes": [110]})
+    for path in [t("entries_register_aug2026.xlsx")]:
+        pass
+
+    # ---- the make-up sitting
+    by_code = {s["code"]: s for s in sch}
+    blocks = []
+    for reg in ("Northern", "Central", "Southern"):
+        h = a["hosts"][reg]
         rows = []
-        for h in [x for x in w["heats"] if x["furnace"] == fur]:
-            rem = remarks[int(r.integers(len(remarks)))] if r.random() < 0.06 else ""
-            rows.append([h["heat"], ALLOY[h["family"]], minute(h["charged"]), minute(h["complete"]),
-                         round(h["tonnes"], 2), lot_of[id(h)], rem])
-        # rows keyed in twice from the shift sheets
-        out = []
-        dup_at = {}
-        for j, row in enumerate(rows):
-            out.append(row)
-            if r.random() < 0.013:
-                dup_at.setdefault(j + int(r.integers(1, 6)), []).append(list(row[:6]) + [
-                    "re-keyed from shift sheet" if r.random() < 0.5 else ""])
-            for d in dup_at.pop(j, []):
-                out.append(d)
-        for k in sorted(dup_at):
-            out.extend(dup_at[k])
-        sheets.append(("%s casthouse" % fur, ["Heat", "Alloy", "Charged", "Melted out", "Charge t", "Cast lot",
-                                              "Remarks"], out))
-    rows = [[c["charge"], minute(c["charged"]), int(round(c["tonnes"] * 1000)), ""] for c in w["m3"]]
-    sheets.append(("M3 tower melter", ["Charge", "Charged", "Weight kg", "Remarks"], rows))
-    fmt = {"M1 casthouse": {3: "dd/mm/yyyy hh:mm", 4: "dd/mm/yyyy hh:mm", 5: "0.00"},
-           "M2 casthouse": {3: "dd/mm/yyyy hh:mm", 4: "dd/mm/yyyy hh:mm", 5: "0.00"},
-           "M3 tower melter": {2: "dd/mm/yyyy hh:mm", 3: "#,##0"}}
-    widths = {"M1 casthouse": [8, 7, 17, 17, 9, 11, 24], "M2 casthouse": [8, 7, 17, 17, 9, 11, 24],
-              "M3 tower melter": [8, 17, 11, 20]}
-    D.workbook(path, sheets, P.PEOPLE["works"], P.PEOPLE["works"], "2026-01-02T07:41:00Z", "2027-01-19T15:22:00Z",
-               "Brackwell Alloys Ltd", widths=widths, formats=fmt)
+        for x in sorted([x for x in a["roster"] if x["host"] == h], key=lambda x: (x["day"], x["surname"], x["first"])):
+            rows.append([x["day"].strftime("%a %d %b").replace(" 0", " "), x["script"] or "", x["entry"],
+                         "%s, %s" % (x["surname"], x["first"]), sch[x["home"]]["code"], "Yes" if x["attended"] else "No"])
+        blocks.append((sch[h]["name"], sch[h]["code"], rows))
+    D.roster(t("makeup_roster_aug2026.pdf"), blocks)
+    _csv(t("makeup_scripts_keyed.csv"), ["script_no", "school_code", "entry_no", "mark", "keyed_on", "keyed_by"],
+         [(x["script"], x["school"], x["entry"], x["keyed_mark"], x["keyed"].isoformat(), x["by"])
+          for x in a["scripts"]])
 
-
-def h1_log(w, path):
-    rows = []
-    for ld in w["h1"]:
-        rows.append([ld["load"], ALLOY[ld["family"]], minute(ld["start"]).strftime("%d/%m/%Y %H:%M"),
-                     minute(ld["end"]).strftime("%d/%m/%Y %H:%M"), "%.2f" % ld["tonnes"],
-                     "; ".join("%s %.2f" % (lot, t) for lot, t in ld["lots"])])
-    write_csv(path, ["Load", "Alloy", "Door closed", "Door opened", "Billet t", "Lots (t)"], rows, eol="\n")
-
-
-def t1_log(w, path):
-    rows = []
-    for b in w["t1"]:
-        rows.append([b["batch"], minute(b["start"]).strftime("%Y-%m-%dT%H:%M"),
-                     minute(b["end"]).strftime("%Y-%m-%dT%H:%M"), b["pieces"], int(round(b["tonnes"] * 1000)),
-                     " ".join(lot for lot, _ in b["lots"])])
-    write_csv(path, ["Batch", "Start", "End", "Pieces", "Net kg", "Cast lots"], rows, eol="\n")
-
-
-def lots_file(w, path):
-    rows = []
-    for lot in w["lots"]:
-        for res, when in lot["inspections"]:
-            rows.append((when, lot["lot"], [lot["lot"], P.FAM_NAME[lot["family"]],
-                                            W.loc(lot["cast"]).strftime("%Y-%m-%d"), int(round(lot["tonnes"] * 1000)),
-                                            minute(when).strftime("%d/%m/%Y %H:%M"), res]))
-    rows.sort(key=lambda x: (x[0], x[1]))
-    write_csv(path, ["Lot", "Product", "Cast date", "Net kg", "Inspected", "Result"], [x[2] for x in rows])
-
-
-def weather(w, path):
-    r = rs(5)
-    rows = []
-    for d, m in zip(w["days"], w["tmean"]):
-        lo = m - 3.1 - abs(r.normal(0, 0.9))
-        hi = m + 3.1 + abs(r.normal(0, 0.9))
-        rain = max(0.0, r.gamma(0.7, 3.2) - 0.8) if r.random() < 0.55 else 0.0
-        rows.append([d.strftime("%Y-%m-%d"), "%.1f" % m, "%.1f" % lo, "%.1f" % hi, "%.1f" % rain])
-    write_csv(path, ["Date", "Mean C", "Min C", "Max C", "Rain mm"], rows, eol="\n")
-
-
-# ------------------------------------------------------------------------------------------------ Velden
-def calloffs(path):
-    r = rs(6)
-    parts = [("AL-BIL-6063-178", "Extrusion billet EN AW-6063, 178 mm", "BIL6063", 4320),
-             ("AL-BIL-6063-254", "Extrusion billet EN AW-6063, 254 mm", "BIL6063", 2880),
-             ("AL-BIL-6082-203", "Extrusion billet EN AW-6082, 203 mm", "BIL6082", 3000),
-             ("AL-ING-42000", "Foundry ingot EN AC-42000 (LM25)", "INGLM25", 1800),
-             ("CS-77140-TF", "Sand casting, rear subframe bracket, EN AC-42000 T6 (LM25-TF)", "CSTLM25", 650)]
-    for f in P.FAM_CODES:
-        assert sum(p[3] for p in parts if p[2] == f) == P.CALLOFF_2027[f]
-    rows = []
-    for code, desc, fam, tot in parts:
-        wts = np.clip(r.normal(1.0, 0.11, 12), 0.7, 1.3)
-        wts[7] *= 0.55
-        wts[11] *= 0.8
-        raw = tot * wts / wts.sum()
-        q = np.floor(raw).astype(int)
-        for j in np.argsort(-(raw - q))[:tot - q.sum()]:
-            q[j] += 1
-        rows.append([code, desc, "t"] + [int(x) for x in q] + [tot])
-    head = ["Velden part", "Description", "Unit"] + [dt.date(2027, m, 1).strftime("%b") for m in range(1, 13)] + \
-        ["Total 2027"]
-    notes = [["Call-off schedule for contract year 2027, supplier Brackwell Alloys Ltd (supplier no. 70-44183)."],
-             ["Quantities are tonnes delivered to Velden's Kassel and Wolfsfeld plants in the month."],
-             ["Issued by Purchasing, light metals, 14 December 2026. Revision 0."]]
-    D.workbook(path, [("Call-offs 2027", head, rows), ("Notes", ["Notes"], notes)], P.PEOPLE["buyer"],
-               P.PEOPLE["buyer"], "2026-11-27T13:05:00Z", "2026-12-14T08:47:00Z", "Velden Automobil AG",
-               widths={"Call-offs 2027": [17, 52, 6] + [7] * 12 + [11], "Notes": [90]})
-
-
-# ------------------------------------------------------------------------------------------------ the weighbridge
-def weighbridge(w, wb_path, gi_path):
-    """Scrap in (one or two grades a load, a two-grade load weighed between its tips), product despatches, and
-    Midland's dross lifts (some bringing returned metal, unloaded and weighed before the skip is lifted)."""
-    r = rs(7)
-    letters = "ABCDEFGHJKLMNOPRSTUVWXY"
-
-    def reg_no():
-        return "%s%s%02d %s%s%s" % (letters[r.integers(23)], letters[r.integers(23)], int(r.choice([16, 66, 17, 67,
-                                    18, 68, 19, 69, 70, 21, 71, 22, 72])), letters[r.integers(23)],
-                                    letters[r.integers(23)], letters[r.integers(23)])
-
-    fleets = {}
-    for name, _, _ in P.SUPPLIERS:
-        fleets[name] = [(reg_no(), float(r.uniform(14200, 16500))) for _ in range(int(r.integers(2, 5)))]
-    for name, _ in P.CUSTOMERS:
-        fleets[name] = [(reg_no(), float(r.uniform(14300, 16200))) for _ in range(int(r.integers(3, 7)))]
-    fleets[P.DROSS_HAULIER] = [(reg_no(), float(r.uniform(12850, 13450))) for _ in range(2)]
-    fleets["MDR flatbed"] = [(reg_no(), float(r.uniform(11800, 12600)))]
-    hauliers = {"Velden Automobil AG (Rhenus Logistics)": "Rhenus Logistics", "Kestrel Extrusions Ltd": "Kestrel",
-                "Albion Profiles Ltd": "Albion", "Hallam Castings Ltd": "Hallam", "Severn Diecast Ltd": "Severn"}
-    sup_w = np.array([s[2] for s in P.SUPPLIERS])
-    sup_w = sup_w / sup_w.sum()
-    cus_w = np.array([c[1] for c in P.CUSTOMERS])
-    cus_w = cus_w / cus_w.sum()
-    load_range = {"UBC": (17000, 23500), "EXT": (11000, 22000), "CST": (13000, 24500), "TRN": (15000, 26000)}
-    rejects = ["free iron in load", "wet swarf", "plastics and rubber", "magnesium contamination", "lead present"]
-    SKIP = 2180.0
-    visits = []
-    d = dt.date(P.YEAR, 1, 5)
-    while d <= dt.date(P.YEAR, 12, 23):
-        if d.weekday() < 5 and d not in P.SHUT_DAYS:
-            day = []
-            for _ in range(int(r.poisson(8.2))):
-                s = P.SUPPLIERS[int(r.choice(len(P.SUPPLIERS), p=sup_w))]
-                veh, tare = fleets[s[0]][int(r.integers(len(fleets[s[0]])))]
-                tare += float(r.normal(0, 60))
-                two = len(s[1]) > 1 and r.random() < 0.30
-                if two:
-                    g = list(r.choice(s[1], 2, replace=False))
-                    total = float(r.uniform(15000, 25000))
-                    share = float(r.uniform(0.62, 0.80))
-                    first_big = r.random() < 0.5
-                    parts = [share * total, (1 - share) * total] if first_big else [(1 - share) * total, share * total]
-                    tips = list(zip(g, parts))                       # in the order tipped
-                    decl_total = total * (1 + float(r.normal(0.003, 0.011)))
-                    # the merchant's note splits the load by eye, to the nearest twentieth and the nearest tonne
-                    big_est = float(np.clip(share + r.normal(0, 0.07), 0.55, 0.9))
-                    lines = []
-                    for gg, amt in tips:
-                        est = big_est if amt == max(parts) else 1 - big_est
-                        lines.append(dict(grade=gg, declared=int(round(decl_total * round(est * 20) / 20, -3)),
-                                          status="Accepted", remark="", bales=int(round(amt / r.uniform(330, 370)))
-                                          if gg == "UBC" else "", actual=amt))
-                    weights = [tare + total, tare + parts[1], tare + float(r.normal(0, 25))]
-                    kind = "scrap2"
-                else:
-                    gg = s[1][int(r.integers(len(s[1])))]
-                    amt = float(r.uniform(*load_range[gg]))
-                    rej = r.random() < 0.016
-                    if gg == "UBC":
-                        bw = float(r.normal(352, 18))
-                        bales = int(round(amt / bw))
-                        decl = bales * 360
-                    else:
-                        bales = ""
-                        decl = int(round(amt * (1 + float(r.normal(0.003, 0.011))), -1))
-                    lines = [dict(grade=gg, declared=decl, status="Rejected - returned to supplier" if rej else
-                                  "Accepted", remark=rejects[int(r.integers(len(rejects)))] if rej else "",
-                                  bales=bales)]
-                    weights = [tare + amt, tare + (amt - float(r.uniform(0, 60)) if rej else float(r.normal(0, 25)))]
-                    kind = "scrap1"
-                day.append(dict(kind=kind, supplier=s[0], vehicle=veh, haulier=s[0], movement="Goods in",
-                                lines=lines, weights=[r20(x) for x in weights],
-                                order=[gg for gg, _ in tips] if two else None))
-            for _ in range(int(r.poisson(7.4))):
-                c = P.CUSTOMERS[int(r.choice(len(P.CUSTOMERS), p=cus_w))]
-                veh, tare = fleets[c[0]][int(r.integers(len(fleets[c[0]])))]
-                tare += float(r.normal(0, 60))
-                day.append(dict(kind="despatch", supplier=c[0], vehicle=veh, haulier=hauliers[c[0]],
-                                movement="Despatch", lines=[], weights=[r20(tare), r20(tare + r.uniform(19000, 26000))]))
-            if d.weekday() in (0, 2, 4):
-                veh, truck = fleets[P.DROSS_HAULIER][int(r.integers(2))]
-                truck += float(r.normal(0, 40))
-                dross = float(r.uniform(5600, 9400))
-                if r.random() < 0.35:
-                    sows = float(r.uniform(1000, 2400))
-                    weights = [truck + SKIP + sows, truck + SKIP, truck + float(r.normal(0, 20)) + SKIP + dross]
-                    lines = [dict(grade=P.TOLL[0], declared=int(round(sows * (1 + float(r.normal(0, 0.004))), -1)),
-                                  status="Accepted", remark="", bales="", supplier=P.DROSS_HAULIER)]
-                    kind = "dross2"
-                else:
-                    weights = [truck + SKIP, truck + float(r.normal(0, 20)) + SKIP + dross]
-                    lines, kind = [], "dross1"
-                day.append(dict(kind=kind, supplier=P.DROSS_HAULIER, vehicle=veh, haulier="Midland Dross Recovery",
-                                movement="Waste out", lines=lines, weights=[r20(x) for x in weights]))
-            if d.weekday() == 3 and r.random() < 0.8:
-                veh, tare = fleets["MDR flatbed"][0]
-                sows = float(r.uniform(7600, 14800))
-                day.append(dict(kind="toll", supplier=P.DROSS_HAULIER, vehicle=veh, haulier="Midland Dross Recovery",
-                                movement="Goods in", lines=[dict(grade=P.TOLL[0], declared=int(round(
-                                    sows * (1 + float(r.normal(0, 0.004))), -1)), status="Accepted", remark="",
-                                    bales="")], weights=[r20(tare + sows), r20(tare + r.normal(0, 25))]))
-            # the day's visits in arrival order, each with its own weighing times
-            arr = sorted(float(x) for x in r.uniform(6.5, 16.75, len(day)))
-            order = r.permutation(len(day))
-            for a, j in zip(arr, order):
-                v = day[int(j)]
-                t = dt.datetime.combine(d, dt.time()) + dt.timedelta(hours=a)
-                times = [t]
-                for _ in v["weights"][1:]:
-                    t = t + dt.timedelta(minutes=float(r.uniform(13, 38)))
-                    times.append(t)
-                v["times"] = [x.replace(microsecond=0) for x in times]
-                v["day"] = d
-                visits.append(v)
-        d += dt.timedelta(days=1)
-    visits.sort(key=lambda v: (v["times"][0], v["vehicle"]))
-    # no quarter's tonnes may sit on a half tonne: the last ordinary load in such a cell weighs in a little heavier
-    def quarter_of(v):
-        return (v["day"].month - 1) // 3
-
-    cells = {}
-    for v in visits:
-        q = quarter_of(v)
-        ws = v["weights"]
-        if v["kind"] == "scrap1" and v["lines"][0]["status"] == "Accepted":
-            cells.setdefault((v["lines"][0]["grade"], q), [0, None])[0] += ws[0] - ws[-1]
-            cells[(v["lines"][0]["grade"], q)][1] = (v, 0)
-        elif v["kind"] == "scrap2":
-            for k, gg in enumerate(v["order"]):
-                cells.setdefault((gg, q), [0, None])[0] += ws[k] - ws[k + 1]
-        elif v["kind"] in ("dross1", "dross2"):
-            cells.setdefault(("dross", q), [0, None])[0] += ws[-1] - ws[-2]
-            cells[("dross", q)][1] = (v, len(ws) - 1)
-    for key in sorted(cells, key=str):
-        kg, last = cells[key]
-        rem = kg % 1000
-        if 440 <= rem <= 560:
-            v, j = last
-            v["weights"][j] += 600 - rem if rem >= 500 else 400 - rem
-    no = 0
-    reset_done = False
-    for v in visits:
-        if not reset_done and v["day"] >= P.WB_RESET:
-            no, reset_done = 0, True
-        no += 1
-        v["ticket"] = no
-    # the weighbridge export: one row per weighing, stamped in UTC
-    rows = []
-    for v in visits:
-        for k, (t, kg) in enumerate(zip(v["times"], v["weights"])):
-            rows.append([v["ticket"], k + 1, W.utc(t).strftime("%Y-%m-%d %H:%M:%S"), kg, v["vehicle"], v["haulier"],
-                         v["movement"]])
-    write_csv(wb_path, ["Ticket", "Weighing", "Weighed (UTC)", "Weight kg", "Vehicle", "Haulier", "Movement"], rows)
-    # the goods-in register: one line per grade, the lines of a load entered in grade order
-    gl, grn = [], 0
-    names = dict(P.GRADES + [P.TOLL])
-    for v in visits:
-        for ln in sorted(v["lines"], key=lambda x: x["grade"]):
-            grn += 1
-            gl.append(["GRN-%05d" % (26000 + grn), v["day"].strftime("%d/%m/%Y"), v["supplier"], ln["grade"],
-                       names[ln["grade"]], ln["bales"], ln["declared"], v["ticket"], ln["status"], ln["remark"]])
-    write_csv(gi_path, ["GRN", "Date", "Supplier", "Grade", "Description", "Bales", "Declared kg", "WB ticket",
-                        "Status", "Remarks"], gl)
-    return visits
-
-
-# ------------------------------------------------------------------------------------------------ distractors
-def electricity(w, path):
-    r = rs(9)
-    act = {k: (w["comp"][k] > 0).astype(float) for k in ("melt", "m3", "h1", "t1")}
-    kw = 410 + 1150 * act["melt"] + 520 * act["m3"] + 140 * act["h1"] + 95 * act["t1"]
-    kw = kw * (1 + r.normal(0, 0.035, W.N))
-    hh = kw.reshape(-1, 2).mean(axis=1) * 0.5           # kWh in each UTC half hour
-    rows = []
-    d = dt.date(P.YEAR, 1, 1)
-    while d.year == P.YEAR:
-        a = W.utc(dt.datetime.combine(d, dt.time()))
-        b = W.utc(dt.datetime.combine(d + dt.timedelta(days=1), dt.time()))
-        i0, i1 = int((a - W.T0) / dt.timedelta(minutes=30)), int((b - W.T0) / dt.timedelta(minutes=30))
-        for k, i in enumerate(range(i0, min(i1, len(hh)))):
-            rows.append(["1580061423376", d.strftime("%d/%m/%Y"), k + 1, "%.1f" % hh[i], "A"])
-        d += dt.timedelta(days=1)
-    write_csv(path, ["MPAN", "Settlement date", "Settlement period", "Import kWh", "Status"], rows)
-
-
-def assets(path):
-    gas = [["M1", "Reverberatory melting furnace, 50 t, two regenerative burner pairs", "Casthouse", "Natural gas",
-            4200, 2009, "2026-07-14"],
-           ["M2", "Reverberatory melting furnace, 50 t, two regenerative burner pairs", "Casthouse", "Natural gas",
-            4200, 2012, "2026-08-06"],
-           ["M3", "Tower melter, 1.5 t/h, with holding chamber", "Foundry", "Natural gas", 1350, 2017, "2026-08-11"],
-           ["H1", "Homogenizing furnace, 50 t billet, six recuperative burners", "Billet shop", "Natural gas", 2400,
-            2014, "2026-08-10"],
-           ["T1", "Solution treatment and ageing oven, 7 t", "Foundry", "Natural gas", 900, 2019, "2026-08-12"],
-           ["LP1", "Ladle preheater", "Casthouse", "Natural gas", 250, 2015, "2026-03-02"],
-           ["LP2", "Ladle preheater", "Foundry", "Natural gas", 250, 2018, "2026-03-03"],
-           ["LH1-3", "Launder heaters (three)", "Casthouse", "Natural gas", 180, 2012, "2026-08-04"],
-           ["RT1-26", "Radiant tube heaters (26)", "Works", "Natural gas", 1040, 2011, "2026-09-21"],
-           ["B1", "Office boiler", "Offices", "Natural gas", 120, 2016, "2026-09-08"]]
-    elec = [["CM1", "Vertical DC billet casting machine", "Casthouse", "Electricity", 310, 2009, "2026-08-05"],
-            ["SW1", "Billet saw line", "Billet shop", "Electricity", 160, 2014, "2026-08-10"],
-            ["AC1-3", "Air compressors (three)", "Works", "Electricity", 330, 2020, "2026-05-18"],
-            ["SM1", "Sand mixer and reclamation plant", "Foundry", "Electricity", 220, 2017, "2026-08-11"],
-            ["CR1-4", "Overhead cranes (four)", "Works", "Electricity", 180, 2009, "2026-04-20"],
-            ["F1", "Fume extraction fans and baghouse", "Casthouse", "Electricity", 260, 2013, "2026-08-04"]]
-    head = ["Asset", "Description", "Location", "Energy", "Rated input kW", "Installed", "Last service"]
-    D.workbook(path, [("Gas plant", head, gas), ("Electrical plant", head, elec)], P.PEOPLE["works"],
-               P.PEOPLE["works"], "2019-03-11T10:02:00Z", "2026-09-22T14:36:00Z", "Brackwell Alloys Ltd",
-               widths={"Gas plant": [9, 62, 12, 12, 14, 10, 12], "Electrical plant": [9, 62, 12, 12, 14, 10, 12]})
-
-
-def roster(path):
-    rows = []
-    d = dt.date(2025, 12, 29)
-    k = 0
-    while d.year <= P.YEAR:
-        if d.year == P.YEAR or d + dt.timedelta(days=6) >= dt.date(P.YEAR, 1, 1):
-            shut_week = all((d + dt.timedelta(days=j)) in P.SHUT_DAYS or j >= 5 for j in range(7))
-            crews = "ABCD"
-            if shut_week:
-                rows.append([d.strftime("%d/%m/%Y"), "Casthouse", "", "", "", "shutdown"])
-                rows.append([d.strftime("%d/%m/%Y"), "Foundry", "", "", "", "shutdown"])
-            else:
-                rot = [crews[(k + j) % 4] for j in range(4)]
-                rows.append([d.strftime("%d/%m/%Y"), "Casthouse", rot[0], rot[1], rot[2], rot[3]])
-                rows.append([d.strftime("%d/%m/%Y"), "Foundry", "EF"[k % 2], "EF"[(k + 1) % 2], "", ""])
-                k += 1
-        d += dt.timedelta(days=7)
-    write_csv(path, ["Week commencing", "Area", "Early 06-14", "Late 14-22", "Night 22-06", "Rest crew"], rows)
-
-
-# ------------------------------------------------------------------------------------------------ the pack
-def build(folder=TARGET):
-    if os.path.isdir(folder):
-        shutil.rmtree(folder)
-    os.makedirs(folder)
-    F = {k: os.path.join(folder, v) for k, v in P.FILES.items()}
-    w = W.simulate()
-    per = periods()
-    vol = gas_meter(w, F["meter"], per)
-    inv = gas_invoices(w, F["invoices"], per, vol)
-    furnace_logs(w, F["furnaces"])
-    h1_log(w, F["h1"])
-    t1_log(w, F["t1"])
-    lots_file(w, F["lots"])
-    weather(w, F["weather"])
-    D.scr2_pdf(F["scr2"])
-    calloffs(F["calloff"])
-    visits = weighbridge(w, F["weighbridge"], F["goodsin"])
-    electricity(w, F["elec"])
-    assets(F["assets"])
-    roster(F["roster"])
-    D.email(F["email"], [P.FILES[k] for k in ("meter", "invoices", "furnaces", "h1", "t1", "lots", "weather",
-                                               "elec", "weighbridge", "goodsin", "assets", "roster")])
-    t = dt.datetime(2027, 1, 21, 16, 12).timestamp()
-    for f in os.listdir(folder):
-        os.utime(os.path.join(folder, f), (t, t))
-    return dict(world=w, invoices=inv, visits=visits)
-
-
-if __name__ == "__main__":
-    out = sys.argv[1] if len(sys.argv) > 1 else TARGET
-    build(out)
-    print("built", len(os.listdir(out)), "files in", out)
+    # ---- distractors: the attitude survey and the bell times
+    srows = []
+    for s in w["sessions"]:
+        if s["status"] != "submitted" or g.random() > 0.7:
+            continue
+        done = s["end"] + dt.timedelta(minutes=int(g.integers(2, 11)))
+        srows.append([s["entry"], s["school"], _utc(done)] + [int(g.integers(1, 6)) for _ in range(8)])
+    _csv(t("candidate_survey_2026.csv"), ["entry_no", "school_code", "completed_utc"] +
+         ["q%d" % k for k in range(1, 9)], srows)
+    bells = []
+    for s in sorted(sch, key=lambda s: s["code"]):
+        per = []
+        for k, (hh, mm) in enumerate(P.PERIODS):
+            st = dt.datetime(2026, 8, 3, hh, mm)
+            ln = int(g.choice([55, 60, 50]))
+            per.append({"period": k + 1, "start": st.strftime("%H:%M"),
+                        "end": (st + dt.timedelta(minutes=ln)).strftime("%H:%M")})
+        bells.append({"school_code": s["code"], "term": "2026 T3", "periods": per})
+    with open(t("member_bell_times_2026.json"), "w") as fh:
+        json.dump({"exported": "2026-08-31T02:10:00Z", "schools": bells}, fh, indent=1)
+        fh.write("\n")
+    assert sorted(os.listdir(target)) == sorted(FILES), set(os.listdir(target)) ^ set(FILES)
+    return res

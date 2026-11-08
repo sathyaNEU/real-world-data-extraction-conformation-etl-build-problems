@@ -1,26 +1,26 @@
 {
  "task": "task482",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "education-learning-sciences / item-response-theory-test-equating (client education-learning-sciences)",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-07",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-11-08",
  "stump": "the bank's Term 3 items recalibrated on the responses of students whose own school had finished the unit before their sitting day: Paper C nearest 25 at the Achieved standard, against the bank's Paper A",
  "architecture": 17,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-07"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-08 (no LEAK; dates clean at as-of 2026-11-06; REVIEW lines ruled harmless in the note)",
   "reader": ""
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-11-07 on the registered card (Paul in one older build, task117; which repeats task127's question form; older-build signature differentiated against task122 v2, task194 v3, task501 v4)",
-  "heart": "",
-  "surface": ""
+  "heart": "WARN 2026-11-08 (Paul in one older build, task117; which form repeats task127; older-build signature time/G13/pick differentiated against task122 v2, task194 v3, task501 v4)",
+  "surface": "exit 0 2026-11-08; personas Jeremy York, Paul Shailer, Theo Stevens only; the clone screen promoted two pairs for the author's adjudication (task194 vs task482 and one more, on the shared time/G13/pick signature, surface 0.08)"
  },
  "judge": {
   "verdict": "",
@@ -47,7 +47,7 @@
    "commit": "DRAWN (task482), architecture 17, 2026-11-07"
   }
  ],
- "resume": "stage 2: write the survivor anatomy, readability screen, fork table, ladder, closure, literal reader, oracles and the ask sheet in the note, then prompt.txt to voice-check, until precut.py exits 0",
+ "resume": "stage 4: the parent runs the leak reader and the judge",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -207,11 +207,36 @@
   ],
   "spent": "2026-11-07 on its first portal round: both responses landed the golden premium of EUR 342,000, each allocating the homogenizing furnace's gas by its loads' firing hours, not their tonnes (6082 billet 0.263 over the 0.235 limit); the method a careful analyst reaches for, and the hourly gas fitted it at R-squared 0.9985, which handed over the route; the portal also flagged Domains Fit. The emissions-inventory world and the furnace-allocation driver are spent."
  },
- "build": {},
+ "build": {
+  "seed": 482025,
+  "ask_seed_offset": 6,
+  "target_zip_sha256": "3f18332cb1b3e05ee59595f94783a7733276612a382f5b8fe4e9d9e4700c0cf5",
+  "files": 17,
+  "spine_rows": 258631,
+  "byte_identical_rebuild": true,
+  "checks": "0 failures",
+  "verify": "PASS",
+  "figures_check": "PASS (30 figures)",
+  "precut": "exit 0",
+  "voice_check": "PASS (WARN which quota)",
+  "ceiling": "golden 16/16, cracker 0/16, mirror 0/16, full includer 4/16; pairs 35.4 (one on, one off), 51.9 (full includer and cracker on), 58.8 (two full includers on)",
+  "stage4_briefs": [
+   "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t482/stage4/reader/BRIEF.md",
+   "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t482/stage4/judge/BRIEF.md"
+  ]
+ },
  "history": [
   {
    "date": "2026-11-07",
    "event": "DRAWN: architecture 17 registered (WARN only), six screens measured on the prototype before registration"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "stage 2: precut exit 0 (61 checks); generator core (world, rasch, core, golden, screens, checks) green on seed 482025, screens.json over 20 redraws"
+  },
+  {
+   "date": "2026-11-08",
+   "event": "stage 3: pack, goldens, submission and metadata built; every free gate green; stage-4 briefs written (leak reader and determinism judge, each copy byte-identical to target.zip)"
   }
  ]
 }
