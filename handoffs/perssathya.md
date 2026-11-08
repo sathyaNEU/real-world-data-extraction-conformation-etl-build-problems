@@ -41,21 +41,6 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   generator's world (fleet, weather geography, site wind, environs mix, clock-change exclusion) can be kept where the
   new draw uses it.
 
-**task306: SHIPPED 2026-10-24 (architecture 1), waiting on the portal.**
-- Voltwerk Accu Revisie B.V. (Tilburg) tools its 3,000 refurbishment slots for 2027 in lots of 50 across five EV
-  platforms, in proportion to each platform's 2027 pack failures outside the OEM warranty in the Netherlands. Golden
-  Mira city car 1,450, Volta hatch 900, Plover saloon 350, Kestrel SUV 250, Tern van 50 on 3,800 failures; the
-  register of 30 June 2026 alone files Mira 1,250, Volta 1,000, Plover 350, Kestrel 300, Tern 100 and 3,400. The
-  decisive step is the fleet of 2027: the Mira's used imports keep arriving, about 116 a month at 8.1 years and past
-  its five-year warranty, and fail inside the year.
-- Stage 4: both scored readers filed the register-only split (score_reader's one call hit is Plover's 350, shared
-  by that rung); round 1 took ask C through dock 2's zero rejects, so ask C now rides the intake export's grade of 1
-  July 2026 (a core the line scrapped reads AFGEKEURD; only its MES work order shows it passed intake), and round 2
-  kept 0 of 15 ask figures. Judge DETERMINISTIC APPROVE (Gate G analytical_non_defect, Gate H pass). target.zip
-  7aa71d60, pair ceiling 32.8.
-- Next: task301 (status.py next), parked before a draw; its probes were never committed, so it restarts from its
-  seed's header and Situation.
-
 **task252: SHIPPED 2026-10-21 (architecture 2), waiting on the portal.**
 - Architecture 2 (same world and pairing): each channel's offset now includes the ammonia its own sample line takes
   before the cell. Calderwood's and Holmedale's unchlorinated filtered lines carry a nitrifying film that each monthly
