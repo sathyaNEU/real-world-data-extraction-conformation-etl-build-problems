@@ -1,30 +1,33 @@
 {
   "task": "task127",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "banking-credit-financial-risk",
   "objective": "opportunity-sizing-decision",
-  "stage": 2,
-  "stage_name": "design (architecture 4)",
-  "updated": "2026-11-07",
-  "stump": "The default path values each 2027 support package at the supported borrower's own expected write-off from the IFRS 9 run and fills the envelope with Kinloch Engineering and Ridgeway Precast, when several Fernmark borrowers take most of their receipts from Matai Valley Foods and in the bank's own record defaulted far more often after their main payer defaulted, so a package at Matai keeps more write-off off the book.",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-11-08",
+  "stump": "The default path values each 2027 support package at the supported borrower's own expected write-off from the IFRS 9 run and fills the envelope with Kinloch Engineering and Ridgeway Precast, when several Ruahine borrowers take most of their receipts from Matai Valley Foods and in the bank's own record defaulted far more often after their main payer defaulted, so a package at Matai keeps more write-off off the book.",
   "architecture": 4,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-08"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK) on target.zip md5 cec7d9d873c3ca13eb435a80694cf4f4",
+    "reader": "two passes: no decisive-step sentence, no ranking or helper file, nothing reads as the answer; question 5 reads terms 3.5 as the whole book's change in expected write-off (the golden's estimand); question 6 analytical"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task132 and task173 at 0.09 (guard.py check, draw)"
+    "heart": "WARN, answered in the design note's Guard row",
+    "surface": "clean, no unplanned persona",
+    "nearest": "task132 and task173 at 0.09"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (re-judge after pass 1's FIX_NOW on the control count, fixed in the write-up)",
+    "report": "task127/determinism_check_report.md (pass 1), task127/determinism_check_report_rejudge.md (re-judge)",
+    "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "returned": [
     {
@@ -60,9 +63,9 @@
       "repair": "re-root (architecture 4) in a new client domain and world, 2026-11-07"
     }
   ],
-  "resume": "Stage 2 (architecture 4): design under the author's five conditions of 2026-11-07 to precut.py exit 0; then a new generator (copy officepdf.py), the free gates, the leak reader and judge on Sonnet medium, ship to main.",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-11-08",
   "portal": null,
   "history": {
     "architecture_1": {
@@ -168,5 +171,6 @@
   },
   "restored": "2026-10-14: architecture 3 (a full refresh at the author's request) drew judge SEND_BACK at stage 4, and the author chose to restore this architecture as task127's live build (pack unchanged from SHIPPED 59aaaba)",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "shipped_zip_md5": "cec7d9d873c3ca13eb435a80694cf4f4"
 }

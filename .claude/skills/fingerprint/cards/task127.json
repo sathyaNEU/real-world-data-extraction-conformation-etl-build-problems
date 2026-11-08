@@ -1,6 +1,6 @@
 {
   "task": "task127",
-  "architecture": "v4 (re-root after the portal landed architecture 2: Fernmark Bank's 2027 business support packages, valued by the write-off each keeps off the whole book when smaller borrowers take most of their receipts from the supported firm)",
+  "architecture": "v4 (re-root after the portal landed architecture 2: Ruahine Bank's 2027 business support packages, valued by the write-off each keeps off the whole book when smaller borrowers take most of their receipts from the supported firm)",
   "drawn": "2026-11-07",
   "slot_note": "re-root of task127 in Opportunity Sizing after the portal's FAILED_TO_STUMP on architecture 2; moved out of healthcare delivery to banking, a new world, dataset and shell",
   "domain": "banking-credit-financial-risk",
@@ -11,8 +11,8 @@
   "shape": "05",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Kinloch Engineering and Matai Valley Foods, NZ$3,350,000 of 2027 write-off kept off the book",
+  "answer_source": "task127/generator/figures.json (call, total_kept_off), recomputed by task127/generator/verify.py",
   "gap": [
     "objective",
     "population"
@@ -26,14 +26,14 @@
     "G3"
   ],
   "gate_g": "method_or_model_selection",
-  "calibration_form": "existing_book_actuals",
+  "calibration_form": "realised_outcome_roster",
   "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "An analyst who reads every field and rule correctly sums each watch-list borrower's IFRS 9 twelve-month PD x LGD x EAD from the bank's validated run and gives the two packages to the two largest (Ends on: Kinloch Engineering and Ridgeway Precast, about NZ$3.1 million kept off the book), missing the write-off a package to Matai Valley Foods also keeps off the borrowers in the book that take most of their receipts from it.",
+  "analyst_test": "An analyst who reads every field and rule correctly sums each watch-list borrower's IFRS 9 twelve-month PD x LGD x EAD from the bank's validated run and gives the two packages to the two largest (Ends on: Kinloch Engineering and Ridgeway Precast, NZ$3.0 million kept off the book), missing the write-off a package to Matai Valley Foods also keeps off the borrowers in the book that take most of their receipts from it.",
   "domain_test": "Write-off a support package prevents is an expected credit loss computation (PD x LGD x EAD) with one obligor's 2027 default averted and the dependent obligors' default chance conditioned on it, read from the bank's own record of defaults following a main payer's default; with another field's nouns there is no loss given default, no exposure at default and no trade dependence carrying one firm's default to its suppliers, so the task stops reading the same.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:credit-write-off-a-support-package-prevents-across-trade-dependent-borrowers",
@@ -45,42 +45,50 @@
     "watch-list borrowers' annual accounts in a workbook whose layout changed with the bank's 2024 template",
     "a default register in which the unlikely-to-pay flag and the 90-days-past-due date of one default fall on different days"
   ],
-  "stakeholder_role": "Fernmark Bank's head of business support, who decides which two watch-list borrowers the unit takes on in 2027",
+  "stakeholder_role": "Ruahine Bank's head of business support, who decides which two watch-list borrowers the unit takes on in 2027",
   "role_family": "portfolio_manager",
   "scoring_unit": "per resolved case",
   "spine": {
     "file": "business_account_transactions_2021-2026.csv",
-    "rows": 0,
+    "rows": 281419,
     "entity": "one posted transaction on a business customer's transaction account",
     "grain": "transaction",
     "source": "synthetic"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "period_close",
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
   "org_family": "financial_institution",
   "world": {
     "geography": "New Zealand, lower North Island",
     "currency": "NZD",
     "org_type": "a member-owned bank with a business lending book and its borrowers' transaction accounts",
     "invented_names": [
-      "Fernmark Bank",
+      "Ruahine Bank",
       "Matai Valley Foods",
       "Kinloch Engineering",
       "Ridgeway Precast"
     ],
     "people": [
       "Stella Perano",
-      "Lance Middlemiss"
+      "Lance Middlemiss",
+      "Maria Humphrey",
+      "Andrew Buckley",
+      "Christopher Gibbons",
+      "Tracey Smith",
+      "Paul Stevens",
+      "Barry Munro",
+      "Stephen Russell",
+      "Haley Richards"
     ]
   },
   "deliverables": [
     "bsu_intake_2027.xlsx",
-    "bsu_intake_2027.md"
+    "bsu_intake_2027.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "how-much",
   "driver": "The decisive quantity is what preventing one unit's failure removes across a population of units, when some units draw most of their inflow from that unit and in the population's own record failed at a high rate within months of their main payer's failure, so a value read on the unit's own expected loss misses the failures it would set off; the dependence comes from the flows between units and the conditional failure rate from the population's past failures, neither stored in any field.",
-  "driver_concrete": "A business support package that keeps a watch-list borrower out of default in 2027 also keeps out of default the Fernmark borrowers that take most of their receipts from it, which in the bank's 2021 to 2026 record defaulted far more often within twelve months of their main payer's default than otherwise; a package's prevented write-off is the borrower's own PD x LGD x EAD plus its PD times that uplift times each dependent's LGD x EAD, with dependence read from the on-us payments.",
+  "driver_concrete": "A business support package that keeps a watch-list borrower out of default in 2027 also keeps out of default the Ruahine borrowers that take most of their receipts from it, which in the bank's 2021 to 2026 record defaulted far more often within twelve months of their main payer's default than otherwise; a package's prevented write-off is the borrower's own PD x LGD x EAD plus its PD times that uplift times each dependent's LGD x EAD, with dependence read from the on-us payments.",
   "stump": "A competent solver values each package at the supported borrower's own 2027 expected write-off from the IFRS 9 run and gives the two packages to Kinloch Engineering and Ridgeway Precast, when Matai Valley Foods pays most of the receipts of several borrowers in the book whose defaults followed their main payer's in the bank's own record, so a package there keeps more write-off off the book than one at Ridgeway.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -175,12 +183,12 @@
       "deliverable set": "svg+xlsx"
     }
   ],
-  "notes": "v4 drawn 2026-11-07 for the re-root after the portal's FAILED_TO_STUMP on architecture 2 (both responses landed the golden split). The discharge world's decisive step (a concurrent wait) is spent; one architecture per world, so the slot moved to banking-credit-financial-risk / expected-credit-loss-provisioning, never carded on this objective on main. No seed: task127 has none in START_HERE.md.",
+  "notes": "v4 drawn 2026-11-07 for the re-root after the portal's FAILED_TO_STUMP on architecture 2 (both responses landed the golden split). The discharge world's decisive step (a concurrent wait) is spent; one architecture per world, so the slot moved to banking-credit-financial-risk / expected-credit-loss-provisioning, never carded on this objective on main. No seed: task127 has none in START_HERE.md. Axes corrected at stage 3 (2026-11-07), when the guard re-read the card against task165 v2 and task268 v6, both registered before it: the forum is the Credit Committee, which confirms the intake at its February meeting and receives the note (committee_or_panel, not the unit's own team); the call is forced by the Board's 2027 envelope, an allocation round (budget_or_appropriation, not the year-end close); the calibration organ is the default register as a roster of each borrower's realised default, counted into rates conditioned on the payer's default the way task97 counts returning grants (realised_outcome_roster; existing_book_actuals is the corpus's label for business volumes and claims experience). Forcing event redrawn at ship (2026-11-08), when the pull before the push put task456 v3 (registered 2026-11-01, before this card) in the window with budget_or_appropriation: the call is forced by the Credit Committee's February meeting, which confirms the intake under the terms' section 5 and receives the note (vote_or_meeting); the envelope is what that meeting allocates.",
   "registered": "2026-11-07T22:27:30Z",
   "shell": {
-    "question form": "which",
-    "second-sentence opener": "every",
-    "rounding opener": "dollar",
-    "deliverable set": "xlsx"
+    "question form": "how-much",
+    "second-sentence opener": "that",
+    "rounding opener": "write",
+    "deliverable set": "docx+xlsx"
   }
 }

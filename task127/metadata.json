@@ -1,0 +1,148 @@
+{
+ "task": "task127",
+ "title": "Business Support Unit intake, 2027",
+ "domain": "Banking, Credit & Financial Risk",
+ "task_type": "expected credit loss provisioning",
+ "objective": "Opportunity Sizing & Decision Support",
+ "as_of": "2027-01-22",
+ "deliverables": [
+  "bsu_intake_2027.xlsx",
+  "bsu_intake_2027.docx"
+ ],
+ "distractor_files": [
+  "sector_risk_appetite_2027.pdf",
+  "regional_economic_indicators_2019-2026.csv"
+ ],
+ "input_gates": {
+  "files": 16,
+  "formats": [
+   "csv",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "business_account_transactions_2021-2026.csv",
+  "largest_file_rows": 281664
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task around a fictional New Zealand member-owned bank, its business customers and people; every record and figure is invented.",
+   "date": "2027-01-22",
+   "license": "CC BY 4.0 (original work)"
+  }
+ ],
+ "files": [
+  {
+   "path": "account_number_crosswalk_2023.csv",
+   "format": "csv",
+   "bytes": 43607,
+   "covers": "legacy to new account numbers at the June 2023 core banking conversion",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "bsu_terms_of_reference_2027.pdf",
+   "format": "pdf",
+   "bytes": 30932,
+   "covers": "Business Support Unit terms of reference for 2027",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "business_account_transactions_2021-2026.csv",
+   "format": "csv",
+   "bytes": 28702485,
+   "covers": "core banking extract of business transaction accounts, one row per posted transaction",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "commercial_property_index_2015-2026.csv",
+   "format": "csv",
+   "bytes": 44915,
+   "covers": "regional commercial property index by quarter and release",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "companies_register_extract_2026-12.csv",
+   "format": "csv",
+   "bytes": 36697,
+   "covers": "companies register extract for the bank's business customers",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "customer_master_2026-12.xlsx",
+   "format": "xlsx",
+   "bytes": 55839,
+   "covers": "business customer register and their accounts at December 2026",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "default_cures_2021-2026.csv",
+   "format": "csv",
+   "bytes": 1046,
+   "covers": "cures recorded by the credit team",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "default_register_2021-2026.csv",
+   "format": "csv",
+   "bytes": 14220,
+   "covers": "default triggers raised by the credit and collections teams",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "ifrs9_facility_run_2024-12-31.csv",
+   "format": "csv",
+   "bytes": 80617,
+   "covers": "IFRS 9 facility run as at 31 December 2024",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "ifrs9_facility_run_2026-12-31.csv",
+   "format": "csv",
+   "bytes": 79658,
+   "covers": "IFRS 9 facility run as at 31 December 2026",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "ifrs9_pd_model_validation_2025.pdf",
+   "format": "pdf",
+   "bytes": 44844,
+   "covers": "annual validation of the business PD model, 2025",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "regional_economic_indicators_2019-2026.csv",
+   "format": "csv",
+   "bytes": 4401,
+   "covers": "regional economic series by quarter",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "sector_risk_appetite_2027.pdf",
+   "format": "pdf",
+   "bytes": 34904,
+   "covers": "sector risk appetite for business lending, 2027",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "security_register_2026-12.xlsx",
+   "format": "xlsx",
+   "bytes": 47441,
+   "covers": "property securities, guarantees and the deed log held by Lending Services",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "title_instruments_2026-12.csv",
+   "format": "csv",
+   "bytes": 22427,
+   "covers": "mortgage instruments registered against the secured titles",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  },
+  {
+   "path": "watch_list_2027-01.pdf",
+   "format": "pdf",
+   "bytes": 62337,
+   "covers": "Credit Committee watch list, January 2027",
+   "made": "constructed by task127/generator/make.py (seeded, deterministic)"
+  }
+ ]
+}
