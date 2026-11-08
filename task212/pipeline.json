@@ -1,12 +1,12 @@
 {
   "task": "task212",
-  "status": "PAUSED",
-  "domain": "",
+  "status": "DESIGN",
+  "domain": "biomedical-clinical-research",
   "objective": "anomaly-detection",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-11-08",
-  "stump": "",
+  "stump": "A competent analyst joins the release QC to the manifest and the LIMS, risk-adjusts each centre's failures on storage time, the recorded freeze-thaw count and the processing codes, and sends the audit to Kingston; the step that lands them there is never rebuilding each aliquot's rack pulls before its own pick from the custody log against the freezer map, under which Kingston's excess is storage warming and Barrie fails DNA at about twice the other centres' rate from its own handling.",
   "architecture": 2,
   "loops": 0,
   "precut": {
@@ -61,11 +61,13 @@
       "determinism": "freeze.py check task212 --mode determinism --allow hours_ZAZ,hours_VLC: exit 1 on its unconditional 'Deliverable Answers for hub_damage_q3_2026.xlsx moved' line (--allow reaches figures.json keys only); without --allow it also lists hours_ZAZ 32.2 to 32.0 and hours_VLC 39.5 to 39.4, both accepted with their reason in DESIGN_NOTE ## Tried and rejected"
     }
   },
-  "resume": "stage 1, architecture 2, draw in another world. Read DESIGN_NOTE.md first (## Draw for the corpus reads and the structural lesson, ## Tried and rejected for the four urgent-care deaths U1 to U4) and do not reopen the urgent-care world: an exposure that is the state of a shared resource at each record's moment is absorbed linearly by any aggregate of that state. Before any harness, merge claude/jolly-hypatia-06c61h into the branch, copy sibling batch4 cards untracked for the guard run (batch4-task214-a2 is re-rooting and keeps clear of the domain task212 registers), rerun guard.py recent and coverage, and draw in a least-spent anomaly-detection cell outside the barred client domains (general statistics, epidemiology, banking, pharmacology, human factors, education). Look for a decisive exposure built from other records' attributes in an order relation, non-linear in its response, where the decoy and the true unit share every aggregate of its ingredients; screen it with the brief's six go/no-go screens over 20 redraws, then personas from guard.py names --geo <geo> --seed 212, check, register, check again, commit DRAWN (task212) with this spend record, and message main the hash and the draw in ten lines naming the domain.",
+  "resume": "stage 2, architecture 2 (biobank genotyping release, DRAWN). Write the design note's remaining sections (Default path, Stump sentence, Three rules, Survivor anatomy, Readability screen, Semantic fork table, Ladder, Closure table, Literal reader, Oracles, Ask sheet), the generator under task212/generator with checks.py asserting the six screens on the shipped seed and the fork rows, a ceiling.py sharing no code with the generator, and prompt.txt (US spelling, question form where, not pdf plus xlsx); leave stage 2 only on precut.py exit 0. Before every guard run merge claude/jolly-hypatia-06c61h and copy any missing batch4 card untracked.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "draw_a2": "2026-11-08, DRAWN on batch4-task212-a2 (parent bea2a97): biomedical-clinical-research / genomics-gwas-high-dimensional-association, anomaly-detection, shape 09, pick_one_of_n, composition_mix, Gate G decomposition_attribution; the Silverbirch Health Cohort's 2026 genotyping release (47,800 buffy-coat aliquots, seven Ontario assessment centres), the handling audit to Barrie against the default Kingston; card v2 registered 2026-11-08T01:59:53Z, check WARN only (overuse.objective, repeat.gate_g, overuse.gate_g, answered in DESIGN_NOTE ## Draw).",
+  "draw_screens_a2_b1": "2026-11-08, scratch t212/a2/b1/h1.py on the clean truth, 20 redraws (seeds 200 to 219): golden first-opening stratum Barrie 20/20 (lead >= 1.37); every golden member (0, <=1, <=2, <=3 prior pulls; minutes < 10, 20, 40; no prior multi-omics pull; logistic in count, minutes, log minutes, bins, any pull) Barrie 20/20 (min lead 1.20 to 1.37); first look Kingston 20/20 (>= 1.14); careful readers each Kingston 20/20: (a) direct standardisation, (b) constructing (storage years, LIMS counter, lifetime box and rack openings and minutes, multi-omics pulls ever and count, pick date), (c) per-record cells and main effects with interactions, (d) LIMS freeze-thaw counter, lifetime rack openings, own-box openings (zero), never-touched stratum (empty), (e) literal replay; literal execution Kingston 20/20; fit parity easy AUC 0.596 to 0.622 against golden 0.674 to 0.695; Barrie's raw place 3rd to 5th."
 }
