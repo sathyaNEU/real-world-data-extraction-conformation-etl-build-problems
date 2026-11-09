@@ -88,6 +88,6 @@ Every build with a fingerprint card, grouped by its client domain (the build's `
 - **Quantitative Finance:** task135, task178, task271, task445
 - **Sociology & Demography:** task150, task176, task262, task266
 - **Supply Chain & Logistics:** task16, task18, task20, task21, task31, task32, task36, task39, task44, task45, task46, task47, task50, task54, task55, task58, task67, task70, task71, task78, task90, task92, task94, task99, task106, task108, task117, task140, task161, task168, task472
-- **Survey Research & Official Statistics:** task123, task125, task146, task186, task190, task230, task231, task238, task240, task243, task244, task259, task261, task264, task274, task275, task311, task448, task453, task455, task457, task463, task467, task471, task477, task481, task483, task485, task486
+- **Survey Research & Official Statistics:** task123, task125, task146, task186, task190, task230, task231, task238, task240, task243, task244, task259, task261, task264, task274, task275, task311, task448, task453, task455, task463, task467, task471, task477, task481, task483, task485, task486
 - **Urban & Regional Science:** task134, task148, task159, task175, task254, task273, task307
 <!-- task-ids-by-domain:end -->
